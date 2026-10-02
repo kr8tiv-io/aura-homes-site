@@ -49,7 +49,7 @@ p {
 
 .aura-logo {
   display: block;
-  width: 5.75rem;
+  width: 2.35rem;
   color: inherit;
 }
 .aura-logo svg {
@@ -58,21 +58,23 @@ p {
   height: auto;
   overflow: visible;
 }
-.aura-ridge,
-.aura-halo {
+.aura-ridge {
   fill: none;
   stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-.aura-ridge {
-  stroke-width: 1.75;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-width: 10;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
 }
 .aura-halo {
-  stroke-width: 1.35;
+  fill: #c4a07a;
+  stroke: none;
   opacity: 1;
+}
+/* The nav blends with difference. This blue paints back as bronze #c4a07a on the alabaster page. */
+.site-nav .aura-halo {
+  fill: #305375;
 }
 .nav-name,
 .foot-name {
@@ -105,7 +107,7 @@ p {
   text-decoration: none;
 }
 .site-foot .aura-logo {
-  width: 5.2rem;
+  width: 3.35rem;
 }
 .foot-line {
   max-width: 22em;
@@ -197,7 +199,7 @@ p {
   .page-body { margin: 0 1.5rem 10vh; }
 }
 @media (max-width: 800px) {
-  .aura-logo { width: 3.35rem; }
+  .aura-logo { width: 1.85rem; }
   .nav-brand { gap: 0.45rem; min-width: 0; }
   .nav-name { font-size: 0.62rem; letter-spacing: 0.12em; }
   .nav-tools { margin-left: auto; flex: 0 0 auto; }
