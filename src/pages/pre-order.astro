@@ -1,6 +1,30 @@
 ---
-import Join from '../components/Join.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { roomConcepts } from '../lib/rooms';
+
+// Paste a Formspree URL here, or a mailto: address. TODO until the inbox exists.
+const formAction = 'TODO';
+
+const uses = [
+  ['home-extension', 'Home extension'],
+  ['office', 'Office'],
+  ['escape-room', 'Escape room'],
+  ['rental-stay', 'Rental stay'],
+  ['other', 'Other'],
+] as const;
+
+const finishes = [
+  ['clear', 'Clear'],
+  ['mirror', 'Mirror'],
+  ['tinted', 'Tinted'],
+  ['undecided', 'Undecided'],
+] as const;
+
+const offgrid = [
+  ['yes', 'Yes'],
+  ['no', 'No'],
+  ['maybe', 'Maybe'],
+] as const;
 ---
 
 <BaseLayout
@@ -8,16 +32,291 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Beautiful second-life rooms that bring people back to nature, one room at a time."
   descriptor="Pre-order"
 >
-  <main id="top">
+  <main id="top" class="quote-page">
     <section class="page-lead">
       <p class="story-kicker">Pre-order</p>
-      <h1>Hold your place.</h1>
-      <p class="story-lede" data-preorder-lede>
-        Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.
+      <h1>Get a quote.</h1>
+      <p class="story-lede">
+        We're building our first units now. Join the pre-order list and we'll reach out personally. Nothing is charged until we know we can deliver, and if we ever can't, you get your money back.
       </p>
+      <p class="quote-ask" data-quote-ask hidden></p>
     </section>
+
     <section class="enquire" id="enquire">
-      <Join shell="unsure" />
+      <form class="join-card quote-form" id="quote-form" action={formAction} method="post">
+        <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <div class="quote-grid">
+          <div>
+            <label for="quote-name">Name</label>
+            <input id="quote-name" name="name" type="text" autocomplete="name" required maxlength="80" />
+          </div>
+          <div>
+            <label for="quote-email">Email</label>
+            <input id="quote-email" name="email" type="email" autocomplete="email" required maxlength="120" />
+          </div>
+          <div>
+            <label for="quote-phone">Phone (optional)</label>
+            <input id="quote-phone" name="phone" type="tel" autocomplete="tel" maxlength="40" />
+          </div>
+          <div>
+            <label for="quote-location">City, province or country</label>
+            <input id="quote-location" name="location" type="text" autocomplete="address-level2" required maxlength="120" />
+          </div>
+          <div>
+            <label for="quote-model">Model</label>
+            <select id="quote-model" name="model" required>
+              {roomConcepts.map((room) => (
+                <option value={room.slug}>{room.name}</option>
+              ))}
+              <option value="custom">Custom / bring my own trailer</option>
+              <option value="unsure" selected>Not sure yet</option>
+            </select>
+          </div>
+          <div>
+            <label for="quote-use">Intended use</label>
+            <select id="quote-use" name="use" required>
+              <option value="" selected disabled>Choose one</option>
+              {uses.map(([value, label]) => (
+                <option value={value}>{label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="quote-finish">Polycarbonate finish</label>
+            <select id="quote-finish" name="finish" required>
+              {finishes.map(([value, label]) => (
+                <option value={value} selected={value === 'undecided'}>{label}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label for="quote-offgrid">Off-grid interest</label>
+            <select id="quote-offgrid" name="offgrid" required>
+              <option value="" selected disabled>Choose one</option>
+              {offgrid.map(([value, label]) => (
+                <option value={value}>{label}</option>
+              ))}
+            </select>
+          </div>
+          <div class="is-wide">
+            <label for="quote-timeline">Timeline</label>
+            <input id="quote-timeline" name="timeline" type="text" required maxlength="160" />
+          </div>
+          <div class="is-wide">
+            <label for="quote-message">Message</label>
+            <textarea id="quote-message" name="message" required maxlength="2000"></textarea>
+          </div>
+        </div>
+        <button type="submit">Get a quote</button>
+        <p class="join-status" data-quote-status role="status"></p>
+      </form>
+
+      <div class="join-card quote-thanks" id="quote-thanks" hidden>
+        <h2 tabindex="-1">We have your note.</h2>
+        <p>We will reach out personally. Nothing was charged.</p>
+      </div>
     </section>
   </main>
 </BaseLayout>
+
+<style>
+  .quote-ask {
+    max-width: 34rem;
+    margin: 1.35rem 0 0;
+    font-weight: 300;
+    letter-spacing: 0.03em;
+    color: #8a6a45;
+  }
+  .quote-page .enquire {
+    min-height: 0;
+    justify-content: flex-start;
+    padding: 6vh 8vw 14vh;
+  }
+  .quote-form,
+  .quote-thanks {
+    width: min(100%, 46rem);
+  }
+  .quote-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.25rem;
+  }
+  .quote-grid .is-wide {
+    grid-column: 1 / -1;
+  }
+  .quote-form select {
+    padding-right: 2rem;
+    background-image:
+      linear-gradient(45deg, transparent 50%, #c4a07a 50%),
+      linear-gradient(135deg, #c4a07a 50%, transparent 50%);
+    background-position:
+      calc(100% - 1.05rem) 55%,
+      calc(100% - 0.72rem) 55%;
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+  }
+  .quote-form input:focus-visible,
+  .quote-form select:focus-visible,
+  .quote-form textarea:focus-visible,
+  .quote-form button:focus-visible {
+    outline: 1px solid #c4a07a;
+    outline-offset: 3px;
+  }
+  .quote-thanks h2 {
+    margin: 0;
+    max-width: 12em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .quote-thanks h2:focus {
+    outline: 1px solid #c4a07a;
+    outline-offset: 8px;
+  }
+  .quote-thanks p {
+    margin-top: 1.25rem;
+    font-size: 1.125rem;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .quote-form button {
+      transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .quote-form button:hover,
+    .quote-form button:focus-visible {
+      background: transparent;
+      color: #f4f3ef;
+      opacity: 0.55;
+    }
+  }
+  @media (max-width: 800px) {
+    .quote-page .enquire {
+      padding: 4vh 1.5rem 10vh;
+    }
+    .quote-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+
+  const form = document.getElementById('quote-form');
+  const thanks = document.getElementById('quote-thanks');
+  const model = document.getElementById('quote-model');
+  const ask = document.querySelector('[data-quote-ask]');
+
+  const syncAsk = () => {
+    if (!(model instanceof HTMLSelectElement) || !(ask instanceof HTMLElement)) return;
+    const value = model.value;
+    if (!value || value === 'unsure') {
+      ask.hidden = true;
+      ask.textContent = '';
+      return;
+    }
+    ask.textContent = value === 'custom'
+      ? 'Asking about a custom build.'
+      : `Asking about ${model.selectedOptions[0]?.textContent?.trim() || 'this model'}.`;
+    ask.hidden = false;
+  };
+
+  if (model instanceof HTMLSelectElement) {
+    const params = new URLSearchParams(location.search);
+    const requested = params.get('model');
+    const known = requested ? [...model.options].some((option) => option.value === requested) : false;
+    if (requested && known) model.value = requested;
+    else if (params.get('type') === 'custom' || requested === 'custom') model.value = 'custom';
+    syncAsk();
+    model.addEventListener('change', syncAsk);
+  }
+
+  const showThanks = () => {
+    if (!(form instanceof HTMLFormElement) || !(thanks instanceof HTMLElement)) return;
+    form.hidden = true;
+    thanks.hidden = false;
+    const title = thanks.querySelector('h2');
+    if (title instanceof HTMLElement) title.focus();
+    if (!prefersReducedMotion()) {
+      gsap.fromTo(thanks, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.6, ease: 'power3.out' });
+    }
+    window.__lenis?.scrollTo(thanks, { immediate: true });
+  };
+
+  const fieldText = (name: string) => {
+    if (!(form instanceof HTMLFormElement)) return '';
+    const el = form.elements.namedItem(name);
+    if (el instanceof HTMLSelectElement) return el.selectedOptions[0]?.textContent?.trim() || '';
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) return el.value.trim();
+    return '';
+  };
+
+  if (form instanceof HTMLFormElement && thanks instanceof HTMLElement) {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const status = form.querySelector('[data-quote-status]');
+      const button = form.querySelector('button[type="submit"]');
+      if (!(status instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
+      if (fieldText('company') !== '') {
+        showThanks();
+        return;
+      }
+      button.disabled = true;
+      const action = form.getAttribute('action') || '';
+      try {
+        if (action.startsWith('https://')) {
+          status.textContent = 'Sending.';
+          const res = await fetch(action, {
+            method: 'POST',
+            body: new FormData(form),
+            headers: { Accept: 'application/json' },
+          });
+          if (!res.ok) throw new Error('status');
+        } else if (action.startsWith('mailto:')) {
+          const lines = [
+            ['Name', fieldText('name')],
+            ['Email', fieldText('email')],
+            ['Phone', fieldText('phone')],
+            ['Location', fieldText('location')],
+            ['Model', fieldText('model')],
+            ['Intended use', fieldText('use')],
+            ['Polycarbonate finish', fieldText('finish')],
+            ['Off-grid interest', fieldText('offgrid')],
+            ['Timeline', fieldText('timeline')],
+            ['Message', fieldText('message')],
+          ].map(([label, value]) => `${label}: ${value || ''}`);
+          const joiner = action.includes('?') ? '&' : '?';
+          window.location.href = `${action}${joiner}subject=${encodeURIComponent('Aura Homes quote')}&body=${encodeURIComponent(lines.join('\n'))}`;
+        }
+        showThanks();
+      } catch {
+        status.textContent = 'The line did not answer. Try again in a moment.';
+        button.disabled = false;
+      }
+    });
+  }
+
+  const page = document.querySelector('.quote-page');
+  if (page && !prefersReducedMotion()) {
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'quote-rise')
+      .forEach((trigger) => trigger.kill());
+
+    const card = page.querySelector('.quote-form');
+    if (card instanceof HTMLElement) {
+      gsap.from(card, {
+        y: 22,
+        opacity: 0,
+        duration: 1.75,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'quote-rise',
+          trigger: card,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    }
+  }
+</script>
