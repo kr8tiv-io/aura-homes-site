@@ -1,5 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { roomConcepts } from '../lib/rooms';
+
+const uses = [
+  ['01', 'Home extension'],
+  ['02', 'Backyard or acreage office'],
+  ['03', 'Escape room'],
+  ['04', 'Rental stay'],
+];
 ---
 
 <BaseLayout
@@ -7,21 +15,202 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Beautiful second-life rooms that bring people back to nature, one room at a time."
   descriptor="Rooms"
 >
-  <main id="top">
+  <main id="top" class="room-collection">
     <section class="page-lead">
       <p class="story-kicker">Rooms</p>
-      <h1>A finished room.</h1>
-      <p class="story-lede">
-        Beside the house, or a small stay on the property. Clear, mirrored, or tinted glass, and flat. The room sits on its steel frame in the grass. Two sides can open, and a panel can be the door.
-      </p>
+      <h1>The rooms.</h1>
+      <p class="story-lede">A vibrant extension of your home, in synergy with nature.</p>
+      <p class="room-note">Every unit is built one at a time. Concepts shown; details evolve as we build.</p>
     </section>
-    <div class="page-body">
-      <h2>What you are looking at</h2>
-      <p>Honey oak, linen, and the meadow still in view when the long side opens. A desk can face the field. A bed can sit under a skylight. A wood-fired tub, when it is the point, has its own steel frame.</p>
-      <p>The scroll film of that room plays on <a href="/">the opening page</a>. It is the same room, held low in the grass.</p>
-      <h2>What comes after the room</h2>
-      <p>Glass on piles, a deck, and a small resort are <a href="/customs">custom work</a>. A farm wall is a different long side of this same room. Water from the air comes later. The sequence is written in the <a href="/master-plan">master plan</a>.</p>
-      <p>If the room is the one you want, <a href="/pre-order">hold a place</a>. The page takes no payment.</p>
-    </div>
+
+    <ul class="room-uses" data-rise>
+      {uses.map(([index, label]) => (
+        <li>
+          <span>{index}</span>
+          <strong>{label}</strong>
+        </li>
+      ))}
+    </ul>
+
+    <ul class="room-grid">
+      {roomConcepts.map((room) => (
+        <li>
+          <article class="room-card" data-rise>
+            <figure>
+              <img
+                src={room.image}
+                alt={room.alt}
+                width="1280"
+                height="922"
+                loading="lazy"
+                style={`object-position: ${room.focus}`}
+              />
+            </figure>
+            <h2>{room.name}</h2>
+            <p>{room.description}</p>
+            <a href={`/pre-order?model=${room.slug}`}>Pre-order inquiry</a>
+          </article>
+        </li>
+      ))}
+    </ul>
   </main>
 </BaseLayout>
+
+<style>
+  .room-note {
+    max-width: 32rem;
+    margin: 1.6rem 0 0;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  .room-uses {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin: 0;
+    padding: 3.5rem 8vw;
+    list-style: none;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+    border-bottom: 1px solid rgba(20, 18, 14, 0.14);
+    color: #14120e;
+  }
+  .room-uses span {
+    display: block;
+    margin-bottom: 0.75rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    color: #8a6a45;
+  }
+  .room-uses strong {
+    display: block;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .room-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 3vw, 3rem);
+    margin: 0;
+    padding: 8vh 8vw 16vh;
+    list-style: none;
+  }
+  .room-card {
+    color: #14120e;
+  }
+  .room-card figure {
+    margin: 0 0 1.35rem;
+    overflow: hidden;
+    background: #0c0d0e;
+    aspect-ratio: 3 / 2;
+  }
+  .room-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .room-card h2 {
+    margin: 0 0 0.55rem;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 2.4vw, 2.15rem);
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+  }
+  .room-card p {
+    max-width: 22rem;
+    margin: 0 0 1.35rem;
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: rgba(20, 18, 14, 0.74);
+  }
+  .room-card a {
+    display: inline-block;
+    padding: 0.7rem 1.05rem;
+    border: 1px solid #14120e;
+    color: #14120e;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .room-card img {
+      transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .room-card:hover img,
+    .room-card:focus-within img {
+      transform: scale(1.035);
+    }
+    .room-card a {
+      transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .room-card a:hover,
+    .room-card a:focus-visible {
+      opacity: 0.55;
+    }
+  }
+  @media (max-width: 800px) {
+    .room-uses {
+      display: flex;
+      gap: 2.2rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 2.2rem 1.5rem;
+    }
+    .room-uses li {
+      flex: 0 0 68%;
+      scroll-snap-align: start;
+    }
+    .room-grid {
+      grid-template-columns: 1fr;
+      padding: 6vh 1.5rem 12vh;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .room-uses {
+      scroll-snap-type: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+
+  const page = document.querySelector('.room-collection');
+  if (page && !prefersReducedMotion()) {
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'room-rise')
+      .forEach((trigger) => trigger.kill());
+
+    gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
+      gsap.from(el, {
+        y: 24,
+        opacity: 0,
+        duration: 1.7,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'room-rise',
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    });
+
+    const settle = () => ScrollTrigger.refresh();
+    requestAnimationFrame(settle);
+    window.addEventListener('load', settle, { once: true });
+  }
+</script>
