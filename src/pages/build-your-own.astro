@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BuilderJourney from '../builder/BuilderJourney';
+import '../styles/builder.css';
+---
+
+<BaseLayout
+  title="Aura Homes | Build your own"
+  description="The Aura Homes builder. Walk the clearing and set a room on this page, or build it from the GitHub source."
+  descriptor="Build your own"
+>
+  <main id="top">
+    <BuilderJourney client:only="react" />
+  </main>
+</BaseLayout>

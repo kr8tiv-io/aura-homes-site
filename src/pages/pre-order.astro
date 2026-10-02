@@ -1,0 +1,23 @@
+---
+import Join from '../components/Join.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Aura Homes | Pre-order"
+  description="Hold a place with Aura Homes. Tell us which room you want. This page takes no payment."
+  descriptor="Pre-order"
+>
+  <main id="top">
+    <section class="page-lead">
+      <p class="story-kicker">Pre-order</p>
+      <h1>Hold your place.</h1>
+      <p class="story-lede">
+        Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.
+      </p>
+    </section>
+    <section class="enquire" id="enquire">
+      <Join shell="unsure" />
+    </section>
+  </main>
+</BaseLayout>
