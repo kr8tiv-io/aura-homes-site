@@ -47,6 +47,102 @@ p {
   clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
 }
 
+.aura-logo {
+  display: block;
+  width: 5.75rem;
+  color: inherit;
+}
+.aura-logo svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.aura-ridge,
+.aura-halo {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.aura-ridge {
+  stroke-width: 1.75;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+}
+.aura-halo {
+  stroke-width: 1.35;
+  opacity: 1;
+}
+.nav-name,
+.foot-name {
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+}
+.nav-name {
+  font-size: 0.92rem;
+  letter-spacing: 0.22em;
+}
+.foot-name {
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+}
+.site-foot {
+  position: relative;
+  z-index: 2;
+  background: #101820;
+  color: #f4f3ef;
+  padding: 2.4rem 8vw 2.6rem;
+}
+.foot-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  color: inherit;
+  text-decoration: none;
+}
+.site-foot .aura-logo {
+  width: 5.2rem;
+}
+@media (max-width: 800px) {
+  .aura-logo { width: 3.35rem; }
+  .nav-brand { gap: 0.45rem; min-width: 0; }
+  .nav-name { font-size: 0.62rem; letter-spacing: 0.12em; }
+  .nav-tools { margin-left: auto; flex: 0 0 auto; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .aura-logo.is-play .aura-ridge {
+    animation: aura-draw 1.2s cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+  .aura-logo.is-play .aura-halo {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: aura-halo 1.8s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
+  }
+}
+@keyframes aura-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes aura-halo {
+  0% { opacity: 0; transform: scale(0.97); }
+  38% { opacity: 1; transform: scale(1); }
+  68% { opacity: 0.42; transform: scale(1.045); }
+  100% { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aura-ridge,
+  .aura-halo {
+    animation: none;
+    stroke-dashoffset: 0;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 ::selection {
   background-color: var(--color-obsidian);
   color: var(--color-alabaster);

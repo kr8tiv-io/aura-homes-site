@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 84" fill="none" class="aura-lockup">
+  <path class="aura-halo" pathLength="1" d="M96.69 28.24A12 12 0 1 1 103.31 28.24" />
+  <path class="aura-ridge" pathLength="1" d="M8 70H32C42 70 40 50 48 50C56 50 56 58 64 58C80 58 84 32 100 32C116 32 120 58 136 58C144 58 144 50 152 50C160 50 158 70 168 70H192" />
+  <text class="aura-word" x="214" y="58">AURA HOMES</text>
+  <style>
+    .aura-ridge,
+    .aura-halo,
+    .aura-word {
+      color: currentColor;
+    }
+    .aura-ridge,
+    .aura-halo {
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .aura-ridge { stroke-width: 1.75; }
+    .aura-halo { stroke-width: 1.35; }
+    .aura-word {
+      fill: currentColor;
+      stroke: none;
+      font-family: Cinzel, Palatino, "Palatino Linotype", serif;
+      font-size: 18px;
+      font-weight: 400;
+      letter-spacing: 0.28em;
+    }
+  </style>
+</svg>
