@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Join from '../components/Join.astro';
+import Journeys from '../components/Journeys.astro';
+---
+
+<BaseLayout title="Aura | The resorts">
+  <main id="top">
+    <canvas class="page-field" data-wash="resort" aria-hidden="true"></canvas>
+    <canvas class="field-light" data-field="resort" aria-hidden="true"></canvas>
+
+    <section class="page-lead">
+      <p class="story-kicker">The resorts</p>
+      <h1 data-glow>
+        <span class="line-mask"><span class="line">A few rooms.</span></span>
+        <span class="line-mask"><span class="line">A whole stay.</span></span>
+      </h1>
+      <p class="story-lede">
+        Eco-tourism micro-resorts in Canada and Costa Rica. The future places look like these. Aura builds them custom.
+      </p>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/resort-deck.webp" data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="wipe" data-play="wipe" aria-label="Snowy A-frame resort with an underlit glass deck, cargo net, sauna, and hot tub"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">Canada</p>
+        <h3 data-glow><span class="line-mask"><span class="line">The deck, the net, the light.</span></span></h3>
+        <p>
+          A wide deck over the snow, a floor lit from beneath, a net, a sauna, and a tub. Glass railings are part of the custom build. The picture is the deck, the net, and the light.
+        </p>
+      </div>
+    </section>
+
+    <section class="story-still is-flip">
+      <figure class="story-figure">
+        <video poster="/film/resort-tower.webp" data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="drift" data-play="drift" aria-label="Round multi-level glass tower in snow, with mesh balconies and hammocks"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The tower</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Rooms around a well of glass.</span></span></h3>
+        <p>Mesh balconies, hammocks, and a floor that glows. A small resort can be one building, if the building is this sure of itself.</p>
+      </div>
+    </section>
+
+    <section class="story-open">
+      <p class="story-kicker">Costa Rica</p>
+      <h2 data-glow>
+        <span class="line-mask"><span class="line">The warm half</span></span>
+        <span class="line-mask"><span class="line">of the same idea.</span></span>
+      </h2>
+      <p class="story-lede">
+        Forest, water, and a small number of rooms. The site will have its own photograph. Until then, the snow is the reference, and the plan is the same: custom, few rooms, built for the stay.
+      </p>
+    </section>
+
+    <section class="passage" data-passage aria-label="A small resort">
+      <canvas data-meadow data-scene="snow"></canvas>
+      <p class="passage-ghost" aria-hidden="true">Stay</p>
+      <div class="passage-copy">
+        <p class="story-kicker">Custom</p>
+        <h2 data-glow><span class="line-mask"><span class="line">We build these.</span></span></h2>
+        <p>Not a catalogue. A resort drawn for the land, in Canada or in Costa Rica.</p>
+      </div>
+    </section>
+    <div class="passage-spacer" data-passage-spacer aria-hidden="true"></div>
+
+    <section class="ways">
+      <p class="story-kicker">What a resort holds</p>
+      <ol>
+        <li><span>01</span> A few rooms, not a hotel</li>
+        <li><span>02</span> A deck with a net and a lit floor</li>
+        <li><span>03</span> Glass balconies, and a tower when the site asks</li>
+        <li><span>04</span> Canada, and Costa Rica</li>
+      </ol>
+      <p class="story-lede">The room on your land is the first journey. This is the last one.</p>
+    </section>
+
+    <Journeys />
+
+    <section id="enquire" class="enquire">
+      <p class="story-kicker">Enquire</p>
+      <h2 data-glow><span class="line-mask"><span class="line">Tell us the land.</span></span></h2>
+      <p class="story-lede enquire-note">A room beside the house, a glass deck on piles, or a small resort. The first reply starts with the site.</p>
+      <Join shell="resort" />
+    </section>
+  </main>
+
+  <script>
+    import { bindJourneyMotion } from '../scripts/journey';
+    bindJourneyMotion();
+  </script>
+</BaseLayout>

@@ -1,0 +1,60 @@
+---
+import Join from '../../components/Join.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const notes = [
+  {
+    href: '/journal/one-shell',
+    title: 'One shell, several lives',
+    dek: 'The room, the glass, the resort, the farm wall, and the water line are one object with different work inside it.',
+  },
+  {
+    href: '/journal/aura-farms',
+    title: 'Aura Farms, grown on the wall',
+    dek: 'Vertical aeroponics in the same shell: what it is, who can buy it, and what a free-food network would ask of it.',
+  },
+  {
+    href: '/journal/water-from-the-air',
+    title: 'Water from the air, bottled in the room',
+    dek: 'H20 comes later. The generator and the bottling line still need further research.',
+  },
+  {
+    href: '/journal/free-food-and-water',
+    title: 'Free food, free water, paid for by the label',
+    dek: 'The franchise we hope to build: advertisers pay, the person who takes the jug or the harvest does not.',
+  },
+  {
+    href: '/journal/build-your-own',
+    title: 'Build your own, without a wallet',
+    dek: 'The builder is a tool. Set the shell on this site, or build it from the GitHub source.',
+  },
+];
+---
+
+<BaseLayout
+  title="Aura | Journal"
+  description="Notes on the Aura shell: a room, a farm wall, water from the air, and a free food and water network paid for by the label."
+  descriptor="Journal"
+>
+  <main class="article" id="top">
+    <p class="story-kicker">Journal</p>
+    <h1>What we are building, and what we hope.</h1>
+    <p class="story-lede">Five notes. The first is the whole story. The others are the farm, the water, the network, and the builder.</p>
+    <ol class="journal-list">
+      {notes.map((note) => (
+        <li>
+          <a href={note.href}>
+            <strong>{note.title}</strong>
+            <span>{note.dek}</span>
+          </a>
+        </li>
+      ))}
+    </ol>
+  </main>
+  <section id="enquire" class="enquire">
+    <p class="story-kicker">Enquire</p>
+    <h2>Ask about the shell.</h2>
+    <p class="story-lede enquire-note">A room, a farm wall, or water from the air.</p>
+    <Join shell="unsure" />
+  </section>
+</BaseLayout>

@@ -1,0 +1,535 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Join from '../components/Join.astro';
+import Journeys from '../components/Journeys.astro';
+---
+
+<BaseLayout title="Aura | Modern Eco Homes">
+  <main id="top">
+    <canvas class="page-field" data-wash="room" aria-hidden="true"></canvas>
+    <canvas class="field-light" data-field="room" aria-hidden="true"></canvas>
+    <section class="splash" aria-label="Dusk cabin">
+      <div class="splash-stage" data-house-stage>
+        <video
+          id="cabin-film"
+          class="splash-film"
+          src="/film/cabin-dusk-hi.mp4"
+          poster="/film/cabin-poster-hi.webp"
+          muted
+          playsinline
+          preload="auto"
+          disablepictureinpicture
+          aria-label="Scroll-driven film of the dusk cabin"
+        ></video>
+        <div class="splash-shade" aria-hidden="true"></div>
+        <h1 class="splash-word">AURA</h1>
+        <div class="splash-foot">
+          <p class="splash-kicker" data-chapter>The shell</p>
+          <p class="splash-body" data-chapter-body>A room you can add to the land you already have.</p>
+          <div class="splash-rail" aria-hidden="true">
+            <span class="sanctuary-dot is-on" data-dot></span>
+            <span class="sanctuary-dot" data-dot></span>
+            <span class="sanctuary-dot" data-dot></span>
+            <span class="sanctuary-dot" data-dot></span>
+            <span class="sanctuary-dot" data-dot></span>
+            <span class="sanctuary-dot" data-dot></span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="splash-spacer" data-splash-spacer aria-hidden="true"></div>
+
+    <section id="shell" class="story-open">
+      <p class="story-kicker">On your land</p>
+      <h2 data-glow>
+        <span class="line-mask"><span class="line">An extension.</span></span>
+        <span class="line-mask"><span class="line">Or a stay</span></span>
+        <span class="line-mask"><span class="line">of your own.</span></span>
+      </h2>
+      <p class="story-lede">
+        A finished room beside the house, or a small stay on the property. That extra key is what the rental market is paying for now, and it can supplement the income from the place you already have.
+      </p>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/story-meadow-side.webp" data-film="/film/scroll/meadow-side.mp4" muted playsinline preload="none" disablepictureinpicture width="1280" height="922" data-shot="drift" data-play="drift" aria-label="The black glass cabin from down in the grass along its long side, cedar tub and hanging daybed farther back"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">01</p>
+        <h3><span class="line-mask"><span class="line">The meadow.</span></span></h3>
+        <p>The finished room sits low in the grass. Black glass, a tub, and a bed hung in the open.</p>
+      </div>
+    </section>
+
+    <section class="story-still is-flip">
+      <figure class="story-figure">
+        <video poster="/film/story-room.webp" data-film="/film/scroll/room.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1152" data-shot="tilt" data-play="push" aria-label="Open bay of the cabin, honey oak walls and a linen sofa at dusk"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">02</p>
+        <h3><span class="line-mask"><span class="line">The room.</span></span></h3>
+        <p>The long side opens. Honey oak, linen, and the meadow still in view.</p>
+      </div>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/story-nest.webp" data-film="/film/scroll/nest.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1152" data-shot="wipe" data-play="return" aria-label="Teal velvet hanging daybed under a steel arch, the cabin behind it"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">03</p>
+        <h3><span class="line-mask"><span class="line">The nest.</span></span></h3>
+        <p>A daybed under a steel arch. Velvet, fur, and the field beyond the chains.</p>
+      </div>
+    </section>
+
+    <section class="passage" data-passage aria-label="Held in the grass">
+      <canvas data-meadow data-scene="grass"></canvas>
+      <p class="passage-ghost" aria-hidden="true">Grass</p>
+      <div class="passage-copy">
+        <p class="story-kicker">The field</p>
+        <h2><span class="line-mask"><span class="line">Held in the grass.</span></span></h2>
+        <p>The shell stays low. The meadow does the rest.</p>
+      </div>
+    </section>
+    <div class="passage-spacer" data-passage-spacer aria-hidden="true"></div>
+
+    <section class="story-open" id="layouts">
+      <p class="story-kicker">The glass</p>
+      <h2 data-glow>
+        <span class="line-mask"><span class="line">Smooth as glass.</span></span>
+        <span class="line-mask"><span class="line">Set on the skid.</span></span>
+      </h2>
+      <p class="story-lede">
+        Clear, mirrored, or tinted, and flat. The room sits on its steel skid in the grass. Two sides can open, and a panel can be the door.
+      </p>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/layout-shell.webp" data-film="/film/scroll/shell.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="drift" data-play="glide" aria-label="Long dark room on a steel skid, with a band of mirror glass, in a meadow"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The skid</p>
+        <h3 data-glow><span class="line-mask"><span class="line">In the grass.</span></span></h3>
+        <p>Mirror glass along the length, a low metal roof, and the steel frame under it. No blocks, no raised deck.</p>
+      </div>
+    </section>
+
+    <section class="story-still is-flip">
+      <figure class="story-figure">
+        <video poster="/film/layout-forest.webp" data-film="/film/scroll/forest.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="tilt" data-play="drift" aria-label="Reflective glass room at the forest edge, with a door, a fold-down glass balcony, a cedar deck, and a trailer hitch"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The trees</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Held at the edge.</span></span></h3>
+        <p>A door, mirror glass, and a glass wall that folds down into a balcony, with a deck around the room. Built as a non-permanent structure, on its hitch, the way a trailer is, so it can be moved. It is not fixed to the ground, so a building permit is not required the way it is for a house. We confirm the rule for your land before it is set.</p>
+      </div>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/layout-door.webp" data-film="/film/scroll/door.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="wipe" data-play="wipe" aria-label="Smoked glass wall of the room, one panel open, the box resting on a steel skid"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The wall</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Tinted, and open.</span></span></h3>
+        <p>Floor-to-ceiling glass, smoked and smooth. One panel is the door. The frame is the skid.</p>
+      </div>
+    </section>
+
+    <section class="story-still is-flip">
+      <figure class="story-figure">
+        <video poster="/film/layout-office.webp" data-film="/film/scroll/office.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="push" aria-label="Walnut office with an open laptop, looking across a meadow to distant woods"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The office</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Away from the woods.</span></span></h3>
+        <p>A desk, a lamp, and a computer, on the open part of the property. The trees stay on the far line. The work stays here.</p>
+      </div>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/layout-corner.webp" data-film="/film/scroll/corner.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="tilt" data-play="lift" aria-label="Office corner with a laptop and two walls of clear glass, one panel open to the meadow"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The desk</p>
+        <h3 data-glow><span class="line-mask"><span class="line">The screen, at dusk.</span></span></h3>
+        <p>Two walls of clear glass meet at the corner. The laptop stays on the walnut. One panel opens to the grass.</p>
+      </div>
+    </section>
+
+    <section class="passage" data-passage aria-label="Two sides of clear polycarbonate">
+      <canvas data-meadow data-scene="glass"></canvas>
+      <p class="passage-ghost" aria-hidden="true">Clear</p>
+      <div class="passage-copy">
+        <p class="story-kicker">The glass</p>
+        <h2><span class="line-mask"><span class="line">Two sides, clear.</span></span></h2>
+        <p>Full walls of smooth glass. A panel opens like a door.</p>
+      </div>
+    </section>
+    <div class="passage-spacer" data-passage-spacer aria-hidden="true"></div>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/layout-sky.webp" data-film="/film/scroll/sky.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="rise" aria-label="Oak bedroom with a skylight open to the stars and a meadow beyond the glass"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The night</p>
+        <h3 data-glow><span class="line-mask"><span class="line">A bed, and the stars.</span></span></h3>
+        <p>The kitchen is gone. A low bed, and a skylight cut so the night sky is in the room.</p>
+      </div>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/layout-lounge-wind.webp" data-film="/film/scroll/lounge-wind.mp4" muted playsinline preload="none" disablepictureinpicture width="1280" height="922" data-shot="drift" data-play="glide" aria-label="Linen sofa running toward a low oak table, the long glass open to a meadow in the wind"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">Lounge</p>
+        <h3><span class="line-mask"><span class="line">A place to sit.</span></span></h3>
+        <p>Linen along one wall, a low oak table, the long glass left clear.</p>
+      </div>
+    </section>
+
+    <section class="story-still is-flip">
+      <figure class="story-figure">
+        <video poster="/film/layout-night.webp" data-film="/film/scroll/night.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="drift" data-play="hold" aria-label="Linen bed under a wide skylight showing the Milky Way, meadow beyond the glass"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The room</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Sleep under the sky.</span></span></h3>
+        <p>Linen, oak, the meadow ahead, and the stars in a second opening overhead.</p>
+      </div>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/layout-roof.webp" data-film="/film/scroll/roof.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="lift" aria-label="Long dark room with a roof rail and a wood-fired cedar tub in the meadow"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">Roof</p>
+        <h3 data-glow><span class="line-mask"><span class="line">A rail on the roof.</span></span></h3>
+        <p>The same long room, with a thin rail above the glass. The tub, when it is the point, has its own skid.</p>
+      </div>
+    </section>
+
+    <section class="passage" data-passage aria-label="Tub under clear panels">
+      <canvas data-meadow data-scene="steam"></canvas>
+      <p class="passage-ghost" aria-hidden="true">Steam</p>
+      <div class="passage-copy">
+        <p class="story-kicker">The tub</p>
+        <h2 data-glow><span class="line-mask"><span class="line">Under clear panels.</span></span></h2>
+        <p>The same steel frame as the room. A gazebo of clear glass, open on two sides.</p>
+      </div>
+    </section>
+    <div class="passage-spacer" data-passage-spacer aria-hidden="true"></div>
+
+    <section class="story-still is-flip">
+      <figure class="story-figure">
+        <video poster="/film/layout-gazebo.webp" data-film="/film/scroll/gazebo.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="skid" data-play="steam" aria-label="Wood-fired cedar tub on a steel chassis, inside a clear glass gazebo with two panels open"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The frame</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Built on the chassis.</span></span></h3>
+        <p>A wood-fired cedar tub on the steel frame, with clear glass around it and two panels open. Move across it. The steam keeps its own time.</p>
+      </div>
+    </section>
+
+    <section id="passage" class="passage" data-passage aria-label="Dusk meadow">
+      <canvas data-meadow data-scene="far"></canvas>
+      <p class="passage-ghost" aria-hidden="true">Field</p>
+      <div class="passage-copy">
+        <p class="story-kicker">Later</p>
+        <h2 data-glow><span class="line-mask"><span class="line">Farther out.</span></span></h2>
+        <p>The room comes first. The glass floor, and the resorts, come after.</p>
+      </div>
+    </section>
+    <div class="passage-spacer" data-passage-spacer aria-hidden="true"></div>
+
+    <section class="ways" id="ways">
+      <p class="story-kicker">What we finish</p>
+      <ol>
+        <li><span>01</span> A house extension</li>
+        <li><span>02</span> A stay that can earn</li>
+        <li><span>03</span> An office, clear of the woods</li>
+        <li><span>04</span> A wood-fired tub, on the skid</li>
+      </ol>
+      <p class="story-lede">A bedroom under a skylight, when the night is the point.</p>
+    </section>
+
+    <Journeys />
+
+    <section id="enquire" class="enquire">
+      <p class="story-kicker">Enquire</p>
+      <h2 data-glow><span class="line-mask"><span class="line">Add the room.</span></span></h2>
+      <p class="story-lede enquire-note">Beside the house, or out on the property. Tell us if it is an extension, an office, or a stay.</p>
+      <Join shell="room" />
+    </section>
+  </main>
+
+  <script>
+    import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+    import { bindFilmScrub } from '../scripts/film-scrub';
+    import { mountMeadow } from '../scripts/meadow';
+    import { mountWash } from '../scripts/wash';
+    import { mountField } from '../scripts/field';
+    import { bindShots } from '../scripts/shots';
+    import { bindReels } from '../scripts/reel';
+
+    const reduce = prefersReducedMotion();
+    const mm = gsap.matchMedia();
+
+    const film = document.getElementById('cabin-film') as HTMLVideoElement | null;
+    const scrub = film ? bindFilmScrub(film) : null;
+    const layoutFilms = gsap.utils.toArray<HTMLVideoElement>('[data-layout-film]');
+    layoutFilms.forEach((video) => video.pause());
+    const layoutScrubs = layoutFilms.map((video) => bindFilmScrub(video));
+    if (film) {
+      film.pause();
+      const markReady = () => film.closest('[data-house-stage]')?.classList.add('is-ready');
+      if (film.readyState >= 2) markReady();
+      else film.addEventListener('loadeddata', markReady, { once: true });
+    }
+
+    const meadows = gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => mountMeadow(canvas));
+    const washes = gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => mountWash(canvas));
+    const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
+    const fieldFx = fieldCanvas ? mountField(fieldCanvas) : null;
+
+    const ctx = gsap.context(() => {
+      const stopShots = bindShots();
+      const stopReels = bindReels();
+      if (reduce) {
+        gsap.set('.line', { yPercent: 0 });
+        scrub?.setProgress(0);
+        layoutScrubs.forEach((item) => item.setProgress(0));
+        meadows.forEach((meadow) => meadow.setProgress(0.45));
+        washes.forEach((wash) => wash.setProgress(0.25));
+        fieldFx?.setProgress(0.35);
+        return () => {
+          stopShots();
+          stopReels();
+        };
+      }
+
+      gsap.from('.splash-word', {
+        yPercent: 40,
+        opacity: 0,
+        duration: 1.7,
+        ease: 'power4.out',
+        delay: 0.08,
+      });
+
+      const splitWords = (line: HTMLElement) => {
+        const text = (line.textContent || '').trim().replace(/\s+/g, ' ');
+        if (!text || line.querySelector('.word')) return;
+        line.textContent = '';
+        text.split(' ').forEach((word) => {
+          const span = document.createElement('span');
+          span.className = 'word';
+          span.textContent = word;
+          line.appendChild(span);
+        });
+      };
+
+      gsap.utils.toArray<HTMLElement>('.line').forEach((el) => {
+        splitWords(el);
+        if (el.closest('[data-passage]')) {
+          gsap.set(el.querySelectorAll('.word'), { y: 0, yPercent: 130, opacity: 0 });
+          return;
+        }
+        const words = el.querySelectorAll('.word');
+        gsap.from(words, {
+          yPercent: 140,
+          rotate: (index: number) => (index % 2 === 0 ? -4 : 4),
+          duration: 1.25,
+          stagger: 0.06,
+          ease: 'power4.out',
+          scrollTrigger: { trigger: el, start: 'top 88%' },
+        });
+      });
+
+      gsap.utils.toArray<HTMLElement>('.story-kicker, .story-lede, .story-still > div > p:not(.story-kicker)').forEach((el) => {
+        if (el.closest('[data-passage]')) return;
+        gsap.from(el, {
+          y: 32,
+          opacity: 0,
+          duration: 1.15,
+          ease: 'power3.out',
+          scrollTrigger: { trigger: el, start: 'top 90%' },
+        });
+      });
+
+      gsap.from('.ways li', {
+        y: 72,
+        x: -28,
+        opacity: 0,
+        stagger: 0.13,
+        duration: 1.2,
+        ease: 'power4.out',
+        scrollTrigger: { trigger: '.ways ol', start: 'top 80%' },
+      });
+
+      gsap.utils.toArray<HTMLElement>('.story-figure img, .story-figure video').forEach((img) => {
+        if (img.hasAttribute('data-play')) return;
+        gsap.fromTo(
+          img,
+          { clipPath: 'inset(22% 6% 22% 6%)', scale: 1.14 },
+          {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            scale: 1.08,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: img,
+              start: 'top 96%',
+              end: 'top 38%',
+              scrub: 0.85,
+            },
+          },
+        );
+      });
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        const chapterEl = document.querySelector('[data-chapter]');
+        const bodyEl = document.querySelector('[data-chapter-body]');
+        const dots = gsap.utils.toArray<HTMLElement>('[data-dot]');
+        const chapters = [
+          { at: 0, k: 'The room', b: 'A room you can add to the land you already have.' },
+          { at: 0.14, k: '01  The whole', b: 'Cedar tub, steel nest, black glass, a meadow at dusk.' },
+          { at: 0.32, k: '02  The fire', b: 'A wood-fired tub on its own frame. Steam, brass, split wood.' },
+          { at: 0.5, k: '03  The nest', b: 'A hanging daybed under a steel arch. Teal velvet, fur, still air.' },
+          { at: 0.68, k: '04  The room', b: 'The bay opens. Honey oak, a linen sofa, light held in the shell.' },
+          { at: 0.84, k: '05  The deck', b: 'Dark boards, river stone, violet light under the threshold.' },
+        ];
+        let last = -1;
+        const setChapter = (i: number) => {
+          if (i === last) return;
+          last = i;
+          const ch = chapters[i];
+          if (chapterEl) chapterEl.textContent = ch.k;
+          if (chapterEl) {
+            gsap.fromTo(chapterEl, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: 'power3.out', overwrite: true });
+          }
+          if (bodyEl) {
+            bodyEl.textContent = ch.b;
+            gsap.fromTo(bodyEl, { opacity: 0, y: 26 }, { opacity: 1, y: 0, duration: 0.75, ease: 'power3.out', overwrite: true });
+          }
+          dots.forEach((d, n) => d.classList.toggle('is-on', n === i));
+        };
+        const mobile = window.matchMedia('(max-width: 800px)').matches;
+        const splashSpacer = document.querySelector<HTMLElement>('[data-splash-spacer]');
+
+        ScrollTrigger.create({
+          trigger: '.splash',
+          start: 'top top',
+          // The spacer is real layout. GSAP pin spacing is removed on refresh and
+          // is not added back when a later trigger's measured start sits inside this pin.
+          end: () => `+=${splashSpacer?.offsetHeight || Math.round(window.innerHeight * (mobile ? 1.5 : 2.1))}`,
+          pin: true,
+          pinSpacing: false,
+          scrub: true,
+          anticipatePin: 0.4,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            scrub?.setProgress(self.progress);
+            gsap.set('.splash-word', { y: -88 * self.progress, scale: 1 - self.progress * 0.07 });
+            gsap.set('.splash-foot', { y: 18 * self.progress, opacity: 1 - self.progress * 0.12 });
+            let chapter = 0;
+            for (let n = 0; n < chapters.length; n++) if (self.progress >= chapters[n].at) chapter = n;
+            setChapter(chapter);
+          },
+        });
+
+        layoutFilms.forEach((video, index) => {
+          ScrollTrigger.create({
+            trigger: video,
+            start: 'top 85%',
+            end: 'bottom 30%',
+            scrub: 0.8,
+            onUpdate: (self) => layoutScrubs[index].setProgress(self.progress),
+          });
+        });
+
+        gsap.utils.toArray<HTMLElement>('[data-passage]').forEach((section, index) => {
+          const meadow = meadows[index];
+          const ghost = section.querySelector('.passage-ghost');
+          const copy = section.querySelector('.passage-copy');
+          const spacer = section.nextElementSibling instanceof HTMLElement && section.nextElementSibling.hasAttribute('data-passage-spacer')
+            ? section.nextElementSibling
+            : null;
+          ScrollTrigger.create({
+            trigger: section,
+            start: 'top top',
+            end: () => `+=${spacer?.offsetHeight || Math.round(window.innerHeight * (mobile ? 1.2 : 1.6))}`,
+            pin: true,
+            pinSpacing: false,
+            scrub: 1,
+            anticipatePin: 1,
+            onUpdate: (self) => {
+              const p = self.progress;
+              meadow?.setProgress(p);
+              if (ghost) {
+                gsap.set(ghost, {
+                  y: -190 * p,
+                  x: 110 * p,
+                  rotate: -8 + p * 12,
+                  scale: 0.82 + p * 0.34,
+                  opacity: 0.05 + p * 0.42,
+                });
+              }
+              if (!copy) return;
+              const words = copy.querySelectorAll<HTMLElement>('.word');
+              words.forEach((word, i) => {
+                const local = Math.min(1, Math.max(0, (p - i * 0.05) / 0.24));
+                const eased = 1 - (1 - local) ** 3;
+                gsap.set(word, { y: 0, yPercent: (1 - eased) * 130, opacity: eased });
+              });
+              const kicker = copy.querySelector('.story-kicker');
+              const body = copy.querySelector('p:last-child');
+              if (kicker) gsap.set(kicker, { y: (1 - Math.min(1, p / 0.3)) * 22, opacity: Math.min(1, 0.2 + p * 1.6) });
+              if (body) gsap.set(body, { y: (1 - Math.min(1, p / 0.62)) * 36, opacity: Math.min(1, Math.max(0, (p - 0.12) / 0.45)) });
+            },
+          });
+        });
+
+        gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').forEach((canvas, index) => {
+          ScrollTrigger.create({
+            trigger: canvas.parentElement,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 0.6,
+            onUpdate: (self) => washes[index]?.setProgress(self.progress),
+          });
+        });
+
+        ScrollTrigger.create({
+          trigger: 'main',
+          start: 'top top',
+          end: 'bottom bottom',
+          scrub: 0.4,
+          onUpdate: (self) => fieldFx?.setProgress(self.progress),
+        });
+      });
+      return () => {
+        stopShots();
+        stopReels();
+      };
+    });
+
+    requestAnimationFrame(() => ScrollTrigger.refresh());
+    film?.addEventListener('loadedmetadata', () => ScrollTrigger.refresh(), { once: true });
+
+    if (import.meta.hot) {
+      import.meta.hot.dispose(() => {
+        ctx.revert();
+        mm.revert();
+        meadows.forEach((meadow) => meadow.destroy());
+        washes.forEach((wash) => wash.destroy());
+        fieldFx?.destroy();
+      });
+    }
+  </script>
+</BaseLayout>

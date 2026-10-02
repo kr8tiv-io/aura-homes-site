@@ -1,0 +1,40 @@
+---
+import Join from '../components/Join.astro';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  kicker: string;
+  date: string;
+}
+
+const { title, description, kicker, date } = Astro.props;
+const json = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  datePublished: date,
+  dateModified: date,
+  description,
+  author: { '@type': 'Organization', name: 'Aura' },
+  publisher: { '@type': 'Organization', name: 'Aura' },
+};
+---
+
+<BaseLayout title={`${title} | Aura`} description={description} descriptor="Journal">
+  <main class="article" id="top">
+    <script type="application/ld+json" set:html={JSON.stringify(json)} />
+    <p class="story-kicker">{kicker}</p>
+    <h1>{title}</h1>
+    <p class="article-date"><time datetime={date}>{date}</time></p>
+    <slot />
+    <p class="article-next"><a href="/journal">All notes</a> · <a href="/builder">Build your own</a> · <a href="/#enquire">Enquire</a></p>
+  </main>
+  <section id="enquire" class="enquire">
+    <p class="story-kicker">Enquire</p>
+    <h2>Ask about the shell.</h2>
+    <p class="story-lede enquire-note">A room, a farm wall, or water from the air. The first reply starts with the site.</p>
+    <Join shell="unsure" />
+  </section>
+</BaseLayout>
