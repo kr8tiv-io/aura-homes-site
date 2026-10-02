@@ -1,33 +1,329 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqs = [
+  {
+    q: 'Do you have prices?',
+    a: 'Not yet. Every unit is quoted individually. Join the pre-order list.',
+    html: 'Not yet. Every unit is quoted individually. Join the <a href="/pre-order">pre-order list</a>.',
+  },
+  {
+    q: 'How do pre-orders work?',
+    a: "Inquiry first. For custom builds, a 40% deposit starts the build. If we can't deliver, you get your money back.",
+    html: 'Inquiry first. For <a href="/customs">custom builds</a>, a 40% deposit starts the build. If we can\'t deliver, you get your money back.',
+  },
+  {
+    q: 'Can I bring my own trailer?',
+    a: "Yes. We'll give it a second life, with a custom quote.",
+    html: 'Yes. We\'ll give it a second life, with a <a href="/pre-order?type=custom">custom quote</a>.',
+  },
+  {
+    q: 'Do I need a permit?',
+    a: "Many towable units are treated as temporary structures, but rules vary by location, so check with your municipality. We don't handle permitting.",
+    html: "Many towable units are treated as temporary structures, but rules vary by location, so check with your municipality. We don't handle permitting.",
+  },
+  {
+    q: 'How does it handle minus 30 and summer heat?',
+    a: 'Wood stove heating, polycarbonate that regulates temperature, and options for tint and mirror finishes.',
+    html: 'Wood stove heating, polycarbonate that regulates temperature, and options for tint and mirror finishes.',
+  },
+  {
+    q: 'Towable or fixed?',
+    a: 'Both, depending on the build.',
+    html: 'Both, depending on the build.',
+  },
+  {
+    q: 'Where do you ship?',
+    a: 'Anywhere in Canada. Delivery for now. Setup and hookup come later.',
+    html: 'Anywhere in Canada. Delivery for now. Setup and hookup come later.',
+  },
+  {
+    q: 'Off-grid?',
+    a: 'Available on request, for custom builds.',
+    html: 'Available on request, for <a href="/customs">custom builds</a>.',
+  },
+  {
+    q: 'Financing?',
+    a: 'Not yet. Rent-to-own is on the roadmap.',
+    html: 'Not yet. Rent-to-own is on the roadmap.',
+  },
+  {
+    q: 'Warranty?',
+    a: 'It depends on the unit. The details come with your quote.',
+    html: 'It depends on the unit. The details come with your quote.',
+  },
+];
+
+for (const item of faqs) {
+  const visible = item.html.replace(/<[^>]+>/g, '');
+  if (visible !== item.a) {
+    throw new Error(`FAQ text drifted: ${item.q}`);
+  }
+}
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.a,
+    },
+  })),
+};
 ---
 
 <BaseLayout
   title="FAQ | Aura Homes"
-  description="Beautiful second-life rooms that bring people back to nature, one room at a time."
+  description="Honest answers on quotes, pre-orders, shipping, and the room."
   descriptor="FAQ"
 >
   <main id="top">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
     <section class="page-lead">
       <p class="story-kicker">FAQ</p>
       <h1>A few honest answers.</h1>
       <p class="story-lede">If the question is about your land, the better page is <a href="/contact">Contact</a>.</p>
     </section>
     <div class="page-body">
-      <dl class="faq-list">
-        <dt>What is the room?</dt>
-        <dd>A finished room on a steel frame, with smooth glass, made to sit on land you already have. The longer page is <a href="/rooms">Rooms</a>. The film is on <a href="/">the opening page</a>.</dd>
-        <dt>What can I ask for now?</dt>
-        <dd>The room, and a farm wall on that same room. Glass decks and small resorts are custom, and they start with the site. Water from the air comes later and still needs research.</dd>
-        <dt>Is a price printed here?</dt>
-        <dd>No figure is published on this site. The first reply starts with the land, not a number.</dd>
-        <dt>Does a pre-order take payment?</dt>
-        <dd>No. <a href="/pre-order">Pre-order</a> holds your name. It does not take money.</dd>
-        <dt>Where is Aura Homes?</dt>
-        <dd>Edmonton, Alberta. Shipping across Canada.</dd>
-        <dt>How do I reach you?</dt>
-        <dd>The <a href="/contact">contact page</a> is ready. The email and the phone are not set yet. Both lines are marked TODO until they are.</dd>
-      </dl>
+      <div class="faq-list" data-faq>
+        {faqs.map((item, index) => (
+          <div class="faq-item">
+            <h2>
+              <button
+                type="button"
+                class="faq-q"
+                id={`faq-q-${index}`}
+                aria-expanded="false"
+                aria-controls={`faq-a-${index}`}
+              >
+                <span>{item.q}</span>
+                <span class="faq-mark" aria-hidden="true"></span>
+              </button>
+            </h2>
+            <div class="faq-a" id={`faq-a-${index}`} role="region" aria-labelledby={`faq-q-${index}`} hidden>
+              <div class="faq-a-inner" set:html={item.html} />
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </main>
 </BaseLayout>
+
+<style>
+  .faq-list {
+    margin: 0.2rem 0 0;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .faq-item {
+    border-bottom: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .faq-item h2 {
+    margin: 0;
+    font-size: inherit;
+    font-weight: inherit;
+    letter-spacing: inherit;
+  }
+  .faq-q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.4rem;
+    width: 100%;
+    margin: 0;
+    padding: 1.2rem 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.2rem, 2vw, 1.45rem);
+    letter-spacing: -0.03em;
+    line-height: 1.25;
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .faq-q:hover {
+    opacity: 0.55;
+  }
+  .faq-q:focus-visible {
+    outline: 1px solid rgba(156, 122, 85, 0.75);
+    outline-offset: 4px;
+  }
+  .faq-mark {
+    position: relative;
+    flex: none;
+    width: 0.8rem;
+    height: 0.8rem;
+  }
+  .faq-mark::before,
+  .faq-mark::after {
+    content: '';
+    position: absolute;
+    background: #9c7a55;
+    transition:
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .faq-mark::before {
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+  .faq-mark::after {
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 1px;
+    transform: translateX(-50%);
+  }
+  .faq-item.is-open .faq-mark::after {
+    opacity: 0;
+    transform: translateX(-50%) rotate(90deg);
+  }
+  .faq-a-inner {
+    max-width: 36rem;
+    margin: 0;
+    padding: 0 0 1.35rem;
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    color: rgba(20, 18, 14, 0.78);
+    opacity: 0;
+    transform: translateY(0.55rem);
+    transition:
+      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .faq-item.is-open .faq-a-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .faq-a-inner :global(a) {
+    color: #8a6a45;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(156, 122, 85, 0.55);
+    padding-bottom: 0.08rem;
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .faq-a-inner :global(a:hover) {
+    opacity: 0.55;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .faq-q,
+    .faq-mark::before,
+    .faq-mark::after,
+    .faq-a-inner,
+    .faq-a-inner :global(a) {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const list = document.querySelector<HTMLElement>('[data-faq]');
+  if (list) {
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const items = Array.from(list.querySelectorAll<HTMLElement>('.faq-item'));
+    const pending = new WeakMap<HTMLElement, (event: TransitionEvent) => void>();
+
+    const buttonOf = (item: HTMLElement) => item.querySelector<HTMLButtonElement>('.faq-q');
+    const panelOf = (item: HTMLElement) => item.querySelector<HTMLElement>('.faq-a');
+    const innerOf = (item: HTMLElement) => item.querySelector<HTMLElement>('.faq-a-inner');
+
+    const settle = () => {
+      window.__lenis?.resize();
+    };
+
+    const dropListener = (item: HTMLElement) => {
+      const inner = innerOf(item);
+      const listener = pending.get(item);
+      if (inner && listener) inner.removeEventListener('transitionend', listener);
+      pending.delete(item);
+    };
+
+    const close = (item: HTMLElement) => {
+      const button = buttonOf(item);
+      const panel = panelOf(item);
+      const inner = innerOf(item);
+      if (!button || !panel || !inner || button.getAttribute('aria-expanded') !== 'true') return;
+      dropListener(item);
+      button.setAttribute('aria-expanded', 'false');
+      item.classList.remove('is-open');
+      if (reduce) {
+        panel.hidden = true;
+        settle();
+        return;
+      }
+      const onEnd = (event: TransitionEvent) => {
+        if (event.target !== inner || event.propertyName !== 'opacity') return;
+        dropListener(item);
+        if (!item.classList.contains('is-open')) panel.hidden = true;
+        settle();
+      };
+      pending.set(item, onEnd);
+      inner.addEventListener('transitionend', onEnd);
+      window.setTimeout(() => {
+        if (!item.classList.contains('is-open') && !panel.hidden) {
+          dropListener(item);
+          panel.hidden = true;
+          settle();
+        }
+      }, 1100);
+    };
+
+    const open = (item: HTMLElement) => {
+      const button = buttonOf(item);
+      const panel = panelOf(item);
+      const inner = innerOf(item);
+      if (!button || !panel || !inner) return;
+      items.forEach((other) => {
+        if (other !== item) close(other);
+      });
+      dropListener(item);
+      panel.hidden = false;
+      button.setAttribute('aria-expanded', 'true');
+      if (reduce) {
+        item.classList.add('is-open');
+        settle();
+        return;
+      }
+      inner.getBoundingClientRect();
+      item.classList.add('is-open');
+      settle();
+    };
+
+    list.addEventListener('click', (event) => {
+      const button = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>('.faq-q');
+      if (!button || !list.contains(button)) return;
+      const item = button.closest<HTMLElement>('.faq-item');
+      if (!item) return;
+      if (button.getAttribute('aria-expanded') === 'true') close(item);
+      else open(item);
+    });
+
+    list.addEventListener('keydown', (event) => {
+      const button = (event.target as HTMLElement | null)?.closest<HTMLButtonElement>('.faq-q');
+      if (!button) return;
+      const buttons = items
+        .map((item) => buttonOf(item))
+        .filter((entry): entry is HTMLButtonElement => entry !== null);
+      const index = buttons.indexOf(button);
+      if (index < 0) return;
+      let next = -1;
+      if (event.key === 'ArrowDown') next = (index + 1) % buttons.length;
+      else if (event.key === 'ArrowUp') next = (index - 1 + buttons.length) % buttons.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = buttons.length - 1;
+      else return;
+      event.preventDefault();
+      buttons[next]?.focus();
+    });
+  }
+</script>
