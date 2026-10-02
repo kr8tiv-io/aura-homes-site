@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Materials from '../components/Materials.astro';
 import { roomConcepts } from '../lib/rooms';
 
 const uses = [
@@ -53,6 +54,8 @@ const uses = [
         </li>
       ))}
     </ul>
+
+    <Materials />
   </main>
 </BaseLayout>
 
@@ -100,7 +103,7 @@ const uses = [
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: clamp(3.5rem, 6vw, 5.5rem) clamp(1.5rem, 3vw, 3rem);
     margin: 0;
-    padding: 8vh 8vw 16vh;
+    padding: 8vh 8vw 4vh;
     list-style: none;
   }
   .room-card {
@@ -175,7 +178,7 @@ const uses = [
     }
     .room-grid {
       grid-template-columns: 1fr;
-      padding: 6vh 1.5rem 12vh;
+      padding: 6vh 1.5rem 2vh;
     }
   }
   @media (prefers-reduced-motion: reduce) {

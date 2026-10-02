@@ -1,0 +1,356 @@
+---
+const guide =
+  'https://ff.sabic.eu/uploads/resources/SABIC-SFS-6211-EN%20LEXAN%20Glazing%20Guide%20-%202021.pdf';
+
+const swatches = [
+  ['clear', 'Clear', true],
+  ['mirror', 'Mirror', false],
+  ['tinted', 'Tinted', false],
+] as const;
+
+const details = [
+  {
+    title: 'A wood stove, for a minus 30 winter.',
+    icon: 'stove',
+  },
+  {
+    title: 'Epoxy floors, poured smooth.',
+    icon: 'floor',
+  },
+  {
+    title: 'Railings and glass-style surrounds.',
+    icon: 'rail',
+  },
+  {
+    title: 'Gazebo tops, for stargazing.',
+    icon: 'roof',
+  },
+  {
+    title: 'Towable, or fixed in place.',
+    icon: 'tow',
+  },
+] as const;
+---
+
+<section class="materials" aria-labelledby="materials-title">
+  <div data-materials-rise>
+    <p class="story-kicker">Materials</p>
+    <h2 id="materials-title">Polycarbonate.</h2>
+    <p class="materials-lede">
+      Smooth, light, and beautiful. It breaks far less than glass, and it regulates temperature better.
+      About 250 times the impact strength of glass.<sup><a href="#materials-note">1</a></sup>
+    </p>
+  </div>
+
+  <fieldset class="materials-swatches" data-materials-rise>
+    <legend>Clear, mirror, or tinted.</legend>
+    <div>
+      {swatches.map(([value, label, on]) => (
+        <label>
+          <input type="radio" name="glazing" value={value} checked={on} />
+          <span class:list={['pane', `pane-${value}`]}></span>
+          <span class="name">{label}</span>
+        </label>
+      ))}
+    </div>
+  </fieldset>
+
+  <ul class="materials-icons" data-materials-rise>
+    {details.map((item) => (
+      <li>
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          {item.icon === 'stove' && (
+            <>
+              <path d="M16 5.5v6" />
+              <path d="M13 5.5h6" />
+              <rect x="8" y="11.5" width="16" height="13" />
+              <rect x="12" y="16" width="5" height="5.5" />
+            </>
+          )}
+          {item.icon === 'floor' && (
+            <>
+              <path d="M5 21.5h22" />
+              <path d="M8 21.5 12 14h12l4 7.5" />
+              <path d="M14 17.5h8" />
+            </>
+          )}
+          {item.icon === 'rail' && (
+            <>
+              <path d="M5 12.5h22" />
+              <path d="M9 12.5V25M23 12.5V25" />
+              <path d="M5 25h22" />
+              <path d="M11.5 16.5h9" />
+            </>
+          )}
+          {item.icon === 'roof' && (
+            <>
+              <path d="M5 14 16 5.5 27 14" />
+              <path d="M8.5 14V25M23.5 14V25M8.5 25h15" />
+            </>
+          )}
+          {item.icon === 'tow' && (
+            <>
+              <circle cx="10" cy="22" r="3.25" />
+              <path d="M6 18.5h14" />
+              <path d="M20 22V12.5h6V22" />
+              <path d="M18 26.5h10" />
+            </>
+          )}
+        </svg>
+        <p>{item.title}</p>
+      </li>
+    ))}
+  </ul>
+
+  <p class="materials-source" id="materials-note">
+    <span>1</span>{' '}Source:{' '}<a href={guide} rel="noopener noreferrer">SABIC LEXAN Glazing Guide ({guide})</a>{' '}and Covestro Makrolon data.
+  </p>
+</section>
+
+<style>
+  .materials {
+    position: relative;
+    z-index: 1;
+    padding: 8vh 8vw 14vh;
+    color: #14120e;
+  }
+  .materials h2 {
+    margin: 0;
+    max-width: 12em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 5.4vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+  .materials-lede {
+    max-width: 36rem;
+    margin: 1.6rem 0 0;
+    font-weight: 300;
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: rgba(20, 18, 14, 0.78);
+  }
+  .materials-lede sup {
+    font-size: 0.62em;
+    margin-left: 0.15em;
+  }
+  .materials-lede sup a {
+    color: #8a6a45;
+    text-decoration: none;
+  }
+  .materials-swatches {
+    margin: 3.75rem 0 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+  .materials-swatches legend {
+    margin-bottom: 1.15rem;
+    padding: 0;
+    font-weight: 300;
+    font-size: 1.05rem;
+  }
+  .materials-swatches div {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    max-width: 46rem;
+  }
+  .materials-swatches label {
+    display: block;
+    cursor: pointer;
+    opacity: 0.72;
+  }
+  .materials-swatches input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    border: 0;
+  }
+  .pane {
+    display: block;
+    aspect-ratio: 4 / 5;
+    box-shadow: inset 0 0 0 1px rgba(20, 18, 14, 0.16);
+  }
+  .pane-clear {
+    background:
+      linear-gradient(155deg, rgba(255, 255, 255, 0.72), rgba(244, 243, 239, 0.15) 46%, rgba(197, 208, 200, 0.55)),
+      linear-gradient(180deg, #e7eef2, #f7f6f2);
+  }
+  .pane-mirror {
+    background:
+      linear-gradient(118deg, rgba(255, 255, 255, 0.34), transparent 38%),
+      linear-gradient(180deg, #3a4148, #0c0d0e 72%);
+    box-shadow: inset 0 0 0 1px rgba(244, 243, 239, 0.22);
+  }
+  .pane-tinted {
+    background:
+      linear-gradient(155deg, rgba(196, 160, 122, 0.42), transparent 48%),
+      linear-gradient(180deg, #6a5c4c, #241e18);
+    box-shadow: inset 0 0 0 1px rgba(244, 243, 239, 0.16);
+  }
+  .name {
+    display: block;
+    margin-top: 0.75rem;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+  }
+  .name::after {
+    content: "";
+    display: block;
+    width: 2.2rem;
+    height: 1px;
+    margin-top: 0.45rem;
+    background: #8a6a45;
+    transform: scaleX(0);
+    transform-origin: left center;
+    opacity: 0;
+  }
+  .materials-swatches label:has(:checked) {
+    opacity: 1;
+    transform: translateY(-6px);
+  }
+  .materials-swatches label:has(:checked) .name::after {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+  .materials-swatches input:focus-visible + .pane {
+    outline: 1px solid #8a6a45;
+    outline-offset: 5px;
+  }
+  .materials-icons {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 1.75rem 1.25rem;
+    margin: 4rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .materials-icons svg {
+    display: block;
+    width: 2rem;
+    height: 2rem;
+    color: #8a6a45;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.25;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .materials-icons p {
+    margin: 0.85rem 0 0;
+    max-width: 14rem;
+    font-weight: 300;
+    font-size: 0.98rem;
+    line-height: 1.45;
+    color: rgba(20, 18, 14, 0.78);
+  }
+  .materials-source {
+    max-width: 42rem;
+    margin: 3.25rem 0 0;
+    font-size: 0.78rem;
+    font-weight: 300;
+    line-height: 1.55;
+    color: rgba(20, 18, 14, 0.55);
+    overflow-wrap: anywhere;
+  }
+  .materials-source span {
+    margin-right: 0.35rem;
+    color: #8a6a45;
+  }
+  .materials-source a {
+    color: inherit;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .materials-swatches label,
+    .name::after {
+      transition:
+        transform 1.15s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .materials-swatches label:hover {
+      opacity: 0.88;
+    }
+    .materials-swatches label:has(:checked):hover {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .materials-icons {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 800px) {
+    .materials {
+      padding: 6vh 1.5rem 10vh;
+    }
+    .materials-swatches div {
+      gap: 0.65rem;
+    }
+    .pane {
+      aspect-ratio: 3 / 4;
+    }
+    .name {
+      font-size: 0.82rem;
+    }
+    .materials-icons {
+      grid-template-columns: 1fr;
+      gap: 1.35rem;
+    }
+    .materials-icons li {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.9rem;
+      align-items: center;
+    }
+    .materials-icons p {
+      margin: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .materials-swatches label:has(:checked) {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+
+  const section = document.querySelector('.materials');
+  if (section && !prefersReducedMotion()) {
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'materials-rise')
+      .forEach((trigger) => trigger.kill());
+
+    gsap.utils.toArray<HTMLElement>('[data-materials-rise]', section).forEach((el) => {
+      gsap.from(el, {
+        y: 22,
+        opacity: 0,
+        duration: 1.75,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'materials-rise',
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    });
+
+    const settle = () => ScrollTrigger.refresh();
+    requestAnimationFrame(settle);
+    window.addEventListener('load', settle, { once: true });
+  }
+</script>
