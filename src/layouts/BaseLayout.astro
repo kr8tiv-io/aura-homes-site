@@ -1,0 +1,452 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+  descriptor?: string;
+}
+
+const { title, description = 'Aura builds a finished room on a steel skid: a stay, a glass deck, a farm wall, or water from the air.', descriptor = 'On your land' } = Astro.props;
+const path = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Inter:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': path.startsWith('/builder') }]}>
+    <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>
+    <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true"></canvas>
+    <div class="page-grain" aria-hidden="true"></div>
+    <div class="scroll-rail" aria-hidden="true"><div class="scroll-rail-thumb"></div></div>
+    <div class="site-cursor" aria-hidden="true"></div>
+    <div class="site-cursor-dot" aria-hidden="true"></div>
+
+    <header class="site-nav">
+      <a href="/" class="nav-brand">
+        <div class="w-8 h-8 bg-current mask-triangle"></div>
+        <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
+        <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
+      </a>
+      <nav class="nav-words" aria-label="The shells">
+        <a href="/" aria-current={path === '/' ? 'page' : undefined}>Homes</a>
+        <a href="/farms" aria-current={path.startsWith('/farms') ? 'page' : undefined}>Farms</a>
+        <a href="/water" aria-current={path.startsWith('/water') ? 'page' : undefined} title="Comes later. Still in research.">H20</a>
+        <a href="/resorts" aria-current={path.startsWith('/resorts') ? 'page' : undefined}>Hospitality</a>
+      </nav>
+      <div class="nav-tools">
+        <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-label="Menu">
+          <svg class="nav-sigil" viewBox="0 0 120 120" aria-hidden="true">
+            <path class="nav-draw" d="M8 30C34 16 74 14 112 28" />
+            <path class="nav-draw" d="M12 38C40 24 80 22 110 36" />
+            <path class="nav-draw" d="M4 56L32 44L58 52L92 36L116 48" />
+            <path class="nav-draw" d="M36 70H82L96 80H50Z" />
+            <path class="nav-draw" d="M36 70V102H82V70" />
+            <path class="nav-draw" d="M82 70L96 80V112L82 102" />
+            <path class="nav-draw" d="M51 70V102M66 70V102M36 86H82" />
+            <path class="nav-draw" d="M32 106H86L100 116H46Z" />
+            <path class="nav-x" d="M42 42L78 78" />
+            <path class="nav-x" d="M78 42L42 78" />
+          </svg>
+        </button>
+        {!path.startsWith('/builder') && <a href="#preorder" class="nav-cta">Pre-order</a>}
+      </div>
+    </header>
+    <div id="story-menu" class="nav-panel" hidden>
+      <svg class="nav-art" viewBox="0 0 320 240" aria-hidden="true">
+        <path class="sky" d="M6 34C78 8 190 6 314 32" />
+        <path class="sky" d="M14 46C90 22 200 20 306 46" />
+        <path class="sky" d="M0 78L48 58L104 72L168 46L228 66L286 44L320 58" />
+        <path class="fine" d="M8 206C86 186 200 188 312 204" />
+        <path class="ink" d="M46 130V64H90V130" />
+        <path class="fine" d="M42 130H94M42 113H94M42 96H94M42 79H94M40 64H96" />
+        <path class="fine" d="M61 130V64M75 130V64" />
+        <path class="ink" d="M118 86H214L248 108H152Z" />
+        <path class="fine" d="M118 86V92H214V86M214 92L248 114V108" />
+        <path class="ink" d="M118 92V162H214V92" />
+        <path class="ink" d="M214 92L248 114V184L214 162" />
+        <path class="fine" d="M142 92V162M166 92V162M190 92V162M118 126H214" />
+        <path class="fine" d="M226 104V174M236 110V180" />
+        <path class="ink" d="M190 162L164 176V106L190 92" />
+        <path class="ink" d="M108 168H222L256 190H142Z" />
+        <path class="fine" d="M124 174V186M210 178V190" />
+      </svg>
+      <p class="nav-thesis">Homes are the original room. Farms are the growing units. Hospitality is the resort. H20, water from the air, comes later and still needs further research. The builder is the tool, on this page and on GitHub.</p>
+      <div class="nav-groups">
+        <div>
+          <p>Homes</p>
+          <a href="/#shell" aria-current={path === '/' ? 'page' : undefined}>The room</a>
+          <a href="/glass" aria-current={path.startsWith('/glass') ? 'page' : undefined}>Glass</a>
+        </div>
+        <div>
+          <p>Farms</p>
+          <a href="/farms" aria-current={path.startsWith('/farms') ? 'page' : undefined}>Farming units</a>
+        </div>
+        <div>
+          <p>H20</p>
+          <a href="/water" aria-current={path.startsWith('/water') ? 'page' : undefined}>Water units <em>Later</em></a>
+        </div>
+        <div>
+          <p>Hospitality</p>
+          <a href="/resorts" aria-current={path.startsWith('/resorts') ? 'page' : undefined}>Resorts</a>
+        </div>
+        <div>
+          <p>Build</p>
+          <a href="/builder" aria-current={path.startsWith('/builder') ? 'page' : undefined}>Builder</a>
+          <a href="https://github.com/kr8tiv-ai/aura-homes" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+        <div>
+          <p>The writing</p>
+          <a href="/journal" aria-current={path.startsWith('/journal') ? 'page' : undefined}>Journal</a>
+          <a href="/journal/free-food-and-water">The network</a>
+          <a href={path.startsWith('/builder') ? '/#preorder' : '#preorder'}>Pre-order</a>
+          <a href={path.startsWith('/builder') ? '/#list' : '#list'}>The list</a>
+          <a href={path.startsWith('/builder') ? '/#enquire' : '#enquire'}>Enquire</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10">
+      <slot />
+    </div>
+
+    <script>
+      import { gsap } from 'gsap';
+      import { initSmoothScroll } from '../scripts/motion';
+
+      const lenis = initSmoothScroll();
+
+      const canvas = document.getElementById('tracers-canvas') as HTMLCanvasElement | null;
+      let tracerRaf = 0;
+      const builderPage = document.body.classList.contains('is-builder');
+      if (canvas && !builderPage) {
+        const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
+        if (gl) {
+          const vert = `attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }`;
+          const frag = `precision mediump float;
+            uniform vec2 uRes;
+            uniform float uTime;
+            void main() {
+              vec2 uv = gl_FragCoord.xy / uRes;
+              vec3 col = vec3(0.0);
+              float alpha = 0.0;
+              for (int i = 0; i < 5; i++) {
+                float fi = float(i);
+                float speed = 0.018 + fi * 0.006;
+                float slide = fract(uTime * speed + fi * 0.17);
+                vec2 origin = vec2(slide * 1.6 - 0.3, 0.08 + fi * 0.16);
+                vec2 dir = normalize(vec2(0.84, 0.18 + fi * 0.06));
+                float d = abs(dot(uv - origin, vec2(-dir.y, dir.x)));
+                float band = exp(-d * d * (520.0 - fi * 40.0));
+                float head = smoothstep(0.0, 0.18, slide) * smoothstep(1.0, 0.72, slide);
+                vec3 warm = vec3(0.77, 0.58, 0.38);
+                vec3 cool = vec3(0.45, 0.62, 0.7);
+                col += mix(warm, cool, fi / 4.0) * band * head;
+                alpha += band * head * 0.22;
+              }
+              gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.28));
+            }`;
+          const compile = (type: number, src: string) => {
+            const shader = gl.createShader(type);
+            if (!shader) return null;
+            gl.shaderSource(shader, src);
+            gl.compileShader(shader);
+            return shader;
+          };
+          const program = gl.createProgram();
+          const vs = compile(gl.VERTEX_SHADER, vert);
+          const fs = compile(gl.FRAGMENT_SHADER, frag);
+          if (program && vs && fs) {
+            gl.attachShader(program, vs);
+            gl.attachShader(program, fs);
+            gl.linkProgram(program);
+            gl.useProgram(program);
+            const buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+            const loc = gl.getAttribLocation(program, 'a');
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+            const uRes = gl.getUniformLocation(program, 'uRes');
+            const uTime = gl.getUniformLocation(program, 'uTime');
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            const resize = () => {
+              const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+              canvas.width = Math.floor(window.innerWidth * dpr);
+              canvas.height = Math.floor(window.innerHeight * dpr);
+              gl.viewport(0, 0, canvas.width, canvas.height);
+            };
+            window.addEventListener('resize', resize, { passive: true });
+            resize();
+            const draw = (time: number) => {
+              gl.uniform2f(uRes, canvas.width, canvas.height);
+              gl.uniform1f(uTime, time * 0.001);
+              gl.drawArrays(gl.TRIANGLES, 0, 3);
+            };
+            const reducedTracers = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reducedTracers) draw(0);
+            else {
+              const tick = (time: number) => {
+                tracerRaf = requestAnimationFrame(tick);
+                if (document.hidden) return;
+                draw(time);
+              };
+              tracerRaf = requestAnimationFrame(tick);
+            }
+          }
+        }
+      }
+
+      const warmth = document.getElementById('warmth-canvas') as HTMLCanvasElement | null;
+      let warmthRaf = 0;
+      if (warmth && !builderPage) {
+        const gl = warmth.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
+        if (gl) {
+          const vert = `attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }`;
+          const frag = `precision mediump float;
+            uniform vec2 uRes;
+            uniform float uTime;
+            uniform vec3 uL[8];
+            void main() {
+              float glow = 0.0;
+              for (int i = 0; i < 8; i++) {
+                float r = max(uL[i].z, 1.0);
+                vec2 d = gl_FragCoord.xy - uL[i].xy;
+                glow += exp(-dot(d, d) / (r * r)) * step(12.0, uL[i].z);
+              }
+              float warmth = 0.32 + 0.68 * (0.5 + 0.5 * sin(uTime * 0.22));
+              vec3 ivory = vec3(0.98, 0.93, 0.84);
+              vec3 amber = vec3(1.0, 0.74, 0.42);
+              float alpha = clamp(glow, 0.0, 1.0) * (0.22 + warmth * 0.34);
+              gl_FragColor = vec4(mix(ivory, amber, warmth), alpha);
+            }`;
+          const compile = (type: number, src: string) => {
+            const shader = gl.createShader(type);
+            if (!shader) return null;
+            gl.shaderSource(shader, src);
+            gl.compileShader(shader);
+            return shader;
+          };
+          const program = gl.createProgram();
+          const vs = compile(gl.VERTEX_SHADER, vert);
+          const fs = compile(gl.FRAGMENT_SHADER, frag);
+          if (program && vs && fs) {
+            gl.attachShader(program, vs);
+            gl.attachShader(program, fs);
+            gl.linkProgram(program);
+            gl.useProgram(program);
+            const buffer = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+            const loc = gl.getAttribLocation(program, 'a');
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+            const uRes = gl.getUniformLocation(program, 'uRes');
+            const uTime = gl.getUniformLocation(program, 'uTime');
+            const uL = gl.getUniformLocation(program, 'uL[0]');
+            const lights = new Float32Array(24);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+            const resizeWarmth = () => {
+              const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+              warmth.width = Math.floor(window.innerWidth * dpr);
+              warmth.height = Math.floor(window.innerHeight * dpr);
+              gl.viewport(0, 0, warmth.width, warmth.height);
+            };
+            const measureWarmth = () => {
+              lights.fill(0);
+              const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
+              const spots: Array<{ x: number; y: number; r: number }> = [];
+              const nav = document.querySelector('.nav-words');
+              if (nav) {
+                const rect = nav.getBoundingClientRect();
+                if (rect.width > 0) {
+                  spots.push({
+                    x: (rect.left + rect.width / 2) * dpr,
+                    y: warmth.height - (rect.top + rect.height / 2) * dpr,
+                    r: Math.max(rect.width * 0.62, 140) * dpr,
+                  });
+                }
+              }
+              const heads = Array.from(document.querySelectorAll('h1, h2'))
+                .map((el) => el.getBoundingClientRect())
+                .filter((rect) => rect.width > 8 && rect.bottom > 0 && rect.top < window.innerHeight)
+                .sort(
+                  (a, b) =>
+                    Math.abs(a.top + a.height / 2 - window.innerHeight * 0.4) -
+                    Math.abs(b.top + b.height / 2 - window.innerHeight * 0.4),
+                )
+                .slice(0, 7);
+              for (const rect of heads) {
+                spots.push({
+                  x: (rect.left + rect.width / 2) * dpr,
+                  y: warmth.height - (rect.top + rect.height / 2) * dpr,
+                  r: Math.max(rect.width, rect.height * 2.4, 150) * 0.62 * dpr,
+                });
+              }
+              spots.slice(0, 8).forEach((spot, i) => {
+                lights[i * 3] = spot.x;
+                lights[i * 3 + 1] = spot.y;
+                lights[i * 3 + 2] = spot.r;
+              });
+            };
+            window.addEventListener('resize', () => {
+              resizeWarmth();
+              measureWarmth();
+            }, { passive: true });
+            resizeWarmth();
+            measureWarmth();
+            let frame = 0;
+            const drawWarmth = (time: number) => {
+              frame += 1;
+              if (frame % 4 === 0) measureWarmth();
+              gl.uniform2f(uRes, warmth.width, warmth.height);
+              gl.uniform1f(uTime, time * 0.001);
+              gl.uniform3fv(uL, lights);
+              gl.drawArrays(gl.TRIANGLES, 0, 3);
+            };
+            const reducedWarmth = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (reducedWarmth) drawWarmth(4200);
+            else {
+              const tick = (time: number) => {
+                warmthRaf = requestAnimationFrame(tick);
+                if (document.hidden) return;
+                drawWarmth(time);
+              };
+              warmthRaf = requestAnimationFrame(tick);
+            }
+          }
+        }
+      }
+
+      const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (fine && !reduce) {
+        document.documentElement.classList.add('has-cursor');
+        const ring = document.querySelector('.site-cursor') as HTMLElement;
+        const dot = document.querySelector('.site-cursor-dot') as HTMLElement;
+        const xRing = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3' });
+        const yRing = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3' });
+        const xDot = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power3' });
+        const yDot = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power3' });
+        gsap.set([ring, dot], { opacity: 1 });
+        window.addEventListener(
+          'pointermove',
+          (e) => {
+            xRing(e.clientX);
+            yRing(e.clientY);
+            xDot(e.clientX);
+            yDot(e.clientY);
+          },
+          { passive: true },
+        );
+        const bump = (on: boolean) => {
+          gsap.to(ring, { scale: on ? 1.85 : 1, duration: 0.35, ease: 'power3.out' });
+        };
+        document.querySelectorAll('a, button').forEach((el) => {
+          el.addEventListener('pointerenter', () => bump(true));
+          el.addEventListener('pointerleave', () => bump(false));
+        });
+      }
+
+      const menu = document.querySelector('.nav-menu') as HTMLButtonElement | null;
+      const panel = document.getElementById('story-menu');
+      const art = panel?.querySelector('.nav-art') as SVGSVGElement | null;
+      const artPaths = art ? Array.from(art.querySelectorAll('path')) : [];
+      artPaths.forEach((path) => {
+        const len = path.getTotalLength();
+        path.style.strokeDasharray = `${len}`;
+        path.style.strokeDashoffset = reduce ? '0' : `${len}`;
+      });
+      let menuTween: Array<{ kill: () => void }> = [];
+      const menuBits = () => panel?.querySelectorAll('.nav-thesis, .nav-groups a, .nav-groups p') ?? [];
+      const closeMenu = () => {
+        menu?.setAttribute('aria-expanded', 'false');
+        panel?.classList.remove('is-open');
+        menuTween.forEach((tween) => tween.kill());
+        window.setTimeout(() => {
+          if (menu?.getAttribute('aria-expanded') !== 'false' || !panel) return;
+          panel.setAttribute('hidden', '');
+          gsap.set(menuBits(), { clearProps: 'all' });
+          if (art) gsap.set(art, { clearProps: 'transform' });
+          if (!reduce) {
+            artPaths.forEach((path) => {
+              path.style.strokeDashoffset = path.style.strokeDasharray;
+            });
+          }
+        }, reduce ? 0 : 420);
+      };
+      const openMenu = () => {
+        if (!menu || !panel) return;
+        menu.setAttribute('aria-expanded', 'true');
+        panel.removeAttribute('hidden');
+        requestAnimationFrame(() => {
+          panel.classList.add('is-open');
+          if (reduce || !art) return;
+          const sigil = menu.querySelector('.nav-sigil');
+          if (!sigil) return;
+          const from = sigil.getBoundingClientRect();
+          const to = art.getBoundingClientRect();
+          const dx = from.left + from.width / 2 - (to.left + to.width / 2);
+          const dy = from.top + from.height / 2 - (to.top + to.height / 2);
+          const scale = to.width > 0 ? from.width / to.width : 0.12;
+          menuTween.forEach((tween) => tween.kill());
+          menuTween = [
+            gsap.fromTo(art, { x: dx, y: dy, scale }, { x: 0, y: 0, scale: 1, duration: 0.9, ease: 'power3.inOut' }),
+            gsap.to(artPaths, { strokeDashoffset: 0, duration: 1.15, stagger: 0.05, ease: 'power2.out' }),
+            gsap.fromTo(
+              panel.querySelectorAll('.nav-thesis, .nav-groups a, .nav-groups p'),
+              { y: 16, autoAlpha: 0 },
+              { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.028, delay: 0.18, ease: 'power2.out' },
+            ),
+          ];
+        });
+      };
+      menu?.addEventListener('click', () => {
+        const open = menu.getAttribute('aria-expanded') === 'true';
+        if (open) closeMenu();
+        else openMenu();
+      });
+      panel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeMenu();
+      });
+
+      const thumb = document.querySelector('.scroll-rail-thumb') as HTMLElement | null;
+      const moveThumb = (scroll?: number) => {
+        if (!thumb) return;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const y = typeof scroll === 'number' ? scroll : (lenis?.scroll ?? window.scrollY);
+        const p = max > 0 ? y / max : 0;
+        thumb.style.transform = `translate3d(0, ${p * 81}px, 0)`;
+      };
+      if (lenis) lenis.on('scroll', (event: { scroll: number }) => moveThumb(event.scroll));
+      else window.addEventListener('scroll', () => moveThumb(), { passive: true });
+      moveThumb();
+
+      if (import.meta.hot) {
+        import.meta.hot.dispose(() => {
+          cancelAnimationFrame(tracerRaf);
+          cancelAnimationFrame(warmthRaf);
+        });
+      }
+    </script>
+  </body>
+</html>

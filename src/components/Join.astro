@@ -1,0 +1,102 @@
+---
+interface Props {
+  shell?: 'room' | 'glass' | 'resort' | 'farm' | 'water' | 'unsure';
+}
+
+const { shell = 'room' } = Astro.props;
+const shells = [
+  ['room', 'A room, on your land'],
+  ['glass', 'Glass, on helical piles'],
+  ['resort', 'A small resort'],
+  ['farm', 'Aura Farms, the wall'],
+  ['water', 'Water from the air'],
+  ['unsure', 'Not sure yet'],
+] as const;
+---
+
+<div class="join">
+  <form class="join-card join-form" id="preorder" action="/api/join" method="post">
+    <p class="story-kicker">Pre-order</p>
+    <h3>Hold your place.</h3>
+    <p>Tell us which shell you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
+    <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <input type="hidden" name="kind" value="preorder" />
+    <label for="preorder-name">Name</label>
+    <input id="preorder-name" name="name" type="text" autocomplete="name" required maxlength="80" />
+    <label for="preorder-email">Email</label>
+    <input id="preorder-email" name="email" type="email" autocomplete="email" required maxlength="120" />
+    <label for="preorder-shell">Shell</label>
+    <select id="preorder-shell" name="shell" required>
+      {shells.map(([value, label]) => (
+        <option value={value} selected={value === shell}>{label}</option>
+      ))}
+    </select>
+    <label for="preorder-note">The land, or the question</label>
+    <textarea id="preorder-note" name="note" maxlength="500"></textarea>
+    <label class="join-check">
+      <input type="checkbox" name="list" value="yes" />
+      <span>Also put me first in line for the latest YouTube films, product releases, announcements, and the offers and perks kept for this list.</span>
+    </label>
+    <button type="submit">Hold my place</button>
+    <p class="join-status" data-join-status role="status"></p>
+    <p class="join-fine">Aura writes to the address you give. You can leave the list whenever a note arrives. We do not sell it.</p>
+  </form>
+
+  <form class="join-card join-form" id="list" action="/api/join" method="post">
+    <p class="story-kicker">The list</p>
+    <h3>First to hear it.</h3>
+    <p>Join, and you are first in line for the latest YouTube films, product releases, announcements, and the offers and perks we keep for the people who were here early.</p>
+    <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
+    <input type="hidden" name="kind" value="list" />
+    <label for="list-name">Name</label>
+    <input id="list-name" name="name" type="text" autocomplete="name" required maxlength="80" />
+    <label for="list-email">Email</label>
+    <input id="list-email" name="email" type="email" autocomplete="email" required maxlength="120" />
+    <label class="join-check">
+      <input type="checkbox" name="consent" value="yes" required />
+      <span>Yes. Send me the films, the releases, the announcements, and the exclusive offers and perks.</span>
+    </label>
+    <button type="submit">Count me in</button>
+    <p class="join-status" data-join-status role="status"></p>
+    <p class="join-fine">Your name is held. The first notes are the films, the releases, the announcements, and the offers kept for this list.</p>
+  </form>
+</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const joined = params.get('joined');
+  if (joined === 'list' || joined === 'preorder') {
+    const form = document.getElementById(joined);
+    const status = form?.querySelector('[data-join-status]');
+    if (status) {
+      status.textContent = joined === 'preorder'
+        ? 'Your place is held. No payment was taken.'
+        : 'You are first in line for the films, the releases, and the offers.';
+    }
+  }
+
+  document.querySelectorAll('form.join-form').forEach((form) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const status = form.querySelector('[data-join-status]');
+      const button = form.querySelector('button[type="submit"]');
+      if (!(status instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
+      button.disabled = true;
+      status.textContent = 'Sending.';
+      try {
+        const res = await fetch('/api/join', {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { Accept: 'application/json' },
+        });
+        const data = await res.json();
+        status.textContent = data.message || 'Try again in a moment.';
+        if (res.ok) form.reset();
+      } catch {
+        status.textContent = 'The line did not answer. Try again in a moment.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+</script>

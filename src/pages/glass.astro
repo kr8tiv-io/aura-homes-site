@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Join from '../components/Join.astro';
+import Journeys from '../components/Journeys.astro';
+---
+
+<BaseLayout title="Aura | The glass">
+  <main id="top">
+    <canvas class="page-field" data-wash="glass" aria-hidden="true"></canvas>
+    <canvas class="field-light" data-field="glass" aria-hidden="true"></canvas>
+
+    <section class="page-lead">
+      <p class="story-kicker">Later</p>
+      <h1 data-glow>
+        <span class="line-mask"><span class="line">The glass</span></span>
+        <span class="line-mask"><span class="line">comes next.</span></span>
+      </h1>
+      <p class="story-lede">
+        The room on the skid is the start. Helical piles, a floor lit from beneath, and a structured deck are how that room becomes a small place to stay.
+      </p>
+    </section>
+
+    <section class="story-still">
+      <figure class="story-figure">
+        <video poster="/film/resort-deck.webp" data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="tilt" data-play="push" aria-label="A-frame in snow with a wide deck, cargo net, and glass floor lit from beneath"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The floor</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Lit from beneath.</span></span></h3>
+        <p>
+          Clear or tinted, the glass floor carries light under the deck. The picture shows that floor, the net, and the span. Glass railings are part of the custom work.
+        </p>
+      </div>
+    </section>
+
+    <section class="story-still is-flip">
+      <figure class="story-figure">
+        <video poster="/film/resort-tower.webp" data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="lift" data-play="rise" aria-label="Round glass tower in snow, with mesh balconies and a lit floor"></video>
+      </figure>
+      <div>
+        <p class="story-kicker">The balcony</p>
+        <h3 data-glow><span class="line-mask"><span class="line">Held in the air.</span></span></h3>
+        <p>
+          The picture is the tower, the mesh, and the balconies. Glass railings, and helical piles under a deck this size, are the custom work. Nothing sits on blocks.
+        </p>
+      </div>
+    </section>
+
+    <section class="passage" data-passage aria-label="Helical piles">
+      <canvas data-meadow data-scene="slope"></canvas>
+      <p class="passage-ghost" aria-hidden="true">Pile</p>
+      <div class="passage-copy">
+        <p class="story-kicker">The ground</p>
+        <h2 data-glow><span class="line-mask"><span class="line">Screwed into the slope.</span></span></h2>
+        <p>About thirty minutes from Banff and from Kicking Horse. Off the grid, and still close to the hill.</p>
+      </div>
+    </section>
+    <div class="passage-spacer" data-passage-spacer aria-hidden="true"></div>
+
+    <section class="ways">
+      <p class="story-kicker">What the glass adds</p>
+      <ol>
+        <li><span>01</span> Helical piles</li>
+        <li><span>02</span> A glass floor, clear or tinted</li>
+        <li><span>03</span> A structured deck, and a net</li>
+        <li><span>04</span> Balconies with glass railings</li>
+      </ol>
+      <p class="story-lede">SIP panels, solar, and atmospheric water sit behind the room. They keep it off the grid. They are not the view. <a href="/water">H20</a> is a later fit of the same shell, and it still needs further research.</p>
+    </section>
+
+    <Journeys />
+
+    <section id="enquire" class="enquire">
+      <p class="story-kicker">Enquire</p>
+      <h2 data-glow><span class="line-mask"><span class="line">Begin with the room.</span></span></h2>
+      <p class="story-lede enquire-note">The glass is the next build. The room is the one we can place now.</p>
+      <Join shell="glass" />
+    </section>
+  </main>
+
+  <script>
+    import { bindJourneyMotion } from '../scripts/journey';
+    bindJourneyMotion();
+  </script>
+</BaseLayout>
