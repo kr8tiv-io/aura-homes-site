@@ -143,7 +143,7 @@ export async function acceptJoin(input: {
   if (!kind) return { ok: false, status: 400, message: 'Choose the list, or a pre-order.' };
   if (!name) return { ok: false, status: 400, message: 'Add your name, so we know who to write.' };
   if (!EMAIL.test(email)) return { ok: false, status: 400, message: 'Add an email we can write to.' };
-  if (kind === 'preorder' && !shell) return { ok: false, status: 400, message: 'Choose a shell, or say you are not sure yet.' };
+  if (kind === 'preorder' && !shell) return { ok: false, status: 400, message: 'Choose a room, or say you are not sure yet.' };
   if (kind === 'list' && !input.consent) {
     return { ok: false, status: 400, message: 'Tick the line that says yes, so we know you want the films and the offers.' };
   }
@@ -171,7 +171,7 @@ function reply(kind: JoinKind, already: boolean, onList: boolean, mailchimp: Mai
   if (kind === 'preorder') {
     const base = already
       ? 'Your place was already held. We still have your name.'
-      : 'Your place is held. We will write about that shell before it is offered widely. No payment was taken.';
+      : 'Your place is held. We will write about that room before it is offered widely. No payment was taken.';
     const extra = !already && onList ? ' You are also first in line for the films, the releases, and the offers.' : '';
     return `${base}${extra}${confirm}`;
   }

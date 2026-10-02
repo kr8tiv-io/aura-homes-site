@@ -18,14 +18,14 @@ const shells = [
   <form class="join-card join-form" id="preorder" action="/api/join" method="post">
     <p class="story-kicker">Pre-order</p>
     <h3>Hold your place.</h3>
-    <p>Tell us which shell you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
+    <p>Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
     <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <input type="hidden" name="kind" value="preorder" />
     <label for="preorder-name">Name</label>
     <input id="preorder-name" name="name" type="text" autocomplete="name" required maxlength="80" />
     <label for="preorder-email">Email</label>
     <input id="preorder-email" name="email" type="email" autocomplete="email" required maxlength="120" />
-    <label for="preorder-shell">Shell</label>
+    <label for="preorder-shell">Room</label>
     <select id="preorder-shell" name="shell" required>
       {shells.map(([value, label]) => (
         <option value={value} selected={value === shell}>{label}</option>
@@ -39,7 +39,7 @@ const shells = [
     </label>
     <button type="submit">Hold my place</button>
     <p class="join-status" data-join-status role="status"></p>
-    <p class="join-fine">Aura writes to the address you give. You can leave the list whenever a note arrives. We do not sell it.</p>
+    <p class="join-fine">Aura Homes writes to the address you give. You can leave the list whenever a note arrives. We do not sell it.</p>
   </form>
 
   <form class="join-card join-form" id="list" action="/api/join" method="post">
