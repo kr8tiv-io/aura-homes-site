@@ -1,10 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
-  <path fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" d="M15.06 14.1A3.05 3.05 0 1 1 16.94 14.1" />
-  <path fill="none" stroke="currentColor" stroke-width="1.45" stroke-linecap="round" stroke-linejoin="round" d="M2.4 22.45H5.65C7.17 22.45 6.87 19.4 8.09 19.4C9.3 19.4 9.3 20.62 10.52 20.62C12.96 20.62 13.57 16.66 16 16.66C18.43 16.66 19.04 20.62 21.48 20.62C22.7 20.62 22.7 19.4 23.91 19.4C25.13 19.4 24.83 22.45 26.35 22.45H29.6" />
-  <style>
-    svg { color: #000; }
-    @media (prefers-color-scheme: dark) {
-      svg { color: #fff; }
-    }
-  </style>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <rect width="32" height="32" fill="#0c0d0e" />
+  <path fill="none" stroke="#f4f3ef" stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="8" d="M1.8 24.6H7.6L9.4 26.8L11.6 24.6L16 8.2L20.4 24.6L22.6 26.8L24.4 24.6H30.2" />
+  <circle cx="16" cy="4.7" r="1.35" fill="#c4a07a" />
 </svg>
