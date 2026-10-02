@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import mark from '../assets/logo/aura-mark.svg?raw';
 
 interface Props {
   title: string;
@@ -9,6 +10,8 @@ interface Props {
 
 const { title, description = 'Aura builds a finished room on a steel skid: a stay, a glass deck, a farm wall, or water from the air.', descriptor = 'On your land' } = Astro.props;
 const path = Astro.url.pathname;
+const isHome = path === '/';
+const showFoot = !isHome && !path.startsWith('/builder');
 ---
 
 <!doctype html>
@@ -16,7 +19,19 @@ const path = Astro.url.pathname;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {isHome ? (
+      <>
+        <link rel="icon" href="/_archive/favicon.ico" sizes="any" />
+        <link rel="icon" type="image/svg+xml" href="/_archive/favicon.svg" />
+      </>
+    ) : (
+      <>
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <meta property="og:site_name" content="Aura Homes" />
+      </>
+    )}
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -40,8 +55,17 @@ const path = Astro.url.pathname;
 
     <header class="site-nav">
       <a href="/" class="nav-brand">
-        <div class="w-8 h-8 bg-current mask-triangle"></div>
-        <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
+        {isHome ? (
+          <>
+            <div class="w-8 h-8 bg-current mask-triangle"></div>
+            <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
+          </>
+        ) : (
+          <>
+            <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
+            <span class="nav-name">Aura Homes</span>
+          </>
+        )}
         <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
       </a>
       <nav class="nav-words" aria-label="The shells">
@@ -125,6 +149,14 @@ const path = Astro.url.pathname;
     <div class="relative z-10">
       <slot />
     </div>
+    {showFoot && (
+      <footer class="site-foot">
+        <a href="/" class="foot-brand">
+          <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
+          <span class="foot-name">Aura Homes</span>
+        </a>
+      </footer>
+    )}
 
     <script>
       import { gsap } from 'gsap';
@@ -338,6 +370,16 @@ const path = Astro.url.pathname;
 
       const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!reduce) {
+        document.querySelectorAll('.aura-logo').forEach((logo) => {
+          const host = logo.closest('a');
+          host?.addEventListener('pointerenter', () => {
+            logo.classList.remove('is-play');
+            void logo.getBoundingClientRect();
+            logo.classList.add('is-play');
+          });
+        });
+      }
       if (fine && !reduce) {
         document.documentElement.classList.add('has-cursor');
         const ring = document.querySelector('.site-cursor') as HTMLElement;
