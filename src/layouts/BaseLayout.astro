@@ -11,7 +11,43 @@ interface Props {
 const { title, description = 'Aura Homes builds a finished room on a steel frame: a stay, a glass deck, a farm wall, or water from the air.', descriptor = 'On your land' } = Astro.props;
 const path = Astro.url.pathname;
 const isHome = path === '/';
-const showFoot = !isHome && !path.startsWith('/builder');
+const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
+const showFoot = !isHome && !isBuilder;
+const here = (href: string) => (href === '/journal' ? path.startsWith('/journal') : path === href);
+const bar = [
+  { href: '/story', label: 'Story' },
+  { href: '/rooms', label: 'Rooms' },
+  { href: '/customs', label: 'Customs' },
+  { href: '/journal', label: 'Journal' },
+];
+const menu = [
+  {
+    label: 'The room',
+    links: [
+      { href: '/story', label: 'Story' },
+      { href: '/rooms', label: 'Rooms' },
+      { href: '/customs', label: 'Customs' },
+      { href: '/build-your-own', label: 'Build your own' },
+    ],
+  },
+  {
+    label: 'The land',
+    links: [
+      { href: '/master-plan', label: 'Master plan' },
+      { href: '/back-to-nature', label: 'Back to nature' },
+      { href: '/journal', label: 'Journal' },
+    ],
+  },
+  {
+    label: 'A note',
+    links: [
+      { href: '/pre-order', label: 'Pre-order' },
+      { href: '/faq', label: 'FAQ' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+];
+const foot = menu.flatMap((group) => group.links);
 ---
 
 <!doctype html>
@@ -45,7 +81,7 @@ const showFoot = !isHome && !path.startsWith('/builder');
       rel="stylesheet"
     />
   </head>
-  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': path.startsWith('/builder') }]}>
+  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder }]}>
     <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>
     <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true"></canvas>
     <div class="page-grain" aria-hidden="true"></div>
@@ -68,11 +104,10 @@ const showFoot = !isHome && !path.startsWith('/builder');
         )}
         <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
       </a>
-      <nav class="nav-words" aria-label="The rooms">
-        <a href="/" aria-current={path === '/' ? 'page' : undefined}>Homes</a>
-        <a href="/farms" aria-current={path.startsWith('/farms') ? 'page' : undefined}>Farms</a>
-        <a href="/water" aria-current={path.startsWith('/water') ? 'page' : undefined} title="Comes later. Still in research.">H20</a>
-        <a href="/resorts" aria-current={path.startsWith('/resorts') ? 'page' : undefined}>Hospitality</a>
+      <nav class="nav-words" aria-label="Pages">
+        {bar.map((item) => (
+          <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+        ))}
       </nav>
       <div class="nav-tools">
         <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-label="Menu">
@@ -89,7 +124,7 @@ const showFoot = !isHome && !path.startsWith('/builder');
             <path class="nav-x" d="M78 42L42 78" />
           </svg>
         </button>
-        {!path.startsWith('/builder') && <a href="#preorder" class="nav-cta">Pre-order</a>}
+        {!isBuilder && <a href="/pre-order" class="nav-cta" aria-current={path === '/pre-order' ? 'page' : undefined}>Pre-order</a>}
       </div>
     </header>
     <div id="story-menu" class="nav-panel" hidden>
@@ -111,38 +146,16 @@ const showFoot = !isHome && !path.startsWith('/builder');
         <path class="ink" d="M108 168H222L256 190H142Z" />
         <path class="fine" d="M124 174V186M210 178V190" />
       </svg>
-      <p class="nav-thesis">Homes are the original room. Farms are the growing units. Hospitality is the resort. H20, water from the air, comes later and still needs further research. The builder is the tool, on this page and on GitHub.</p>
+      <p class="nav-thesis">Aura Homes. Get people back outside, one beautiful room at a time.</p>
       <div class="nav-groups">
-        <div>
-          <p>Homes</p>
-          <a href="/#shell" aria-current={path === '/' ? 'page' : undefined}>The room</a>
-          <a href="/glass" aria-current={path.startsWith('/glass') ? 'page' : undefined}>Glass</a>
-        </div>
-        <div>
-          <p>Farms</p>
-          <a href="/farms" aria-current={path.startsWith('/farms') ? 'page' : undefined}>Farming units</a>
-        </div>
-        <div>
-          <p>H20</p>
-          <a href="/water" aria-current={path.startsWith('/water') ? 'page' : undefined}>Water units <em>Later</em></a>
-        </div>
-        <div>
-          <p>Hospitality</p>
-          <a href="/resorts" aria-current={path.startsWith('/resorts') ? 'page' : undefined}>Resorts</a>
-        </div>
-        <div>
-          <p>Build</p>
-          <a href="/builder" aria-current={path.startsWith('/builder') ? 'page' : undefined}>Builder</a>
-          <a href="https://github.com/kr8tiv-ai/aura-homes" target="_blank" rel="noreferrer">GitHub</a>
-        </div>
-        <div>
-          <p>The writing</p>
-          <a href="/journal" aria-current={path.startsWith('/journal') ? 'page' : undefined}>Journal</a>
-          <a href="/journal/free-food-and-water">The network</a>
-          <a href={path.startsWith('/builder') ? '/#preorder' : '#preorder'}>Pre-order</a>
-          <a href={path.startsWith('/builder') ? '/#list' : '#list'}>The list</a>
-          <a href={path.startsWith('/builder') ? '/#enquire' : '#enquire'}>Enquire</a>
-        </div>
+        {menu.map((group) => (
+          <div>
+            <p>{group.label}</p>
+            {group.links.map((item) => (
+              <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+            ))}
+          </div>
+        ))}
       </div>
     </div>
 
@@ -155,6 +168,15 @@ const showFoot = !isHome && !path.startsWith('/builder');
           <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
           <span class="foot-name">Aura Homes</span>
         </a>
+        <p class="foot-line">Aura Homes. Get people back outside, one beautiful room at a time.</p>
+        <p class="foot-place">Edmonton, Alberta. Shipping across Canada.</p>
+        <nav class="foot-nav" aria-label="Footer">
+          {foot.map((item) => (
+            <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+          ))}
+        </nav>
+        <p class="foot-reach">Email: TODO</p>
+        <p class="foot-reach">Phone: TODO</p>
       </footer>
     )}
 
