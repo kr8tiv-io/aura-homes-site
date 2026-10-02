@@ -66,8 +66,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <p class="story-kicker">Water</p>
             <h2>Drawn from the air.</h2>
             <p>
-              Atmospheric water units would come later, after more research, and they are not ready to place. Aura H2O would be offered in premium cans and glass, with ethical sponsors only.
+              Atmospheric water units would come later, after more research, and they are not ready to place. Aura H2O would be offered in premium cans and glass. Sponsors are ethical only. We decide who's in.
             </p>
+            <p class="plan-later">Coming later.</p>
             <p class="plan-links">
               <a href="/water">Water</a>
             </p>
@@ -85,8 +86,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <p>
               The hope is free food and free water, beginning with food banks and anyone in need in Edmonton. It is an intention, not a promise, and it is not operating.
             </p>
+            <p>
+              The Aura host network. We'll provide the location, logistics, and support. Hosts get paid through the network.
+            </p>
+            <p>
+              Seed pods, swaps, pickup, delivery, and repairs would be handled through the network.
+            </p>
+            <p class="plan-later">Coming later.</p>
             <p class="plan-links">
               <a href="/journal/free-food-and-water">The note</a>
+            </p>
+            <p class="plan-host-ask">
+              <a href="/contact">Interested in hosting? Tell us</a>
             </p>
           </div>
         </li>
@@ -343,6 +354,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     text-transform: uppercase;
     color: #8a6a45;
   }
+  .plan-host-ask {
+    margin-top: 1.15rem;
+  }
+  .plan-host-ask a {
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    text-transform: none;
+    text-decoration: none;
+    color: #8a6a45;
+    border-bottom: 1px solid rgba(156, 122, 85, 0.55);
+    padding-bottom: 0.12rem;
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .plan-host-ask a:hover {
+    opacity: 0.55;
+  }
   .plan-stay {
     display: block;
     padding-bottom: 0;
@@ -532,7 +559,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .plan-links a {
+    .plan-links a,
+    .plan-host-ask a {
       transition: none;
     }
   }
