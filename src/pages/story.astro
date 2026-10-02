@@ -7,21 +7,286 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Beautiful second-life rooms that bring people back to nature, one room at a time."
   descriptor="Story"
 >
-  <main id="top">
-    <section class="page-lead">
-      <p class="story-kicker">Story</p>
-      <h1>One room. Then the land.</h1>
-      <p class="story-lede">
-        Aura Homes starts with a finished room you can add to land you already have. It sits on a steel frame. The glass is smooth. Everything else on this site is a way of using that room, or a hope we have not built yet.
-      </p>
+  <main id="top" class="story-essay">
+    <section class="page-lead story-chapter" id="why" aria-labelledby="why-title">
+      <div data-rise>
+        <p class="story-kicker">Why we exist</p>
+        <h1 id="why-title">Back to where we came from.</h1>
+        <p class="story-lede">
+          Aura exists to bring people back to where we came from. Back to our roots, more time outside, closer to nature.
+        </p>
+      </div>
+      <div class="story-prose" data-rise>
+        <p>
+          An extension of your home, one you're proud of. Beautiful, and slick. A steel frame, smooth glass, and the land still doing most of the talking.
+        </p>
+        <p>
+          The aim reaches past the room. Less scarcity in an ordinary day. Better ways to live, to grow food, and to find water, with less reliance on the grid. The farm wall and the water come later. The <a href="/master-plan">master plan</a> keeps them there, so this page does not pretend they are ready.
+        </p>
+      </div>
     </section>
-    <div class="page-body">
-      <h2>The room comes first</h2>
-      <p>Beside the house, or out on the property. A door, a long side of glass, and the meadow still in view. The film of that room is on <a href="/">the opening page</a>. The quieter account is on <a href="/rooms">Rooms</a>.</p>
-      <h2>Then what the land asks</h2>
-      <p>Some sites want a deck, a lit floor, or a few rooms for a small stay. Those are drawn custom, and they live under <a href="/customs">Customs</a>. The order of the later work, including farms and water from the air, is the <a href="/master-plan">master plan</a>.</p>
-      <h2>Why it is worth doing</h2>
-      <p>The point is a day spent where the light is real. <a href="/back-to-nature">Back to nature</a> is that sentence, said once, without a speech. If you want the notes, they are in the <a href="/journal">journal</a>.</p>
-    </div>
+
+    <figure class="story-bleed">
+      <img
+        src="/film/story-meadow-side.webp"
+        alt="A low glass room in tall grass, with pines and a pale mountain behind it."
+        width="1800"
+        height="1200"
+        data-rise
+      />
+    </figure>
+
+    <section class="story-chapter" id="started" aria-labelledby="started-title">
+      <div data-rise>
+        <p class="story-kicker">Why it started</p>
+        <h2 id="started-title">Seen beside other people's hands.</h2>
+      </div>
+      <div class="story-prose" data-rise>
+        <p>
+          The founder has been working on this for years. It started while travelling through Central America, seeing people build beautiful things in synergy with nature. Walls, shade, water, and a roof, each one listening to the place it stood in.
+        </p>
+        <p>The shop is in Alberta. The lesson came from somewhere warmer, and it survived the trip.</p>
+      </div>
+    </section>
+
+    <figure class="story-bleed">
+      <img
+        src="/film/layout-forest.webp"
+        alt="A glass room at the edge of a pine forest, open toward a dusk meadow."
+        width="1800"
+        height="1200"
+        loading="lazy"
+        data-rise
+      />
+    </figure>
+
+    <section class="story-chapter" id="chapter" aria-labelledby="chapter-title">
+      <div data-rise>
+        <p class="story-kicker">Chapter one</p>
+        <h2 id="chapter-title">A small shop, and the work.</h2>
+      </div>
+      <div class="story-prose" data-rise>
+        <p>
+          Alberta. A small shop. The first units are being built now. A YouTube channel will document every step, the tidy ones and the ones with dust on them.
+        </p>
+      </div>
+      <blockquote class="story-quote" data-rise>
+        <p>Nobody believes in you until it's too late, so we're just going to build it.</p>
+      </blockquote>
+    </section>
+
+    <figure class="story-bleed">
+      <img
+        src="/film/story-room.webp"
+        alt="An open room of oak and linen, facing a green field at dusk."
+        width="1800"
+        height="1200"
+        loading="lazy"
+        data-rise
+      />
+    </figure>
+
+    <section class="story-chapter" id="gift" aria-labelledby="gift-title">
+      <div data-rise>
+        <p class="story-kicker">Nature as a gift</p>
+        <h2 id="gift-title">The part that was already here.</h2>
+      </div>
+      <div class="story-prose" data-rise>
+        <p>Morning coffee outside. Kids off their screens. A stretch of time surrounded by the beauty already around us.</p>
+        <p>Nothing here asks for a creed. Sit long enough, and the day gives itself back.</p>
+      </div>
+    </section>
+
+    <figure class="story-bleed">
+      <img
+        src="/film/layout-sky.webp"
+        alt="A bed under a skylight, with the meadow and a dark treeline beyond the glass."
+        width="1800"
+        height="1200"
+        loading="lazy"
+        data-rise
+      />
+    </figure>
+
+    <section class="story-founder" id="founder" aria-labelledby="founder-title">
+      <figure class="story-portrait" data-rise>
+        <div class="story-portrait-frame" aria-hidden="true"></div>
+        <figcaption>Portrait to come</figcaption>
+      </figure>
+      <div data-rise>
+        <p class="story-kicker">Founder</p>
+        <h2 id="founder-title">The mission holds the page.</h2>
+        <div class="story-prose">
+          <p>
+            The story is the mission, not the person. Years of looking, then a shop, then the decision to build it in public. A portrait can wait.
+          </p>
+        </div>
+        <p class="story-yt">Follow the build on YouTube</p>
+        <p class="todo-line">Link: TODO</p>
+      </div>
+    </section>
   </main>
 </BaseLayout>
+
+<style>
+  .story-essay {
+    color: #14120e;
+  }
+  .story-essay .story-chapter {
+    position: relative;
+    z-index: 1;
+    padding: 14vh 8vw 16vh;
+  }
+  .story-essay .story-chapter.page-lead {
+    padding-top: 22vh;
+    padding-bottom: 12vh;
+  }
+  .story-essay .story-chapter h2,
+  .story-founder h2 {
+    margin: 0;
+    max-width: 12em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 6vw, 5.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+  .story-prose {
+    max-width: 36rem;
+    margin-top: 2.75rem;
+  }
+  .story-prose p {
+    margin: 0 0 1.35rem;
+    font-weight: 300;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: rgba(20, 18, 14, 0.78);
+  }
+  .story-prose p:last-child {
+    margin-bottom: 0;
+  }
+  .story-essay a {
+    color: inherit;
+  }
+  .story-quote {
+    margin: 3rem 0 0;
+    max-width: 16em;
+    padding: 0;
+    border: 0;
+  }
+  .story-quote p {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(1.7rem, 3.2vw, 2.55rem);
+    line-height: 1.22;
+    letter-spacing: -0.03em;
+  }
+  .story-bleed {
+    margin: 0;
+    height: min(86vh, 920px);
+    overflow: hidden;
+    background: #0c0d0e;
+  }
+  .story-bleed img {
+    display: block;
+    width: 100%;
+    height: 115%;
+    object-fit: cover;
+  }
+  .story-founder {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(12rem, 18rem) minmax(0, 34rem);
+    gap: clamp(2.5rem, 7vw, 7rem);
+    align-items: end;
+    padding: 14vh 8vw 18vh;
+  }
+  .story-portrait {
+    position: relative;
+    margin: 0;
+  }
+  .story-portrait-frame {
+    aspect-ratio: 3 / 4;
+    background: #14120e;
+    box-shadow: inset 0 0 0 1px rgba(196, 160, 122, 0.35);
+  }
+  .story-portrait figcaption {
+    position: absolute;
+    left: 1.15rem;
+    bottom: 1.15rem;
+    margin: 0;
+    font-size: 0.68rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #c4a07a;
+  }
+  .story-yt {
+    margin: 2.4rem 0 0;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: 1.15rem;
+    letter-spacing: 0.04em;
+  }
+  .story-founder .todo-line {
+    margin-top: 0.7rem;
+  }
+
+  @media (max-width: 800px) {
+    .story-essay .story-chapter {
+      padding: 10vh 1.5rem 12vh;
+    }
+    .story-essay .story-chapter.page-lead {
+      padding-top: 18vh;
+    }
+    .story-bleed {
+      height: 72vh;
+    }
+    .story-founder {
+      grid-template-columns: 1fr;
+      justify-items: start;
+      padding: 10vh 1.5rem 14vh;
+    }
+    .story-portrait {
+      width: min(16rem, 72vw);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .story-bleed img {
+      height: 100%;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+
+  const page = document.querySelector('.story-essay');
+  if (page && !prefersReducedMotion()) {
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'story-rise')
+      .forEach((trigger) => trigger.kill());
+
+    gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
+      const bleed = Boolean(el.closest('.story-bleed'));
+      gsap.from(el, {
+        y: bleed ? 32 : 22,
+        opacity: 0,
+        duration: bleed ? 2.1 : 1.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'story-rise',
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    });
+
+    const settle = () => ScrollTrigger.refresh();
+    requestAnimationFrame(settle);
+    window.addEventListener('load', settle, { once: true });
+  }
+</script>
