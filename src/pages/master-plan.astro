@@ -7,27 +7,311 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Beautiful second-life rooms that bring people back to nature, one room at a time."
   descriptor="Master plan"
 >
-  <main id="top">
+  <main id="top" class="plan">
     <section class="page-lead">
-      <p class="story-kicker">Master plan</p>
-      <h1>The order of the work.</h1>
-      <p class="story-lede">
-        The room is what you can ask for now. The rest is arranged so nothing later pretends to be ready.
-      </p>
+      <div data-rise>
+        <p class="story-kicker">Master plan</p>
+        <h1>A plan, told slowly.</h1>
+        <p class="story-lede">
+          The room is what you can ask for now. Everything after it is a direction, held lightly.
+        </p>
+      </div>
     </section>
-    <div class="page-body">
-      <h2>1. The room</h2>
-      <p>A finished room on a steel frame, beside the house or on the property. This is the product. See <a href="/rooms">Rooms</a>, and the film on <a href="/">the opening page</a>.</p>
-      <h2>2. Aura Farms</h2>
-      <p>The same room, with one long side turned into a vertical aeroponic wall. You can ask Aura Homes to build it and place it, or buy it and grow. The page is <a href="/farms">Aura Farms</a>.</p>
-      <h2>3. Customs</h2>
-      <p>Glass on piles, a deck, and a few rooms for a small resort in Canada or Costa Rica. Drawn for the site. See <a href="/customs">Customs</a>.</p>
-      <h2>4. Water, later</h2>
-      <p>H20 would set a quiet machine on the roof and a short bottling line inside. It still needs further research. It is not ready to build or to place. The note is on <a href="/water">H20</a>.</p>
-      <h2>5. A network we hope for</h2>
-      <p>Food and water from these rooms, free to the person who takes them, with an advertiser’s name on the harvest or the jug. That network is not operating. It is described in <a href="/journal/free-food-and-water">the journal</a>, and it is not a signup.</p>
-      <h2>6. The tool</h2>
-      <p><a href="/build-your-own">Build Your Own</a> is a walk through the clearing, then three settings: use, glass, and length. Nothing on that page is for sale. The source is on GitHub.</p>
+
+    <div class="plan-track">
+      <div class="plan-spine" aria-hidden="true"></div>
+      <ol class="plan-rail">
+        <li class="plan-step" data-rise>
+          <div class="plan-mark">
+            <p class="plan-num" aria-hidden="true">01</p>
+            <span class="plan-node" aria-hidden="true"></span>
+          </div>
+          <div class="plan-copy">
+            <p class="story-kicker">Now</p>
+            <h2><span class="plan-keep">Second-life</span> rooms.</h2>
+            <p>
+              Beautiful second-life rooms, Hot Take tub units, and customs, made one at a time. Off-grid and solar builds are available.
+            </p>
+            <p class="plan-links">
+              <a href="/rooms">Rooms</a>
+              <a href="/pre-order?model=hot-take">Hot Take</a>
+              <a href="/customs">Customs</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="plan-step" data-rise>
+          <div class="plan-mark">
+            <p class="plan-num" aria-hidden="true">02</p>
+            <span class="plan-node" aria-hidden="true"></span>
+          </div>
+          <div class="plan-copy">
+            <p class="story-kicker">Grow</p>
+            <h2>Rooms that would grow.</h2>
+            <p>
+              Root Access grow rooms and aeroponic units would follow, as Aura Farms. The same room, with one long side turned toward a living wall.
+            </p>
+            <p class="plan-links">
+              <a href="/farms">Aura Farms</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="plan-step" data-rise>
+          <div class="plan-mark">
+            <p class="plan-num" aria-hidden="true">03</p>
+            <span class="plan-node" aria-hidden="true"></span>
+          </div>
+          <div class="plan-copy">
+            <p class="story-kicker">Water</p>
+            <h2>Drawn from the air.</h2>
+            <p>
+              Atmospheric water units would come later, after more research, and they are not ready to place. Aura H2O would be offered in premium cans and glass, with ethical sponsors only.
+            </p>
+            <p class="plan-links">
+              <a href="/water">Water</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="plan-step" data-rise>
+          <div class="plan-mark">
+            <p class="plan-num" aria-hidden="true">04</p>
+            <span class="plan-node" aria-hidden="true"></span>
+          </div>
+          <div class="plan-copy">
+            <p class="story-kicker">Give</p>
+            <h2>An intention to share.</h2>
+            <p>
+              The hope is free food and free water, beginning with food banks and anyone in need in Edmonton. It is an intention, not a promise, and it is not operating.
+            </p>
+            <p class="plan-links">
+              <a href="/journal/free-food-and-water">The note</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="plan-step" data-rise>
+          <div class="plan-mark">
+            <p class="plan-num" aria-hidden="true">05</p>
+            <span class="plan-node" aria-hidden="true"></span>
+          </div>
+          <div class="plan-copy">
+            <p class="story-kicker">Stay</p>
+            <h2>Near the mountains.</h2>
+            <p>
+              Micro-resorts, about half an hour from Banff and Canmore, would be built as showcases for the newest rooms. Net decks, wood-fired tubs, and a long look at the stars.
+            </p>
+            <p class="plan-links">
+              <a href="/resorts">Resorts</a>
+            </p>
+          </div>
+        </li>
+
+        <li class="plan-step" data-rise>
+          <div class="plan-mark">
+            <p class="plan-num" aria-hidden="true">06</p>
+            <span class="plan-node" aria-hidden="true"></span>
+          </div>
+          <div class="plan-copy">
+            <p class="story-kicker">Paradise</p>
+            <h2>Costa Rica, our second home.</h2>
+            <p>
+              Building in harmony with nature comes easier there. The same care would go there when the work is ready.
+            </p>
+          </div>
+        </li>
+
+        <li class="plan-step" data-rise>
+          <div class="plan-mark">
+            <p class="plan-num" aria-hidden="true">07</p>
+            <span class="plan-node" aria-hidden="true"></span>
+          </div>
+          <div class="plan-copy">
+            <p class="story-kicker">Home</p>
+            <h2>Full eco homes, someday.</h2>
+            <p>
+              Whole houses would come last, after the rooms have taught the rest. Still quiet, and still close to the ground.
+            </p>
+          </div>
+        </li>
+      </ol>
     </div>
+
+    <p class="plan-close" data-rise>One room at a time. Then a little more.</p>
   </main>
 </BaseLayout>
+
+<style>
+  .plan {
+    color: #14120e;
+  }
+  .plan-track {
+    position: relative;
+    padding: 2vh 8vw 4vh;
+  }
+  .plan-spine {
+    position: absolute;
+    z-index: 0;
+    top: 6vh;
+    bottom: 8vh;
+    left: calc(8vw + 6.25rem);
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      rgba(156, 122, 85, 0.55) 10%,
+      rgba(156, 122, 85, 0.55) 90%,
+      transparent
+    );
+    transform-origin: top center;
+    pointer-events: none;
+  }
+  .plan-rail {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .plan-step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 6.25rem minmax(0, 38rem);
+    column-gap: 3rem;
+    align-items: start;
+    padding: 11vh 0;
+  }
+  .plan-mark {
+    position: relative;
+  }
+  .plan-num {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(1.7rem, 2.6vw, 2.35rem);
+    line-height: 1;
+    letter-spacing: 0.06em;
+    color: #9c7a55;
+  }
+  .plan-node {
+    position: absolute;
+    z-index: 1;
+    top: 0.48rem;
+    right: -3.5px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #f4f3ef;
+    box-shadow: 0 0 0 1px #9c7a55;
+  }
+  .plan-copy h2 {
+    margin: 0.85rem 0 0;
+    max-width: 11em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.35rem, 4.8vw, 4.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .plan-keep {
+    white-space: nowrap;
+  }
+  .plan-copy > p {
+    max-width: 34rem;
+    margin: 1.6rem 0 0;
+    font-weight: 300;
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: rgba(20, 18, 14, 0.78);
+  }
+  .plan-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.4rem;
+    margin-top: 1.75rem;
+  }
+  .plan-links a {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: #8a6a45;
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .plan-links a:hover {
+    opacity: 0.55;
+  }
+  .plan-close {
+    margin: 8vh 8vw 20vh calc(8vw + 6.25rem + 3rem);
+    max-width: 12em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.1rem, 4.6vw, 3.8rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+  }
+
+  @media (max-width: 800px) {
+    .plan-track {
+      padding: 0 1.5rem 2vh;
+    }
+    .plan-spine {
+      left: calc(1.5rem + 0.15rem);
+      top: 4vh;
+      bottom: 4vh;
+    }
+    .plan-step {
+      grid-template-columns: 1fr;
+      row-gap: 1.15rem;
+      padding: 8vh 0 8vh 1.65rem;
+    }
+    .plan-mark {
+      position: static;
+    }
+    .plan-node {
+      top: calc(8vh + 0.42rem);
+      right: auto;
+      left: 0.15rem;
+      transform: translateX(-50%);
+    }
+    .plan-close {
+      margin: 5vh 1.5rem 16vh 3.15rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .plan-links a {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+
+  const page = document.querySelector('.plan');
+  if (page && !prefersReducedMotion()) {
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'plan-rise')
+      .forEach((trigger) => trigger.kill());
+
+    gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
+      gsap.from(el, {
+        y: 22,
+        opacity: 0,
+        duration: 1.85,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'plan-rise',
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    });
+
+    const settle = () => ScrollTrigger.refresh();
+    requestAnimationFrame(settle);
+    window.addEventListener('load', settle, { once: true });
+  }
+</script>
