@@ -1,55 +1,57 @@
 ---
+import { getCollection } from 'astro:content';
 import Join from '../../components/Join.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { formatJournalDate, legacyNotes, type JournalCard } from '../../lib/journal';
 
-const notes = [
-  {
-    href: '/journal/one-shell',
-    title: 'One room, several lives',
-    dek: 'The room, the glass, the resort, the farm wall, and the water line are one object with different work inside it.',
-  },
-  {
-    href: '/journal/aura-farms',
-    title: 'Aura Farms, grown on the wall',
-    dek: 'Vertical aeroponics in the same room: what it is, who can buy it, and what a free-food network would ask of it.',
-  },
-  {
-    href: '/journal/water-from-the-air',
-    title: 'Water from the air, bottled in the room',
-    dek: 'H20 comes later. The generator and the bottling line still need further research.',
-  },
-  {
-    href: '/journal/free-food-and-water',
-    title: 'Free food, free water, named by the label',
-    dek: 'The network we hope to build: an advertiser’s name on the jug or the harvest. The person who takes it does not pay.',
-  },
-  {
-    href: '/journal/build-your-own',
-    title: 'Build your own',
-    dek: 'The builder is a tool. Set the room on this site, or build it from the GitHub source.',
-  },
+const published = (await getCollection('journal', ({ data }) => data.draft !== true)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const notes: JournalCard[] = [
+  ...published.map((post) => ({
+    href: `/journal/${post.id}`,
+    title: post.data.title,
+    excerpt: post.data.excerpt,
+    date: post.data.date.toISOString().slice(0, 10),
+    tags: post.data.tags,
+    cover: post.data.cover,
+    coverAlt: post.data.coverAlt,
+  })),
+  ...legacyNotes,
 ];
 ---
 
 <BaseLayout
   title="Journal | Aura Homes"
-  description="Beautiful second-life rooms that bring people back to nature, one room at a time."
+  description="Notes from the build, and from the hope."
   descriptor="Journal"
 >
-  <main class="article" id="top">
-    <p class="story-kicker">Journal</p>
-    <h1>What we are building, and what we hope.</h1>
-    <p class="story-lede">Five notes. The first is the whole story. The others are the farm, the water, the network, and the builder.</p>
-    <ol class="journal-list">
-      {notes.map((note) => (
-        <li>
-          <a href={note.href}>
-            <strong>{note.title}</strong>
-            <span>{note.dek}</span>
-          </a>
-        </li>
-      ))}
-    </ol>
+  <main class="journal-index" id="top">
+    <section class="page-lead">
+      <p class="story-kicker">Journal</p>
+      <h1>What we are building, and what we hope.</h1>
+      <p class="story-lede">Notes from the shop. The first is the whole story. The others follow it out.</p>
+    </section>
+    <ul class="journal-grid">
+      {
+        notes.map((note) => (
+          <li>
+            <a class="journal-card" href={note.href} data-rise>
+              <figure>
+                <img src={note.cover} alt={note.coverAlt} width="1280" height="853" loading="lazy" />
+              </figure>
+              <p class="journal-card-meta">
+                <time datetime={note.date}>{formatJournalDate(note.date)}</time>
+                {note.tags.length > 0 && <span>{note.tags.join(' · ')}</span>}
+              </p>
+              <h2>{note.title}</h2>
+              <p>{note.excerpt}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
   </main>
   <section id="enquire" class="enquire">
     <p class="story-kicker">Enquire</p>
@@ -58,3 +60,117 @@ const notes = [
     <Join shell="unsure" />
   </section>
 </BaseLayout>
+
+<style>
+  .journal-index .page-lead h1 {
+    max-width: 11em;
+  }
+  .journal-grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(3.2rem, 6vw, 5.5rem) clamp(1.5rem, 3vw, 3rem);
+    margin: 0;
+    padding: 2vh 8vw 8vh;
+    list-style: none;
+  }
+  .journal-card {
+    display: block;
+    color: #14120e;
+    text-decoration: none;
+  }
+  .journal-card:focus-visible {
+    outline: 1px solid rgba(156, 122, 85, 0.75);
+    outline-offset: 6px;
+  }
+  .journal-card figure {
+    margin: 0 0 1.2rem;
+    overflow: hidden;
+    background: #0c0d0e;
+    aspect-ratio: 3 / 2;
+  }
+  .journal-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .journal-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.9rem;
+    margin: 0 0 0.7rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #8a6a45;
+  }
+  .journal-card h2 {
+    margin: 0 0 0.55rem;
+    max-width: 18em;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.55rem, 2.2vw, 2.05rem);
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+  .journal-card p:last-child {
+    max-width: 28rem;
+    margin: 0;
+    font-weight: 300;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: rgba(20, 18, 14, 0.74);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .journal-card img {
+      transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .journal-card:hover img,
+    .journal-card:focus-visible img {
+      transform: scale(1.03);
+    }
+  }
+  @media (max-width: 800px) {
+    .journal-grid {
+      grid-template-columns: 1fr;
+      padding: 1vh 1.5rem 6vh;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .journal-card img {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '../../scripts/motion';
+
+  const page = document.querySelector('.journal-index');
+  if (page && !prefersReducedMotion()) {
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'journal-rise')
+      .forEach((trigger) => trigger.kill());
+
+    gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
+      gsap.from(el, {
+        y: 22,
+        opacity: 0,
+        duration: 1.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'journal-rise',
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    });
+
+    const settle = () => ScrollTrigger.refresh();
+    requestAnimationFrame(settle);
+    window.addEventListener('load', settle, { once: true });
+  }
+</script>

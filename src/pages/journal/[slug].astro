@@ -1,0 +1,30 @@
+---
+import { getCollection, render } from 'astro:content';
+import JournalPost from '../../layouts/JournalPost.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('journal', ({ data }) => {
+    // Drafts stay out of the production build. Dev keeps a direct URL so the template can be read.
+    return import.meta.env.DEV || data.draft !== true;
+  });
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<JournalPost
+  title={post.data.title}
+  description={post.data.excerpt}
+  date={post.data.date}
+  cover={post.data.cover}
+  coverAlt={post.data.coverAlt}
+  tags={post.data.tags}
+  youtube={post.data.youtube}
+>
+  <Content />
+</JournalPost>
