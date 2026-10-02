@@ -1,6 +1,13 @@
 ---
 import Materials from '../components/Materials.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+const steps = [
+  { n: '01', title: 'Tell us your idea.', detail: '' },
+  { n: '02', title: 'We design and quote.', detail: '' },
+  { n: '03', title: 'We build.', detail: '40% deposit on custom builds.' },
+  { n: '04', title: 'We deliver.', detail: '' },
+];
 ---
 
 <BaseLayout
@@ -8,21 +15,226 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Beautiful second-life rooms that bring people back to nature, one room at a time."
   descriptor="Customs"
 >
-  <main id="top">
+  <main id="top" class="customs-page">
     <section class="page-lead">
       <p class="story-kicker">Customs</p>
-      <h1>Drawn for the site.</h1>
-      <p class="story-lede">
-        The room on a steel frame is the start. Some land asks for more: helical piles, a floor lit from beneath, a deck, or a few rooms planned as one stay. Those are drawn for the place, not picked from a catalogue.
-      </p>
+      <h1>Second Breath Customs.</h1>
+      <p class="story-lede">Bring your own trailer, and give it a second life. Or let us source one.</p>
+      <p class="customs-note">One-off builds, from a small shop. Elegant, and quoted case by case.</p>
     </section>
-    <div class="page-body">
-      <h2>Glass</h2>
-      <p>A structured deck, a net, and balconies with glass-style railings. The picture is the floor, the span, and the light under it. The longer page is <a href="/glass">the glass</a>.</p>
-      <h2>A small resort</h2>
-      <p>A few rooms in Canada or Costa Rica, built custom. Costa Rica does not have its photograph yet. Until it does, the snow is the reference, and the plan is the same: few rooms, built for the stay. See <a href="/resorts">the resorts</a>.</p>
-      <p>The room you can ask about now is on <a href="/rooms">Rooms</a>. A custom site starts with a note on <a href="/contact">Contact</a>, or a name held at <a href="/pre-order">Pre-order</a>.</p>
+
+    <figure class="customs-still" data-customs-rise>
+      <img
+        src="/film/layout-door.webp"
+        alt="A steel-frame room at dusk, the door open to the grass, warm light along the wood inside."
+        width="1280"
+        height="922"
+      />
+    </figure>
+
+    <section class="customs-brief" data-customs-rise>
+      <p>Off-grid and solar builds are available on request.</p>
+    </section>
+
+    <section class="customs-path" aria-labelledby="customs-path" data-customs-rise>
+      <h2 id="customs-path">The path.</h2>
+      <ol>
+        {steps.map((step) => (
+          <li>
+            <span>{step.n}</span>
+            <div>
+              <p>{step.title}</p>
+              {step.detail && <p class="customs-deposit">{step.detail}</p>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <div class="customs-close" data-customs-rise>
+      <a class="customs-quote" href="/pre-order?type=custom">Get a quote</a>
+      <p>Rent-to-own and financing are on our roadmap.</p>
     </div>
+
     <Materials />
   </main>
 </BaseLayout>
+
+<style>
+  .customs-note {
+    max-width: 32rem;
+    margin: 1.6rem 0 0;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  .customs-still {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 0 8vw;
+    overflow: hidden;
+  }
+  .customs-still img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .customs-brief {
+    position: relative;
+    z-index: 1;
+    max-width: 36rem;
+    margin: 0;
+    padding: 4.5rem 8vw 0;
+    color: #14120e;
+  }
+  .customs-brief p {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1.125rem;
+    line-height: 1.65;
+    color: rgba(20, 18, 14, 0.78);
+  }
+  .customs-path {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 4.5rem 8vw 0;
+    color: #14120e;
+  }
+  .customs-path h2 {
+    margin: 0 0 1.25rem;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 2.4vw, 2.15rem);
+    letter-spacing: -0.03em;
+  }
+  .customs-path ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: 40rem;
+  }
+  .customs-path li {
+    display: grid;
+    grid-template-columns: 4.25rem minmax(0, 1fr);
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+    padding: 1.25rem 0;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .customs-path li:last-child {
+    border-bottom: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .customs-path span {
+    font-size: 0.68rem;
+    letter-spacing: 0.22em;
+    color: #8a6a45;
+  }
+  .customs-path p {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .customs-path p.customs-deposit {
+    margin-top: 0.45rem;
+    font-family: var(--font-inter);
+    font-weight: 300;
+    font-size: 0.95rem;
+    letter-spacing: 0;
+    line-height: 1.5;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  .customs-close {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    padding: 3.5rem 8vw 2vh;
+  }
+  .customs-quote {
+    display: inline-block;
+    padding: 0.7rem 1.05rem;
+    border: 1px solid #14120e;
+    color: #14120e;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .customs-quote:focus-visible {
+    outline: 1px solid #8a6a45;
+    outline-offset: 4px;
+  }
+  .customs-close p {
+    max-width: 28rem;
+    margin: 1.35rem 0 0;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .customs-still img {
+      transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .customs-still:hover img {
+      transform: scale(1.02);
+    }
+    .customs-quote {
+      transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .customs-quote:hover,
+    .customs-quote:focus-visible {
+      opacity: 0.55;
+    }
+  }
+  @media (max-width: 800px) {
+    .customs-still {
+      padding: 0 1.5rem;
+    }
+    .customs-brief,
+    .customs-path,
+    .customs-close {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+    .customs-path li {
+      grid-template-columns: 3.2rem minmax(0, 1fr);
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+
+  const page = document.querySelector('.customs-page');
+  if (page && !prefersReducedMotion()) {
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'customs-rise')
+      .forEach((trigger) => trigger.kill());
+
+    gsap.utils.toArray<HTMLElement>('[data-customs-rise]', page).forEach((el) => {
+      gsap.from(el, {
+        y: 22,
+        opacity: 0,
+        duration: 1.75,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'customs-rise',
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    });
+
+    const settle = () => ScrollTrigger.refresh();
+    requestAnimationFrame(settle);
+    window.addEventListener('load', settle, { once: true });
+  }
+</script>
