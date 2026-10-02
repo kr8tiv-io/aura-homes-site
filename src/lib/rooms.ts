@@ -4,8 +4,9 @@ export type RoomConcept = {
   slug: string;
   name: string;
   shell: RoomShell;
-  image: string;
+  image: string | null;
   alt: string;
+  shot?: string;
   description: string;
   focus: string;
 };
@@ -15,8 +16,8 @@ export const roomConcepts: RoomConcept[] = [
     slug: 'the-soak',
     name: 'The Soak',
     shell: 'room',
-    image: '/film/layout-shell.webp',
-    alt: 'A dark room on a steel frame in a meadow, with a wood-fired tub and a hanging swing.',
+    image: '/film/story-meadow-side.webp',
+    alt: 'A black glass room in tall grass at dusk, a cedar tub steaming, and a hanging seat under an arch.',
     description: 'A wood-fired tub and swing, standard. Then a slow seat in the grass.',
     focus: 'center',
   },
@@ -24,8 +25,8 @@ export const roomConcepts: RoomConcept[] = [
     slug: 'chapter-one',
     name: 'Chapter One',
     shell: 'room',
-    image: '/film/layout-door.webp',
-    alt: 'A dark room at dusk with the glass door open onto warm wood and a daybed.',
+    image: '/film/story-room.webp',
+    alt: 'A dark glass room at dusk, the door open onto a linen seat and a green meadow.',
     description: 'The first room, open to the field. A small start, with the door ajar.',
     focus: 'center',
   },
@@ -69,8 +70,9 @@ export const roomConcepts: RoomConcept[] = [
     slug: 'hot-take',
     name: 'Hot Take',
     shell: 'room',
-    image: '/film/layout-gazebo.webp',
-    alt: 'A wood-fired tub on a small trailer, under a glass roof, in a green field.',
+    image: null,
+    alt: 'Dusk, wood-fired cedar tub steaming inside clear glass, aspen trees, a quiet meadow, the chassis only a low line.',
+    shot: 'Dusk, wood-fired cedar tub steaming inside clear glass, aspen trees, a quiet meadow, the chassis only a low line.',
     description: 'A wood-fired tub on its own wheels. Tow it out, and light the stove.',
     focus: 'center',
   },
