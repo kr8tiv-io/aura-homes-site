@@ -18,6 +18,7 @@ const shells = [
   <form class="join-card join-form" id="preorder" action="/api/join" method="post">
     <p class="story-kicker">Pre-order</p>
     <h3>Hold your place.</h3>
+    <p class="join-model" data-model-line hidden></p>
     <p>Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
     <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <input type="hidden" name="kind" value="preorder" />
@@ -63,7 +64,28 @@ const shells = [
 </div>
 
 <script>
+  import { roomBySlug } from '../lib/rooms';
+
   const params = new URLSearchParams(location.search);
+  const concept = roomBySlug(params.get('model'));
+  if (concept) {
+    const select = document.getElementById('preorder-shell');
+    if (select instanceof HTMLSelectElement) select.value = concept.shell;
+    const note = document.getElementById('preorder-note');
+    if (note instanceof HTMLTextAreaElement && note.value.trim() === '') {
+      note.value = `Concept: ${concept.name}.`;
+    }
+    const line = document.querySelector('[data-model-line]');
+    if (line instanceof HTMLElement) {
+      line.textContent = `Asking about ${concept.name}.`;
+      line.hidden = false;
+    }
+    const lede = document.querySelector('[data-preorder-lede]');
+    if (lede) {
+      lede.textContent = `You asked about ${concept.name}. Tell us the land, and we will write when that build opens. This page takes no payment. It holds your name.`;
+    }
+  }
+
   const joined = params.get('joined');
   if (joined === 'list' || joined === 'preorder') {
     const form = document.getElementById(joined);

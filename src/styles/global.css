@@ -1320,6 +1320,10 @@ html.lenis body {
   line-height: 1.55;
   color: rgba(244, 243, 239, 0.78);
 }
+.join-card .join-model {
+  color: #c4a07a;
+  letter-spacing: 0.03em;
+}
 .join-card label {
   display: block;
   margin: 0.85rem 0 0.35rem;
