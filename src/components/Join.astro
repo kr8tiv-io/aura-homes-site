@@ -19,7 +19,7 @@ const shells = [
     <p class="story-kicker">Pre-order</p>
     <h3>Hold your place.</h3>
     <p class="join-model" data-model-line hidden></p>
-    <p>Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
+    <p data-join-intro>Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
     <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <input type="hidden" name="kind" value="preorder" />
     <label for="preorder-name">Name</label>
@@ -83,6 +83,24 @@ const shells = [
     const lede = document.querySelector('[data-preorder-lede]');
     if (lede) {
       lede.textContent = `You asked about ${concept.name}. Tell us the land, and we will write when that build opens. This page takes no payment. It holds your name.`;
+    }
+  } else if (params.get('type') === 'custom') {
+    const note = document.getElementById('preorder-note');
+    if (note instanceof HTMLTextAreaElement && note.value.trim() === '') {
+      note.value = 'Custom: Second Breath.';
+    }
+    const line = document.querySelector('[data-model-line]');
+    if (line instanceof HTMLElement) {
+      line.textContent = 'Asking about a custom build.';
+      line.hidden = false;
+    }
+    const lede = document.querySelector('[data-preorder-lede]');
+    if (lede) {
+      lede.textContent = 'You asked about a custom build. Tell us the idea, and we will write with a quote. This page takes no payment. It holds your name.';
+    }
+    const intro = document.querySelector('[data-join-intro]');
+    if (intro) {
+      intro.textContent = 'Tell us the idea. This page takes no payment. It holds your name.';
     }
   }
 
