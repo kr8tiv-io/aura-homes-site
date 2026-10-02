@@ -1,15 +1,10 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import BuilderJourney from '../builder/BuilderJourney';
-import '../styles/builder.css';
 ---
-
-<BaseLayout
-  title="Build your own | Aura Homes"
-  description="Beautiful second-life rooms that bring people back to nature, one room at a time."
-  descriptor="Build your own"
->
-  <main id="top">
-    <BuilderJourney client:only="react" />
-  </main>
-</BaseLayout>
+<title>Build Your Own | Aura Homes</title>
+<meta name="robots" content="noindex" />
+<link rel="canonical" href="/build-your-own" />
+<meta http-equiv="refresh" content="0;url=/build-your-own" />
+<p><a href="/build-your-own">Build Your Own</a></p>
+<script is:inline>
+  location.replace('/build-your-own');
+</script>

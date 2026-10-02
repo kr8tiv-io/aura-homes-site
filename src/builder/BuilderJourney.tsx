@@ -14,6 +14,30 @@ type Beat = {
 
 const SOURCE = 'https://github.com/kr8tiv-ai/aura-homes';
 
+const USES = ['A room', 'Glass on piles', 'A farm wall', 'Water from the air'] as const;
+const GLASS = ['Clear', 'Mirror', 'Tinted'] as const;
+const LENGTHS = ['20 ft', '28 ft', '36 ft'] as const;
+type UseChoice = (typeof USES)[number];
+type GlassChoice = (typeof GLASS)[number];
+type LengthChoice = (typeof LENGTHS)[number];
+
+const useSlug: Record<UseChoice, string> = {
+  'A room': 'room',
+  'Glass on piles': 'glass',
+  'A farm wall': 'farm',
+  'Water from the air': 'water',
+};
+const glassSlug: Record<GlassChoice, string> = {
+  Clear: 'clear',
+  Mirror: 'mirror',
+  Tinted: 'tinted',
+};
+const lengthSlug: Record<LengthChoice, string> = {
+  '20 ft': '20-ft',
+  '28 ft': '28-ft',
+  '36 ft': '36-ft',
+};
+
 const BEATS: Beat[] = [
   {
     id: 'walk',
@@ -36,7 +60,7 @@ const BEATS: Beat[] = [
     n: '03',
     label: 'Glass',
     heading: 'Set the glass.',
-    body: 'Clear, mirror, or tint. The choice is at the end of the scroll, and it stays in this browser.',
+    body: 'Clear, mirror, or tinted. The choice is at the end of the scroll, and it stays in this browser.',
     side: 'right',
   },
   {
@@ -76,9 +100,10 @@ export default function BuilderJourney() {
   const [night, setNight] = useState(false);
   const [sound, setSound] = useState(false);
   const [active, setActive] = useState(0);
-  const [use, setUse] = useState('A room');
-  const [glass, setGlass] = useState('Clear');
-  const [length, setLength] = useState('28 ft');
+  const [use, setUse] = useState<UseChoice>('A room');
+  const [glass, setGlass] = useState<GlassChoice>('Clear');
+  const [length, setLength] = useState<LengthChoice>('28 ft');
+  const quoteHref = `/pre-order?finish=${glassSlug[glass]}&length=${lengthSlug[length]}&design=${useSlug[use]}`;
 
   useEffect(() => {
     const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -221,9 +246,9 @@ export default function BuilderJourney() {
           }}
         >
           <div className="b-hero">
-            <p className="b-kicker">00  Builder</p>
-            <h1>Build your own.</h1>
-            <p>Walk the clearing, then set the room. The same builder is on GitHub.</p>
+            <p className="b-kicker">The clearing</p>
+            <h1>Build Your Own.</h1>
+            <p>Walk the clearing, then set the room.</p>
           </div>
         </section>
         {BEATS.map((b, i) => (
@@ -251,33 +276,27 @@ export default function BuilderJourney() {
           <form className="b-form" onSubmit={(e) => e.preventDefault()}>
             <label>
               Use
-              <select value={use} onChange={(e) => setUse(e.target.value)}>
-                <option>A room</option>
-                <option>Glass on piles</option>
-                <option>A farm wall</option>
-                <option>Water from the air</option>
+              <select value={use} onChange={(e) => setUse(e.target.value as UseChoice)}>
+                {USES.map((item) => <option key={item}>{item}</option>)}
               </select>
             </label>
             <label>
               Glass
-              <select value={glass} onChange={(e) => setGlass(e.target.value)}>
-                <option>Clear</option>
-                <option>Mirror</option>
-                <option>Tint</option>
+              <select value={glass} onChange={(e) => setGlass(e.target.value as GlassChoice)}>
+                {GLASS.map((item) => <option key={item}>{item}</option>)}
               </select>
             </label>
             <label>
               Length of the room
-              <select value={length} onChange={(e) => setLength(e.target.value)}>
-                <option>20 ft</option>
-                <option>28 ft</option>
-                <option>36 ft</option>
+              <select value={length} onChange={(e) => setLength(e.target.value as LengthChoice)}>
+                {LENGTHS.map((item) => <option key={item}>{item}</option>)}
               </select>
             </label>
           </form>
           <p className="b-brief">
             {length}. {glass} glass. {use}.
           </p>
+          <a className="b-quote" href={quoteHref}>Send this design with a quote request</a>
           <p className="b-links">
             <a href={SOURCE} target="_blank" rel="noreferrer">Build it on GitHub</a>
           </p>
@@ -299,8 +318,8 @@ export default function BuilderJourney() {
           )}
           <div className="b-gate-copy">
             <p className="b-kicker">The clearing</p>
-            <h1>Aura Homes</h1>
-            <p>Open the builder. Walk the clearing, then set the room.</p>
+            <h1>Build Your Own.</h1>
+            <p>Walk the clearing, then set the room.</p>
             <button type="button" onClick={() => enter(true)}>Enter the clearing</button>
             <button type="button" className="b-quiet" onClick={() => enter(false)}>Enter quietly</button>
           </div>

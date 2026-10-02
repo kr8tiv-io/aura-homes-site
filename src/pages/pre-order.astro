@@ -208,28 +208,80 @@ const offgrid = [
   const model = document.getElementById('quote-model');
   const ask = document.querySelector('[data-quote-ask]');
 
+  const params = new URLSearchParams(location.search);
+  const lengthNames: Record<string, string> = {
+    '20-ft': '20 ft',
+    '28-ft': '28 ft',
+    '36-ft': '36 ft',
+  };
+  const designNames: Record<string, string> = {
+    room: 'A room',
+    glass: 'Glass on piles',
+    farm: 'A farm wall',
+    water: 'Water from the air',
+  };
+  const lengthLabel = lengthNames[params.get('length') || ''] || '';
+  const designLabel = designNames[params.get('design') || ''] || '';
+  const finishEl = document.getElementById('quote-finish');
+  const finishParam = params.get('finish');
+  if (
+    finishEl instanceof HTMLSelectElement &&
+    finishParam &&
+    [...finishEl.options].some((option) => option.value === finishParam)
+  ) {
+    finishEl.value = finishParam;
+  }
+  const message = document.getElementById('quote-message');
+  if (
+    lengthLabel &&
+    designLabel &&
+    message instanceof HTMLTextAreaElement &&
+    message.value.trim() === ''
+  ) {
+    const finishName = finishEl instanceof HTMLSelectElement
+      ? finishEl.selectedOptions[0]?.textContent?.trim()
+      : '';
+    message.value = `Design: ${lengthLabel}. ${finishName} finish. ${designLabel}.`;
+  }
+
+  const designAsk = () => {
+    if (!lengthLabel || !designLabel) return '';
+    const finishName = finishEl instanceof HTMLSelectElement
+      ? finishEl.selectedOptions[0]?.textContent?.trim()
+      : '';
+    return `${lengthLabel}, ${finishName} finish, ${designLabel}.`;
+  };
+
   const syncAsk = () => {
     if (!(model instanceof HTMLSelectElement) || !(ask instanceof HTMLElement)) return;
     const value = model.value;
+    const design = designAsk();
     if (!value || value === 'unsure') {
-      ask.hidden = true;
-      ask.textContent = '';
+      if (!design) {
+        ask.hidden = true;
+        ask.textContent = '';
+        return;
+      }
+      ask.textContent = `Asking about ${design}`;
+      ask.hidden = false;
       return;
     }
-    ask.textContent = value === 'custom'
+    const modelLine = value === 'custom'
       ? 'Asking about a custom build.'
       : `Asking about ${model.selectedOptions[0]?.textContent?.trim() || 'this model'}.`;
+    ask.textContent = design ? `${modelLine} ${design}` : modelLine;
     ask.hidden = false;
   };
 
   if (model instanceof HTMLSelectElement) {
-    const params = new URLSearchParams(location.search);
     const requested = params.get('model');
     const known = requested ? [...model.options].some((option) => option.value === requested) : false;
     if (requested && known) model.value = requested;
     else if (params.get('type') === 'custom' || requested === 'custom') model.value = 'custom';
     syncAsk();
     model.addEventListener('change', syncAsk);
+  } else {
+    syncAsk();
   }
 
   const showThanks = () => {
