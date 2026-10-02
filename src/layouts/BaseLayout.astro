@@ -110,56 +110,49 @@ const foot = menu.flatMap((group) => group.links);
         ))}
       </nav>
       <div class="nav-tools">
-        <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-label="Menu">
-          <svg class="nav-sigil" viewBox="0 0 120 120" aria-hidden="true">
-            <path class="nav-draw" d="M8 30C34 16 74 14 112 28" />
-            <path class="nav-draw" d="M12 38C40 24 80 22 110 36" />
-            <path class="nav-draw" d="M4 56L32 44L58 52L92 36L116 48" />
-            <path class="nav-draw" d="M36 70H82L96 80H50Z" />
-            <path class="nav-draw" d="M36 70V102H82V70" />
-            <path class="nav-draw" d="M82 70L96 80V112L82 102" />
-            <path class="nav-draw" d="M51 70V102M66 70V102M36 86H82" />
-            <path class="nav-draw" d="M32 106H86L100 116H46Z" />
-            <path class="nav-x" d="M42 42L78 78" />
-            <path class="nav-x" d="M78 42L42 78" />
+        <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
+          <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
+            <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
+            <g class="sigil-mark">
+              <circle class="sigil-halo" cx="32" cy="8.5" r="1.65" />
+              <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
+            </g>
           </svg>
         </button>
         {!isBuilder && <a href="/pre-order" class="nav-cta" aria-current={path === '/pre-order' ? 'page' : undefined}>Pre-order</a>}
       </div>
     </header>
-    <div id="story-menu" class="nav-panel" hidden>
-      <svg class="nav-art" viewBox="0 0 320 240" aria-hidden="true">
-        <path class="sky" d="M6 34C78 8 190 6 314 32" />
-        <path class="sky" d="M14 46C90 22 200 20 306 46" />
-        <path class="sky" d="M0 78L48 58L104 72L168 46L228 66L286 44L320 58" />
-        <path class="fine" d="M8 206C86 186 200 188 312 204" />
-        <path class="ink" d="M46 130V64H90V130" />
-        <path class="fine" d="M42 130H94M42 113H94M42 96H94M42 79H94M40 64H96" />
-        <path class="fine" d="M61 130V64M75 130V64" />
-        <path class="ink" d="M118 86H214L248 108H152Z" />
-        <path class="fine" d="M118 86V92H214V86M214 92L248 114V108" />
-        <path class="ink" d="M118 92V162H214V92" />
-        <path class="ink" d="M214 92L248 114V184L214 162" />
-        <path class="fine" d="M142 92V162M166 92V162M190 92V162M118 126H214" />
-        <path class="fine" d="M226 104V174M236 110V180" />
-        <path class="ink" d="M190 162L164 176V106L190 92" />
-        <path class="ink" d="M108 168H222L256 190H142Z" />
-        <path class="fine" d="M124 174V186M210 178V190" />
-      </svg>
-      <p class="nav-thesis">Aura Homes. Get people back outside, one beautiful room at a time.</p>
-      <div class="nav-groups">
-        {menu.map((group) => (
-          <div>
-            <p>{group.label}</p>
-            {group.links.map((item) => (
-              <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-            ))}
+    <div id="story-menu" class="nav-panel" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+      <div class="menu-horizon" aria-hidden="true"></div>
+      <div class="menu-stage" aria-hidden="true">
+        <div class="menu-ridge-clip">
+          <div class="menu-ridge-shift">
+            <svg class="menu-ridge" viewBox="0 0 200 188" fill="none">
+              <path vector-effect="non-scaling-stroke" d="M8 154H46L58 168L72 154L100 48L128 154L142 168L154 154H192" />
+            </svg>
           </div>
-        ))}
+        </div>
+        <div class="menu-halo-anchor">
+          <span class="menu-glow"></span>
+          <span class="menu-halo"></span>
+        </div>
+      </div>
+      <div class="nav-copy">
+        <p class="nav-thesis">Aura Homes. Get people back outside, one beautiful room at a time.</p>
+        <div class="nav-groups">
+          {menu.map((group) => (
+            <div>
+              <p>{group.label}</p>
+              {group.links.map((item) => (
+                <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
 
-    <div class="relative z-10">
+    <div class="page-main relative z-10">
       <slot />
     </div>
     {showFoot && (
@@ -430,67 +423,153 @@ const foot = menu.flatMap((group) => group.links);
         });
       }
 
-      const menu = document.querySelector('.nav-menu') as HTMLButtonElement | null;
+      const menuBtn = document.querySelector('.nav-menu') as HTMLButtonElement | null;
       const panel = document.getElementById('story-menu');
-      const art = panel?.querySelector('.nav-art') as SVGSVGElement | null;
-      const artPaths = art ? Array.from(art.querySelectorAll('path')) : [];
-      artPaths.forEach((path) => {
-        const len = path.getTotalLength();
-        path.style.strokeDasharray = `${len}`;
-        path.style.strokeDashoffset = reduce ? '0' : `${len}`;
-      });
-      let menuTween: Array<{ kill: () => void }> = [];
+      const pageMain = document.querySelector('.page-main') as HTMLElement | null;
+      const foot = document.querySelector('.site-foot') as HTMLElement | null;
+      const navLock = Array.from(document.querySelectorAll('.nav-brand, .nav-words, .nav-cta')) as HTMLElement[];
+      const line = panel?.querySelector('.menu-horizon') as HTMLElement | null;
+      const clip = panel?.querySelector('.menu-ridge-clip') as HTMLElement | null;
+      const shift = panel?.querySelector('.menu-ridge-shift') as HTMLElement | null;
+      const ridge = panel?.querySelector('.menu-ridge') as HTMLElement | null;
+      const halo = panel?.querySelector('.menu-halo') as HTMLElement | null;
+      const glow = panel?.querySelector('.menu-glow') as HTMLElement | null;
       const menuBits = () => panel?.querySelectorAll('.nav-thesis, .nav-groups a, .nav-groups p') ?? [];
-      const closeMenu = () => {
-        menu?.setAttribute('aria-expanded', 'false');
-        panel?.classList.remove('is-open');
-        menuTween.forEach((tween) => tween.kill());
-        window.setTimeout(() => {
-          if (menu?.getAttribute('aria-expanded') !== 'false' || !panel) return;
-          panel.setAttribute('hidden', '');
-          gsap.set(menuBits(), { clearProps: 'all' });
-          if (art) gsap.set(art, { clearProps: 'transform' });
-          if (!reduce) {
-            artPaths.forEach((path) => {
-              path.style.strokeDashoffset = path.style.strokeDasharray;
-            });
-          }
-        }, reduce ? 0 : 420);
+      const motionOff = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const menuPaint = [panel, line, clip, shift, ridge, halo, glow].filter(Boolean);
+      let menuTl: gsap.core.Timeline | null = null;
+      let menuGeneration = 0;
+      let menuOpen = false;
+      const wipe = { p: 1 };
+      const applyWipe = () => {
+        if (!clip || !shift) return;
+        const p = Math.max(wipe.p, 0.04);
+        gsap.set(clip, { scaleX: p, transformOrigin: '0% 50%' });
+        gsap.set(shift, { scaleX: 1 / p, transformOrigin: '0% 50%' });
+      };
+      const setLocked = (on: boolean) => {
+        [pageMain, foot, ...navLock].forEach((el) => {
+          if (!el) return;
+          if (on) el.setAttribute('inert', '');
+          else el.removeAttribute('inert');
+        });
+        if (on) lenis?.stop();
+        else lenis?.start();
+      };
+      const hardClose = (restoreFocus: boolean) => {
+        menuGeneration += 1;
+        menuTl?.kill();
+        menuTl = null;
+        menuOpen = false;
+        panel?.setAttribute('hidden', '');
+        panel?.classList.remove('is-open', 'is-gsap');
+        document.body.classList.remove('menu-open');
+        menuBtn?.setAttribute('aria-expanded', 'false');
+        menuBtn?.setAttribute('aria-label', 'Menu');
+        setLocked(false);
+        gsap.set(menuPaint, { clearProps: 'all' });
+        gsap.set(menuBits(), { clearProps: 'all' });
+        if (restoreFocus) menuBtn?.focus({ preventScroll: true });
+      };
+      const closeMenu = (restoreFocus: boolean) => {
+        if (!menuBtn || !panel || !menuOpen) return;
+        if (menuBtn.getAttribute('aria-expanded') !== 'true') return;
+        const gen = (menuGeneration += 1);
+        menuBtn.setAttribute('aria-expanded', 'false');
+        menuBtn.setAttribute('aria-label', 'Menu');
+        if (motionOff()) {
+          hardClose(restoreFocus);
+          return;
+        }
+        menuTl?.kill();
+        menuTl = gsap.timeline({
+          onComplete: () => {
+            if (gen !== menuGeneration) return;
+            menuTl = null;
+            menuOpen = false;
+            panel.setAttribute('hidden', '');
+            panel.classList.remove('is-open', 'is-gsap');
+            document.body.classList.remove('menu-open');
+            setLocked(false);
+            gsap.set(menuPaint, { clearProps: 'all' });
+            gsap.set(menuBits(), { clearProps: 'all' });
+            if (restoreFocus) menuBtn.focus({ preventScroll: true });
+          },
+        });
+        menuTl.to(menuBits(), { opacity: 0, duration: 0.4, ease: 'power2.inOut' }, 0);
+        menuTl.to([halo, glow, ridge].filter(Boolean), { opacity: 0, duration: 0.5, ease: 'power2.inOut' }, 0);
+        if (line) menuTl.to(line, { scaleX: 0.08, duration: 0.6, ease: 'power3.inOut', transformOrigin: '100% 50%' }, 0);
+        menuTl.to(panel, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, 0.05);
       };
       const openMenu = () => {
-        if (!menu || !panel) return;
-        menu.setAttribute('aria-expanded', 'true');
+        if (!menuBtn || !panel || menuOpen) return;
+        menuGeneration += 1;
+        menuTl?.kill();
+        menuOpen = true;
+        const calm = motionOff();
+        menuBtn.setAttribute('aria-expanded', 'true');
+        menuBtn.setAttribute('aria-label', 'Close menu');
+        document.body.classList.add('menu-open');
+        setLocked(true);
+        if (!calm) {
+          panel.classList.add('is-gsap');
+          wipe.p = 0.06;
+          applyWipe();
+          gsap.set(ridge, { opacity: 1 });
+          gsap.set(panel, { opacity: 0 });
+          gsap.set(line, { scaleX: 0.08, transformOrigin: '100% 50%' });
+          gsap.set(halo, { opacity: 0, y: -4 });
+          gsap.set(glow, { opacity: 0, y: -4, scale: 0.55 });
+          gsap.set(menuBits(), { opacity: 0, y: 14 });
+        }
         panel.removeAttribute('hidden');
-        requestAnimationFrame(() => {
-          panel.classList.add('is-open');
-          if (reduce || !art) return;
-          const sigil = menu.querySelector('.nav-sigil');
-          if (!sigil) return;
-          const from = sigil.getBoundingClientRect();
-          const to = art.getBoundingClientRect();
-          const dx = from.left + from.width / 2 - (to.left + to.width / 2);
-          const dy = from.top + from.height / 2 - (to.top + to.height / 2);
-          const scale = to.width > 0 ? from.width / to.width : 0.12;
-          menuTween.forEach((tween) => tween.kill());
-          menuTween = [
-            gsap.fromTo(art, { x: dx, y: dy, scale }, { x: 0, y: 0, scale: 1, duration: 0.9, ease: 'power3.inOut' }),
-            gsap.to(artPaths, { strokeDashoffset: 0, duration: 1.15, stagger: 0.05, ease: 'power2.out' }),
-            gsap.fromTo(
-              panel.querySelectorAll('.nav-thesis, .nav-groups a, .nav-groups p'),
-              { y: 16, autoAlpha: 0 },
-              { y: 0, autoAlpha: 1, duration: 0.45, stagger: 0.028, delay: 0.18, ease: 'power2.out' },
-            ),
-          ];
+        panel.classList.add('is-open');
+        const first = panel.querySelector('.nav-groups a') as HTMLElement | null;
+        window.setTimeout(() => first?.focus({ preventScroll: true }), calm ? 0 : 30);
+        if (calm || !clip || !shift) return;
+        const gen = menuGeneration;
+        menuTl = gsap.timeline({
+          onComplete: () => {
+            if (gen !== menuGeneration) return;
+            gsap.set(menuBits(), { clearProps: 'transform,opacity' });
+          },
         });
+        menuTl.to(panel, { opacity: 1, duration: 1.05, ease: 'power2.inOut' }, 0);
+        if (line) menuTl.to(line, { scaleX: 1, duration: 1.7, ease: 'power3.inOut', transformOrigin: '100% 50%' }, 0);
+        menuTl.to(wipe, { p: 1, duration: 1.9, ease: 'power3.inOut', onUpdate: applyWipe }, 0.12);
+        if (halo) menuTl.to(halo, { opacity: 1, y: -22, duration: 1.5, ease: 'power2.inOut' }, 0.85);
+        if (glow) {
+          menuTl.to(glow, { opacity: 0.3, y: -22, scale: 1.05, duration: 1.5, ease: 'power2.inOut' }, 0.85);
+          menuTl.to(glow, { opacity: 0, scale: 1.65, duration: 1.15, ease: 'power1.inOut' }, 2.15);
+        }
+        menuTl.to(menuBits(), { y: 0, opacity: 1, duration: 0.95, stagger: 0.04, ease: 'power3.out' }, 0.32);
       };
-      menu?.addEventListener('click', () => {
-        const open = menu.getAttribute('aria-expanded') === 'true';
-        if (open) closeMenu();
-        else openMenu();
+      menuBtn?.addEventListener('click', () => {
+        if (menuBtn.getAttribute('aria-expanded') === 'true') closeMenu(false);
+        else if (!menuOpen) openMenu();
       });
-      panel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+      panel?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => hardClose(false)));
       window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMenu();
+        if (!menuOpen || !menuBtn || !panel) return;
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeMenu(true);
+          return;
+        }
+        if (e.key !== 'Tab') return;
+        const links = Array.from(panel.querySelectorAll('.nav-groups a')) as HTMLElement[];
+        const items = [menuBtn, ...links];
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        const inside = active ? items.includes(active) : false;
+        if (e.shiftKey && (active === first || !inside)) {
+          e.preventDefault();
+          last.focus({ preventScroll: true });
+        } else if (!e.shiftKey && (active === last || !inside)) {
+          e.preventDefault();
+          first.focus({ preventScroll: true });
+        }
       });
 
       const thumb = document.querySelector('.scroll-rail-thumb') as HTMLElement | null;
@@ -509,6 +588,7 @@ const foot = menu.flatMap((group) => group.links);
         import.meta.hot.dispose(() => {
           cancelAnimationFrame(tracerRaf);
           cancelAnimationFrame(warmthRaf);
+          menuTl?.kill();
         });
       }
     </script>
