@@ -8,7 +8,7 @@ interface Props {
   descriptor?: string;
 }
 
-const { title, description = 'Aura builds a finished room on a steel skid: a stay, a glass deck, a farm wall, or water from the air.', descriptor = 'On your land' } = Astro.props;
+const { title, description = 'Aura Homes builds a finished room on a steel frame: a stay, a glass deck, a farm wall, or water from the air.', descriptor = 'On your land' } = Astro.props;
 const path = Astro.url.pathname;
 const isHome = path === '/';
 const showFoot = !isHome && !path.startsWith('/builder');
@@ -68,7 +68,7 @@ const showFoot = !isHome && !path.startsWith('/builder');
         )}
         <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
       </a>
-      <nav class="nav-words" aria-label="The shells">
+      <nav class="nav-words" aria-label="The rooms">
         <a href="/" aria-current={path === '/' ? 'page' : undefined}>Homes</a>
         <a href="/farms" aria-current={path.startsWith('/farms') ? 'page' : undefined}>Farms</a>
         <a href="/water" aria-current={path.startsWith('/water') ? 'page' : undefined} title="Comes later. Still in research.">H20</a>

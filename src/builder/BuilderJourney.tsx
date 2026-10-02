@@ -27,7 +27,7 @@ const BEATS: Beat[] = [
     id: 'look',
     n: '02',
     label: 'Look',
-    heading: 'This is the shell.',
+    heading: 'This is the room.',
     body: 'A room in the clearing. Night changes the light. Sound is the forest, if you want it.',
     side: 'left',
   },
@@ -44,7 +44,7 @@ const BEATS: Beat[] = [
     n: '04',
     label: 'Length',
     heading: 'Set the length.',
-    body: 'Twenty, twenty-eight, or thirty-six feet. Pick what the shell is for the same way.',
+    body: 'Twenty, twenty-eight, or thirty-six feet. Pick what the room is for the same way.',
     side: 'left',
   },
   {
@@ -223,7 +223,7 @@ export default function BuilderJourney() {
           <div className="b-hero">
             <p className="b-kicker">00  Builder</p>
             <h1>Build your own.</h1>
-            <p>Walk the clearing, then set the shell. The same builder is on GitHub.</p>
+            <p>Walk the clearing, then set the room. The same builder is on GitHub.</p>
           </div>
         </section>
         {BEATS.map((b, i) => (
@@ -243,7 +243,7 @@ export default function BuilderJourney() {
             sectionsRef.current[BEATS.length + 1] = el;
           }}
         >
-          <p className="b-kicker">06  The shell</p>
+          <p className="b-kicker">06  The room</p>
           <h2>Set it here.</h2>
           <p className="b-end-lead">
             Pick the use, the glass, and the length. Nothing on this page is for sale, and nothing is saved.
@@ -267,7 +267,7 @@ export default function BuilderJourney() {
               </select>
             </label>
             <label>
-              Length of the shell
+              Length of the room
               <select value={length} onChange={(e) => setLength(e.target.value)}>
                 <option>20 ft</option>
                 <option>28 ft</option>
@@ -299,8 +299,8 @@ export default function BuilderJourney() {
           )}
           <div className="b-gate-copy">
             <p className="b-kicker">The clearing</p>
-            <h1>Aura</h1>
-            <p>Open the builder. Walk the clearing, then set the shell.</p>
+            <h1>Aura Homes</h1>
+            <p>Open the builder. Walk the clearing, then set the room.</p>
             <button type="button" onClick={() => enter(true)}>Enter the clearing</button>
             <button type="button" className="b-quiet" onClick={() => enter(false)}>Enter quietly</button>
           </div>
