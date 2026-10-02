@@ -8,8 +8,20 @@ interface Props {
   descriptor?: string;
 }
 
-const { title, description = 'Aura Homes builds a finished room on a steel frame: a stay, a glass deck, a farm wall, or water from the air.', descriptor = 'On your land' } = Astro.props;
+const tagline = 'Bring you back to nature, one beautiful room at a time.';
+const about = 'Beautiful second-life rooms that bring people back to nature, one room at a time.';
+const { title: rawTitle, description = about, descriptor = 'On your land' } = Astro.props;
+const brandTitle = (raw: string) => {
+  if (raw === 'Aura Homes' || raw.endsWith('| Aura Homes')) return raw;
+  if (raw.startsWith('Aura Homes | ')) return `${raw.slice('Aura Homes | '.length)} | Aura Homes`;
+  if (raw.startsWith('Aura Farms | ')) return `${raw.slice('Aura Farms | '.length)} | Aura Homes`;
+  return `${raw} | Aura Homes`;
+};
+const title = brandTitle(rawTitle);
 const path = Astro.url.pathname;
+const pageUrl = Astro.url.href;
+const ogImage = new URL('/film/cabin-poster-hi.webp', Astro.url).href;
+const ogAlt = 'An Aura Homes room at dusk, set in a meadow.';
 const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
 const showFoot = !isHome && !isBuilder;
@@ -65,15 +77,23 @@ const foot = menu.flatMap((group) => group.links);
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
         <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <meta property="og:site_name" content="Aura Homes" />
       </>
     )}
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta property="og:site_name" content="Aura Homes" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:alt" content={ogAlt} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={ogAlt} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -138,7 +158,7 @@ const foot = menu.flatMap((group) => group.links);
         </div>
       </div>
       <div class="nav-copy">
-        <p class="nav-thesis">Aura Homes. Get people back outside, one beautiful room at a time.</p>
+        <p class="nav-thesis">{tagline}</p>
         <div class="nav-groups">
           {menu.map((group) => (
             <div>
@@ -161,7 +181,7 @@ const foot = menu.flatMap((group) => group.links);
           <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
           <span class="foot-name">Aura Homes</span>
         </a>
-        <p class="foot-line">Aura Homes. Get people back outside, one beautiful room at a time.</p>
+        <p class="foot-line">{tagline}</p>
         <p class="foot-place">Edmonton, Alberta. Shipping across Canada.</p>
         <nav class="foot-nav" aria-label="Footer">
           {foot.map((item) => (
