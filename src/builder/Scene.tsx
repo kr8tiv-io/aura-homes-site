@@ -3,7 +3,7 @@
 import { useMemo, useRef, useState, useLayoutEffect } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, Sparkles, Html, Environment, Lightformer, SoftShadows } from "@react-three/drei";
+import { useGLTF, Sparkles, Html, Environment, SoftShadows } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette, Noise } from "@react-three/postprocessing";
 const withBase = (p: string) => p.replace("/models/", "/models/builder/");
 import SceneDetail, { meadowShade, trailTrodden } from "./SceneDetail";
@@ -232,6 +232,7 @@ const RO_GLASS_RAIL = 20;
    adds a high-frequency mottle on top plus a per-facet value jitter. At
    ~0.8 m per vertex that mottle is what a meadow looks like from 40 m. */
 function Terrain() {
+  const floor = useMemo(() => makeMeadowFloor(), []);
   const geo = useMemo(() => {
     const SEG = 200;
     const g = new THREE.PlaneGeometry(170, 170, SEG, SEG);
@@ -311,7 +312,7 @@ function Terrain() {
   }, []);
   return (
     <mesh geometry={geo} receiveShadow>
-      <meshStandardMaterial vertexColors flatShading roughness={1} metalness={0} />
+      <meshStandardMaterial map={floor} vertexColors flatShading roughness={1} metalness={0} />
     </mesh>
   );
 }
@@ -438,6 +439,82 @@ export function makeStoneMottle(): THREE.CanvasTexture {
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   t.repeat.set(1.6, 1.6);
   _stoneMottle = t;
+  return t;
+}
+
+/** Tileable meadow floor. Near-white so it only whispers through the vertex
+ *  colours: short grass strokes, plus a little gravel grit. Periodic sines,
+ *  so the repeat has no seam and no image file to ship. */
+let _meadowFloor: THREE.CanvasTexture | null = null;
+export function makeMeadowFloor(): THREE.CanvasTexture {
+  if (_meadowFloor) return _meadowFloor;
+  const S = 256;
+  const c = document.createElement("canvas");
+  c.width = c.height = S;
+  const ctx = c.getContext("2d")!;
+  const img = ctx.createImageData(S, S);
+  const TAU = Math.PI * 2;
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const u = x / S;
+      const v = y / S;
+      const grass =
+        Math.sin(u * TAU * 8 + v * 1.7) * 0.45 +
+        Math.sin(v * TAU * 13 + u * 0.6) * 0.28 +
+        Math.sin((u * 3 + v * 5) * TAU) * 0.18;
+      const blades = Math.pow(Math.abs(Math.sin(u * TAU * 18 + v * 2.2)), 10);
+      const grit = Math.sin(u * TAU * 23) * Math.sin(v * TAU * 19);
+      const shade = 0.94 + grass * 0.03 - blades * 0.045 + grit * 0.018;
+      const value = Math.max(0, Math.min(255, Math.round(shade * 255)));
+      const i = (y * S + x) * 4;
+      img.data[i] = value;
+      img.data[i + 1] = Math.min(255, value + 2);
+      img.data[i + 2] = Math.max(0, value - 3);
+      img.data[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.repeat.set(42, 42);
+  t.anisotropy = 4;
+  _meadowFloor = t;
+  return t;
+}
+
+/** Vertical cedar staves for the barrel. One wrap is one ring of staves. */
+let _staveMap: THREE.CanvasTexture | null = null;
+function makeStaveMap(): THREE.CanvasTexture {
+  if (_staveMap) return _staveMap;
+  const S = 256;
+  const c = document.createElement("canvas");
+  c.width = c.height = S;
+  const ctx = c.getContext("2d")!;
+  const img = ctx.createImageData(S, S);
+  const staves = 18;
+  for (let y = 0; y < S; y++) {
+    for (let x = 0; x < S; x++) {
+      const u = x / S;
+      const v = y / S;
+      const around = Math.abs(Math.sin(u * Math.PI * staves));
+      const seam = Math.min(1, around * 7);
+      const grain = 0.5 + 0.5 * Math.sin(v * Math.PI * 46 + u * 8);
+      const shade = 0.84 + seam * 0.14 + (grain - 0.5) * 0.05;
+      const value = Math.max(0, Math.min(255, Math.round(shade * 255)));
+      const i = (y * S + x) * 4;
+      img.data[i] = value;
+      img.data[i + 1] = Math.max(0, value - 6);
+      img.data[i + 2] = Math.max(0, value - 14);
+      img.data[i + 3] = 255;
+    }
+  }
+  ctx.putImageData(img, 0, 0);
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.anisotropy = 4;
+  _staveMap = t;
   return t;
 }
 
@@ -1127,12 +1204,36 @@ function Walkway({ glassFloor, glassRail }: { glassFloor: THREE.Material; glassR
 
 function HotTub({ position, dusk, frozen = false }: { position: [number, number, number]; dusk: Dusk; frozen?: boolean }) {
   const water = useRef<THREE.MeshStandardMaterial>(null);
+  const stoveGlow = useRef<THREE.MeshStandardMaterial>(null);
   const waterNormal = useMemo(() => makeWaterNormal(), []);
   const mottle = useMemo(() => makeStoneMottle(), []);
+  const staves = useMemo(() => makeStaveMap(), []);
+  const barrel = useMemo(() => {
+    const pts: THREE.Vector2[] = [];
+    const steps = 12;
+    for (let i = 0; i <= steps; i++) {
+      const t = i / steps;
+      const y = 0.2 + t * 0.84;
+      /* Coopered bulge. The widest point stays at 0.78 so the walkway,
+         which stops 0.96 from the centre, still clears the staves. */
+      const r = 0.66 + Math.sin(t * Math.PI) * 0.12;
+      pts.push(new THREE.Vector2(r, y));
+    }
+    return new THREE.LatheGeometry(pts, 28);
+  }, []);
+  const hoops = useMemo(
+    () =>
+      [0.22, 0.5, 0.78].map((t) => ({
+        y: 0.2 + t * 0.84,
+        r: 0.66 + Math.sin(t * Math.PI) * 0.12 + 0.012,
+      })),
+    []
+  );
   useLayoutEffect(
     () =>
       dusk.add((d) => {
         if (water.current) water.current.emissiveIntensity = 0.1 + d * 0.26;
+        if (stoveGlow.current) stoveGlow.current.emissiveIntensity = 0.18 + d * 0.45;
       }),
     [dusk]
   );
@@ -1154,21 +1255,26 @@ function HotTub({ position, dusk, frozen = false }: { position: [number, number,
      it should always have been. */
   return (
     <group position={position}>
-      {/* stone pad */}
-      <mesh receiveShadow castShadow position={[0, 0.1, 0]}>
-        <cylinderGeometry args={[1.42, 1.56, 0.22, 12]} />
+      {/* stone pad, wide enough for the stove */}
+      <mesh receiveShadow castShadow position={[0.15, 0.1, 0]}>
+        <cylinderGeometry args={[1.7, 1.84, 0.22, 16]} />
         <meshStandardMaterial map={mottle} color="#8d968f" roughness={0.95} flatShading />
       </mesh>
-      <mesh castShadow receiveShadow position={[0, 0.62, 0]}>
-        <cylinderGeometry args={[0.78, 0.72, 0.84, 14, 1, true]} />
-        <meshStandardMaterial color="#8d7c66" roughness={0.92} flatShading side={THREE.DoubleSide} />
+      <mesh geometry={barrel} castShadow receiveShadow>
+        <meshStandardMaterial map={staves} color="#8d7c66" roughness={0.88} metalness={0.02} />
       </mesh>
-      <mesh castShadow position={[0, 1.05, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <torusGeometry args={[0.76, 0.05, 8, 14]} />
-        <meshStandardMaterial color="#6f6152" roughness={0.9} flatShading />
+      {hoops.map((hoop) => (
+        <mesh key={hoop.y} castShadow position={[0, hoop.y, 0]} rotation={[Math.PI / 2, 0, 0]}>
+          <torusGeometry args={[hoop.r, 0.016, 6, 28]} />
+          <meshStandardMaterial color="#5e574f" roughness={0.42} metalness={0.62} />
+        </mesh>
+      ))}
+      <mesh castShadow position={[0, 1.04, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <torusGeometry args={[0.67, 0.038, 8, 28]} />
+        <meshStandardMaterial map={staves} color="#6f6152" roughness={0.86} />
       </mesh>
-      <mesh position={[0, 1.0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[0.72, 48]} />
+      <mesh position={[0, 0.98, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[0.6, 40]} />
         <meshStandardMaterial
           ref={water}
           color="#4f8d86"
@@ -1180,14 +1286,39 @@ function HotTub({ position, dusk, frozen = false }: { position: [number, number,
           normalScale={new THREE.Vector2(0.18, 0.18)}
         />
       </mesh>
-      <mesh castShadow position={[0.95, 0.75, -0.12]}>
-        <cylinderGeometry args={[0.14, 0.14, 0.7, 10]} />
-        <meshStandardMaterial color="#565c58" roughness={0.6} metalness={0.5} flatShading />
-      </mesh>
-      <mesh castShadow position={[0.95, 1.45, -0.12]}>
-        <cylinderGeometry args={[0.045, 0.045, 0.8, 8]} />
-        <meshStandardMaterial color="#9aa19c" roughness={0.5} metalness={0.6} />
-      </mesh>
+      {/* wood stove, set clear of the staves, with a short flue */}
+      <group position={[1.22, 0, -0.08]}>
+        {[-0.16, 0.16].map((x) =>
+          [-0.12, 0.12].map((z) => (
+            <mesh key={`${x}${z}`} castShadow position={[x, 0.28, z]}>
+              <boxGeometry args={[0.04, 0.16, 0.04]} />
+              <meshStandardMaterial color="#3a3834" roughness={0.55} metalness={0.4} />
+            </mesh>
+          ))
+        )}
+        <mesh castShadow receiveShadow position={[0, 0.52, 0]}>
+          <boxGeometry args={[0.46, 0.36, 0.34]} />
+          <meshStandardMaterial color="#3e3934" roughness={0.62} metalness={0.38} />
+        </mesh>
+        <mesh position={[0, 0.5, 0.175]}>
+          <boxGeometry args={[0.22, 0.16, 0.02]} />
+          <meshStandardMaterial
+            ref={stoveGlow}
+            color="#6a4a32"
+            emissive="#e39a55"
+            emissiveIntensity={0.22}
+            roughness={0.8}
+          />
+        </mesh>
+        <mesh castShadow position={[0.04, 1.05, 0]}>
+          <cylinderGeometry args={[0.045, 0.05, 0.72, 10]} />
+          <meshStandardMaterial color="#8e948f" roughness={0.45} metalness={0.55} />
+        </mesh>
+        <mesh castShadow position={[0.04, 1.4, 0]}>
+          <cylinderGeometry args={[0.07, 0.07, 0.04, 10]} />
+          <meshStandardMaterial color="#6e756f" roughness={0.4} metalness={0.6} />
+        </mesh>
+      </group>
     </group>
   );
 }
@@ -2074,7 +2205,10 @@ function LightArc({
       sun.current.color.copy(_c);
       sun.current.intensity = (2.6 - d * 0.9) * (1 - night * 0.82);
     }
-    if (hemi.current) hemi.current.intensity = (0.5 - d * 0.18) * (1 - night * 0.72);
+    if (hemi.current) hemi.current.intensity = (0.32 - d * 0.08) * (1 - night * 0.72);
+    /* The sky bake is the soft fill. It eases down with dusk, and almost
+       leaves once night takes the moon. */
+    scene.environmentIntensity = (0.62 - d * 0.1) * (1 - night * 0.86);
     const fog = scene.fog as THREE.Fog | null;
     if (fog) {
       _c.lerpColors(cools.fogC, warms.fogC, d);
@@ -2085,8 +2219,8 @@ function LightArc({
 
   return (
     <>
-      <hemisphereLight ref={hemi} args={["#eef7ff", "#94ad8e", 0.5]} />
-      <ambientLight intensity={0.14} />
+      <hemisphereLight ref={hemi} args={["#d5e4ee", "#8ea184", 0.32]} />
+      <ambientLight intensity={0.05} />
       <directionalLight
         ref={sun}
         castShadow
@@ -2107,12 +2241,44 @@ function LightArc({
         shadow-camera-near={1}
         shadow-camera-far={90}
       />
-      {/* Fill, not a second key. At 0.5 it was bright enough to light tree
-          canopies from the opposite side to the one casting the shadows,
-          which is the contradiction a viewer reads as "wrong" without being
-          able to name it. */}
-      <directionalLight position={[-14, 9, -16]} color="#d8ece6" intensity={0.16} />
     </>
+  );
+}
+
+/* Outdoor sky, baked once on the page renderer. Values above 1 in the sun
+   disc are the HDR highlight. No rectangular softboxes. */
+const SKY_VERT = `
+  varying vec3 vPos;
+  void main() {
+    vPos = position;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+const SKY_FRAG = `
+  varying vec3 vPos;
+  void main() {
+    vec3 n = normalize(vPos);
+    float h = n.y;
+    vec3 zenith = vec3(0.70, 0.82, 0.90);
+    vec3 horizon = vec3(0.97, 0.90, 0.78);
+    vec3 ground = vec3(0.42, 0.50, 0.36);
+    vec3 sky = mix(horizon, zenith, smoothstep(0.0, 0.62, h));
+    vec3 col = mix(ground, sky, smoothstep(-0.18, 0.06, h));
+    vec3 sunDir = normalize(vec3(0.55, 0.48, 0.42));
+    float glow = pow(max(dot(n, sunDir), 0.0), 3.5);
+    float sun = pow(max(dot(n, sunDir), 0.0), 36.0);
+    col += vec3(1.05, 0.82, 0.55) * glow * 0.28;
+    col += vec3(1.35, 1.05, 0.72) * sun * 2.1;
+    gl_FragColor = vec4(col, 1.0);
+  }
+`;
+
+function OutdoorSky() {
+  return (
+    <mesh scale={90}>
+      <sphereGeometry args={[1, 20, 14]} />
+      <shaderMaterial side={THREE.BackSide} depthWrite={false} vertexShader={SKY_VERT} fragmentShader={SKY_FRAG} />
+    </mesh>
   );
 }
 
@@ -2159,12 +2325,7 @@ export default function Scene({
       <LightArc progressRef={progressRef} reduced={reduced} dusk={dusk} night={nightAmt} />
 
       <Environment resolution={64} frames={1}>
-        <mesh scale={90}>
-          <sphereGeometry args={[1, 16, 16]} />
-          <meshBasicMaterial color="#dcebe2" side={THREE.BackSide} />
-        </mesh>
-        <Lightformer intensity={3} position={[8, 10, 6]} scale={[8, 6, 1]} color="#fff2d8" />
-        <Lightformer intensity={1.2} position={[-8, 6, -6]} scale={[10, 4, 1]} color="#d9f4ea" />
+        <OutdoorSky />
       </Environment>
 
       {/* Stars — only ever built once, faded in by the night amount. */}
@@ -2207,7 +2368,7 @@ export default function Scene({
 
       {/* chimney wisp; tub steam; fire pit smoke */}
       <Smoke origin={[0.9, 5.3, -2.2]} size={0.62} rise={3.0} opacity={0.3} frozen={reduced} />
-      <Smoke origin={[5.9, 1.15, 5.4]} count={4} rate={0.2} size={0.36} rise={1.2} drift={0.12} opacity={0.24} frozen={reduced} />
+      <Smoke origin={[7.16, 1.5, 5.32]} count={4} rate={0.2} size={0.32} rise={1.4} drift={0.1} opacity={0.22} frozen={reduced} />
       <Smoke origin={[-4.6, 0.8, 6.2]} count={5} rate={0.13} size={0.5} rise={2.2} drift={0.2} opacity={0.22} frozen={reduced} />
 
       <Mist frozen={reduced} />
