@@ -47,9 +47,11 @@ export default function StillScene() {
         </g>
         {/* hot tub */}
         <g transform="translate(770 712)">
-          <ellipse cx="0" cy="16" rx="44" ry="12" fill="#7c5236" />
-          <rect x="-44" y="-14" width="88" height="30" fill="#8a5a3a" />
-          <ellipse cx="0" cy="-14" rx="44" ry="12" fill="#1d8f86" />
+          <ellipse cx="0" cy="18" rx="48" ry="13" fill="#6f6152" />
+          <path d="M-46 18 C-50 -2 -36 -16 0 -18 C36 -16 50 -2 46 18 Z" fill="#8d7c66" />
+          <ellipse cx="0" cy="-12" rx="34" ry="9" fill="#4f8d86" />
+          <rect x="40" y="-2" width="16" height="14" fill="#3e3934" />
+          <rect x="46" y="-28" width="4" height="26" fill="#8e948f" />
         </g>
         {/* smoke */}
         <g fill="#ffffff" opacity="0.55">

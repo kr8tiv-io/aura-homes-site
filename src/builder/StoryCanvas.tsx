@@ -23,7 +23,11 @@ export default function StoryCanvas({
     try {
       const c = document.createElement("canvas");
       const gl = c.getContext("webgl2") || c.getContext("webgl");
-      setWebgl(!!gl);
+      const ok = !!gl;
+      /* Drop the probe immediately. The page then keeps a single renderer,
+         the one Canvas creates below. */
+      gl?.getExtension("WEBGL_lose_context")?.loseContext();
+      setWebgl(ok);
     } catch {
       setWebgl(false);
     }
@@ -35,7 +39,9 @@ export default function StoryCanvas({
   return (
     <Canvas
       shadows
-      dpr={[1, 1.75]}
+      /* Cap at 2. A 3x display stays at 2 so the clearing does not pay for
+         a full device buffer. */
+      dpr={[1, 2]}
       frameloop={reduced ? "demand" : "always"}
       /* far was 140 — the mountain range sits well beyond that and was being
          clipped into a grey slab across the sky. 260 clears the range from
