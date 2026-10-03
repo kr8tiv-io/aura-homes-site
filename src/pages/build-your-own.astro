@@ -93,7 +93,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: none;
   }
   .byo-quote {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     margin-top: 1.7rem;
     padding: 0.75rem 1.05rem;
     border: 1px solid #f4f3ef;
@@ -112,8 +114,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .byo-quote {
       transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .byo-quote:hover,
-    .byo-quote:focus-visible {
+    .byo-quote:hover {
       opacity: 0.55;
     }
   }
