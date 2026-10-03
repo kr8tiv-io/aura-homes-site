@@ -4,6 +4,7 @@ import Materials from '../components/Materials.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import ShotHold from '../components/ShotHold.astro';
 import Still from '../components/Still.astro';
+import WindowFrame from '../components/WindowFrame.astro';
 import { roomConcepts } from '../lib/rooms';
 
 const uses = [
@@ -36,22 +37,26 @@ const uses = [
       ))}
     </ul>
 
-    <ul class="room-grid">
+    <ul class="room-grid" data-window-grid>
       {roomConcepts.map((room) => (
         <li>
           <article class="room-card" data-rise>
-            <figure>
-              {room.image ? (
-                <Still
-                  src={room.image}
-                  alt={room.alt}
-                  position={room.focus}
-                  sizes="(max-width: 800px) 92vw, 42vw"
-                />
-              ) : (
+            {room.image ? (
+              <figure data-window>
+                <WindowFrame>
+                  <Still
+                    src={room.image}
+                    alt={room.alt}
+                    position={room.focus}
+                    sizes="(max-width: 800px) 92vw, 42vw"
+                  />
+                </WindowFrame>
+              </figure>
+            ) : (
+              <figure>
                 <ShotHold caption={room.shot ?? room.alt} />
-              )}
-            </figure>
+              </figure>
+            )}
             <RevealHeading as="h2">{room.name}</RevealHeading>
             <p>{room.description}</p>
             <a href={`/pre-order?model=${room.slug}`}>Pre-order inquiry</a>

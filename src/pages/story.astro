@@ -2,6 +2,7 @@
 import DepthImage from '../components/DepthImage.astro';
 import HeroMist from '../components/HeroMist.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import WindowFrame from '../components/WindowFrame.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -29,11 +30,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
 
-    <figure class="story-bleed">
-      <DepthImage
-        src="/film/story-meadow-side.webp"
-        alt="A low glass room in tall grass, with pines and a pale mountain behind it."
-      />
+    <figure class="story-bleed" data-window>
+      <WindowFrame>
+        <DepthImage
+          src="/film/story-meadow-side.webp"
+          alt="A low glass room in tall grass, with pines and a pale mountain behind it."
+        />
+      </WindowFrame>
       <HeroMist />
     </figure>
 
@@ -50,11 +53,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
 
-    <figure class="story-bleed">
-      <DepthImage
-        src="/film/layout-forest.webp"
-        alt="A glass room at the edge of a pine forest, open toward a dusk meadow."
-      />
+    <figure class="story-bleed" data-window>
+      <WindowFrame>
+        <DepthImage
+          src="/film/layout-forest.webp"
+          alt="A glass room at the edge of a pine forest, open toward a dusk meadow."
+        />
+      </WindowFrame>
     </figure>
 
     <section class="story-chapter" id="chapter" aria-labelledby="chapter-title">
@@ -72,11 +77,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </blockquote>
     </section>
 
-    <figure class="story-bleed">
-      <DepthImage
-        src="/film/story-room.webp"
-        alt="An open room of oak and linen, facing a green field at dusk."
-      />
+    <figure class="story-bleed" data-window>
+      <WindowFrame>
+        <DepthImage
+          src="/film/story-room.webp"
+          alt="An open room of oak and linen, facing a green field at dusk."
+        />
+      </WindowFrame>
     </figure>
 
     <section class="story-chapter" id="gift" aria-labelledby="gift-title">
@@ -90,11 +97,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
 
-    <figure class="story-bleed">
-      <DepthImage
-        src="/film/layout-sky.webp"
-        alt="A bed under a skylight, with the meadow and a dark treeline beyond the glass."
-      />
+    <figure class="story-bleed" data-window>
+      <WindowFrame>
+        <DepthImage
+          src="/film/layout-sky.webp"
+          alt="A bed under a skylight, with the meadow and a dark treeline beyond the glass."
+        />
+      </WindowFrame>
     </figure>
 
     <section class="story-founder" id="founder" aria-labelledby="founder-title">
