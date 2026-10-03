@@ -114,6 +114,11 @@ const foot = menu.flatMap((group) => group.links);
         <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true" transition:name="tracers" transition:persist="tracers" transition:animate="none"></canvas>
         <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true" transition:name="warmth" transition:persist="warmth" transition:animate="none"></canvas>
         <div class="page-grain" aria-hidden="true" transition:name="grain" transition:persist="grain" transition:animate="none"></div>
+        <div class="daylight" id="daylight" aria-hidden="true" transition:name="daylight" transition:persist="daylight" transition:animate="none">
+          <div class="daylight-sun daylight-dawn"></div>
+          <div class="daylight-sun daylight-gold"></div>
+          <div class="daylight-sun daylight-dusk"></div>
+        </div>
         <div class="scroll-rail" aria-hidden="true" transition:name="rail" transition:persist="rail" transition:animate="none"><div class="scroll-rail-thumb"></div></div>
         <div class="site-cursor" aria-hidden="true" transition:name="cursor-ring" transition:persist="cursor-ring" transition:animate="none"></div>
         <div class="site-cursor-dot" aria-hidden="true" transition:name="cursor-dot" transition:persist="cursor-dot" transition:animate="none"></div>
@@ -258,8 +263,10 @@ const foot = menu.flatMap((group) => group.links);
     <script>
       import { gsap } from 'gsap';
       import { initSmoothScroll, resetPageMotion, stopSmoothScroll, ScrollTrigger } from '../scripts/motion';
+      import { bindDaylight } from '../scripts/daylight';
 
       initSmoothScroll();
+      bindDaylight();
 
       const copyCurrent = (live: ParentNode | null, incoming: ParentNode | null) => {
         if (!live || !incoming) return;
@@ -733,6 +740,7 @@ const foot = menu.flatMap((group) => group.links);
       document.addEventListener('astro:page-load', () => {
         initSmoothScroll();
         bindRail();
+        bindDaylight();
         requestAnimationFrame(() => {
           ScrollTrigger.refresh();
           window.__lenis?.resize();
