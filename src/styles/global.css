@@ -434,6 +434,89 @@ body.nav-on-film .site-nav .aura-halo {
   background-image: url('/grain.webp');
   background-size: 180px 180px;
 }
+/* Finer living grain on content pages. The splash keeps the still tile above. */
+.page-grain.film-grain {
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: none;
+  overflow: hidden;
+}
+.film-grain-pane {
+  position: absolute;
+  inset: -25%;
+  background-image: url('/film-grain.svg');
+  background-size: 160px 160px;
+  transform: translate3d(0, 0, 0);
+  animation: grain-drift-a 28s linear infinite;
+}
+.film-grain-pane.is-b {
+  opacity: 0.7;
+  animation-name: grain-drift-b;
+  animation-duration: 41s;
+}
+@keyframes grain-drift-a {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-160px, 80px, 0); }
+}
+@keyframes grain-drift-b {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(160px, -80px, 0); }
+}
+.story-bleed,
+.wild-frame,
+.stay-frame {
+  position: relative;
+}
+.story-bleed::after,
+.wild-frame::after,
+.stay-frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 78% 72% at 50% 46%,
+    transparent 46%,
+    rgba(12, 13, 14, 0.34) 100%
+  );
+}
+.hero-mist {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+.hero-mist-sheet {
+  position: absolute;
+  left: -18%;
+  width: 150%;
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+.hero-mist-a {
+  top: 6%;
+  height: 58%;
+  opacity: 0.85;
+  background: radial-gradient(ellipse 55% 80% at 40% 50%, rgba(244, 243, 239, 0.9), transparent 68%);
+  animation: mist-drift-a 46s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+.hero-mist-b {
+  bottom: 0;
+  height: 62%;
+  opacity: 0.55;
+  background: radial-gradient(ellipse 62% 78% at 64% 60%, rgba(226, 214, 196, 0.85), transparent 70%);
+  animation: mist-drift-b 68s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+}
+@keyframes mist-drift-a {
+  from { transform: translate3d(-7%, 1%, 0); }
+  to { transform: translate3d(8%, -2%, 0); }
+}
+@keyframes mist-drift-b {
+  from { transform: translate3d(9%, -1%, 0); }
+  to { transform: translate3d(-8%, 3%, 0); }
+}
 
 .scroll-rail {
   position: fixed;
@@ -1162,6 +1245,13 @@ html.has-cursor * {
   .site-cursor-dot,
   .scroll-rail {
     display: none;
+  }
+  .page-grain.film-grain {
+    display: block;
+  }
+  .film-grain-pane,
+  .hero-mist-sheet {
+    animation: none;
   }
   .atelier-stage canvas {
     opacity: 1;

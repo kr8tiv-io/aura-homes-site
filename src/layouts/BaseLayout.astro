@@ -113,7 +113,10 @@ const foot = menu.flatMap((group) => group.links);
       <>
         <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true" transition:name="tracers" transition:persist="tracers" transition:animate="none"></canvas>
         <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true" transition:name="warmth" transition:persist="warmth" transition:animate="none"></canvas>
-        <div class="page-grain" aria-hidden="true" transition:name="grain" transition:persist="grain" transition:animate="none"></div>
+        <div class="page-grain film-grain" aria-hidden="true" transition:name="grain" transition:persist="grain" transition:animate="none">
+          <div class="film-grain-pane"></div>
+          <div class="film-grain-pane is-b"></div>
+        </div>
         <div class="daylight" id="daylight" aria-hidden="true" transition:name="daylight" transition:persist="daylight" transition:animate="none">
           <div class="daylight-sun daylight-dawn"></div>
           <div class="daylight-sun daylight-gold"></div>
