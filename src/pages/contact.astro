@@ -176,8 +176,9 @@ const topics = [
 </style>
 
 <script>
-  import { gsap, prefersReducedMotion } from '../scripts/motion';
+  import { gsap, prefersReducedMotion, onPageLoad } from '../scripts/motion';
 
+  onPageLoad(() => {
   const form = document.getElementById('contact-form');
   const thanks = document.getElementById('contact-thanks');
   const topic = document.getElementById('contact-topic');
@@ -269,4 +270,5 @@ const topics = [
       });
     }
   }
+  });
 </script>

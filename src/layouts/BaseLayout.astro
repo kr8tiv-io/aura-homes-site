@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
 import { Font, getImage } from 'astro:assets';
 import mark from '../assets/logo/aura-mark.svg?raw';
 import cabinPoster from '../../public/film/cabin-poster-hi.webp';
@@ -87,6 +88,7 @@ const foot = menu.flatMap((group) => group.links);
       </>
     )}
     <meta name="generator" content={Astro.generator} />
+    {!isHome && <ClientRouter />}
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -107,75 +109,139 @@ const foot = menu.flatMap((group) => group.links);
     <meta name="twitter:image:alt" content={ogAlt} />
   </head>
   <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder }]}>
-    <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>
-    <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true"></canvas>
-    <div class="page-grain" aria-hidden="true"></div>
-    <div class="scroll-rail" aria-hidden="true"><div class="scroll-rail-thumb"></div></div>
-    <div class="site-cursor" aria-hidden="true"></div>
-    <div class="site-cursor-dot" aria-hidden="true"></div>
+    {isHome ? (
+      <>
+        <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>
+        <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true"></canvas>
+        <div class="page-grain" aria-hidden="true"></div>
+        <div class="scroll-rail" aria-hidden="true"><div class="scroll-rail-thumb"></div></div>
+        <div class="site-cursor" aria-hidden="true"></div>
+        <div class="site-cursor-dot" aria-hidden="true"></div>
+      </>
+    ) : (
+      <>
+        <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true" transition:name="tracers" transition:persist="tracers" transition:animate="none"></canvas>
+        <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true" transition:name="warmth" transition:persist="warmth" transition:animate="none"></canvas>
+        <div class="page-grain" aria-hidden="true" transition:name="grain" transition:persist="grain" transition:animate="none"></div>
+        <div class="scroll-rail" aria-hidden="true" transition:name="rail" transition:persist="rail" transition:animate="none"><div class="scroll-rail-thumb"></div></div>
+        <div class="site-cursor" aria-hidden="true" transition:name="cursor-ring" transition:persist="cursor-ring" transition:animate="none"></div>
+        <div class="site-cursor-dot" aria-hidden="true" transition:name="cursor-dot" transition:persist="cursor-dot" transition:animate="none"></div>
+        <div class="horizon-wipe" transition:name="horizon" transition:animate="none" aria-hidden="true"></div>
+      </>
+    )}
 
-    <header class="site-nav">
-      <a href="/" class="nav-brand">
-        {isHome ? (
-          <>
-            <div class="w-8 h-8 bg-current mask-triangle"></div>
-            <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
-          </>
-        ) : (
-          <>
-            <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
-            <span class="nav-name">Aura Homes</span>
-          </>
-        )}
-        <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
-      </a>
-      <nav class="nav-words" aria-label="Pages">
-        {bar.map((item) => (
-          <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-        ))}
-      </nav>
-      <div class="nav-tools">
-        <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
-          <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
-            <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
-            <g class="sigil-mark">
-              <circle class="sigil-halo" cx="32" cy="8.5" r="1.65" />
-              <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
-            </g>
-          </svg>
-        </button>
-        {!isBuilder && <a href="/pre-order" class="nav-cta" aria-current={path === '/pre-order' ? 'page' : undefined}>Pre-order</a>}
-      </div>
-    </header>
-    <div id="story-menu" class="nav-panel" role="dialog" aria-modal="true" aria-label="Menu" hidden>
-      <div class="menu-horizon" aria-hidden="true"></div>
-      <div class="menu-stage" aria-hidden="true">
-        <div class="menu-ridge-clip">
-          <div class="menu-ridge-shift">
-            <svg class="menu-ridge" viewBox="0 0 200 188" fill="none">
-              <path vector-effect="non-scaling-stroke" d="M8 154H46L58 168L72 154L100 48L128 154L142 168L154 154H192" />
+    {isHome ? (
+      <header class="site-nav">
+        <a href="/" class="nav-brand">
+          <div class="w-8 h-8 bg-current mask-triangle"></div>
+          <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
+          <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
+        </a>
+        <nav class="nav-words" aria-label="Pages">
+          {bar.map((item) => (
+            <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+          ))}
+        </nav>
+        <div class="nav-tools">
+          <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
+            <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
+              <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
+              <g class="sigil-mark">
+                <circle class="sigil-halo" cx="32" cy="8.5" r="1.65" />
+                <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
+              </g>
             </svg>
+          </button>
+          <a href="/pre-order" class="nav-cta">Pre-order</a>
+        </div>
+      </header>
+    ) : (
+      <header class="site-nav" transition:name="site-nav" transition:persist="site-nav" transition:animate="none">
+        <a href="/" class="nav-brand">
+          <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
+          <span class="nav-name">Aura Homes</span>
+          <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
+        </a>
+        <nav class="nav-words" aria-label="Pages">
+          {bar.map((item) => (
+            <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+          ))}
+        </nav>
+        <div class="nav-tools">
+          <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
+            <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
+              <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
+              <g class="sigil-mark">
+                <circle class="sigil-halo" cx="32" cy="8.5" r="1.65" />
+                <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
+              </g>
+            </svg>
+          </button>
+          {!isBuilder && <a href="/pre-order" class="nav-cta" aria-current={path === '/pre-order' ? 'page' : undefined}>Pre-order</a>}
+        </div>
+      </header>
+    )}
+    {isHome ? (
+      <div id="story-menu" class="nav-panel" role="dialog" aria-modal="true" aria-label="Menu" hidden>
+        <div class="menu-horizon" aria-hidden="true"></div>
+        <div class="menu-stage" aria-hidden="true">
+          <div class="menu-ridge-clip">
+            <div class="menu-ridge-shift">
+              <svg class="menu-ridge" viewBox="0 0 200 188" fill="none">
+                <path vector-effect="non-scaling-stroke" d="M8 154H46L58 168L72 154L100 48L128 154L142 168L154 154H192" />
+              </svg>
+            </div>
+          </div>
+          <div class="menu-halo-anchor">
+            <span class="menu-glow"></span>
+            <span class="menu-halo"></span>
           </div>
         </div>
-        <div class="menu-halo-anchor">
-          <span class="menu-glow"></span>
-          <span class="menu-halo"></span>
+        <div class="nav-copy">
+          <p class="nav-thesis">{tagline}</p>
+          <div class="nav-groups">
+            {menu.map((group) => (
+              <div>
+                <p>{group.label}</p>
+                {group.links.map((item) => (
+                  <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <div class="nav-copy">
-        <p class="nav-thesis">{tagline}</p>
-        <div class="nav-groups">
-          {menu.map((group) => (
-            <div>
-              <p>{group.label}</p>
-              {group.links.map((item) => (
-                <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-              ))}
+    ) : (
+      <div id="story-menu" class="nav-panel" role="dialog" aria-modal="true" aria-label="Menu" hidden transition:name="story-menu" transition:persist="story-menu" transition:animate="none">
+        <div class="menu-horizon" aria-hidden="true"></div>
+        <div class="menu-stage" aria-hidden="true">
+          <div class="menu-ridge-clip">
+            <div class="menu-ridge-shift">
+              <svg class="menu-ridge" viewBox="0 0 200 188" fill="none">
+                <path vector-effect="non-scaling-stroke" d="M8 154H46L58 168L72 154L100 48L128 154L142 168L154 154H192" />
+              </svg>
             </div>
-          ))}
+          </div>
+          <div class="menu-halo-anchor">
+            <span class="menu-glow"></span>
+            <span class="menu-halo"></span>
+          </div>
+        </div>
+        <div class="nav-copy">
+          <p class="nav-thesis">{tagline}</p>
+          <div class="nav-groups">
+            {menu.map((group) => (
+              <div>
+                <p>{group.label}</p>
+                {group.links.map((item) => (
+                  <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    )}
 
     <div class="page-main relative z-10">
       <slot />
@@ -200,9 +266,53 @@ const foot = menu.flatMap((group) => group.links);
 
     <script>
       import { gsap } from 'gsap';
-      import { initSmoothScroll } from '../scripts/motion';
+      import { initSmoothScroll, resetPageMotion } from '../scripts/motion';
 
       const lenis = initSmoothScroll();
+
+      const copyCurrent = (live: ParentNode | null, incoming: ParentNode | null) => {
+        if (!live || !incoming) return;
+        const nextLinks = incoming.querySelectorAll<HTMLAnchorElement>('a[href]');
+        live.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((link, index) => {
+          const source = nextLinks[index];
+          if (!source || link.getAttribute('href') !== source.getAttribute('href')) return;
+          const current = source.getAttribute('aria-current');
+          if (current) link.setAttribute('aria-current', current);
+          else link.removeAttribute('aria-current');
+        });
+      };
+
+      document.addEventListener('astro:before-swap', ((event: Event) => {
+        resetPageMotion();
+        document.querySelectorAll('.site-nav .aura-logo').forEach((logo) => {
+          logo.classList.remove('is-play');
+        });
+        const incoming = (event as Event & { newDocument?: Document }).newDocument;
+        if (!incoming) return;
+        copyCurrent(document.querySelector('.site-nav'), incoming.querySelector('.site-nav'));
+        copyCurrent(document.getElementById('story-menu'), incoming.getElementById('story-menu'));
+        const liveDesc = document.querySelector('.nav-descriptor');
+        const nextDesc = incoming.querySelector('.nav-descriptor');
+        if (liveDesc && nextDesc) liveDesc.textContent = nextDesc.textContent;
+        const liveTools = document.querySelector('.nav-tools');
+        const liveCta = document.querySelector<HTMLAnchorElement>('.site-nav .nav-cta');
+        const nextCta = incoming.querySelector<HTMLAnchorElement>('.site-nav .nav-cta');
+        if (liveCta && nextCta) {
+          const current = nextCta.getAttribute('aria-current');
+          if (current) liveCta.setAttribute('aria-current', current);
+          else liveCta.removeAttribute('aria-current');
+        } else if (liveCta && !nextCta) {
+          liveCta.remove();
+        } else if (!liveCta && nextCta && liveTools) {
+          liveTools.append(nextCta.cloneNode(true));
+        }
+      }) as EventListener);
+
+      document.addEventListener('astro:after-swap', () => {
+        window.scrollTo(0, 0);
+        window.__lenis?.scrollTo(0, { immediate: true, force: true });
+        window.__lenis?.resize();
+      });
 
       const canvas = document.getElementById('tracers-canvas') as HTMLCanvasElement | null;
       let tracerRaf = 0;
@@ -410,8 +520,12 @@ const foot = menu.flatMap((group) => group.links);
 
       const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduce) {
+      const playedLogos = new WeakSet<Element>();
+      const bindLogos = () => {
+        if (reduce) return;
         document.querySelectorAll('.aura-logo').forEach((logo) => {
+          if (playedLogos.has(logo)) return;
+          playedLogos.add(logo);
           const host = logo.closest('a');
           host?.addEventListener('pointerenter', () => {
             logo.classList.remove('is-play');
@@ -419,7 +533,8 @@ const foot = menu.flatMap((group) => group.links);
             logo.classList.add('is-play');
           });
         });
-      }
+      };
+      bindLogos();
       if (fine && !reduce) {
         document.documentElement.classList.add('has-cursor');
         const ring = document.querySelector('.site-cursor') as HTMLElement;
@@ -442,11 +557,22 @@ const foot = menu.flatMap((group) => group.links);
         const bump = (on: boolean) => {
           gsap.to(ring, { scale: on ? 1.85 : 1, duration: 0.35, ease: 'power3.out' });
         };
-        document.querySelectorAll('a, button').forEach((el) => {
-          el.addEventListener('pointerenter', () => bump(true));
-          el.addEventListener('pointerleave', () => bump(false));
-        });
+        const boundCursor = new WeakSet<Element>();
+        const bindCursor = () => {
+          document.querySelectorAll('a, button').forEach((el) => {
+            if (boundCursor.has(el)) return;
+            boundCursor.add(el);
+            el.addEventListener('pointerenter', () => bump(true));
+            el.addEventListener('pointerleave', () => bump(false));
+          });
+        };
+        bindCursor();
+        document.addEventListener('astro:page-load', bindCursor);
       }
+      document.addEventListener('astro:page-load', () => {
+        bindLogos();
+        window.__lenis?.resize();
+      });
 
       const menuBtn = document.querySelector('.nav-menu') as HTMLButtonElement | null;
       const panel = document.getElementById('story-menu');

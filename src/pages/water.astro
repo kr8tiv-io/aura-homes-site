@@ -96,6 +96,7 @@ const linePoster = await posterSrc('/film/water-line.webp');
   </style>
   <script>
     import { bindJourneyMotion } from '../scripts/journey';
-    bindJourneyMotion();
+    import { onPageLoad } from '../scripts/motion';
+    onPageLoad(() => bindJourneyMotion());
   </script>
 </BaseLayout>

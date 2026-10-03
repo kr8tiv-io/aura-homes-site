@@ -27,6 +27,34 @@ export const duration = {
 
 let lenis: Lenis | null = null;
 let tickerFn: ((time: number) => void) | null = null;
+const pageResets: Array<() => void> = [];
+
+/** Register cleanup for a page effect so the next view transition can release it. */
+export function holdPageMotion(stop: () => void) {
+  pageResets.push(stop);
+}
+
+/** Drop scroll triggers and page effects before a view transition swaps the document. */
+export function resetPageMotion() {
+  while (pageResets.length) pageResets.pop()?.();
+  ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+}
+
+/**
+ * Run page setup now, and again after each view transition.
+ * The first astro:page-load is skipped because setup already ran.
+ */
+export function onPageLoad(setup: () => void) {
+  setup();
+  let skipFirst = true;
+  document.addEventListener('astro:page-load', () => {
+    if (skipFirst) {
+      skipFirst = false;
+      return;
+    }
+    setup();
+  });
+}
 
 export function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;

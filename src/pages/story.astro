@@ -252,7 +252,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+
+  onPageLoad(() => {
 
   const page = document.querySelector('.story-essay');
   if (page && !prefersReducedMotion()) {
@@ -280,4 +282,5 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     requestAnimationFrame(settle);
     window.addEventListener('load', settle, { once: true });
   }
+  });
 </script>

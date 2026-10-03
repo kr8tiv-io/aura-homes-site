@@ -126,86 +126,120 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </style>
 
 <script>
-  const fallback = document.getElementById('byo-fallback');
-  const root = document.getElementById('byo-root');
-  let booted = false;
+  import { onPageLoad, holdPageMotion } from '../scripts/motion';
 
-  const desktopNow = () =>
-    window.matchMedia('(min-width: 1024px)').matches &&
-    !window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  onPageLoad(() => {
+    const fallback = document.getElementById('byo-fallback');
+    const root = document.getElementById('byo-root');
+    if (!(fallback instanceof HTMLElement) || !(root instanceof HTMLElement)) return;
 
-  const showHold = () => {
-    if (!fallback) return;
-    fallback.dataset.byo = 'small';
-    fallback.hidden = false;
-    if (root) root.hidden = true;
-  };
+    let booted = false;
+    let gone = false;
+    const host = root as HTMLElement & { __byo?: { unmount: () => void } };
 
-  // Dev-only. A plain script that lazy-imports JSX otherwise fails Vite's
-  // refresh check, because this page is not a React island.
-  const ensureReactPreamble = async () => {
-    if (!import.meta.env.DEV) return;
-    const host = window as Window & {
-      $RefreshReg$?: () => void;
-      $RefreshSig$?: () => (type: unknown) => unknown;
+    const desktopNow = () =>
+      window.matchMedia('(min-width: 1024px)').matches &&
+      !window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+
+    const showHold = () => {
+      fallback.dataset.byo = 'small';
+      fallback.hidden = false;
+      root.hidden = true;
     };
-    if (host.$RefreshReg$) return;
-    const runtime = (await import(/* @vite-ignore */ '/@react-refresh')) as {
-      injectIntoGlobalHook: (target: Window) => void;
-    };
-    runtime.injectIntoGlobalHook(window);
-    host.$RefreshReg$ = () => {};
-    host.$RefreshSig$ = () => (type) => type;
-  };
 
-  const load = () => {
-    if (booted || !(root instanceof HTMLElement) || !(fallback instanceof HTMLElement)) return;
-    if (!desktopNow()) {
-      showHold();
-      return;
-    }
-    if (document.visibilityState !== 'visible') {
-      document.addEventListener(
-        'visibilitychange',
-        () => {
-          if (document.visibilityState === 'visible') load();
-        },
-        { once: true },
-      );
-      return;
-    }
-    booted = true;
-    ensureReactPreamble()
-      .then(() => import('../builder/mount'))
-      .then(({ mountBuilder }) => {
-        if (!desktopNow()) {
-          booted = false;
-          showHold();
-          return;
-        }
-        fallback.hidden = true;
-        mountBuilder(root);
-      })
-      .catch(() => {
-        booted = false;
+    // Dev-only. A plain script that lazy-imports JSX otherwise fails Vite's
+    // refresh check, because this page is not a React island.
+    const ensureReactPreamble = async () => {
+      if (!import.meta.env.DEV) return;
+      const win = window as Window & {
+        $RefreshReg$?: () => void;
+        $RefreshSig$?: () => (type: unknown) => unknown;
+      };
+      if (win.$RefreshReg$) return;
+      const runtime = (await import(/* @vite-ignore */ '/@react-refresh')) as {
+        injectIntoGlobalHook: (target: Window) => void;
+      };
+      runtime.injectIntoGlobalHook(window);
+      win.$RefreshReg$ = () => {};
+      win.$RefreshSig$ = () => (type) => type;
+    };
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') load();
+    };
+
+    const load = () => {
+      if (gone || booted) return;
+      if (!desktopNow()) {
         showHold();
-      });
-  };
+        return;
+      }
+      if (document.visibilityState !== 'visible') {
+        document.addEventListener('visibilitychange', onVisible);
+        return;
+      }
+      booted = true;
+      ensureReactPreamble()
+        .then(() => import('../builder/mount'))
+        .then(({ mountBuilder }) => {
+          if (gone || !desktopNow()) {
+            booted = false;
+            if (!gone) showHold();
+            return;
+          }
+          fallback.hidden = true;
+          mountBuilder(root);
+        })
+        .catch(() => {
+          booted = false;
+          if (!gone) showHold();
+        });
+    };
 
-  const decide = () => {
-    if (desktopNow()) {
-      if (fallback) fallback.dataset.byo = 'desktop';
+    const decide = () => {
+      if (gone) return;
+      if (desktopNow()) {
+        fallback.dataset.byo = 'desktop';
+        load();
+      } else {
+        showHold();
+      }
+    };
+
+    if (document.readyState === 'complete') decide();
+    else window.addEventListener('load', decide, { once: true });
+
+    const media = window.matchMedia('(min-width: 1024px)');
+    const onMedia = () => {
+      if (!desktopNow()) {
+        showHold();
+        return;
+      }
+      if (booted) {
+        fallback.hidden = true;
+        root.hidden = false;
+        return;
+      }
       load();
-    } else {
-      showHold();
-    }
-  };
+    };
+    media.addEventListener('change', onMedia);
 
-  if (document.readyState === 'complete') decide();
-  else window.addEventListener('load', decide, { once: true });
-
-  window.matchMedia('(min-width: 1024px)').addEventListener('change', () => {
-    if (desktopNow()) load();
-    else showHold();
+    holdPageMotion(() => {
+      gone = true;
+      media.removeEventListener('change', onMedia);
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('load', decide);
+      const dropping = host.__byo;
+      delete host.__byo;
+      if (dropping) {
+        window.setTimeout(() => {
+          try {
+            dropping.unmount();
+          } catch {
+            /* The root is leaving with the page. */
+          }
+        }, 0);
+      }
+    });
   });
 </script>

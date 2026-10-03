@@ -200,8 +200,9 @@ const offgrid = [
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
 
+  onPageLoad(() => {
   const form = document.getElementById('quote-form');
   const thanks = document.getElementById('quote-thanks');
   const model = document.getElementById('quote-model');
@@ -370,4 +371,5 @@ const offgrid = [
       });
     }
   }
+  });
 </script>

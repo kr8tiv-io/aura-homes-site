@@ -65,7 +65,9 @@ const shells = [
 
 <script>
   import { roomBySlug } from '../lib/rooms';
+  import { onPageLoad } from '../scripts/motion';
 
+  onPageLoad(() => {
   const params = new URLSearchParams(location.search);
   const concept = roomBySlug(params.get('model'));
   if (concept) {
@@ -116,6 +118,8 @@ const shells = [
   }
 
   document.querySelectorAll('form.join-form').forEach((form) => {
+    if (!(form instanceof HTMLFormElement) || form.dataset.joinBound === 'yes') return;
+    form.dataset.joinBound = 'yes';
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const status = form.querySelector('[data-join-status]');
@@ -138,5 +142,6 @@ const shells = [
         button.disabled = false;
       }
     });
+  });
   });
 </script>
