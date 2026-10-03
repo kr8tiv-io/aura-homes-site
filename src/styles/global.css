@@ -87,8 +87,7 @@ html.lenis body {
 ::view-transition-group(warmth),
 ::view-transition-group(grain),
 ::view-transition-group(rail),
-::view-transition-group(cursor-ring),
-::view-transition-group(cursor-dot) {
+::view-transition-group(cursor-ring) {
   animation: none;
   z-index: 6;
 }
@@ -102,8 +101,7 @@ html.lenis body {
 ::view-transition-old(warmth),
 ::view-transition-old(grain),
 ::view-transition-old(rail),
-::view-transition-old(cursor-ring),
-::view-transition-old(cursor-dot) {
+::view-transition-old(cursor-ring) {
   animation: none;
   opacity: 0;
   mix-blend-mode: normal;
@@ -119,8 +117,7 @@ html.lenis body {
 ::view-transition-new(warmth),
 ::view-transition-new(grain),
 ::view-transition-new(rail),
-::view-transition-new(cursor-ring),
-::view-transition-new(cursor-dot) {
+::view-transition-new(cursor-ring) {
   animation: none;
   opacity: 1;
   mix-blend-mode: normal;
@@ -988,33 +985,43 @@ body.menu-open .site-nav { z-index: 80; }
   position: fixed;
   top: 0;
   left: 0;
-  width: 22px;
-  height: 22px;
-  margin: -11px 0 0 -11px;
-  border: 1px solid rgba(244, 243, 239, 0.9);
-  border-radius: 50%;
-  pointer-events: none;
   z-index: 90;
+  display: grid;
+  place-items: center;
+  width: 92px;
+  height: 92px;
+  margin: -46px 0 0 -46px;
+  border: 1px solid rgba(244, 243, 239, 0.92);
+  border-radius: 50%;
+  background: rgba(244, 243, 239, 0.16);
+  color: #f4f3ef;
   mix-blend-mode: difference;
+  pointer-events: none;
   opacity: 0;
 }
-.site-cursor-dot {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 3px;
-  margin: -1.5px 0 0 -1.5px;
-  border-radius: 50%;
-  background: #f4f3ef;
-  pointer-events: none;
-  z-index: 91;
-  mix-blend-mode: difference;
+.site-cursor-word {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
   opacity: 0;
 }
 html.has-cursor,
 html.has-cursor * {
   cursor: none !important;
+}
+html.has-cursor input,
+html.has-cursor textarea,
+html.has-cursor select {
+  cursor: auto !important;
+}
+html.has-cursor button:disabled {
+  cursor: wait !important;
+}
+html.has-cursor .nav-cta {
+  transition-property: background-color, color;
 }
 
 .sanctuary-section {
@@ -1242,7 +1249,6 @@ html.has-cursor * {
 @media (prefers-reduced-motion: reduce) {
   .page-grain,
   .site-cursor,
-  .site-cursor-dot,
   .scroll-rail {
     display: none;
   }
@@ -1277,10 +1283,17 @@ html.has-cursor * {
   }
 }
 
+@media (hover: none), (pointer: coarse) {
+  .site-cursor {
+    display: none;
+  }
+  html.has-cursor,
+  html.has-cursor * {
+    cursor: auto !important;
+  }
+}
 @media (max-width: 767px) {
-  .scroll-rail,
-  .site-cursor,
-  .site-cursor-dot {
+  .scroll-rail {
     display: none;
   }
 }

@@ -106,8 +106,7 @@ const foot = menu.flatMap((group) => group.links);
         <canvas id="warmth-canvas" class="warmth-canvas" aria-hidden="true"></canvas>
         <div class="page-grain" aria-hidden="true"></div>
         <div class="scroll-rail" aria-hidden="true"><div class="scroll-rail-thumb"></div></div>
-        <div class="site-cursor" aria-hidden="true"></div>
-        <div class="site-cursor-dot" aria-hidden="true"></div>
+        <div class="site-cursor" aria-hidden="true"><span class="site-cursor-word"></span></div>
       </>
     ) : (
       <>
@@ -123,8 +122,7 @@ const foot = menu.flatMap((group) => group.links);
           <div class="daylight-sun daylight-dusk"></div>
         </div>
         <div class="scroll-rail" aria-hidden="true" transition:name="rail" transition:persist="rail" transition:animate="none"><div class="scroll-rail-thumb"></div></div>
-        <div class="site-cursor" aria-hidden="true" transition:name="cursor-ring" transition:persist="cursor-ring" transition:animate="none"></div>
-        <div class="site-cursor-dot" aria-hidden="true" transition:name="cursor-dot" transition:persist="cursor-dot" transition:animate="none"></div>
+        <div class="site-cursor" aria-hidden="true" transition:name="cursor-ring" transition:persist="cursor-ring" transition:animate="none"><span class="site-cursor-word"></span></div>
         <div class="horizon-wipe" transition:name="horizon" transition:animate="none" aria-hidden="true"></div>
       </>
     )}
@@ -267,6 +265,7 @@ const foot = menu.flatMap((group) => group.links);
       import { gsap } from 'gsap';
       import { initSmoothScroll, resetPageMotion, stopSmoothScroll, ScrollTrigger } from '../scripts/motion';
       import { bindDaylight } from '../scripts/daylight';
+      import { bindSiteCursor } from '../scripts/cursor';
 
       initSmoothScroll();
       bindDaylight();
@@ -520,7 +519,6 @@ const foot = menu.flatMap((group) => group.links);
         }
       }
 
-      const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const playedLogos = new WeakSet<Element>();
       const bindLogos = () => {
@@ -537,40 +535,7 @@ const foot = menu.flatMap((group) => group.links);
         });
       };
       bindLogos();
-      if (fine && !reduce) {
-        document.documentElement.classList.add('has-cursor');
-        const ring = document.querySelector('.site-cursor') as HTMLElement;
-        const dot = document.querySelector('.site-cursor-dot') as HTMLElement;
-        const xRing = gsap.quickTo(ring, 'x', { duration: 0.45, ease: 'power3' });
-        const yRing = gsap.quickTo(ring, 'y', { duration: 0.45, ease: 'power3' });
-        const xDot = gsap.quickTo(dot, 'x', { duration: 0.12, ease: 'power3' });
-        const yDot = gsap.quickTo(dot, 'y', { duration: 0.12, ease: 'power3' });
-        gsap.set([ring, dot], { opacity: 1 });
-        window.addEventListener(
-          'pointermove',
-          (e) => {
-            xRing(e.clientX);
-            yRing(e.clientY);
-            xDot(e.clientX);
-            yDot(e.clientY);
-          },
-          { passive: true },
-        );
-        const bump = (on: boolean) => {
-          gsap.to(ring, { scale: on ? 1.85 : 1, duration: 0.35, ease: 'power3.out' });
-        };
-        const boundCursor = new WeakSet<Element>();
-        const bindCursor = () => {
-          document.querySelectorAll('a, button').forEach((el) => {
-            if (boundCursor.has(el)) return;
-            boundCursor.add(el);
-            el.addEventListener('pointerenter', () => bump(true));
-            el.addEventListener('pointerleave', () => bump(false));
-          });
-        };
-        bindCursor();
-        document.addEventListener('astro:page-load', bindCursor);
-      }
+      bindSiteCursor();
       document.addEventListener('astro:page-load', () => {
         bindLogos();
         window.__lenis?.resize();
