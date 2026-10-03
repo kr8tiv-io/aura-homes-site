@@ -1,4 +1,5 @@
 ---
+import Still from '../components/Still.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -9,11 +10,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 >
   <main id="top" class="byo-page">
     <section class="byo-fallback" id="byo-fallback" data-byo="pending">
-      <img
+      <Still
         src="/film/story-meadow-side.webp"
         alt="A meadow beside an Aura Homes room, in soft evening light."
-        width="1280"
-        height="922"
+        loading="eager"
+        fetchpriority="high"
       />
       <div class="byo-fallback-copy">
         <p class="story-kicker">Build Your Own</p>

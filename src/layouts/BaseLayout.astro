@@ -1,6 +1,9 @@
 ---
 import '../styles/global.css';
+import { Font, getImage } from 'astro:assets';
 import mark from '../assets/logo/aura-mark.svg?raw';
+import cabinPoster from '../../public/film/cabin-poster-hi.webp';
+import { organizationJson } from '../lib/organization';
 
 interface Props {
   title: string;
@@ -19,8 +22,12 @@ const brandTitle = (raw: string) => {
 };
 const title = brandTitle(rawTitle);
 const path = Astro.url.pathname;
-const pageUrl = Astro.url.href;
-const ogImage = new URL('/film/cabin-poster-hi.webp', Astro.url).href;
+const origin = Astro.site ?? Astro.url.origin;
+const pageUrl = new URL(path, origin).href;
+const canonical = pageUrl;
+const og = await getImage({ src: cabinPoster, width: 1200, format: 'webp', quality: 72 });
+const ogImage = new URL(og.src, origin).href;
+const organization = organizationJson(origin);
 const ogAlt = 'An Aura Homes room at dusk, set in a meadow.';
 const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
@@ -82,6 +89,10 @@ const foot = menu.flatMap((group) => group.links);
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <Font cssVariable="--font-cinzel" preload />
+    <Font cssVariable="--font-inter" />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
     <meta property="og:site_name" content="Aura Homes" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -94,12 +105,6 @@ const foot = menu.flatMap((group) => group.links);
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogAlt} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400..900&family=Inter:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
   </head>
   <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder }]}>
     <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>

@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Materials from '../components/Materials.astro';
 import ShotHold from '../components/ShotHold.astro';
+import Still from '../components/Still.astro';
 import { roomConcepts } from '../lib/rooms';
 
 const uses = [
@@ -40,13 +41,11 @@ const uses = [
           <article class="room-card" data-rise>
             <figure>
               {room.image ? (
-                <img
+                <Still
                   src={room.image}
                   alt={room.alt}
-                  width="1280"
-                  height="922"
-                  loading="lazy"
-                  style={`object-position: ${room.focus}`}
+                  position={room.focus}
+                  sizes="(max-width: 800px) 92vw, 42vw"
                 />
               ) : (
                 <ShotHold caption={room.shot ?? room.alt} />

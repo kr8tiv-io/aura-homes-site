@@ -1,4 +1,5 @@
 ---
+import Still from '../components/Still.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -27,12 +28,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <figure class="story-bleed">
-      <img
+      <Still
         src="/film/story-meadow-side.webp"
         alt="A low glass room in tall grass, with pines and a pale mountain behind it."
-        width="1800"
-        height="1200"
-        data-rise
+        rise
       />
     </figure>
 
@@ -50,13 +49,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <figure class="story-bleed">
-      <img
+      <Still
         src="/film/layout-forest.webp"
         alt="A glass room at the edge of a pine forest, open toward a dusk meadow."
-        width="1800"
-        height="1200"
-        loading="lazy"
-        data-rise
+        rise
       />
     </figure>
 
@@ -76,13 +72,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <figure class="story-bleed">
-      <img
+      <Still
         src="/film/story-room.webp"
         alt="An open room of oak and linen, facing a green field at dusk."
-        width="1800"
-        height="1200"
-        loading="lazy"
-        data-rise
+        rise
       />
     </figure>
 
@@ -98,13 +91,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <figure class="story-bleed">
-      <img
+      <Still
         src="/film/layout-sky.webp"
         alt="A bed under a skylight, with the meadow and a dark treeline beyond the glass."
-        width="1800"
-        height="1200"
-        loading="lazy"
-        data-rise
+        rise
       />
     </figure>
 
@@ -191,7 +181,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .story-bleed img {
     display: block;
     width: 100%;
-    height: 115%;
+    height: 100%;
     object-fit: cover;
   }
   .story-founder {
@@ -254,6 +244,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .story-bleed picture,
     .story-bleed img {
       height: 100%;
     }

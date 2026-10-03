@@ -1,4 +1,5 @@
 ---
+import Still from '../components/Still.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -9,11 +10,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 >
   <main id="top" class="wild">
     <section class="wild-frame" aria-labelledby="wild-morning">
-      <img
+      <Still
         src="/film/story-room.webp"
         alt="An open wood room facing a meadow at blue hour, with a low seat and a deck in front."
-        width="1600"
-        height="1152"
+        loading="eager"
         fetchpriority="high"
       />
       <div class="wild-shade" aria-hidden="true"></div>
@@ -23,12 +23,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <section class="wild-frame" aria-labelledby="wild-kids">
-      <img
+      <Still
         src="/film/layout-lounge-wind.webp"
         alt="A linen sofa in a wood room, facing tall grass and a blue evening."
-        width="1800"
-        height="1200"
-        loading="lazy"
       />
       <div class="wild-shade" aria-hidden="true"></div>
       <div class="wild-line" data-rise>
@@ -37,12 +34,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <section class="wild-frame" aria-labelledby="wild-steam">
-      <img
+      <Still
         src="/film/story-meadow-side.webp"
         alt="A wood-fired tub letting off steam beside an open room, with tall grass in front."
-        width="1800"
-        height="1200"
-        loading="lazy"
       />
       <div class="wild-shade" aria-hidden="true"></div>
       <div class="wild-line" data-rise>
@@ -51,12 +45,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <section class="wild-frame" aria-labelledby="wild-moon">
-      <img
+      <Still
         src="/film/resort-deck.webp"
         alt="A lit deck at blue hour, with a wood-fired tub and mountains behind it."
-        width="1800"
-        height="1200"
-        loading="lazy"
       />
       <div class="wild-shade" aria-hidden="true"></div>
       <div class="wild-line" data-rise>
