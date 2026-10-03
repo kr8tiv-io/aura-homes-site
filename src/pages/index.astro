@@ -271,7 +271,7 @@ import Journeys from '../components/Journeys.astro';
   </main>
 
   <script>
-    import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+    import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
     import { bindFilmScrub } from '../scripts/film-scrub';
     import { mountMeadow } from '../scripts/meadow';
     import { mountWash } from '../scripts/wash';
@@ -279,6 +279,7 @@ import Journeys from '../components/Journeys.astro';
     import { bindShots } from '../scripts/shots';
     import { bindReels } from '../scripts/reel';
 
+    onPageLoad(() => {
     const reduce = prefersReducedMotion();
     const mm = gsap.matchMedia();
 
@@ -531,5 +532,6 @@ import Journeys from '../components/Journeys.astro';
         fieldFx?.destroy();
       });
     }
+    });
   </script>
 </BaseLayout>

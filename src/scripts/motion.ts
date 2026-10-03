@@ -78,7 +78,8 @@ export function ifMotion<T>(create: () => T): T | null {
   return create();
 }
 
-export function initSmoothScroll() {
+/** Stop the smooth-scroll loop so a view transition can start a fresh one. */
+export function stopSmoothScroll() {
   if (tickerFn) {
     gsap.ticker.remove(tickerFn);
     tickerFn = null;
@@ -87,6 +88,11 @@ export function initSmoothScroll() {
     lenis.destroy();
     lenis = null;
   }
+  window.__lenis = undefined;
+}
+
+export function initSmoothScroll() {
+  stopSmoothScroll();
 
   lenis = new Lenis({
     lerp: 0.1,
@@ -110,6 +116,7 @@ export function initSmoothScroll() {
   window.__lenis = lenis;
   window.__ScrollTrigger = ScrollTrigger;
   document.documentElement.classList.add('lenis');
+  ScrollTrigger.refresh();
   return lenis;
 }
 
