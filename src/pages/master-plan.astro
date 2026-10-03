@@ -1,5 +1,5 @@
 ---
-import Still from '../components/Still.astro';
+import DepthImage from '../components/DepthImage.astro';
 import HeroMist from '../components/HeroMist.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -123,7 +123,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
           <div class="stay-reel">
             <section class="stay-frame stay-moon" aria-labelledby="stay-moon">
-              <Still
+              <DepthImage
                 src="/film/resort-deck.webp"
                 alt="Stairs rising through snow to a lit mountain deck, the sky a deep blue."
               />
@@ -136,7 +136,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </section>
 
             <section class="stay-frame stay-net" aria-labelledby="stay-net">
-              <Still
+              <DepthImage
                 src="/film/resort-tower.webp"
                 alt="A round glass tower in snow, mesh balconies stacked up its side."
               />
@@ -148,7 +148,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </section>
 
             <section class="stay-frame stay-tub" aria-labelledby="stay-tub">
-              <Still
+              <DepthImage
                 src="/film/story-meadow-side.webp"
                 alt="A wood-fired tub letting off steam beside an open room at dusk."
               />
@@ -160,7 +160,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </section>
 
             <section class="stay-frame stay-glow" aria-labelledby="stay-glow">
-              <Still
+              <DepthImage
                 src="/film/story-room.webp"
                 alt="An open oak and linen room facing a green field at dusk."
               />
@@ -172,7 +172,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </section>
 
             <section class="stay-frame stay-inside" aria-labelledby="stay-inside">
-              <Still
+              <DepthImage
                 src="/film/layout-night.webp"
                 alt="A made bed under a skylight of stars, the room left quiet."
               />
@@ -183,8 +183,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               </div>
             </section>
 
-            <section class="stay-frame stay-fire" data-zoom="1.58" aria-labelledby="stay-fire">
-              <Still
+            <section class="stay-frame stay-fire" data-zoom="1.58" data-depth-origin="84% 62%" aria-labelledby="stay-fire">
+              <DepthImage
                 src="/film/resort-deck.webp"
                 alt="A small fire already burning on the deck, beside the lounge."
               />
@@ -399,13 +399,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     object-position: center;
     transform-origin: center center;
   }
-  .stay-moon img {
+  :global(.stay-moon) :global(img) {
     object-position: 50% 42%;
   }
-  .stay-net img {
+  :global(.stay-net) :global(img) {
     object-position: 50% 70%;
   }
-  .stay-glow img {
+  :global(.stay-glow) :global(img) {
     object-position: 62% 84%;
   }
   .stay-glow .stay-shade {
@@ -424,8 +424,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       rgba(12, 13, 14, 0) 100%
     );
   }
-  .stay-fire img {
+  :global(.stay-fire) :global(img) {
     object-position: 84% 62%;
+  }
+  :global(.stay-fire) :global(.depth-mover) {
     transform: scale(1.58);
     transform-origin: 84% 62%;
   }
@@ -572,28 +574,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     ScrollTrigger.getAll()
       .filter((trigger) => trigger.vars.id === 'plan-rise')
       .forEach((trigger) => trigger.kill());
-
-    gsap.utils.toArray<HTMLElement>('.stay-frame img', page).forEach((img) => {
-      const frame = img.closest<HTMLElement>('.stay-frame');
-      if (!frame) return;
-      const zoom = Number(frame.dataset.zoom || '1');
-      const rest = Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
-      gsap.fromTo(
-        img,
-        { scale: rest * 1.06 },
-        {
-          scale: rest,
-          ease: 'none',
-          scrollTrigger: {
-            id: 'plan-rise',
-            trigger: frame,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.6,
-          },
-        },
-      );
-    });
 
     gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
       gsap.from(el, {
