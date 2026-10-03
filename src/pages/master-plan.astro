@@ -1,7 +1,6 @@
 ---
-import DepthImage from '../components/DepthImage.astro';
-import HeroMist from '../components/HeroMist.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import Still from '../components/Still.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -21,14 +20,34 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
     </section>
 
-    <div class="plan-track">
-      <div class="plan-spine" aria-hidden="true"></div>
-      <ol class="plan-rail">
-        <li class="plan-step" data-rise>
-          <div class="plan-mark">
-            <p class="plan-num" aria-hidden="true">01</p>
-            <span class="plan-node" aria-hidden="true"></span>
+    <section class="plan-journey" data-plan-journey aria-label="Chapters">
+      <div class="plan-progress" aria-hidden="true">
+        <div class="plan-progress-track" data-plan-track>
+          <div class="plan-progress-fill" data-plan-line></div>
+          <span class="plan-halo" data-plan-halo>
+            <span class="plan-halo-glow"></span>
+            <span class="plan-halo-dot"></span>
+          </span>
+        </div>
+      </div>
+
+      <ol class="plan-rail" data-plan-rail>
+        <li class="plan-panel" data-plan-panel>
+          <div class="plan-photo">
+            <Still
+              src="/film/story-meadow-side.webp"
+              alt="A glass room open to a meadow at dusk, a wood-fired tub steaming beside it."
+              position="center 64%"
+              sizes="100vw"
+              loading="eager"
+              fetchpriority="high"
+            />
           </div>
+          <div class="plan-shade" aria-hidden="true"></div>
+          <p class="plan-giant" aria-hidden="true">
+            <span class="plan-giant-outline">01</span>
+            <span class="plan-giant-clip" data-plan-num><span class="plan-giant-solid">01</span></span>
+          </p>
           <div class="plan-copy">
             <p class="story-kicker">Now</p>
             <RevealHeading as="h2"><span class="plan-keep">Second-life</span> rooms.</RevealHeading>
@@ -43,11 +62,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </li>
 
-        <li class="plan-step" data-rise>
-          <div class="plan-mark">
-            <p class="plan-num" aria-hidden="true">02</p>
-            <span class="plan-node" aria-hidden="true"></span>
+        <li class="plan-panel" data-plan-panel>
+          <div class="plan-photo">
+            <Still
+              src="/film/farm-wall.webp"
+              alt="A black glass room in a dusk meadow, one wall a vertical garden glowing from within."
+              sizes="100vw"
+            />
           </div>
+          <div class="plan-shade" aria-hidden="true"></div>
+          <p class="plan-giant" aria-hidden="true">
+            <span class="plan-giant-outline">02</span>
+            <span class="plan-giant-clip" data-plan-num><span class="plan-giant-solid">02</span></span>
+          </p>
           <div class="plan-copy">
             <p class="story-kicker">Grow</p>
             <RevealHeading as="h2">Rooms that would grow.</RevealHeading>
@@ -60,11 +87,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </li>
 
-        <li class="plan-step" data-rise>
-          <div class="plan-mark">
-            <p class="plan-num" aria-hidden="true">03</p>
-            <span class="plan-node" aria-hidden="true"></span>
+        <li class="plan-panel" data-plan-panel>
+          <div class="plan-photo">
+            <Still
+              src="/film/water-line.webp"
+              alt="A wood room at dusk, water filling glass jugs beside a meadow window."
+              sizes="100vw"
+            />
           </div>
+          <div class="plan-shade" aria-hidden="true"></div>
+          <p class="plan-giant" aria-hidden="true">
+            <span class="plan-giant-outline">03</span>
+            <span class="plan-giant-clip" data-plan-num><span class="plan-giant-solid">03</span></span>
+          </p>
           <div class="plan-copy">
             <p class="story-kicker">Water</p>
             <RevealHeading as="h2">Drawn from the air.</RevealHeading>
@@ -78,11 +113,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </li>
 
-        <li class="plan-step" data-rise>
-          <div class="plan-mark">
-            <p class="plan-num" aria-hidden="true">04</p>
-            <span class="plan-node" aria-hidden="true"></span>
+        <li class="plan-panel" data-plan-panel>
+          <div class="plan-photo">
+            <Still
+              src="/film/layout-lounge-wind.webp"
+              alt="A linen sofa in a warm wood room, evening light along the ceiling, a meadow beyond the glass."
+              position="28% center"
+              sizes="100vw"
+            />
           </div>
+          <div class="plan-shade" aria-hidden="true"></div>
+          <p class="plan-giant" aria-hidden="true">
+            <span class="plan-giant-outline">04</span>
+            <span class="plan-giant-clip" data-plan-num><span class="plan-giant-solid">04</span></span>
+          </p>
           <div class="plan-copy">
             <p class="story-kicker">Give</p>
             <RevealHeading as="h2">An intention to share.</RevealHeading>
@@ -105,98 +149,35 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </li>
 
-        <li class="plan-step plan-stay">
-          <div class="plan-stay-head" data-rise>
-            <div class="plan-mark">
-              <p class="plan-num" aria-hidden="true">05</p>
-              <span class="plan-node" aria-hidden="true"></span>
-            </div>
-            <div class="plan-copy">
-              <p class="story-kicker">Stay</p>
-              <RevealHeading as="h2">Near the mountains.</RevealHeading>
-              <p>
-                Micro-resorts, about half an hour from Banff and Canmore, would be built as showcases for the newest rooms.
-              </p>
-              <p class="plan-later">Coming later.</p>
-            </div>
+        <li class="plan-panel" data-plan-panel>
+          <div class="plan-photo">
+            <Still
+              src="/film/resort-deck.webp"
+              alt="A lit mountain house at blue hour, stairs rising through snow toward a glowing deck."
+              position="50% 42%"
+              sizes="100vw"
+            />
           </div>
-
-          <div class="stay-reel">
-            <section class="stay-frame stay-moon" aria-labelledby="stay-moon">
-              <DepthImage
-                src="/film/resort-deck.webp"
-                alt="Stairs rising through snow to a lit mountain deck, the sky a deep blue."
-              />
-              <div class="stay-shade" aria-hidden="true"></div>
-              <HeroMist />
-              <div class="stay-line" data-rise>
-                <p class="stay-kicker">Coming later.</p>
-                <h3 id="stay-moon">You walk up to the deck as the moon comes out.</h3>
-              </div>
-            </section>
-
-            <section class="stay-frame stay-net" aria-labelledby="stay-net">
-              <DepthImage
-                src="/film/resort-tower.webp"
-                alt="A round glass tower in snow, mesh balconies stacked up its side."
-              />
-              <div class="stay-shade" aria-hidden="true"></div>
-              <HeroMist />
-              <div class="stay-line" data-rise>
-                <h3 id="stay-net">Outdoor blankets, pulled onto the net.</h3>
-              </div>
-            </section>
-
-            <section class="stay-frame stay-tub" aria-labelledby="stay-tub">
-              <DepthImage
-                src="/film/story-meadow-side.webp"
-                alt="A wood-fired tub letting off steam beside an open room at dusk."
-              />
-              <div class="stay-shade" aria-hidden="true"></div>
-              <HeroMist />
-              <div class="stay-line" data-rise>
-                <h3 id="stay-tub">The wood-fired tub, lit.</h3>
-              </div>
-            </section>
-
-            <section class="stay-frame stay-glow" aria-labelledby="stay-glow">
-              <DepthImage
-                src="/film/story-room.webp"
-                alt="An open oak and linen room facing a green field at dusk."
-              />
-              <div class="stay-shade" aria-hidden="true"></div>
-              <HeroMist />
-              <div class="stay-line" data-rise>
-                <h3 id="stay-glow">The underlit patio glows.</h3>
-              </div>
-            </section>
-
-            <section class="stay-frame stay-inside" aria-labelledby="stay-inside">
-              <DepthImage
-                src="/film/layout-night.webp"
-                alt="A made bed under a skylight of stars, the room left quiet."
-              />
-              <div class="stay-shade" aria-hidden="true"></div>
-              <HeroMist />
-              <div class="stay-line" data-rise>
-                <h3 id="stay-inside">Chocolates, waiting inside.</h3>
-              </div>
-            </section>
-
-            <section class="stay-frame stay-fire" data-zoom="1.58" data-depth-origin="84% 62%" aria-labelledby="stay-fire">
-              <DepthImage
-                src="/film/resort-deck.webp"
-                alt="A small fire already burning on the deck, beside the lounge."
-              />
-              <div class="stay-shade" aria-hidden="true"></div>
-              <HeroMist />
-              <div class="stay-line" data-rise>
-                <h3 id="stay-fire">A little fire, already going.</h3>
-              </div>
-            </section>
-          </div>
-
-          <div class="plan-stay-note" data-rise>
+          <div class="plan-shade" aria-hidden="true"></div>
+          <p class="plan-giant" aria-hidden="true">
+            <span class="plan-giant-outline">05</span>
+            <span class="plan-giant-clip" data-plan-num><span class="plan-giant-solid">05</span></span>
+          </p>
+          <div class="plan-copy">
+            <p class="story-kicker">Stay</p>
+            <RevealHeading as="h2">Near the mountains.</RevealHeading>
+            <p>
+              Micro-resorts, about half an hour from Banff and Canmore, would be built as showcases for the newest rooms.
+            </p>
+            <p class="plan-later">Coming later.</p>
+            <ul class="plan-moments">
+              <li>You walk up to the deck as the moon comes out.</li>
+              <li>Outdoor blankets, pulled onto the net.</li>
+              <li>The wood-fired tub, lit.</li>
+              <li>The underlit patio glows.</li>
+              <li>Chocolates, waiting inside.</li>
+              <li>A little fire, already going.</li>
+            </ul>
             <p>It would be catered, and left for you. No staff on site.</p>
             <p>Add-ons would come later. A side-by-side, if you want to go farther.</p>
             <p class="plan-links">
@@ -205,11 +186,19 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </li>
 
-        <li class="plan-step" data-rise>
-          <div class="plan-mark">
-            <p class="plan-num" aria-hidden="true">06</p>
-            <span class="plan-node" aria-hidden="true"></span>
+        <li class="plan-panel" data-plan-panel>
+          <div class="plan-photo">
+            <Still
+              src="/film/costa-canopy.webp"
+              alt="A glass room with a warm wood interior, set in a misty rainforest at dusk."
+              sizes="100vw"
+            />
           </div>
+          <div class="plan-shade" aria-hidden="true"></div>
+          <p class="plan-giant" aria-hidden="true">
+            <span class="plan-giant-outline">06</span>
+            <span class="plan-giant-clip" data-plan-num><span class="plan-giant-solid">06</span></span>
+          </p>
           <div class="plan-copy">
             <p class="story-kicker">Paradise</p>
             <RevealHeading as="h2">Costa Rica, our second home.</RevealHeading>
@@ -219,11 +208,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </li>
 
-        <li class="plan-step" data-rise>
-          <div class="plan-mark">
-            <p class="plan-num" aria-hidden="true">07</p>
-            <span class="plan-node" aria-hidden="true"></span>
+        <li class="plan-panel" data-plan-panel>
+          <div class="plan-photo">
+            <Still
+              src="/film/layout-night.webp"
+              alt="A made bed under a skylight of stars, a night meadow beyond the glass."
+              position="center 68%"
+              sizes="100vw"
+            />
           </div>
+          <div class="plan-shade" aria-hidden="true"></div>
+          <p class="plan-giant" aria-hidden="true">
+            <span class="plan-giant-outline">07</span>
+            <span class="plan-giant-clip" data-plan-num><span class="plan-giant-solid">07</span></span>
+          </p>
           <div class="plan-copy">
             <p class="story-kicker">Home</p>
             <RevealHeading as="h2">Full eco homes, someday.</RevealHeading>
@@ -233,7 +231,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </li>
       </ol>
-    </div>
+    </section>
 
     <p class="plan-close" data-rise>One room at a time. Then a little more.</p>
   </main>
@@ -243,146 +241,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .plan {
     color: #14120e;
   }
-  .plan-track {
-    position: relative;
-    padding: 2vh 8vw 4vh;
-  }
-  .plan-spine {
-    position: absolute;
-    z-index: 0;
-    top: 6vh;
-    bottom: 8vh;
-    left: calc(8vw + 6.25rem);
-    width: 1px;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      rgba(156, 122, 85, 0.55) 10%,
-      rgba(156, 122, 85, 0.55) 90%,
-      transparent
-    );
-    transform-origin: top center;
-    pointer-events: none;
-  }
-  .plan-rail {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .plan-step {
-    position: relative;
-    display: grid;
-    grid-template-columns: 6.25rem minmax(0, 38rem);
-    column-gap: 3rem;
-    align-items: start;
-    padding: 11vh 0;
-  }
-  .plan-mark {
-    position: relative;
-  }
-  .plan-num {
-    margin: 0;
-    font-family: var(--font-cinzel);
-    font-weight: 300;
-    font-size: clamp(1.7rem, 2.6vw, 2.35rem);
-    line-height: 1;
-    letter-spacing: 0.06em;
-    color: #9c7a55;
-  }
-  .plan-node {
-    position: absolute;
-    z-index: 1;
-    top: 0.48rem;
-    right: -3.5px;
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #f4f3ef;
-    box-shadow: 0 0 0 1px #9c7a55;
-  }
-  :global(.plan-copy h2) {
-    margin: 0.85rem 0 0;
-    max-width: 11em;
-    font-family: var(--font-cinzel);
-    font-weight: 300;
-    font-size: clamp(2.35rem, 4.8vw, 4.2rem);
-    line-height: 0.98;
-    letter-spacing: -0.035em;
-  }
-  .plan-keep {
-    white-space: nowrap;
-  }
-  .plan-copy > p {
-    max-width: 34rem;
-    margin: 1.6rem 0 0;
-    font-weight: 300;
-    font-size: 1.125rem;
-    line-height: 1.7;
-    color: rgba(20, 18, 14, 0.78);
-  }
-  .plan-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1.4rem;
-    margin-top: 1.75rem;
-  }
-  .plan-links a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-size: 0.72rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: #866243;
-    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .plan-links a:hover {
-    opacity: 0.55;
-  }
-  .plan-later {
-    margin: 1.75rem 0 0;
-    font-size: 0.72rem;
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: #866243;
-  }
-  .plan-host-ask {
-    margin-top: 1.15rem;
-  }
-  .plan-host-ask a {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    font-size: 0.95rem;
-    letter-spacing: 0.01em;
-    text-transform: none;
-    text-decoration: underline;
-    text-decoration-color: rgba(134, 98, 67, 0.7);
-    text-underline-offset: 0.22em;
-    color: #866243;
-    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .plan-host-ask a:hover {
-    opacity: 0.55;
-  }
-  .plan-stay {
-    display: block;
-    padding-bottom: 0;
-  }
-  .plan-stay-head {
-    display: grid;
-    grid-template-columns: 6.25rem minmax(0, 38rem);
-    column-gap: 3rem;
-    align-items: start;
-  }
-  .stay-reel {
-    position: relative;
-    z-index: 1;
-    margin: 10vh 0 0 -8vw;
-    width: calc(100% + 16vw);
-  }
-  .stay-frame {
+  .plan-journey {
     position: relative;
     height: 100vh;
     height: 100svh;
@@ -390,116 +249,215 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     background: #0c0d0e;
     color: #f4f3ef;
   }
-  .stay-frame img {
+  .plan-progress {
     position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-    transform-origin: center center;
-  }
-  :global(.stay-moon) :global(img) {
-    object-position: 50% 42%;
-  }
-  :global(.stay-net) :global(img) {
-    object-position: 50% 70%;
-  }
-  :global(.stay-glow) :global(img) {
-    object-position: 62% 84%;
-  }
-  .stay-glow .stay-shade {
-    background: linear-gradient(
-      to top,
-      rgba(12, 13, 14, 0.4) 0%,
-      rgba(12, 13, 14, 0.1) 34%,
-      rgba(12, 13, 14, 0.26) 100%
-    );
-  }
-  .stay-glow .stay-line::before {
-    background: linear-gradient(
-      to top,
-      rgba(12, 13, 14, 0.58) 0%,
-      rgba(12, 13, 14, 0.22) 58%,
-      rgba(12, 13, 14, 0) 100%
-    );
-  }
-  :global(.stay-fire) :global(img) {
-    object-position: 84% 62%;
-  }
-  :global(.stay-fire) :global(.depth-mover) {
-    transform: scale(1.58);
-    transform-origin: 84% 62%;
-  }
-  .stay-shade {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      to top,
-      rgba(12, 13, 14, 0.78) 0%,
-      rgba(12, 13, 14, 0.42) 24%,
-      rgba(12, 13, 14, 0.05) 52%,
-      rgba(12, 13, 14, 0.34) 100%
-    );
-    pointer-events: none;
-  }
-  .stay-line {
-    position: absolute;
-    z-index: 1;
+    z-index: 5;
+    top: 7.15rem;
     left: 8vw;
     right: 8vw;
-    bottom: 11vh;
-    margin-left: calc(6.25rem + 3rem);
-  }
-  .stay-line::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    left: -50vw;
-    right: -30vw;
-    top: -16vh;
-    bottom: -14vh;
-    background: linear-gradient(
-      to top,
-      rgba(12, 13, 14, 0.88) 0%,
-      rgba(12, 13, 14, 0.55) 48%,
-      rgba(12, 13, 14, 0) 100%
-    );
+    height: 1.4rem;
     pointer-events: none;
   }
-  .stay-kicker {
-    margin: 0 0 1rem;
+  .plan-progress-track {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(244, 243, 239, 0.32);
+  }
+  .plan-progress-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 100%;
+    background: #c4a07a;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .plan-halo {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 13px;
+    height: 13px;
+    margin-top: -6.5px;
+    margin-left: -6.5px;
+  }
+  .plan-halo-glow,
+  .plan-halo-dot {
+    position: absolute;
+    border-radius: 50%;
+  }
+  .plan-halo-glow {
+    inset: -4px;
+    box-shadow:
+      0 0 0 1px rgba(12, 13, 14, 0.78),
+      0 0 0 4px rgba(12, 13, 14, 0.28),
+      0 0 14px rgba(12, 13, 14, 0.45);
+  }
+  .plan-halo-dot {
+    inset: 1px;
+    background: #c4a07a;
+    box-shadow: 0 0 0 1px rgba(244, 243, 239, 0.4);
+  }
+  .plan-rail {
+    display: flex;
+    height: 100%;
+    width: max-content;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .plan-panel {
+    position: relative;
+    flex: 0 0 100vw;
+    width: 100vw;
+    height: 100%;
+    overflow: hidden;
+  }
+  .plan-photo {
+    position: absolute;
+    inset: 0;
+  }
+  .plan-photo :global(picture.still-frame) {
+    position: absolute;
+    inset: 0;
+  }
+  .plan-shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(12, 13, 14, 0.78) 0%, rgba(12, 13, 14, 0.42) 42%, rgba(12, 13, 14, 0.12) 100%),
+      linear-gradient(180deg, rgba(12, 13, 14, 0.42) 0%, rgba(12, 13, 14, 0.08) 30%, rgba(12, 13, 14, 0.46) 100%);
+    pointer-events: none;
+  }
+  .plan-giant {
+    position: absolute;
+    z-index: 1;
+    right: -0.04em;
+    bottom: -0.08em;
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(6.5rem, 18vw, 15.5rem);
+    line-height: 0.78;
+    letter-spacing: -0.045em;
+    pointer-events: none;
+    user-select: none;
+  }
+  .plan-giant-outline,
+  .plan-giant-solid {
+    display: block;
+    white-space: nowrap;
+  }
+  .plan-giant-outline {
+    color: transparent;
+    -webkit-text-stroke: 1.25px rgba(244, 243, 239, 0.78);
+  }
+  .plan-giant-clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+  .plan-giant-solid {
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #f4f3ef;
+    -webkit-text-stroke: 0;
+  }
+  .plan-copy {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    box-sizing: border-box;
+    width: min(32rem, 44vw);
+    height: 100%;
+    margin: 0;
+    padding: 8.5rem 0 7vh 8vw;
+  }
+  .plan-copy .story-kicker {
+    color: #c4a07a;
+  }
+  .plan-copy :global(h2) {
+    margin: 0.7rem 0 0;
+    max-width: 11em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.05rem, 3.6vw, 3.45rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: #f4f3ef;
+  }
+  .plan-keep {
+    white-space: nowrap;
+  }
+  .plan-copy > p,
+  .plan-moments {
+    max-width: 32rem;
+    margin: 0.7rem 0 0;
+    font-weight: 300;
+    font-size: 1.02rem;
+    line-height: 1.5;
+    color: rgba(244, 243, 239, 0.84);
+  }
+  .plan-moments {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 1.2rem;
+    row-gap: 0.12rem;
+    list-style: none;
+    padding: 0;
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+  .plan-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.2rem 1.35rem;
+    margin-top: 0.75rem;
+  }
+  .plan-links a,
+  .plan-host-ask a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: #c4a07a;
+    text-decoration: none;
+    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .plan-links a {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .plan-links a:hover,
+  .plan-host-ask a:hover {
+    opacity: 0.55;
+  }
+  .plan-later {
+    margin-top: 0.85rem;
     font-size: 0.72rem;
     letter-spacing: 0.28em;
     text-transform: uppercase;
     color: #c4a07a;
   }
-  .stay-line h3 {
-    margin: 0;
-    max-width: 11em;
-    font-family: var(--font-cinzel);
-    font-weight: 300;
-    font-size: clamp(2.2rem, 4.8vw, 4.2rem);
-    line-height: 0.98;
-    letter-spacing: -0.035em;
-    color: #f4f3ef;
+  .plan-host-ask {
+    margin-top: 0.15rem;
   }
-  .plan-stay-note {
-    max-width: 34rem;
-    margin: 10vh 0 6vh calc(6.25rem + 3rem);
-  }
-  .plan-stay-note p {
-    margin: 0 0 1rem;
-    font-weight: 300;
-    font-size: 1.125rem;
-    line-height: 1.7;
-    color: rgba(20, 18, 14, 0.78);
-  }
-  .plan-stay-note .plan-links {
-    margin-top: 1.5rem;
+  .plan-host-ask a {
+    font-size: 0.95rem;
+    letter-spacing: 0.01em;
+    text-decoration: underline;
+    text-decoration-color: rgba(196, 160, 122, 0.7);
+    text-underline-offset: 0.22em;
   }
   .plan-close {
-    margin: 8vh 8vw 20vh calc(8vw + 6.25rem + 3rem);
+    margin: 12vh 8vw 18vh;
     max-width: 12em;
     font-family: var(--font-cinzel);
     font-weight: 300;
@@ -508,51 +466,52 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     letter-spacing: -0.03em;
   }
 
-  @media (max-width: 800px) {
-    .plan-track {
-      padding: 0 1.5rem 2vh;
+  @media (max-width: 800px), (prefers-reduced-motion: reduce) {
+    .plan-journey {
+      height: auto;
+      overflow: visible;
     }
-    .plan-spine {
-      left: calc(1.5rem + 0.15rem);
-      top: 4vh;
-      bottom: 4vh;
+    .plan-progress {
+      display: none;
     }
-    .plan-step {
+    .plan-rail {
+      display: block;
+      width: auto;
+      height: auto;
+      transform: none !important;
+    }
+    .plan-panel {
+      width: 100%;
+      flex: none;
+      height: auto;
+      min-height: 100svh;
+    }
+    .plan-giant {
+      top: 11.25rem;
+      right: -0.08em;
+      bottom: auto;
+      font-size: clamp(4.2rem, 28vw, 6.6rem);
+    }
+    .plan-moments {
       grid-template-columns: 1fr;
-      row-gap: 1.15rem;
-      padding: 8vh 0 8vh 1.65rem;
+      font-size: 1rem;
+      line-height: 1.45;
     }
-    .plan-mark {
-      position: static;
+    .plan-giant-clip {
+      transform: none;
     }
-    .plan-node {
-      top: calc(8vh + 0.42rem);
-      right: auto;
-      left: 0.15rem;
-      transform: translateX(-50%);
+    .plan-copy {
+      width: auto;
+      height: auto;
+      min-height: 100svh;
+      justify-content: flex-end;
+      padding: 7.4rem 1.5rem 2.6rem;
     }
-    .plan-stay {
-      padding: 8vh 0 0 1.65rem;
-    }
-    .plan-stay-head {
-      grid-template-columns: 1fr;
-      row-gap: 1.15rem;
-    }
-    .stay-reel {
-      margin: 8vh 0 0 calc(-1.5rem - 1.65rem);
-      width: calc(100% + 3rem + 1.65rem);
-    }
-    .stay-line {
-      left: 1.5rem;
-      right: 1.5rem;
-      bottom: 8vh;
-      margin-left: 0;
-    }
-    .plan-stay-note {
-      margin: 8vh 0 4vh 0;
+    .plan-copy :global(h2) {
+      font-size: clamp(2.15rem, 9vw, 3.1rem);
     }
     .plan-close {
-      margin: 5vh 1.5rem 16vh 3.15rem;
+      margin: 8vh 1.5rem 16vh;
     }
   }
 
@@ -565,34 +524,121 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad, holdPageMotion } from '../scripts/motion';
+
+  type PlanWindow = Window & { __auraPlan?: () => void };
 
   onPageLoad(() => {
+    const page = document.querySelector<HTMLElement>('.plan');
+    if (!page) return;
 
-  const page = document.querySelector('.plan');
-  if (page && !prefersReducedMotion()) {
+    const win = window as PlanWindow;
+    win.__auraPlan?.();
+
     ScrollTrigger.getAll()
       .filter((trigger) => trigger.vars.id === 'plan-rise')
       .forEach((trigger) => trigger.kill());
 
-    gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
-      gsap.from(el, {
-        y: 22,
-        opacity: 0,
-        duration: 1.85,
-        ease: 'power3.out',
+    if (!prefersReducedMotion()) {
+      gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
+        gsap.from(el, {
+          y: 22,
+          opacity: 0,
+          duration: 1.85,
+          ease: 'power3.out',
+          scrollTrigger: {
+            id: 'plan-rise',
+            trigger: el,
+            start: 'top 90%',
+            once: true,
+          },
+        });
+      });
+    }
+
+    const journey = page.querySelector<HTMLElement>('[data-plan-journey]');
+    const rail = page.querySelector<HTMLElement>('[data-plan-rail]');
+    const track = page.querySelector<HTMLElement>('[data-plan-track]');
+    const line = page.querySelector<HTMLElement>('[data-plan-line]');
+    const halo = page.querySelector<HTMLElement>('[data-plan-halo]');
+    const panels = gsap.utils.toArray<HTMLElement>('[data-plan-panel]', page);
+    const mm = gsap.matchMedia();
+
+    let closed = false;
+    const close = () => {
+      if (closed) return;
+      closed = true;
+      mm.revert();
+      if (win.__auraPlan === close) win.__auraPlan = undefined;
+    };
+    win.__auraPlan = close;
+    holdPageMotion(close);
+
+    if (!journey || !rail || !track || !line || !halo || panels.length === 0) return;
+
+    mm.add('(min-width: 801px) and (prefers-reduced-motion: no-preference)', () => {
+      const clips = panels.map((panel) => panel.querySelector<HTMLElement>('[data-plan-num]'));
+      let sized = 0;
+
+      const panelWidth = () => {
+        const width = journey.clientWidth;
+        if (width !== sized) {
+          sized = width;
+          panels.forEach((panel) => {
+            panel.style.width = `${width}px`;
+            panel.style.flexBasis = `${width}px`;
+          });
+        }
+        return width;
+      };
+
+      const distance = () => Math.max(0, (panels.length - 1) * panelWidth());
+
+      const paint = (progress: number) => {
+        const span = Math.max(1, panels.length - 1);
+        gsap.set(line, { scaleX: progress, transformOrigin: '0% 50%' });
+        gsap.set(halo, { x: progress * track.clientWidth });
+        clips.forEach((clip, index) => {
+          if (!clip) return;
+          const dist = Math.abs(progress - index / span);
+          let local = 1 - Math.min(1, dist / (1.1 / span));
+          local = local * local * (3 - 2 * local);
+          gsap.set(clip, { scaleX: local, transformOrigin: '0% 50%' });
+        });
+      };
+
+      panelWidth();
+      gsap.to(rail, {
+        x: () => -distance(),
+        ease: 'none',
         scrollTrigger: {
-          id: 'plan-rise',
-          trigger: el,
-          start: 'top 90%',
-          once: true,
+          id: 'plan-journey',
+          trigger: journey,
+          start: 'top top',
+          end: () => `+=${distance()}`,
+          pin: true,
+          scrub: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => paint(self.progress),
         },
       });
-    });
+      paint(0);
 
-    const settle = () => ScrollTrigger.refresh();
-    requestAnimationFrame(settle);
-    window.addEventListener('load', settle, { once: true });
-  }
+      const settle = () => {
+        sized = 0;
+        ScrollTrigger.refresh();
+        window.__lenis?.resize();
+      };
+      requestAnimationFrame(settle);
+
+      return () => {
+        sized = 0;
+        panels.forEach((panel) => {
+          panel.style.width = '';
+          panel.style.flexBasis = '';
+        });
+      };
+    });
   });
 </script>
