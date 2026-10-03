@@ -320,11 +320,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     margin-top: 1.75rem;
   }
   .plan-links a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     font-size: 0.72rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     text-decoration: none;
-    color: #8a6a45;
+    color: #866243;
     transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .plan-links a:hover {
@@ -335,19 +338,22 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: 0.72rem;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: #8a6a45;
+    color: #866243;
   }
   .plan-host-ask {
     margin-top: 1.15rem;
   }
   .plan-host-ask a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     font-size: 0.95rem;
     letter-spacing: 0.01em;
     text-transform: none;
-    text-decoration: none;
-    color: #8a6a45;
-    border-bottom: 1px solid rgba(156, 122, 85, 0.55);
-    padding-bottom: 0.12rem;
+    text-decoration: underline;
+    text-decoration-color: rgba(134, 98, 67, 0.7);
+    text-underline-offset: 0.22em;
+    color: #866243;
     transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .plan-host-ask a:hover {

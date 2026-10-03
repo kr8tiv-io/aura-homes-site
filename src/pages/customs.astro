@@ -131,7 +131,7 @@ const steps = [
   .customs-path span {
     font-size: 0.68rem;
     letter-spacing: 0.22em;
-    color: #8a6a45;
+    color: #866243;
   }
   .customs-path p {
     margin: 0;
@@ -157,7 +157,9 @@ const steps = [
     padding: 3.5rem 8vw 2vh;
   }
   .customs-quote {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     padding: 0.7rem 1.05rem;
     border: 1px solid #14120e;
     color: #14120e;
@@ -168,7 +170,7 @@ const steps = [
     text-decoration: none;
   }
   .customs-quote:focus-visible {
-    outline: 1px solid #8a6a45;
+    outline: 1px solid #866243;
     outline-offset: 4px;
   }
   .customs-close p {
@@ -189,8 +191,7 @@ const steps = [
     .customs-quote {
       transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
     }
-    .customs-quote:hover,
-    .customs-quote:focus-visible {
+    .customs-quote:hover {
       opacity: 0.55;
     }
   }

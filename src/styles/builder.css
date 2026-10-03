@@ -78,7 +78,7 @@
   padding: 18vh 2rem 4rem;
   width: auto;
 }
-.b-end .b-kicker { color: #8a6a45; }
+.b-end .b-kicker { color: #866243; }
 .b-form {
   display: grid;
   gap: 1rem;
@@ -116,15 +116,14 @@
   text-decoration: none;
 }
 .b-quote:focus-visible {
-  outline: 1px solid #8a6a45;
+  outline: 1px solid #866243;
   outline-offset: 4px;
 }
 @media (prefers-reduced-motion: no-preference) {
   .b-quote {
     transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
   }
-  .b-quote:hover,
-  .b-quote:focus-visible {
+  .b-quote:hover {
     opacity: 0.55;
   }
 }
