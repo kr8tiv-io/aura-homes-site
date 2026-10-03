@@ -75,18 +75,9 @@ const foot = menu.flatMap((group) => group.links);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    {isHome ? (
-      <>
-        <link rel="icon" href="/_archive/favicon.ico" sizes="any" />
-        <link rel="icon" type="image/svg+xml" href="/_archive/favicon.svg" />
-      </>
-    ) : (
-      <>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-      </>
-    )}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="generator" content={Astro.generator} />
     {!isHome && <ClientRouter />}
     <title>{title}</title>
@@ -108,7 +99,7 @@ const foot = menu.flatMap((group) => group.links);
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogAlt} />
   </head>
-  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder }]}>
+  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder, 'nav-on-film': isHome || isBuilder || path.startsWith('/back-to-nature') }]}>
     {isHome ? (
       <>
         <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>
@@ -133,7 +124,7 @@ const foot = menu.flatMap((group) => group.links);
     {isHome ? (
       <header class="site-nav">
         <a href="/" class="nav-brand">
-          <div class="w-8 h-8 bg-current mask-triangle"></div>
+          <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
           <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
           <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
         </a>
@@ -266,9 +257,9 @@ const foot = menu.flatMap((group) => group.links);
 
     <script>
       import { gsap } from 'gsap';
-      import { initSmoothScroll, resetPageMotion } from '../scripts/motion';
+      import { initSmoothScroll, resetPageMotion, stopSmoothScroll, ScrollTrigger } from '../scripts/motion';
 
-      const lenis = initSmoothScroll();
+      initSmoothScroll();
 
       const copyCurrent = (live: ParentNode | null, incoming: ParentNode | null) => {
         if (!live || !incoming) return;
@@ -284,6 +275,7 @@ const foot = menu.flatMap((group) => group.links);
 
       document.addEventListener('astro:before-swap', ((event: Event) => {
         resetPageMotion();
+        stopSmoothScroll();
         document.querySelectorAll('.site-nav .aura-logo').forEach((logo) => {
           logo.classList.remove('is-play');
         });
@@ -604,8 +596,8 @@ const foot = menu.flatMap((group) => group.links);
           if (on) el.setAttribute('inert', '');
           else el.removeAttribute('inert');
         });
-        if (on) lenis?.stop();
-        else lenis?.start();
+        if (on) window.__lenis?.stop();
+        else window.__lenis?.start();
       };
       const hardClose = (restoreFocus: boolean) => {
         menuGeneration += 1;
@@ -727,13 +719,26 @@ const foot = menu.flatMap((group) => group.links);
       const moveThumb = (scroll?: number) => {
         if (!thumb) return;
         const max = document.documentElement.scrollHeight - window.innerHeight;
-        const y = typeof scroll === 'number' ? scroll : (lenis?.scroll ?? window.scrollY);
+        const y = typeof scroll === 'number' ? scroll : (window.__lenis?.scroll ?? window.scrollY);
         const p = max > 0 ? y / max : 0;
         thumb.style.transform = `translate3d(0, ${p * 81}px, 0)`;
       };
-      if (lenis) lenis.on('scroll', (event: { scroll: number }) => moveThumb(event.scroll));
+      const bindRail = () => {
+        window.__lenis?.on('scroll', (event: { scroll: number }) => moveThumb(event.scroll));
+      };
+      if (window.__lenis) bindRail();
       else window.addEventListener('scroll', () => moveThumb(), { passive: true });
       moveThumb();
+
+      document.addEventListener('astro:page-load', () => {
+        initSmoothScroll();
+        bindRail();
+        requestAnimationFrame(() => {
+          ScrollTrigger.refresh();
+          window.__lenis?.resize();
+          moveThumb();
+        });
+      });
 
       if (import.meta.hot) {
         import.meta.hot.dispose(() => {
