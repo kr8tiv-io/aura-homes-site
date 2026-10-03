@@ -1,5 +1,6 @@
 ---
 import Still from '../components/Still.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -17,8 +18,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         fetchpriority="high"
       />
       <div class="wild-shade" aria-hidden="true"></div>
-      <div class="wild-line" data-rise>
-        <h1 id="wild-morning">Morning coffee, outside.</h1>
+      <div class="wild-line">
+        <RevealHeading as="h1" id="wild-morning">Morning coffee, outside.</RevealHeading>
       </div>
     </section>
 
@@ -28,8 +29,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         alt="A linen sofa in a wood room, facing tall grass and a blue evening."
       />
       <div class="wild-shade" aria-hidden="true"></div>
-      <div class="wild-line" data-rise>
-        <h2 id="wild-kids">Kids off the screens.</h2>
+      <div class="wild-line">
+        <RevealHeading as="h2" id="wild-kids">Kids off the screens.</RevealHeading>
       </div>
     </section>
 
@@ -39,8 +40,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         alt="A wood-fired tub letting off steam beside an open room, with tall grass in front."
       />
       <div class="wild-shade" aria-hidden="true"></div>
-      <div class="wild-line" data-rise>
-        <h2 id="wild-steam">The steam keeps its own time.</h2>
+      <div class="wild-line">
+        <RevealHeading as="h2" id="wild-steam">The steam keeps its own time.</RevealHeading>
       </div>
     </section>
 
@@ -50,13 +51,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         alt="A lit deck at blue hour, with a wood-fired tub and mountains behind it."
       />
       <div class="wild-shade" aria-hidden="true"></div>
-      <div class="wild-line" data-rise>
-        <h2 id="wild-moon">The moon coming up over the deck.</h2>
+      <div class="wild-line">
+        <RevealHeading as="h2" id="wild-moon">The moon coming up over the deck.</RevealHeading>
       </div>
     </section>
 
     <section class="wild-end" aria-labelledby="wild-end-title">
-      <h2 id="wild-end-title" data-rise>The room is how you stay out here.</h2>
+      <RevealHeading as="h2" id="wild-end-title">The room is how you stay out here.</RevealHeading>
       <p class="wild-links" data-rise>
         <a href="/rooms">Rooms</a>
         <a href="/pre-order">Pre-order</a>
@@ -100,8 +101,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     right: 8vw;
     bottom: 11vh;
   }
-  .wild-line h1,
-  .wild-line h2 {
+  :global(.wild-line h1),
+  :global(.wild-line h2) {
     margin: 0;
     max-width: 10em;
     font-family: var(--font-cinzel);
@@ -115,7 +116,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding: 22vh 8vw 20vh;
     color: #14120e;
   }
-  .wild-end h2 {
+  :global(.wild-end h2) {
     margin: 0;
     max-width: 11em;
     font-family: var(--font-cinzel);

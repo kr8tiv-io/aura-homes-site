@@ -1,5 +1,6 @@
 ---
 import Still from '../components/Still.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -12,7 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="page-lead story-chapter" id="why" aria-labelledby="why-title">
       <div data-rise>
         <p class="story-kicker">Why we exist</p>
-        <h1 id="why-title">Back to where we came from.</h1>
+        <RevealHeading as="h1" id="why-title">Back to where we came from.</RevealHeading>
         <p class="story-lede">
           Aura exists to bring people back to where we came from. Back to our roots, more time outside, closer to nature.
         </p>
@@ -38,7 +39,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="story-chapter" id="started" aria-labelledby="started-title">
       <div data-rise>
         <p class="story-kicker">Why it started</p>
-        <h2 id="started-title">Seen beside other people's hands.</h2>
+        <RevealHeading as="h2" id="started-title">Seen beside other people's hands.</RevealHeading>
       </div>
       <div class="story-prose" data-rise>
         <p>
@@ -59,7 +60,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="story-chapter" id="chapter" aria-labelledby="chapter-title">
       <div data-rise>
         <p class="story-kicker">Chapter one</p>
-        <h2 id="chapter-title">A small shop, and the work.</h2>
+        <RevealHeading as="h2" id="chapter-title">A small shop, and the work.</RevealHeading>
       </div>
       <div class="story-prose" data-rise>
         <p>
@@ -82,7 +83,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="story-chapter" id="gift" aria-labelledby="gift-title">
       <div data-rise>
         <p class="story-kicker">Nature as a gift</p>
-        <h2 id="gift-title">The part that was already here.</h2>
+        <RevealHeading as="h2" id="gift-title">The part that was already here.</RevealHeading>
       </div>
       <div class="story-prose" data-rise>
         <p>Morning coffee outside. Kids off their screens. A stretch of time surrounded by the beauty already around us.</p>
@@ -105,7 +106,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </figure>
       <div data-rise>
         <p class="story-kicker">Founder</p>
-        <h2 id="founder-title">The mission holds the page.</h2>
+        <RevealHeading as="h2" id="founder-title">The mission holds the page.</RevealHeading>
         <div class="story-prose">
           <p>
             The story is the mission, not the person. Years of looking, then a shop, then the decision to build it in public. A portrait can wait.
@@ -131,8 +132,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     padding-top: 22vh;
     padding-bottom: 12vh;
   }
-  .story-essay .story-chapter h2,
-  .story-founder h2 {
+  :global(.story-essay .story-chapter h2),
+  :global(.story-founder h2) {
     margin: 0;
     max-width: 12em;
     font-family: var(--font-cinzel);

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Materials from '../components/Materials.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import ShotHold from '../components/ShotHold.astro';
 import Still from '../components/Still.astro';
 import { roomConcepts } from '../lib/rooms';
@@ -21,7 +22,7 @@ const uses = [
   <main id="top" class="room-collection">
     <section class="page-lead">
       <p class="story-kicker">Rooms</p>
-      <h1>The rooms.</h1>
+      <RevealHeading as="h1">The rooms.</RevealHeading>
       <p class="story-lede">A vibrant extension of your home, in synergy with nature.</p>
       <p class="room-note">Every unit is built one at a time. Concepts shown; details evolve as we build.</p>
     </section>
@@ -51,7 +52,7 @@ const uses = [
                 <ShotHold caption={room.shot ?? room.alt} />
               )}
             </figure>
-            <h2>{room.name}</h2>
+            <RevealHeading as="h2">{room.name}</RevealHeading>
             <p>{room.description}</p>
             <a href={`/pre-order?model=${room.slug}`}>Pre-order inquiry</a>
           </article>
@@ -125,7 +126,7 @@ const uses = [
     height: 100%;
     object-fit: cover;
   }
-  .room-card h2 {
+  :global(.room-card h2) {
     margin: 0 0 0.55rem;
     font-family: var(--font-cinzel);
     font-weight: 400;

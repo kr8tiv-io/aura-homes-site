@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import { posterSrc } from '../lib/stills';
 
 const wallPoster = await posterSrc('/film/farm-wall.webp');
@@ -19,10 +20,9 @@ const roomPoster = await posterSrc('/film/farm-room.webp');
 
     <section class="page-lead">
       <p class="story-kicker">Aura Farms</p>
-      <h1 data-glow>
-        <span class="line-mask"><span class="line">A wall</span></span>
-        <span class="line-mask"><span class="line">that grows.</span></span>
-      </h1>
+      <RevealHeading as="h1" glow>
+        A wall<br />that grows.
+      </RevealHeading>
       <p class="story-lede">
         The same room, on its steel frame. One long side becomes a vertical aeroponic wall: channels of greens, herbs, and fruit, fed by a closed loop of water and nutrients. Aura Homes can build it and place it. You can buy it and grow for yourself.
       </p>
@@ -63,21 +63,20 @@ const roomPoster = await posterSrc('/film/farm-room.webp');
 
     <section class="story-open">
       <p class="story-kicker">Yours, or the network</p>
-      <h2 data-glow>
-        <span class="line-mask"><span class="line">Buy the room.</span></span>
-        <span class="line-mask"><span class="line">Or give the food.</span></span>
-      </h2>
+      <RevealHeading as="h2" glow>
+        Buy the room.<br />Or give the food.
+      </RevealHeading>
       <p class="story-lede">
         Two uses, one room. Buy it, grow, and keep the harvest. Or, as the network we hope to build, the food is given away and an advertiser’s name sits on it. The free-food network is the aim, not a contract you can sign today. The room is what you can ask for now.
       </p>
       <p class="story-lede"><a href="/journal/aura-farms">Read the farm note</a>, and <a href="/journal/free-food-and-water">the network</a>.</p>
     </section>
 
-    <Journeys />
+    <Journeys reveal />
 
     <section id="enquire" class="enquire">
       <p class="story-kicker">Enquire</p>
-      <h2 data-glow><span class="line-mask"><span class="line">Ask for the farm wall.</span></span></h2>
+      <RevealHeading as="h2" glow>Ask for the farm wall.</RevealHeading>
       <p class="story-lede enquire-note">Tell us if you want to grow for yourself, or if you want Aura Homes to build the room and place it.</p>
       <Join shell="farm" />
     </section>

@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Join from '../../components/Join.astro';
+import RevealHeading from '../../components/RevealHeading.astro';
 import Still from '../../components/Still.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatJournalDate, legacyNotes, type JournalCard } from '../../lib/journal';
@@ -31,7 +32,7 @@ const notes: JournalCard[] = [
   <main class="journal-index" id="top">
     <section class="page-lead">
       <p class="story-kicker">Journal</p>
-      <h1>What we are building, and what we hope.</h1>
+      <RevealHeading as="h1">What we are building, and what we hope.</RevealHeading>
       <p class="story-lede">Notes from the shop. The first is the whole story. The others follow it out.</p>
     </section>
     <ul class="journal-grid">
@@ -46,7 +47,7 @@ const notes: JournalCard[] = [
                 <time datetime={note.date}>{formatJournalDate(note.date)}</time>
                 {note.tags.length > 0 && <span>{note.tags.join(' · ')}</span>}
               </p>
-              <h2>{note.title}</h2>
+              <RevealHeading as="h2">{note.title}</RevealHeading>
               <p>{note.excerpt}</p>
             </a>
           </li>
@@ -56,14 +57,14 @@ const notes: JournalCard[] = [
   </main>
   <section id="enquire" class="enquire">
     <p class="story-kicker">Enquire</p>
-    <h2>Ask about the room.</h2>
+    <RevealHeading as="h2">Ask about the room.</RevealHeading>
     <p class="story-lede enquire-note">A room, a farm wall, or water from the air.</p>
     <Join shell="unsure" />
   </section>
 </BaseLayout>
 
 <style>
-  .journal-index .page-lead h1 {
+  :global(.journal-index .page-lead h1) {
     max-width: 11em;
   }
   .journal-grid {
@@ -107,7 +108,7 @@ const notes: JournalCard[] = [
     text-transform: uppercase;
     color: #866243;
   }
-  .journal-card h2 {
+  :global(.journal-card h2) {
     margin: 0 0 0.55rem;
     max-width: 18em;
     font-family: var(--font-cinzel);

@@ -1,4 +1,5 @@
 ---
+import RevealHeading from '../components/RevealHeading.astro';
 import { organizationJson } from '../lib/organization';
 
 const organization = organizationJson(Astro.site ?? Astro.url.origin);
@@ -8,7 +9,7 @@ const organization = organizationJson(Astro.site ?? Astro.url.origin);
 <link rel="canonical" href="/build-your-own" />
 <meta http-equiv="refresh" content="0;url=/build-your-own" />
 <script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
-<h1><a href="/build-your-own">Build Your Own</a></h1>
+<RevealHeading as="h1"><a href="/build-your-own">Build Your Own</a></RevealHeading>
 <script is:inline>
   location.replace('/build-your-own');
 </script>

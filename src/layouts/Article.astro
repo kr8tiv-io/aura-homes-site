@@ -1,5 +1,6 @@
 ---
 import Join from '../components/Join.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -26,14 +27,14 @@ const json = {
   <main class="article" id="top">
     <script type="application/ld+json" set:html={JSON.stringify(json)} />
     <p class="story-kicker">{kicker}</p>
-    <h1>{title}</h1>
+    <RevealHeading as="h1">{title}</RevealHeading>
     <p class="article-date"><time datetime={date}>{date}</time></p>
     <slot />
     <p class="article-next"><a href="/journal">All notes</a> · <a href="/build-your-own">Build Your Own</a> · <a href="/#enquire">Enquire</a></p>
   </main>
   <section id="enquire" class="enquire">
     <p class="story-kicker">Enquire</p>
-    <h2>Ask about the room.</h2>
+    <RevealHeading as="h2">Ask about the room.</RevealHeading>
     <p class="story-lede enquire-note">A room, a farm wall, or water from the air. The first reply starts with the site.</p>
     <Join shell="unsure" />
   </section>

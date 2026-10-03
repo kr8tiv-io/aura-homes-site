@@ -1,6 +1,7 @@
 ---
 import Materials from '../components/Materials.astro';
 import Still from '../components/Still.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const steps = [
@@ -19,7 +20,7 @@ const steps = [
   <main id="top" class="customs-page">
     <section class="page-lead">
       <p class="story-kicker">Customs</p>
-      <h1>Second Breath Customs.</h1>
+      <RevealHeading as="h1">Second Breath Customs.</RevealHeading>
       <p class="story-lede">Bring your own trailer, and give it a second life. Or let us source one.</p>
       <p class="customs-note">One-off builds, from a small shop. Elegant, and quoted case by case.</p>
     </section>
@@ -38,7 +39,7 @@ const steps = [
     </section>
 
     <section class="customs-path" aria-labelledby="customs-path" data-customs-rise>
-      <h2 id="customs-path">The path.</h2>
+      <RevealHeading as="h2" id="customs-path">The path.</RevealHeading>
       <ol>
         {steps.map((step) => (
           <li>
@@ -104,7 +105,7 @@ const steps = [
     padding: 4.5rem 8vw 0;
     color: #14120e;
   }
-  .customs-path h2 {
+  :global(.customs-path h2) {
     margin: 0 0 1.25rem;
     font-family: var(--font-cinzel);
     font-weight: 400;

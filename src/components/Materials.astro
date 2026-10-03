@@ -1,4 +1,6 @@
 ---
+import RevealHeading from './RevealHeading.astro';
+
 const guide =
   'https://ff.sabic.eu/uploads/resources/SABIC-SFS-6211-EN%20LEXAN%20Glazing%20Guide%20-%202021.pdf';
 
@@ -35,7 +37,7 @@ const details = [
 <section class="materials" aria-labelledby="materials-title">
   <div data-materials-rise>
     <p class="story-kicker">Materials</p>
-    <h2 id="materials-title">Polycarbonate.</h2>
+    <RevealHeading as="h2" id="materials-title">Polycarbonate.</RevealHeading>
     <p class="materials-lede">
       Smooth, light, and beautiful. It breaks far less than glass, and it regulates temperature better.
       About 250 times the impact strength of glass.<sup><a href="#materials-note">1</a></sup>
@@ -114,7 +116,7 @@ const details = [
     padding: 8vh 8vw 14vh;
     color: #14120e;
   }
-  .materials h2 {
+  :global(.materials h2) {
     margin: 0;
     max-width: 12em;
     font-family: var(--font-cinzel);

@@ -1,5 +1,6 @@
 ---
 import Still from '../components/Still.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -18,7 +19,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       />
       <div class="byo-fallback-copy">
         <p class="story-kicker">Build Your Own</p>
-        <h1>Build Your Own.</h1>
+        <RevealHeading as="h1">Build Your Own.</RevealHeading>
         <p class="byo-note" data-byo-note>
           Build Your Own is a desktop experience. Open this on your computer, or get a quote now.
         </p>
@@ -69,7 +70,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .byo-fallback .story-kicker {
     color: #c4a07a;
   }
-  .byo-fallback h1 {
+  :global(.byo-fallback h1) {
     margin: 0;
     max-width: 10em;
     font-family: var(--font-cinzel);
