@@ -40,26 +40,31 @@ const uses = [
     <ul class="room-grid" data-window-grid>
       {roomConcepts.map((room) => (
         <li>
-          <article class="room-card" data-rise>
-            {room.image ? (
-              <figure data-window>
-                <WindowFrame>
-                  <Still
-                    src={room.image}
-                    alt={room.alt}
-                    position={room.focus}
-                    sizes="(max-width: 800px) 92vw, 42vw"
-                  />
-                </WindowFrame>
-              </figure>
-            ) : (
-              <figure>
-                <ShotHold caption={room.shot ?? room.alt} />
-              </figure>
-            )}
-            <RevealHeading as="h2">{room.name}</RevealHeading>
-            <p>{room.description}</p>
-            <a href={`/pre-order?model=${room.slug}`}>Pre-order inquiry</a>
+          <article class="room-card" data-rise data-room-card>
+            <div class="room-tilt" data-room-tilt>
+              <div class="room-face">
+                {room.image ? (
+                  <figure data-window>
+                    <WindowFrame>
+                      <Still
+                        src={room.image}
+                        alt={room.alt}
+                        position={room.focus}
+                        sizes="(max-width: 800px) 92vw, 42vw"
+                      />
+                    </WindowFrame>
+                  </figure>
+                ) : (
+                  <figure>
+                    <ShotHold caption={room.shot ?? room.alt} />
+                  </figure>
+                )}
+                <RevealHeading as="h2">{room.name}</RevealHeading>
+                <p>{room.description}</p>
+                <a href={`/pre-order?model=${room.slug}`}>Pre-order inquiry</a>
+                <span class="room-sheen" aria-hidden="true"><span></span></span>
+              </div>
+            </div>
           </article>
         </li>
       ))}
@@ -118,6 +123,38 @@ const uses = [
   }
   .room-card {
     color: #14120e;
+    perspective: 1100px;
+  }
+  .room-tilt {
+    transform-origin: center center;
+  }
+  .room-face {
+    position: relative;
+  }
+  .room-sheen {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .room-sheen span {
+    position: absolute;
+    top: -40%;
+    bottom: -40%;
+    left: 0;
+    width: 38%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(244, 243, 239, 0.04) 28%,
+      rgba(255, 255, 255, 0.62) 47%,
+      rgba(206, 220, 214, 0.22) 55%,
+      rgba(255, 255, 255, 0.05) 68%,
+      transparent 100%
+    );
+    transform: translate3d(-160%, 0, 0) skewX(-16deg);
+    opacity: 0;
   }
   .room-card figure {
     margin: 0 0 1.35rem;
@@ -160,7 +197,27 @@ const uses = [
     text-transform: uppercase;
     text-decoration: none;
   }
+  @keyframes room-sheen {
+    0% {
+      transform: translate3d(-160%, 0, 0) skewX(-16deg);
+      opacity: 0;
+    }
+    18% {
+      opacity: 0.72;
+    }
+    72% {
+      opacity: 0.72;
+    }
+    100% {
+      transform: translate3d(340%, 0, 0) skewX(-16deg);
+      opacity: 0;
+    }
+  }
   @media (prefers-reduced-motion: no-preference) {
+    .room-card:hover .room-sheen span,
+    .room-card:focus-within .room-sheen span {
+      animation: room-sheen 3.4s cubic-bezier(0.77, 0, 0.175, 1);
+    }
     .room-card img {
       transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
     }
@@ -200,12 +257,54 @@ const uses = [
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad, holdPageMotion } from '../scripts/motion';
+
+  const TILT = 4;
+
+  /** A slow lean toward the pointer. Four degrees at the edge, then it settles home. */
+  function bindCardTilt(page: ParentNode) {
+    if (prefersReducedMotion()) return;
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    const stops: Array<() => void> = [];
+    page.querySelectorAll<HTMLElement>('[data-room-card]').forEach((card) => {
+      if (card.dataset.tiltBound) return;
+      const tilt = card.querySelector<HTMLElement>('[data-room-tilt]');
+      if (!tilt) return;
+      card.dataset.tiltBound = 'yes';
+      const rx = gsap.quickTo(tilt, 'rotationX', { duration: 1.05, ease: 'power3.out' });
+      const ry = gsap.quickTo(tilt, 'rotationY', { duration: 1.05, ease: 'power3.out' });
+      const onMove = (event: PointerEvent) => {
+        const box = card.getBoundingClientRect();
+        if (!box.width || !box.height) return;
+        const px = Math.max(-0.5, Math.min(0.5, (event.clientX - box.left) / box.width - 0.5));
+        const py = Math.max(-0.5, Math.min(0.5, (event.clientY - box.top) / box.height - 0.5));
+        ry(px * -(TILT * 2));
+        rx(py * (TILT * 2));
+      };
+      const onLeave = () => {
+        rx(0);
+        ry(0);
+      };
+      card.addEventListener('pointermove', onMove);
+      card.addEventListener('pointerleave', onLeave);
+      stops.push(() => {
+        card.removeEventListener('pointermove', onMove);
+        card.removeEventListener('pointerleave', onLeave);
+        delete card.dataset.tiltBound;
+        rx(0);
+        ry(0);
+      });
+    });
+    if (stops.length) holdPageMotion(() => stops.forEach((stop) => stop()));
+  }
 
   onPageLoad(() => {
 
   const page = document.querySelector('.room-collection');
-  if (page && !prefersReducedMotion()) {
+  if (!page) return;
+  bindCardTilt(page);
+  if (!prefersReducedMotion()) {
     ScrollTrigger.getAll()
       .filter((trigger) => trigger.vars.id === 'room-rise')
       .forEach((trigger) => trigger.kill());

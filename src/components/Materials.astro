@@ -1,5 +1,6 @@
 ---
 import RevealHeading from './RevealHeading.astro';
+import Still from './Still.astro';
 
 const guide =
   'https://ff.sabic.eu/uploads/resources/SABIC-SFS-6211-EN%20LEXAN%20Glazing%20Guide%20-%202021.pdf';
@@ -44,18 +45,52 @@ const details = [
     </p>
   </div>
 
-  <fieldset class="materials-swatches" data-materials-rise>
-    <legend>Clear, mirror, or tinted.</legend>
-    <div>
-      {swatches.map(([value, label, on]) => (
-        <label>
-          <input type="radio" name="glazing" value={value} checked={on} />
-          <span class:list={['pane', `pane-${value}`]}></span>
-          <span class="name">{label}</span>
-        </label>
-      ))}
-    </div>
-  </fieldset>
+  <div class="materials-board" data-materials-rise>
+    <figure class="glaze-stage">
+      <div class="glaze-layer" data-finish="clear">
+        <div class="glaze-shot">
+          <Still
+            src="/film/story-meadow-side.webp"
+            alt="A glass room in tall grass, with pines and a pale mountain behind it."
+            sizes="(max-width: 800px) 92vw, 58vw"
+          />
+        </div>
+      </div>
+      <div class="glaze-layer" data-finish="mirror" aria-hidden="true">
+        <div class="glaze-shot">
+          <Still src="/film/story-meadow-side.webp" alt="" sizes="(max-width: 800px) 92vw, 58vw" />
+        </div>
+        <span class="glaze-veil"></span>
+      </div>
+      <div class="glaze-layer" data-finish="tinted" aria-hidden="true">
+        <div class="glaze-shot">
+          <Still src="/film/story-meadow-side.webp" alt="" sizes="(max-width: 800px) 92vw, 58vw" />
+        </div>
+        <span class="glaze-veil"></span>
+      </div>
+      <figcaption class="glaze-frost" aria-hidden="true">
+        <p class="glaze-kicker">The pane</p>
+        <p class="glaze-read">
+          <span data-for="clear">The meadow comes through.</span>
+          <span data-for="mirror">The land sits in the surface.</span>
+          <span data-for="tinted">A warmer shade, still open.</span>
+        </p>
+      </figcaption>
+    </figure>
+
+    <fieldset class="materials-swatches">
+      <legend>Clear, mirror, or tinted.</legend>
+      <div>
+        {swatches.map(([value, label, on]) => (
+          <label>
+            <input type="radio" name="glazing" value={value} checked={on} />
+            <span class:list={['pane', `pane-${value}`]}></span>
+            <span class="name">{label}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  </div>
 
   <ul class="materials-icons" data-materials-rise>
     {details.map((item) => (
@@ -141,11 +176,106 @@ const details = [
     color: #866243;
     text-decoration: none;
   }
+  .materials-board {
+    display: grid;
+    grid-template-columns: minmax(0, 1.45fr) minmax(14rem, 0.55fr);
+    gap: clamp(1.25rem, 3vw, 2.75rem);
+    align-items: start;
+    margin-top: 3.5rem;
+  }
+  .glaze-stage {
+    position: relative;
+    margin: 0;
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: #0c0d0e;
+  }
+  .glaze-layer {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+  }
+  .glaze-shot {
+    position: absolute;
+    inset: 0;
+  }
+  .glaze-veil {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+  .glaze-layer[data-finish="mirror"] .glaze-shot {
+    filter: saturate(0.08) contrast(1.22) brightness(1.14);
+  }
+  .glaze-layer[data-finish="mirror"] .glaze-veil {
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.34), rgba(186, 198, 206, 0.16) 42%, rgba(12, 13, 14, 0.22));
+  }
+  .glaze-layer[data-finish="tinted"] .glaze-shot {
+    filter: sepia(0.42) saturate(0.55) brightness(0.72) contrast(1.05);
+  }
+  .glaze-layer[data-finish="tinted"] .glaze-veil {
+    background: linear-gradient(165deg, rgba(196, 160, 122, 0.34), rgba(36, 30, 24, 0.42));
+  }
+  .materials-board:has(input[value="clear"]:checked) .glaze-layer[data-finish="clear"],
+  .materials-board:has(input[value="mirror"]:checked) .glaze-layer[data-finish="mirror"],
+  .materials-board:has(input[value="tinted"]:checked) .glaze-layer[data-finish="tinted"] {
+    opacity: 1;
+  }
+  .glaze-frost {
+    position: absolute;
+    z-index: 2;
+    left: clamp(0.85rem, 2vw, 1.35rem);
+    bottom: clamp(0.85rem, 2vw, 1.35rem);
+    width: min(17.5rem, calc(100% - 2.2rem));
+    margin: 0;
+    padding: 0.95rem 1.1rem 1.05rem;
+    color: #14120e;
+    background: rgba(244, 243, 239, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.38);
+    -webkit-backdrop-filter: blur(18px) saturate(1.2);
+    backdrop-filter: blur(18px) saturate(1.2);
+  }
+  .glaze-kicker {
+    margin: 0;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #866243;
+  }
+  .glaze-read {
+    display: grid;
+    margin: 0.4rem 0 0;
+    font-weight: 300;
+    font-size: 1.02rem;
+    line-height: 1.45;
+  }
+  .glaze-read span {
+    grid-area: 1 / 1;
+    opacity: 0;
+  }
+  .materials-board:has(input[value="clear"]:checked) .glaze-read [data-for="clear"],
+  .materials-board:has(input[value="mirror"]:checked) .glaze-read [data-for="mirror"],
+  .materials-board:has(input[value="tinted"]:checked) .glaze-read [data-for="tinted"] {
+    opacity: 1;
+  }
+  @supports not (backdrop-filter: blur(1px)) {
+    .glaze-frost {
+      background: rgba(244, 243, 239, 0.9);
+    }
+  }
   .materials-swatches {
-    margin: 3.75rem 0 0;
+    margin: 0;
     padding: 0;
     border: 0;
     min-width: 0;
+  }
+  .materials-board .materials-swatches div {
+    grid-template-columns: 1fr;
+    max-width: none;
+  }
+  .materials-board .pane {
+    aspect-ratio: 5 / 2;
   }
   .materials-swatches legend {
     margin-bottom: 1.15rem;
@@ -272,6 +402,10 @@ const details = [
   }
 
   @media (prefers-reduced-motion: no-preference) {
+    .glaze-layer,
+    .glaze-read span {
+      transition: opacity 1.45s cubic-bezier(0.22, 1, 0.36, 1);
+    }
     .materials-swatches label,
     .name::after {
       transition:
@@ -296,9 +430,15 @@ const details = [
     .materials {
       padding: 6vh 1.5rem 10vh;
     }
-    .materials-swatches div {
+    .materials-board {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    .materials-board .materials-swatches div {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 0.65rem;
     }
+    .materials-board .pane,
     .pane {
       aspect-ratio: 3 / 4;
     }
@@ -321,6 +461,10 @@ const details = [
   }
 
   @media (prefers-reduced-motion: reduce) {
+    .glaze-layer,
+    .glaze-read span {
+      transition: none;
+    }
     .materials-swatches label:has(:checked) {
       transform: none;
     }
