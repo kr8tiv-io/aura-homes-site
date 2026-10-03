@@ -1,5 +1,6 @@
 ---
 import Materials from '../components/Materials.astro';
+import Still from '../components/Still.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const steps = [
@@ -24,11 +25,11 @@ const steps = [
     </section>
 
     <figure class="customs-still" data-customs-rise>
-      <img
+      <Still
         src="/film/layout-forest.webp"
         alt="A glass room at the forest edge, one panel open, a fold-down balcony over the meadow."
-        width="1280"
-        height="922"
+        natural
+        sizes="(max-width: 800px) 100vw, 84vw"
       />
     </figure>
 

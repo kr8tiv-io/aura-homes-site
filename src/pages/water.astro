@@ -3,6 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
 import ShotHold from '../components/ShotHold.astro';
+import { posterSrc } from '../lib/stills';
+
+const linePoster = await posterSrc('/film/water-line.webp');
 ---
 
 <BaseLayout
@@ -40,7 +43,7 @@ import ShotHold from '../components/ShotHold.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video poster="/film/water-line.webp" data-film="/film/scroll/water-line.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="drift" data-play="glide" aria-label="Small bottling line and plain plastic jugs inside the oak room"></video>
+        <video poster={linePoster} data-film="/film/scroll/water-line.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="drift" data-play="glide" aria-label="Small bottling line and plain plastic jugs inside the oak room"></video>
       </figure>
       <div>
         <p class="story-kicker">The line</p>

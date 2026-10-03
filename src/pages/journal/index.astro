@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Join from '../../components/Join.astro';
+import Still from '../../components/Still.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatJournalDate, legacyNotes, type JournalCard } from '../../lib/journal';
 
@@ -39,7 +40,7 @@ const notes: JournalCard[] = [
           <li>
             <a class="journal-card" href={note.href} data-rise>
               <figure>
-                <img src={note.cover} alt={note.coverAlt} width="1280" height="853" loading="lazy" />
+                <Still src={note.cover} alt={note.coverAlt} sizes="(max-width: 800px) 92vw, 42vw" />
               </figure>
               <p class="journal-card-meta">
                 <time datetime={note.date}>{formatJournalDate(note.date)}</time>

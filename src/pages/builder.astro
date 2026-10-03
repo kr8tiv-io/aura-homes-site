@@ -1,10 +1,14 @@
 ---
+import { organizationJson } from '../lib/organization';
+
+const organization = organizationJson(Astro.site ?? Astro.url.origin);
 ---
 <title>Build Your Own | Aura Homes</title>
 <meta name="robots" content="noindex" />
 <link rel="canonical" href="/build-your-own" />
 <meta http-equiv="refresh" content="0;url=/build-your-own" />
-<p><a href="/build-your-own">Build Your Own</a></p>
+<script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
+<h1><a href="/build-your-own">Build Your Own</a></h1>
 <script is:inline>
   location.replace('/build-your-own');
 </script>

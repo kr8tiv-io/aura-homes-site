@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import { posterSrc } from '../lib/stills';
+
+const wallPoster = await posterSrc('/film/farm-wall.webp');
+const roomPoster = await posterSrc('/film/farm-room.webp');
 ---
 
 <BaseLayout
@@ -26,7 +30,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video poster="/film/farm-wall.webp" data-film="/film/scroll/farm-wall.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="drift" data-play="drift" aria-label="Black glass room in a dusk meadow, one wall a vertical aeroponic garden"></video>
+        <video poster={wallPoster} data-film="/film/scroll/farm-wall.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="drift" data-play="drift" aria-label="Black glass room in a dusk meadow, one wall a vertical aeroponic garden"></video>
       </figure>
       <div>
         <p class="story-kicker">The wall</p>
@@ -37,7 +41,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video poster="/film/farm-room.webp" data-film="/film/scroll/farm-room.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="tilt" data-play="push" aria-label="Honey oak room with a floor-to-ceiling aeroponic wall and meadow beyond the glass"></video>
+        <video poster={roomPoster} data-film="/film/scroll/farm-room.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="tilt" data-play="push" aria-label="Honey oak room with a floor-to-ceiling aeroponic wall and meadow beyond the glass"></video>
       </figure>
       <div>
         <p class="story-kicker">Inside</p>

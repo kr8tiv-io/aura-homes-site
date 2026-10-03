@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import { posterSrc } from '../lib/stills';
+
+const deckPoster = await posterSrc('/film/resort-deck.webp');
+const towerPoster = await posterSrc('/film/resort-tower.webp');
 ---
 
 <BaseLayout title="The glass | Aura Homes" description="Beautiful second-life rooms that bring people back to nature, one room at a time.">
@@ -22,7 +26,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video poster="/film/resort-deck.webp" data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="tilt" data-play="push" aria-label="A-frame in snow with a wide deck, cargo net, and glass floor lit from beneath"></video>
+        <video poster={deckPoster} data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="tilt" data-play="push" aria-label="A-frame in snow with a wide deck, cargo net, and glass floor lit from beneath"></video>
       </figure>
       <div>
         <p class="story-kicker">The floor</p>
@@ -35,7 +39,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video poster="/film/resort-tower.webp" data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="lift" data-play="rise" aria-label="Round glass tower in snow, with mesh balconies and a lit floor"></video>
+        <video poster={towerPoster} data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="lift" data-play="rise" aria-label="Round glass tower in snow, with mesh balconies and a lit floor"></video>
       </figure>
       <div>
         <p class="story-kicker">The balcony</p>

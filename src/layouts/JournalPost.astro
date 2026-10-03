@@ -1,5 +1,6 @@
 ---
 import Join from '../components/Join.astro';
+import Still from '../components/Still.astro';
 import YouTube from '../components/YouTube.astro';
 import { formatJournalDate } from '../lib/journal';
 import BaseLayout from './BaseLayout.astro';
@@ -43,7 +44,13 @@ const json = {
       <p class="story-lede">{description}</p>
     </header>
     <figure class="journal-cover">
-      <img src={cover} alt={coverAlt} width="1600" height="1066" />
+      <Still
+        src={cover}
+        alt={coverAlt}
+        loading="eager"
+        fetchpriority="high"
+        sizes="(max-width: 800px) 100vw, 72rem"
+      />
     </figure>
     <div class="journal-prose">
       <slot />

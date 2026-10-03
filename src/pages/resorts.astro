@@ -2,6 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import { posterSrc } from '../lib/stills';
+
+const deckPoster = await posterSrc('/film/resort-deck.webp');
+const towerPoster = await posterSrc('/film/resort-tower.webp');
 ---
 
 <BaseLayout title="The resorts | Aura Homes" description="Beautiful second-life rooms that bring people back to nature, one room at a time.">
@@ -22,7 +26,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video poster="/film/resort-deck.webp" data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="wipe" data-play="wipe" aria-label="Snowy A-frame resort with an underlit glass deck, cargo net, sauna, and hot tub"></video>
+        <video poster={deckPoster} data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="wipe" data-play="wipe" aria-label="Snowy A-frame resort with an underlit glass deck, cargo net, sauna, and hot tub"></video>
       </figure>
       <div>
         <p class="story-kicker">Canada</p>
@@ -35,7 +39,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video poster="/film/resort-tower.webp" data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="drift" data-play="drift" aria-label="Round multi-level glass tower in snow, with mesh balconies and hammocks"></video>
+        <video poster={towerPoster} data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="drift" data-play="drift" aria-label="Round multi-level glass tower in snow, with mesh balconies and hammocks"></video>
       </figure>
       <div>
         <p class="story-kicker">The tower</p>
