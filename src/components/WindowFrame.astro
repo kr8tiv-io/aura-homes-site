@@ -1,0 +1,43 @@
+---
+---
+
+<div class="window-media" data-window-media>
+  <slot />
+</div>
+
+<style is:global>
+  [data-window] {
+    position: relative;
+    overflow: hidden;
+  }
+  [data-window] > [data-window-media] {
+    position: absolute;
+    inset: 0;
+    transform-origin: center center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-window]:not([data-window-done]) {
+      --win-y: 49.5%;
+      --win-x: 16%;
+      clip-path: inset(var(--win-y) var(--win-x) var(--win-y) var(--win-x));
+    }
+    [data-window]:not([data-window-done]) > [data-window-media] {
+      transform: scale(1.07);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-window] {
+      clip-path: none;
+    }
+    [data-window] > [data-window-media] {
+      transform: none;
+    }
+  }
+</style>
+
+<script>
+  import { onPageLoad } from '../scripts/motion';
+  import { bindWindowReveals } from '../scripts/window-reveal';
+
+  onPageLoad(() => bindWindowReveals());
+</script>
