@@ -194,7 +194,9 @@ const uses = [
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+
+  onPageLoad(() => {
 
   const page = document.querySelector('.room-collection');
   if (page && !prefersReducedMotion()) {
@@ -221,4 +223,5 @@ const uses = [
     requestAnimationFrame(settle);
     window.addEventListener('load', settle, { once: true });
   }
+  });
 </script>

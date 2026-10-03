@@ -27,6 +27,125 @@ html.lenis body {
   overflow: hidden;
 }
 
+/* Horizon wipe. 900ms, the same long ease as the rest of the site. */
+:root {
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-page: 900ms;
+}
+
+.horizon-wipe {
+  position: fixed;
+  left: 0;
+  top: 76vh;
+  z-index: 65;
+  width: 100%;
+  height: 1px;
+  pointer-events: none;
+  opacity: 0;
+  background: #f4f3ef;
+  box-shadow:
+    0 0 0 1px rgba(12, 13, 14, 0.45),
+    0 0 18px rgba(244, 243, 239, 0.55);
+}
+
+@media (max-width: 1100px) {
+  .horizon-wipe { top: auto; bottom: 6vh; }
+}
+@media (max-width: 800px) {
+  .horizon-wipe { bottom: 4.5vh; }
+}
+
+::view-transition-group(root) {
+  animation: none;
+  z-index: 1;
+}
+::view-transition-old(root) {
+  animation: horizon-leave var(--motion-page) var(--motion-ease) both;
+  mix-blend-mode: normal;
+}
+::view-transition-new(root) {
+  animation: horizon-enter var(--motion-page) var(--motion-ease) both;
+  mix-blend-mode: normal;
+}
+::view-transition-group(horizon) {
+  z-index: 4;
+  background: #f4f3ef;
+  box-shadow:
+    0 0 0 1px rgba(12, 13, 14, 0.45),
+    0 0 18px rgba(244, 243, 239, 0.55);
+  animation: horizon-sweep var(--motion-page) var(--motion-ease) both;
+}
+::view-transition-old(horizon),
+::view-transition-new(horizon) {
+  animation: none;
+  opacity: 0;
+  mix-blend-mode: normal;
+}
+::view-transition-group(site-nav),
+::view-transition-group(story-menu),
+::view-transition-group(tracers),
+::view-transition-group(warmth),
+::view-transition-group(grain),
+::view-transition-group(rail),
+::view-transition-group(cursor-ring),
+::view-transition-group(cursor-dot) {
+  animation: none;
+  z-index: 6;
+}
+::view-transition-old(site-nav),
+::view-transition-old(story-menu),
+::view-transition-old(tracers),
+::view-transition-old(warmth),
+::view-transition-old(grain),
+::view-transition-old(rail),
+::view-transition-old(cursor-ring),
+::view-transition-old(cursor-dot) {
+  animation: none;
+  opacity: 0;
+  mix-blend-mode: normal;
+}
+::view-transition-new(site-nav),
+::view-transition-new(story-menu),
+::view-transition-new(tracers),
+::view-transition-new(warmth),
+::view-transition-new(grain),
+::view-transition-new(rail),
+::view-transition-new(cursor-ring),
+::view-transition-new(cursor-dot) {
+  animation: none;
+  opacity: 1;
+  mix-blend-mode: normal;
+}
+
+@keyframes horizon-leave {
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+@keyframes horizon-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+@keyframes horizon-sweep {
+  from { translate: -100% 0; }
+  to { translate: 100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  ::view-transition-group(horizon) {
+    background: none;
+    box-shadow: none;
+  }
+}
+
 body {
   background-color: var(--color-alabaster);
   color: var(--color-obsidian);

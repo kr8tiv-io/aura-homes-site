@@ -326,7 +326,9 @@ const details = [
 </style>
 
 <script>
-  import { gsap, ScrollTrigger, prefersReducedMotion } from '../scripts/motion';
+  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+
+  onPageLoad(() => {
 
   const section = document.querySelector('.materials');
   if (section && !prefersReducedMotion()) {
@@ -353,4 +355,5 @@ const details = [
     requestAnimationFrame(settle);
     window.addEventListener('load', settle, { once: true });
   }
+  });
 </script>

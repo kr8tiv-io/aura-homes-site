@@ -1,4 +1,4 @@
-import { gsap, ScrollTrigger, prefersReducedMotion } from './motion';
+import { gsap, ScrollTrigger, prefersReducedMotion, holdPageMotion } from './motion';
 import { mountMeadow } from './meadow';
 import { mountWash } from './wash';
 import { mountField } from './field';
@@ -7,6 +7,9 @@ import { bindReels } from './reel';
 
 /** Word rises, pinned passages, mouse shots, and the scroll-tinted field. */
 export function bindJourneyMotion() {
+  const field = document.querySelector<HTMLCanvasElement>('[data-field]');
+  if (!field || field.dataset.journeyBound === 'yes') return;
+  field.dataset.journeyBound = 'yes';
   const reduce = prefersReducedMotion();
   const mm = gsap.matchMedia();
   const meadows = gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => mountMeadow(canvas));
@@ -156,13 +159,17 @@ export function bindJourneyMotion() {
 
   requestAnimationFrame(() => ScrollTrigger.refresh());
 
-  if (import.meta.hot) {
-    import.meta.hot.dispose(() => {
-      ctx.revert();
-      mm.revert();
-      meadows.forEach((meadow) => meadow.destroy());
-      washes.forEach((wash) => wash.destroy());
-      fieldFx?.destroy();
-    });
-  }
+  let released = false;
+  const release = () => {
+    if (released) return;
+    released = true;
+    ctx.revert();
+    mm.revert();
+    meadows.forEach((meadow) => meadow.destroy());
+    washes.forEach((wash) => wash.destroy());
+    fieldFx?.destroy();
+  };
+  holdPageMotion(release);
+
+  if (import.meta.hot) import.meta.hot.dispose(release);
 }

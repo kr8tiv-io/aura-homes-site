@@ -227,8 +227,12 @@ const schema = {
 </style>
 
 <script>
+  import { onPageLoad } from '../scripts/motion';
+
+  onPageLoad(() => {
   const list = document.querySelector<HTMLElement>('[data-faq]');
-  if (list) {
+  if (list && list.dataset.faqBound !== 'yes') {
+    list.dataset.faqBound = 'yes';
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const items = Array.from(list.querySelectorAll<HTMLElement>('.faq-item'));
     const pending = new WeakMap<HTMLElement, (event: TransitionEvent) => void>();
@@ -326,4 +330,5 @@ const schema = {
       buttons[next]?.focus();
     });
   }
+  });
 </script>
