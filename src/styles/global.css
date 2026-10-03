@@ -92,6 +92,10 @@ html.lenis body {
   animation: none;
   z-index: 6;
 }
+::view-transition-group(daylight) {
+  animation: none;
+  z-index: 2;
+}
 ::view-transition-old(site-nav),
 ::view-transition-old(story-menu),
 ::view-transition-old(tracers),
@@ -100,6 +104,11 @@ html.lenis body {
 ::view-transition-old(rail),
 ::view-transition-old(cursor-ring),
 ::view-transition-old(cursor-dot) {
+  animation: none;
+  opacity: 0;
+  mix-blend-mode: normal;
+}
+::view-transition-old(daylight) {
   animation: none;
   opacity: 0;
   mix-blend-mode: normal;
@@ -115,6 +124,11 @@ html.lenis body {
   animation: none;
   opacity: 1;
   mix-blend-mode: normal;
+}
+::view-transition-new(daylight) {
+  animation: none;
+  opacity: 1;
+  mix-blend-mode: soft-light;
 }
 
 @keyframes horizon-leave {
@@ -581,6 +595,44 @@ body.nav-on-film .nav-cta:focus-visible {
   pointer-events: none;
   z-index: 60;
   mix-blend-mode: soft-light;
+}
+/* Day passing. Three static suns, opacity only, under the nav. */
+.daylight {
+  position: fixed;
+  inset: 0;
+  z-index: 35;
+  overflow: hidden;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  transform: translate3d(0, 0, 0);
+}
+.daylight-sun {
+  position: absolute;
+  inset: -20%;
+  opacity: 0;
+  transform: translate3d(0, 0, 0);
+  will-change: opacity;
+}
+.daylight-dawn {
+  opacity: 1;
+  background:
+    radial-gradient(ellipse 62% 48% at 46% 22%, rgba(176, 210, 228, 0.62) 0%, transparent 64%),
+    radial-gradient(ellipse 130% 110% at 50% 28%, rgba(154, 186, 210, 0.34) 0%, transparent 72%);
+}
+.daylight-gold {
+  background:
+    radial-gradient(ellipse 68% 52% at 72% 48%, rgba(236, 176, 86, 0.66) 0%, transparent 64%),
+    radial-gradient(ellipse 130% 110% at 64% 52%, rgba(210, 150, 72, 0.32) 0%, transparent 74%);
+}
+.daylight-dusk {
+  background:
+    radial-gradient(ellipse 70% 54% at 34% 78%, rgba(118, 78, 158, 0.6) 0%, transparent 66%),
+    radial-gradient(ellipse 130% 115% at 42% 80%, rgba(72, 52, 112, 0.36) 0%, transparent 74%);
+}
+@media (prefers-reduced-motion: reduce) {
+  .daylight-dawn { opacity: 1; }
+  .daylight-gold,
+  .daylight-dusk { opacity: 0; }
 }
 body.is-builder .warmth-canvas { display: none; }
 .nav-groups em {
