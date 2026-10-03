@@ -12,6 +12,7 @@ import resortTower from '../../public/film/resort-tower.webp';
 import farmWall from '../../public/film/farm-wall.webp';
 import farmRoom from '../../public/film/farm-room.webp';
 import waterLine from '../../public/film/water-line.webp';
+import costaCanopy from '../../public/film/costa-canopy.webp';
 
 const stills: Record<string, ImageMetadata> = {
   '/film/story-meadow-side.webp': meadowSide,
@@ -26,6 +27,7 @@ const stills: Record<string, ImageMetadata> = {
   '/film/farm-wall.webp': farmWall,
   '/film/farm-room.webp': farmRoom,
   '/film/water-line.webp': waterLine,
+  '/film/costa-canopy.webp': costaCanopy,
 };
 
 export function still(src: string): ImageMetadata {
