@@ -4,11 +4,50 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
 
+/**
+ * Shared feel for later effects. Long eases, nothing bouncy.
+ * Animate transform and opacity only.
+ * Pages that already tween keep their own numbers.
+ * The splash film scrub stays in src/pages/index.astro.
+ */
+export const ease = {
+  out: 'power3.out',
+  inOut: 'power3.inOut',
+  scrub: 'none',
+  css: 'cubic-bezier(0.22, 1, 0.36, 1)',
+} as const;
+
+export const duration = {
+  rise: 1.75,
+  slow: 1.9,
+  line: 1.25,
+  fade: 1.15,
+  scroll: 1.35,
+} as const;
+
 let lenis: Lenis | null = null;
 let tickerFn: ((time: number) => void) | null = null;
 
 export function prefersReducedMotion() {
   return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+type TweenConfig = NonNullable<Parameters<typeof gsap.to>[1]>;
+
+/** Defaults for a later tween. Null when the visitor prefers reduced motion. */
+export function motionVars(overrides: TweenConfig = {}): TweenConfig | null {
+  if (prefersReducedMotion()) return null;
+  return {
+    duration: duration.rise,
+    ease: ease.out,
+    ...overrides,
+  };
+}
+
+/** Run a later effect only when motion is allowed. */
+export function ifMotion<T>(create: () => T): T | null {
+  if (prefersReducedMotion()) return null;
+  return create();
 }
 
 export function initSmoothScroll() {
@@ -48,7 +87,7 @@ export function initSmoothScroll() {
 
 export function scrollTo(target: string | HTMLElement, offset = 0) {
   if (lenis) {
-    lenis.scrollTo(target, { offset, duration: 1.35 });
+    lenis.scrollTo(target, { offset, duration: duration.scroll });
     return;
   }
   const el = typeof target === 'string' ? document.querySelector(target) : target;
