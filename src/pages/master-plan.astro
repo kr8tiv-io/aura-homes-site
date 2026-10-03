@@ -1,5 +1,6 @@
 ---
 import Still from '../components/Still.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -12,7 +13,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <section class="page-lead">
       <div data-rise>
         <p class="story-kicker">Master plan</p>
-        <h1>A plan, told slowly.</h1>
+        <RevealHeading as="h1">A plan, told slowly.</RevealHeading>
         <p class="story-lede">
           The room is what you can ask for now. Everything after it is a direction, held lightly.
         </p>
@@ -29,7 +30,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="plan-copy">
             <p class="story-kicker">Now</p>
-            <h2><span class="plan-keep">Second-life</span> rooms.</h2>
+            <RevealHeading as="h2"><span class="plan-keep">Second-life</span> rooms.</RevealHeading>
             <p>
               Beautiful second-life rooms, Hot Take tub units, and customs, made one at a time. Off-grid and solar builds are available.
             </p>
@@ -48,7 +49,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="plan-copy">
             <p class="story-kicker">Grow</p>
-            <h2>Rooms that would grow.</h2>
+            <RevealHeading as="h2">Rooms that would grow.</RevealHeading>
             <p>
               Root Access grow rooms and aeroponic units would follow, as Aura Farms. The same room, with one long side turned toward a living wall.
             </p>
@@ -65,7 +66,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="plan-copy">
             <p class="story-kicker">Water</p>
-            <h2>Drawn from the air.</h2>
+            <RevealHeading as="h2">Drawn from the air.</RevealHeading>
             <p>
               Atmospheric water units would come later, after more research, and they are not ready to place. Aura H2O would be offered in premium cans and glass. Sponsors are ethical only. We decide who's in.
             </p>
@@ -83,7 +84,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="plan-copy">
             <p class="story-kicker">Give</p>
-            <h2>An intention to share.</h2>
+            <RevealHeading as="h2">An intention to share.</RevealHeading>
             <p>
               The hope is free food and free water, beginning with food banks and anyone in need in Edmonton. It is an intention, not a promise, and it is not operating.
             </p>
@@ -111,7 +112,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             </div>
             <div class="plan-copy">
               <p class="story-kicker">Stay</p>
-              <h2>Near the mountains.</h2>
+              <RevealHeading as="h2">Near the mountains.</RevealHeading>
               <p>
                 Micro-resorts, about half an hour from Banff and Canmore, would be built as showcases for the newest rooms.
               </p>
@@ -204,7 +205,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="plan-copy">
             <p class="story-kicker">Paradise</p>
-            <h2>Costa Rica, our second home.</h2>
+            <RevealHeading as="h2">Costa Rica, our second home.</RevealHeading>
             <p>
               Building in harmony with nature comes easier there. The same care would go there when the work is ready.
             </p>
@@ -218,7 +219,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
           <div class="plan-copy">
             <p class="story-kicker">Home</p>
-            <h2>Full eco homes, someday.</h2>
+            <RevealHeading as="h2">Full eco homes, someday.</RevealHeading>
             <p>
               Whole houses would come last, after the rooms have taught the rest. Still quiet, and still close to the ground.
             </p>
@@ -292,7 +293,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     background: #f4f3ef;
     box-shadow: 0 0 0 1px #9c7a55;
   }
-  .plan-copy h2 {
+  :global(.plan-copy h2) {
     margin: 0.85rem 0 0;
     max-width: 11em;
     font-family: var(--font-cinzel);
@@ -300,7 +301,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     font-size: clamp(2.35rem, 4.8vw, 4.2rem);
     line-height: 0.98;
     letter-spacing: -0.035em;
-    text-wrap: balance;
   }
   .plan-keep {
     white-space: nowrap;

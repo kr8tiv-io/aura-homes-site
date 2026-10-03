@@ -1,4 +1,5 @@
 ---
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const faqs = [
@@ -84,14 +85,14 @@ const schema = {
     <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
     <section class="page-lead">
       <p class="story-kicker">FAQ</p>
-      <h1>A few honest answers.</h1>
+      <RevealHeading as="h1">A few honest answers.</RevealHeading>
       <p class="story-lede">If the question is about your land, the better page is <a href="/contact">Contact</a>.</p>
     </section>
     <div class="page-body">
       <div class="faq-list" data-faq>
         {faqs.map((item, index) => (
           <div class="faq-item">
-            <h2>
+            <RevealHeading as="h2">
               <button
                 type="button"
                 class="faq-q"
@@ -99,10 +100,10 @@ const schema = {
                 aria-expanded="false"
                 aria-controls={`faq-a-${index}`}
               >
-                <span>{item.q}</span>
+                <span data-reveal-target>{item.q}</span>
                 <span class="faq-mark" aria-hidden="true"></span>
               </button>
-            </h2>
+            </RevealHeading>
             <div class="faq-a" id={`faq-a-${index}`} role="region" aria-labelledby={`faq-q-${index}`} hidden>
               <div class="faq-a-inner" set:html={item.html} />
             </div>
@@ -121,11 +122,15 @@ const schema = {
   .faq-item {
     border-bottom: 1px solid rgba(20, 18, 14, 0.14);
   }
-  .faq-item h2 {
+  :global(.faq-item h2) {
     margin: 0;
     font-size: inherit;
     font-weight: inherit;
     letter-spacing: inherit;
+  }
+  .faq-q [data-reveal-target] {
+    flex: 1;
+    min-width: 0;
   }
   .faq-q {
     display: flex;

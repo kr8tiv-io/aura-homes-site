@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import { posterSrc } from '../lib/stills';
 
 const deckPoster = await posterSrc('/film/resort-deck.webp');
@@ -15,10 +16,9 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
 
     <section class="page-lead">
       <p class="story-kicker">Later</p>
-      <h1 data-glow>
-        <span class="line-mask"><span class="line">The glass</span></span>
-        <span class="line-mask"><span class="line">comes next.</span></span>
-      </h1>
+      <RevealHeading as="h1" glow>
+        The glass<br />comes next.
+      </RevealHeading>
       <p class="story-lede">
         The room on the steel frame is the start. Helical piles, a floor lit from beneath, and a structured deck are how that room becomes a small place to stay.
       </p>
@@ -55,7 +55,7 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
       <p class="passage-ghost" aria-hidden="true">Pile</p>
       <div class="passage-copy">
         <p class="story-kicker">The ground</p>
-        <h2 data-glow><span class="line-mask"><span class="line">Screwed into the slope.</span></span></h2>
+        <RevealHeading as="h2" glow>Screwed into the slope.</RevealHeading>
         <p>About thirty minutes from Banff and from Kicking Horse. Off the grid, and still close to the hill.</p>
       </div>
     </section>
@@ -72,11 +72,11 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
       <p class="story-lede">SIP panels, solar, and atmospheric water sit behind the room. They keep it off the grid. They are not the view. <a href="/water">H20</a> is a later fit of the same room, and it still needs further research.</p>
     </section>
 
-    <Journeys />
+    <Journeys reveal />
 
     <section id="enquire" class="enquire">
       <p class="story-kicker">Enquire</p>
-      <h2 data-glow><span class="line-mask"><span class="line">Begin with the room.</span></span></h2>
+      <RevealHeading as="h2" glow>Begin with the room.</RevealHeading>
       <p class="story-lede enquire-note">The glass is the next build. The room is the one we can place now.</p>
       <Join shell="glass" />
     </section>

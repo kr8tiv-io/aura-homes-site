@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import ShotHold from '../components/ShotHold.astro';
 import { posterSrc } from '../lib/stills';
 
@@ -19,10 +20,9 @@ const linePoster = await posterSrc('/film/water-line.webp');
 
     <section class="page-lead">
       <p class="story-kicker">H20</p>
-      <h1 data-glow>
-        <span class="line-mask"><span class="line">Water</span></span>
-        <span class="line-mask"><span class="line">from the air.</span></span>
-      </h1>
+      <RevealHeading as="h1" glow>
+        Water<br />from the air.
+      </RevealHeading>
       <p class="story-lede">
         H20 comes later. The generator on the roof and the bottling line inside still need further research and development. Homes are the room you can ask for now. Farms are the growing units. This page is the plan for the water unit: moisture from the air, into plain plastic jugs, once that work is done.
       </p>
@@ -65,21 +65,20 @@ const linePoster = await posterSrc('/film/water-line.webp');
 
     <section class="story-open">
       <p class="story-kicker">Later</p>
-      <h2 data-glow>
-        <span class="line-mask"><span class="line">Not yet.</span></span>
-        <span class="line-mask"><span class="line">Still in research.</span></span>
-      </h2>
+      <RevealHeading as="h2" glow>
+        Not yet.<br />Still in research.
+      </RevealHeading>
       <p class="story-lede">
         When the work is done, the same room can make water. You would bottle for yourself, or, in the network we hope to build, an advertiser’s name would sit on a jug that is given away. That network is not live. H20 is not ready to build or to place.
       </p>
       <p class="story-lede"><a href="/journal/water-from-the-air">Read the water note</a>, and <a href="/journal/free-food-and-water">the network</a>.</p>
     </section>
 
-    <Journeys />
+    <Journeys reveal />
 
     <section id="enquire" class="enquire">
       <p class="story-kicker">Enquire</p>
-      <h2 data-glow><span class="line-mask"><span class="line">When H20 is ready.</span></span></h2>
+      <RevealHeading as="h2" glow>When H20 is ready.</RevealHeading>
       <p class="story-lede enquire-note">Leave a name if you want the first note, once the research is far enough to talk about a build. This page takes no payment.</p>
       <Join shell="water" />
     </section>

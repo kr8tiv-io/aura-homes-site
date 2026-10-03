@@ -1,0 +1,59 @@
+---
+interface Props {
+  as?: 'h1' | 'h2';
+  id?: string;
+  class?: string;
+  display?: boolean;
+  glow?: boolean;
+  tabindex?: string | number;
+}
+
+const { as: Tag = 'h2', id, class: className, display, glow = false, tabindex } = Astro.props;
+const displayFlag =
+  display === true ? 'yes' : display === false ? 'no' : Tag === 'h1' ? 'yes' : undefined;
+---
+
+<Tag
+  id={id}
+  class:list={[className]}
+  data-reveal-heading
+  data-reveal-display={displayFlag}
+  data-glow={glow ? '' : undefined}
+  tabindex={tabindex}
+>
+  <slot />
+</Tag>
+
+<style is:global>
+  h1[data-reveal-heading],
+  h2[data-reveal-heading] {
+    text-wrap: wrap;
+  }
+  .reveal-line-mask {
+    display: block;
+    overflow: clip;
+    padding-block: 0.18em;
+    margin-block: -0.18em;
+  }
+  .reveal-line {
+    display: block;
+    white-space: nowrap;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-reveal-heading]:not([data-reveal-ready]) {
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal-line {
+      transform: none !important;
+    }
+  }
+</style>
+
+<script>
+  import { onPageLoad } from '../scripts/motion';
+  import { bindRevealHeadings } from '../scripts/reveal-heading';
+
+  onPageLoad(() => bindRevealHeadings());
+</script>

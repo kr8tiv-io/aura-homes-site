@@ -1,5 +1,6 @@
 ---
 import Join from '../components/Join.astro';
+import RevealHeading from '../components/RevealHeading.astro';
 import Still from '../components/Still.astro';
 import YouTube from '../components/YouTube.astro';
 import { formatJournalDate } from '../lib/journal';
@@ -36,7 +37,7 @@ const json = {
     <script is:inline type="application/ld+json" set:html={JSON.stringify(json)} />
     <header class="journal-head">
       <p class="story-kicker">Journal</p>
-      <h1>{title}</h1>
+      <RevealHeading as="h1">{title}</RevealHeading>
       <p class="journal-meta">
         <time datetime={iso}>{published}</time>
         {tags.length > 0 && <span>{tags.join(' · ')}</span>}
@@ -60,7 +61,7 @@ const json = {
   </main>
   <section id="enquire" class="enquire">
     <p class="story-kicker">Enquire</p>
-    <h2>Ask about the room.</h2>
+    <RevealHeading as="h2">Ask about the room.</RevealHeading>
     <p class="story-lede enquire-note">A room, a farm wall, or water from the air. The first reply starts with the site.</p>
     <Join shell="unsure" />
   </section>
@@ -82,7 +83,7 @@ const json = {
     padding-top: 22vh;
     padding-bottom: 4vh;
   }
-  .journal-head h1 {
+  :global(.journal-head h1) {
     margin: 0;
     max-width: 16em;
     font-family: var(--font-cinzel);

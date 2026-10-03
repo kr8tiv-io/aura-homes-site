@@ -1,9 +1,25 @@
+---
+interface Props {
+  reveal?: boolean;
+}
+
+const { reveal = false } = Astro.props;
+---
+
 <section class="journeys" id="journeys">
   <p class="story-kicker">The story</p>
-  <h2 data-glow>
-    <span class="line-mask"><span class="line">One room.</span></span>
-    <span class="line-mask"><span class="line">Several lives.</span></span>
-  </h2>
+  {
+    reveal ? (
+      <h2 data-glow data-reveal-heading>
+        One room.<br />Several lives.
+      </h2>
+    ) : (
+      <h2 data-glow>
+        <span class="line-mask"><span class="line">One room.</span></span>
+        <span class="line-mask"><span class="line">Several lives.</span></span>
+      </h2>
+    )
+  }
   <ol>
     <li>
       <a href="/#shell">

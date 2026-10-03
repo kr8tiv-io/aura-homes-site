@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { bindRevealHeadings } from '../scripts/reveal-heading';
 import StoryCanvas from './StoryCanvas';
 
 type Beat = {
@@ -197,6 +198,10 @@ export default function BuilderJourney() {
     };
   }, []);
 
+  useEffect(() => {
+    bindRevealHeadings(document.getElementById('byo-root') ?? document);
+  }, [entered]);
+
   const toggleSound = () => {
     const audio = audioRef.current;
     if (!audio) return;
@@ -229,7 +234,7 @@ export default function BuilderJourney() {
             className={`b-plate b-plate-${b.side}`}
           >
             <p className="b-kicker">{b.n}  {b.label}</p>
-            <h2>{b.heading}</h2>
+            <h2 data-reveal-heading data-reveal-when="visible">{b.heading}</h2>
             <p>{b.body}</p>
             {b.href && b.cta ? (
               <a href={b.href} target="_blank" rel="noreferrer">{b.cta}</a>
@@ -247,7 +252,7 @@ export default function BuilderJourney() {
         >
           <div className="b-hero">
             <p className="b-kicker">The clearing</p>
-            <h1>Build Your Own.</h1>
+            <h1 data-reveal-heading data-reveal-display="yes">Build Your Own.</h1>
             <p>Walk the clearing, then set the room.</p>
           </div>
         </section>
@@ -269,7 +274,7 @@ export default function BuilderJourney() {
           }}
         >
           <p className="b-kicker">06  The room</p>
-          <h2>Set it here.</h2>
+          <h2 data-reveal-heading>Set it here.</h2>
           <p className="b-end-lead">
             Pick the use, the glass, and the length. Nothing on this page is for sale, and nothing is saved.
           </p>
@@ -318,7 +323,7 @@ export default function BuilderJourney() {
           )}
           <div className="b-gate-copy">
             <p className="b-kicker">The clearing</p>
-            <h1>Build Your Own.</h1>
+            <h1 data-reveal-heading data-reveal-display="yes">Build Your Own.</h1>
             <p>Walk the clearing, then set the room.</p>
             <button type="button" onClick={() => enter(true)}>Enter the clearing</button>
             <button type="button" className="b-quiet" onClick={() => enter(false)}>Enter quietly</button>

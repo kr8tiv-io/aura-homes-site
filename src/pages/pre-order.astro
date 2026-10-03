@@ -1,4 +1,5 @@
 ---
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { roomConcepts } from '../lib/rooms';
 
@@ -35,7 +36,7 @@ const offgrid = [
   <main id="top" class="quote-page">
     <section class="page-lead">
       <p class="story-kicker">Pre-order</p>
-      <h1>Get a quote.</h1>
+      <RevealHeading as="h1">Get a quote.</RevealHeading>
       <p class="story-lede">
         We're building our first units now. Join the pre-order list and we'll reach out personally. Nothing is charged until we know we can deliver, and if we ever can't, you get your money back.
       </p>
@@ -112,7 +113,7 @@ const offgrid = [
       </form>
 
       <div class="join-card quote-thanks" id="quote-thanks" hidden>
-        <h2 tabindex="-1">We have your note.</h2>
+        <RevealHeading as="h2" tabindex="-1">We have your note.</RevealHeading>
         <p>We will reach out personally. Nothing was charged.</p>
       </div>
     </section>
@@ -162,7 +163,7 @@ const offgrid = [
     outline: 1px solid #c4a07a;
     outline-offset: 3px;
   }
-  .quote-thanks h2 {
+  :global(.quote-thanks h2) {
     margin: 0;
     max-width: 12em;
     font-family: var(--font-cinzel);
@@ -171,7 +172,7 @@ const offgrid = [
     letter-spacing: -0.03em;
     line-height: 1.05;
   }
-  .quote-thanks h2:focus {
+  :global(.quote-thanks h2:focus) {
     outline: 1px solid #c4a07a;
     outline-offset: 8px;
   }

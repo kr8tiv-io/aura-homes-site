@@ -1,4 +1,5 @@
 ---
+import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 // Paste a Formspree URL here, or a mailto: address. TODO until the inbox exists.
@@ -22,7 +23,7 @@ const topics = [
   <main id="top" class="contact-page">
     <section class="page-lead">
       <p class="story-kicker">Contact</p>
-      <h1>Write to us.</h1>
+      <RevealHeading as="h1">Write to us.</RevealHeading>
       <p class="story-lede">Questions, ideas, hosting, partnerships. We read everything.</p>
     </section>
 
@@ -57,7 +58,7 @@ const topics = [
       </form>
 
       <div class="join-card contact-thanks" id="contact-thanks" hidden>
-        <h2 tabindex="-1">We have your note.</h2>
+        <RevealHeading as="h2" tabindex="-1">We have your note.</RevealHeading>
         <p data-contact-thanks-line>We read everything.</p>
       </div>
     </section>
@@ -112,7 +113,7 @@ const topics = [
     outline: 1px solid #c4a07a;
     outline-offset: 3px;
   }
-  .contact-thanks h2 {
+  :global(.contact-thanks h2) {
     margin: 0;
     max-width: 12em;
     font-family: var(--font-cinzel);
@@ -121,7 +122,7 @@ const topics = [
     letter-spacing: -0.03em;
     line-height: 1.05;
   }
-  .contact-thanks h2:focus {
+  :global(.contact-thanks h2:focus) {
     outline: 1px solid #c4a07a;
     outline-offset: 8px;
   }
