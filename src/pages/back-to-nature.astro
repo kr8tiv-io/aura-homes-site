@@ -1,5 +1,5 @@
 ---
-import Still from '../components/Still.astro';
+import DepthImage from '../components/DepthImage.astro';
 import HeroMist from '../components/HeroMist.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -12,11 +12,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 >
   <main id="top" class="wild">
     <section class="wild-frame" aria-labelledby="wild-morning">
-      <Still
+      <DepthImage
         src="/film/story-room.webp"
         alt="An open wood room facing a meadow at blue hour, with a low seat and a deck in front."
         loading="eager"
         fetchpriority="high"
+        field
       />
       <div class="wild-shade" aria-hidden="true"></div>
       <HeroMist />
@@ -26,9 +27,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <section class="wild-frame" aria-labelledby="wild-kids">
-      <Still
+      <DepthImage
         src="/film/layout-lounge-wind.webp"
         alt="A linen sofa in a wood room, facing tall grass and a blue evening."
+        field
       />
       <div class="wild-shade" aria-hidden="true"></div>
       <HeroMist />
@@ -38,9 +40,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <section class="wild-frame" aria-labelledby="wild-steam">
-      <Still
+      <DepthImage
         src="/film/story-meadow-side.webp"
         alt="A wood-fired tub letting off steam beside an open room, with tall grass in front."
+        field
       />
       <div class="wild-shade" aria-hidden="true"></div>
       <HeroMist />
@@ -50,9 +53,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </section>
 
     <section class="wild-frame" aria-labelledby="wild-moon">
-      <Still
+      <DepthImage
         src="/film/resort-deck.webp"
         alt="A lit deck at blue hour, with a wood-fired tub and mountains behind it."
+        field
       />
       <div class="wild-shade" aria-hidden="true"></div>
       <HeroMist />
@@ -182,26 +186,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     ScrollTrigger.getAll()
       .filter((trigger) => trigger.vars.id === 'wild-rise')
       .forEach((trigger) => trigger.kill());
-
-    gsap.utils.toArray<HTMLElement>('.wild-frame img', page).forEach((img) => {
-      const frame = img.closest('.wild-frame');
-      if (!frame) return;
-      gsap.fromTo(
-        img,
-        { scale: 1.06 },
-        {
-          scale: 1,
-          ease: 'none',
-          scrollTrigger: {
-            id: 'wild-rise',
-            trigger: frame,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1.4,
-          },
-        },
-      );
-    });
 
     gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
       gsap.from(el, {
