@@ -3,10 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
 import RevealHeading from '../components/RevealHeading.astro';
-import { posterSrc } from '../lib/stills';
-
-const wallPoster = await posterSrc('/film/farm-wall.webp');
-const roomPoster = await posterSrc('/film/farm-room.webp');
 ---
 
 <BaseLayout
@@ -30,7 +26,7 @@ const roomPoster = await posterSrc('/film/farm-room.webp');
 
     <section class="story-still">
       <figure class="story-figure">
-        <video poster={wallPoster} data-film="/film/scroll/farm-wall.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="drift" data-play="drift" aria-label="Black glass room in a dusk meadow, one wall a vertical aeroponic garden"></video>
+        <video poster="/media/video/farm-wall-poster.webp" data-film="/media/video/farm-wall.mp4" data-film-webm="/media/video/farm-wall.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1280" data-shot="drift" data-play="drift" aria-label="Black glass room in a dusk meadow, one wall a vertical aeroponic garden"></video>
       </figure>
       <div>
         <p class="story-kicker">The wall</p>
@@ -41,7 +37,7 @@ const roomPoster = await posterSrc('/film/farm-room.webp');
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video poster={roomPoster} data-film="/film/scroll/farm-room.mp4" muted playsinline preload="none" disablepictureinpicture width="1248" height="832" data-shot="tilt" data-play="push" aria-label="Honey oak room with a floor-to-ceiling aeroponic wall and meadow beyond the glass"></video>
+        <video poster="/media/video/farm-room-poster.webp" data-film="/media/video/farm-room.mp4" data-film-webm="/media/video/farm-room.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1280" data-shot="tilt" data-play="push" aria-label="Honey oak room with a floor-to-ceiling aeroponic wall and meadow beyond the glass"></video>
       </figure>
       <div>
         <p class="story-kicker">Inside</p>

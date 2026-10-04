@@ -25,7 +25,10 @@ const {
   labelledby,
 } = Astro.props;
 
-const posterUrl = await posterSrc(poster);
+const posterUrl = film.endsWith('.mp4')
+  ? film.replace(/\.mp4$/, '-poster.webp')
+  : await posterSrc(poster);
+const webm = film.endsWith('.mp4') ? film.replace(/\.mp4$/, '.webm') : '';
 const hasStill = Astro.slots.has('still');
 ---
 
@@ -52,6 +55,7 @@ const hasStill = Astro.slots.has('still');
       class="living-hero-film"
       poster={posterUrl}
       data-living-src={film}
+      data-living-webm={webm}
       muted
       loop
       playsinline
@@ -265,7 +269,18 @@ const hasStill = Astro.slots.has('still');
         video.loop = true;
         video.playsInline = true;
         video.preload = 'metadata';
-        video.src = src;
+        video.querySelectorAll('source').forEach((node) => node.remove());
+        const webmSrc = video.dataset.livingWebm;
+        if (webmSrc) {
+          const webmSource = document.createElement('source');
+          webmSource.src = webmSrc;
+          webmSource.type = 'video/webm';
+          video.appendChild(webmSource);
+        }
+        const mp4Source = document.createElement('source');
+        mp4Source.src = src;
+        mp4Source.type = 'video/mp4';
+        video.appendChild(mp4Source);
         video.load();
         if (video.readyState >= 2) reveal();
         else video.addEventListener('loadeddata', reveal, { once: true });

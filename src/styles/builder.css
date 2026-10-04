@@ -141,9 +141,16 @@
   transition: opacity 0.45s ease;
 }
 .b-gate.is-leaving { opacity: 0; pointer-events: none; }
+.b-gate-still,
 .b-gate-video {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.b-gate-still img {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;

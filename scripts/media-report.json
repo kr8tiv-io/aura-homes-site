@@ -1,0 +1,758 @@
+[
+  {
+    "kind": "image",
+    "source": "public/film/story-meadow-side.webp",
+    "sourceWidth": 1280,
+    "before": 58978,
+    "master": "src/assets/media/story-meadow-side.webp",
+    "masterBytes": 116020,
+    "scaler": "lanczos3",
+    "scale": 2,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 34411,
+        "webp": 37662
+      },
+      {
+        "width": 1920,
+        "avif": 51342,
+        "webp": 56706
+      },
+      {
+        "width": 2560,
+        "avif": 73568,
+        "webp": 86012
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/story-room.webp",
+    "sourceWidth": 1600,
+    "before": 82592,
+    "master": "src/assets/media/story-room.webp",
+    "masterBytes": 118038,
+    "scaler": "lanczos3",
+    "scale": 1.6,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 32522,
+        "webp": 35494
+      },
+      {
+        "width": 1920,
+        "avif": 50827,
+        "webp": 56414
+      },
+      {
+        "width": 2560,
+        "avif": 75593,
+        "webp": 86458
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/story-nest.webp",
+    "sourceWidth": 1600,
+    "before": 88402,
+    "master": "src/assets/media/story-nest.webp",
+    "masterBytes": 129724,
+    "scaler": "lanczos3",
+    "scale": 1.6,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 38738,
+        "webp": 41726
+      },
+      {
+        "width": 1920,
+        "avif": 57753,
+        "webp": 64440
+      },
+      {
+        "width": 2560,
+        "avif": 84208,
+        "webp": 96890
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/layout-lounge-wind.webp",
+    "sourceWidth": 1280,
+    "before": 45114,
+    "master": "src/assets/media/layout-lounge-wind.webp",
+    "masterBytes": 89904,
+    "scaler": "lanczos3",
+    "scale": 2,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 26004,
+        "webp": 27510
+      },
+      {
+        "width": 1920,
+        "avif": 38980,
+        "webp": 42230
+      },
+      {
+        "width": 2560,
+        "avif": 56895,
+        "webp": 65476
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/layout-forest.webp",
+    "sourceWidth": 1800,
+    "before": 82644,
+    "master": "src/assets/media/layout-forest.webp",
+    "masterBytes": 98490,
+    "scaler": "lanczos3",
+    "scale": 1.42,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 28892,
+        "webp": 29108
+      },
+      {
+        "width": 1920,
+        "avif": 43789,
+        "webp": 45534
+      },
+      {
+        "width": 2560,
+        "avif": 63804,
+        "webp": 71338
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/layout-sky.webp",
+    "sourceWidth": 1800,
+    "before": 80680,
+    "master": "src/assets/media/layout-sky.webp",
+    "masterBytes": 98530,
+    "scaler": "lanczos3",
+    "scale": 1.42,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 28871,
+        "webp": 28886
+      },
+      {
+        "width": 1920,
+        "avif": 44407,
+        "webp": 46282
+      },
+      {
+        "width": 2560,
+        "avif": 66758,
+        "webp": 72188
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/layout-night.webp",
+    "sourceWidth": 1800,
+    "before": 82242,
+    "master": "src/assets/media/layout-night.webp",
+    "masterBytes": 99106,
+    "scaler": "lanczos3",
+    "scale": 1.42,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 29591,
+        "webp": 28890
+      },
+      {
+        "width": 1920,
+        "avif": 44942,
+        "webp": 45910
+      },
+      {
+        "width": 2560,
+        "avif": 66483,
+        "webp": 71784
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/resort-deck.webp",
+    "sourceWidth": 1800,
+    "before": 250758,
+    "master": "src/assets/media/resort-deck.webp",
+    "masterBytes": 321814,
+    "scaler": "lanczos3",
+    "scale": 1.42,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 68947,
+        "webp": 99236
+      },
+      {
+        "width": 1920,
+        "avif": 113271,
+        "webp": 152742
+      },
+      {
+        "width": 2560,
+        "avif": 169812,
+        "webp": 240332
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/resort-tower.webp",
+    "sourceWidth": 1600,
+    "before": 242986,
+    "master": "src/assets/media/resort-tower.webp",
+    "masterBytes": 404994,
+    "scaler": "lanczos3",
+    "scale": 1.6,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 96375,
+        "webp": 140670
+      },
+      {
+        "width": 1920,
+        "avif": 143443,
+        "webp": 208844
+      },
+      {
+        "width": 2560,
+        "avif": 207782,
+        "webp": 309572
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/farm-wall.webp",
+    "sourceWidth": 1248,
+    "before": 78558,
+    "master": "src/assets/media/farm-wall.webp",
+    "masterBytes": 140300,
+    "scaler": "lanczos3",
+    "scale": 2.05,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 39896,
+        "webp": 40554
+      },
+      {
+        "width": 1920,
+        "avif": 61278,
+        "webp": 63092
+      },
+      {
+        "width": 2560,
+        "avif": 90367,
+        "webp": 98624
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/farm-room.webp",
+    "sourceWidth": 1248,
+    "before": 116508,
+    "master": "src/assets/media/farm-room.webp",
+    "masterBytes": 202206,
+    "scaler": "lanczos3",
+    "scale": 2.05,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 53151,
+        "webp": 62256
+      },
+      {
+        "width": 1920,
+        "avif": 84135,
+        "webp": 96008
+      },
+      {
+        "width": 2560,
+        "avif": 122740,
+        "webp": 148582
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/water-line.webp",
+    "sourceWidth": 1248,
+    "before": 65214,
+    "master": "src/assets/media/water-line.webp",
+    "masterBytes": 116560,
+    "scaler": "lanczos3",
+    "scale": 2.05,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 33025,
+        "webp": 33046
+      },
+      {
+        "width": 1920,
+        "avif": 50360,
+        "webp": 52294
+      },
+      {
+        "width": 2560,
+        "avif": 75383,
+        "webp": 82484
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/film/costa-canopy.webp",
+    "sourceWidth": 1200,
+    "before": 102608,
+    "master": "src/assets/media/costa-canopy.webp",
+    "masterBytes": 164254,
+    "scaler": "lanczos3",
+    "scale": 2.13,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 50537,
+        "webp": 51098
+      },
+      {
+        "width": 1920,
+        "avif": 77095,
+        "webp": 78940
+      },
+      {
+        "width": 2560,
+        "avif": 112530,
+        "webp": 118726
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/aframe-golden-hour-meadow.jpg",
+    "sourceWidth": 1792,
+    "before": 823665,
+    "master": "src/assets/media/aframe-golden-hour-meadow.webp",
+    "masterBytes": 482478,
+    "scaler": "lanczos3",
+    "scale": 1.43,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 88862,
+        "webp": 133454
+      },
+      {
+        "width": 1920,
+        "avif": 157028,
+        "webp": 225832
+      },
+      {
+        "width": 2560,
+        "avif": 231488,
+        "webp": 312728
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/aframe-aerial-blue-hour-snow.jpg",
+    "sourceWidth": 1792,
+    "before": 950959,
+    "master": "src/assets/media/aframe-aerial-blue-hour-snow.webp",
+    "masterBytes": 635508,
+    "scaler": "lanczos3",
+    "scale": 1.43,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 109265,
+        "webp": 186844
+      },
+      {
+        "width": 1920,
+        "avif": 193747,
+        "webp": 312166
+      },
+      {
+        "width": 2560,
+        "avif": 274208,
+        "webp": 419836
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/aframe-deck-detail-dusk.jpg",
+    "sourceWidth": 1792,
+    "before": 471694,
+    "master": "src/assets/media/aframe-deck-detail-dusk.webp",
+    "masterBytes": 206060,
+    "scaler": "lanczos3",
+    "scale": 1.43,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 39127,
+        "webp": 54742
+      },
+      {
+        "width": 1920,
+        "avif": 66834,
+        "webp": 89202
+      },
+      {
+        "width": 2560,
+        "avif": 99955,
+        "webp": 127646
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/tower-golden-hour-meadow.jpg",
+    "sourceWidth": 1792,
+    "before": 821236,
+    "master": "src/assets/media/tower-golden-hour-meadow.webp",
+    "masterBytes": 487602,
+    "scaler": "lanczos3",
+    "scale": 1.43,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 89084,
+        "webp": 139242
+      },
+      {
+        "width": 1920,
+        "avif": 158595,
+        "webp": 229242
+      },
+      {
+        "width": 2560,
+        "avif": 230213,
+        "webp": 312858
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/tower-winter-dusk-wide.jpg",
+    "sourceWidth": 1792,
+    "before": 586945,
+    "master": "src/assets/media/tower-winter-dusk-wide.webp",
+    "masterBytes": 299370,
+    "scaler": "lanczos3",
+    "scale": 1.43,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 56752,
+        "webp": 79858
+      },
+      {
+        "width": 1920,
+        "avif": 102353,
+        "webp": 133844
+      },
+      {
+        "width": 2560,
+        "avif": 147741,
+        "webp": 189220
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/tower-night-stars.jpg",
+    "sourceWidth": 1792,
+    "before": 884206,
+    "master": "src/assets/media/tower-night-stars.webp",
+    "masterBytes": 543344,
+    "scaler": "lanczos3",
+    "scale": 1.43,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 99998,
+        "webp": 146020
+      },
+      {
+        "width": 1920,
+        "avif": 182884,
+        "webp": 246990
+      },
+      {
+        "width": 2560,
+        "avif": 271092,
+        "webp": 337880
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/tower-aerial-sunrise.jpg",
+    "sourceWidth": 1792,
+    "before": 846124,
+    "master": "src/assets/media/tower-aerial-sunrise.webp",
+    "masterBytes": 525564,
+    "scaler": "lanczos3",
+    "scale": 1.43,
+    "soft": false,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 94419,
+        "webp": 151454
+      },
+      {
+        "width": 1920,
+        "avif": 167533,
+        "webp": 250388
+      },
+      {
+        "width": 2560,
+        "avif": 240545,
+        "webp": 341872
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/tower-glass-detail-blue-hour.jpg",
+    "sourceWidth": 1280,
+    "before": 355979,
+    "master": "src/assets/media/tower-glass-detail-blue-hour.webp",
+    "masterBytes": 282764,
+    "scaler": "lanczos3",
+    "scale": 2,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 51025,
+        "webp": 78128
+      },
+      {
+        "width": 1920,
+        "avif": 88410,
+        "webp": 125724
+      },
+      {
+        "width": 2560,
+        "avif": 131538,
+        "webp": 176220
+      }
+    ]
+  },
+  {
+    "kind": "image",
+    "source": "public/media/specialty/tower-lake-summer-dusk.jpg",
+    "sourceWidth": 1280,
+    "before": 400671,
+    "master": "src/assets/media/tower-lake-summer-dusk.webp",
+    "masterBytes": 335984,
+    "scaler": "lanczos3",
+    "scale": 2,
+    "soft": true,
+    "sizes": [
+      {
+        "width": 1280,
+        "avif": 69037,
+        "webp": 92472
+      },
+      {
+        "width": 1920,
+        "avif": 116242,
+        "webp": 151952
+      },
+      {
+        "width": 2560,
+        "avif": 165923,
+        "webp": 208946
+      }
+    ]
+  },
+  {
+    "kind": "video",
+    "source": "public/film/hero/room.mp4",
+    "before": 538010,
+    "width": 2560,
+    "webm": 1388050,
+    "mp4": 2974327,
+    "av1Crf": 32,
+    "x264Crf": 23,
+    "posters": {
+      "webp": 50146,
+      "avif": 45252
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/hero/lounge.mp4",
+    "before": 241531,
+    "width": 2560,
+    "webm": 760767,
+    "mp4": 1709495,
+    "av1Crf": 32,
+    "x264Crf": 23,
+    "posters": {
+      "webp": 42306,
+      "avif": 38614
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/hero/meadow.mp4",
+    "before": 244959,
+    "width": 2560,
+    "webm": 774433,
+    "mp4": 1734598,
+    "av1Crf": 32,
+    "x264Crf": 23,
+    "posters": {
+      "webp": 60538,
+      "avif": 52930
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/hero/deck.mp4",
+    "before": 1159066,
+    "width": 2560,
+    "webm": 3618508,
+    "mp4": 3610634,
+    "av1Crf": 36,
+    "x264Crf": 29,
+    "posters": {
+      "webp": 124664,
+      "avif": 93675
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/scroll/deck.mp4",
+    "before": 8463328,
+    "width": 1920,
+    "webm": 3342545,
+    "mp4": 3098800,
+    "av1Crf": 40,
+    "x264Crf": 29,
+    "posters": {
+      "webp": 137712,
+      "avif": 105564
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/scroll/tower.mp4",
+    "before": 11258551,
+    "width": 1920,
+    "webm": 2689052,
+    "mp4": 3228321,
+    "av1Crf": 48,
+    "x264Crf": 32,
+    "posters": {
+      "webp": 195588,
+      "avif": 143151
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/scroll/farm-wall.mp4",
+    "before": 6784287,
+    "width": 1920,
+    "webm": 398228,
+    "mp4": 1584666,
+    "av1Crf": 32,
+    "x264Crf": 23,
+    "posters": {
+      "webp": 84772,
+      "avif": 78874
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/scroll/farm-room.mp4",
+    "before": 8182465,
+    "width": 1920,
+    "webm": 708525,
+    "mp4": 2099345,
+    "av1Crf": 32,
+    "x264Crf": 23,
+    "posters": {
+      "webp": 119258,
+      "avif": 105271
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/scroll/water-line.mp4",
+    "before": 5502081,
+    "width": 1920,
+    "webm": 434140,
+    "mp4": 1419447,
+    "av1Crf": 32,
+    "x264Crf": 23,
+    "posters": {
+      "webp": 68190,
+      "avif": 65395
+    }
+  },
+  {
+    "kind": "video",
+    "source": "public/film/builder-enter.mp4",
+    "before": 3605816,
+    "width": 1920,
+    "webm": 4029588,
+    "mp4": 3879731,
+    "av1Crf": 36,
+    "x264Crf": 29,
+    "posters": {
+      "webp": 41668,
+      "avif": 39554
+    }
+  }
+]

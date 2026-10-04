@@ -64,19 +64,44 @@ export function bindReels(root: ParentNode = document) {
     .then((data: { films?: string[] }) => new Set(data.films || []))
     .catch(() => new Set<string>());
 
+  const allowFilm = (video: HTMLVideoElement) => {
+    if (video.dataset.still !== 'poster') return true;
+    if (reduce) return false;
+    if (!window.matchMedia('(min-width: 801px) and (any-pointer: fine)').matches) return false;
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    if (!conn) return true;
+    if (conn.saveData) return false;
+    return conn.effectiveType !== 'slow-2g' && conn.effectiveType !== '2g' && conn.effectiveType !== '3g';
+  };
+
   videos.forEach((video) => {
     const film = video.dataset.film;
-    let attached = Boolean(video.getAttribute('src'));
+    let attached = Boolean(video.getAttribute('src') || video.querySelector('source'));
     const attach = () => {
       if (attached || !film) return;
       attached = true;
       ready.then((names) => {
         const file = film.split('/').pop() || '';
-        if (!names.has(file)) {
+        const known = names.has(file) || film.startsWith('/media/video/');
+        if (!known || !allowFilm(video)) {
           attached = false;
           return;
         }
-        if (video.getAttribute('src')) return;
+        if (video.getAttribute('src') || video.querySelector('source')) return;
+        const webm = video.dataset.filmWebm;
+        if (webm) {
+          video.preload = 'metadata';
+          const add = (src: string, type: string) => {
+            const source = document.createElement('source');
+            source.src = src;
+            source.type = type;
+            video.appendChild(source);
+          };
+          add(webm, 'video/webm');
+          add(film, 'video/mp4');
+          video.load();
+          return;
+        }
         video.preload = 'auto';
         video.src = film;
         video.load();
