@@ -5,7 +5,7 @@ export function organizationJson(origin: string | URL) {
     '@type': 'Organization',
     name: 'Aura Homes',
     url: `${base}/`,
-    description: 'Beautiful second-life rooms that bring people back to nature, one room at a time.',
+    description: 'Return to Aura. One beautiful room at a time.',
     logo: `${base}/favicon.svg`,
     address: {
       '@type': 'PostalAddress',

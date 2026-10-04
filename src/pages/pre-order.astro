@@ -30,7 +30,7 @@ const offgrid = [
 
 <BaseLayout
   title="Pre-order | Aura Homes"
-  description="Beautiful second-life rooms that bring people back to nature, one room at a time."
+  description="Return to Aura. One beautiful room at a time."
   descriptor="Pre-order"
 >
   <main id="top" class="quote-page">
@@ -354,7 +354,7 @@ const offgrid = [
             ['Message', fieldText('message')],
           ].map(([label, value]) => `${label}: ${value || ''}`);
           const joiner = action.includes('?') ? '&' : '?';
-          window.location.href = `${action}${joiner}subject=${encodeURIComponent('Aura Homes quote')}&body=${encodeURIComponent(lines.join('\n'))}`;
+          window.location.href = `${action}${joiner}subject=${encodeURIComponent('Aura quote')}&body=${encodeURIComponent(lines.join('\n'))}`;
         }
         showThanks();
       } catch {

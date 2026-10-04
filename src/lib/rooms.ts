@@ -23,20 +23,20 @@ export const roomConcepts: RoomConcept[] = [
   },
   {
     slug: 'chapter-one',
-    name: 'Chapter One',
+    name: 'A Starry Night',
     shell: 'room',
     image: '/film/story-room.webp',
     alt: 'A dark glass room at dusk, the door open onto a linen seat and a green meadow.',
-    description: 'The first room, open to the field. A small start, with the door ajar.',
+    description: 'The first room, open to the field. A small start, kept for the dark.',
     focus: 'center',
   },
   {
     slug: 'the-plus-one',
-    name: 'The Plus One',
+    name: "A Hitchhiker's Guide to the Guest Room",
     shell: 'room',
     image: '/film/layout-lounge-wind.webp',
     alt: 'A long linen sofa in a wood room, facing tall grass and a blue evening.',
-    description: 'One more place, just past the house. Company, or a quiet hour.',
+    description: 'A guest room just past the house. Company, or a quiet hour.',
     focus: 'center',
   },
   {
@@ -59,11 +59,11 @@ export const roomConcepts: RoomConcept[] = [
   },
   {
     slug: 'nothing-to-see-here',
-    name: 'Nothing To See Here',
+    name: "Aurora's Looking Glass",
     shell: 'room',
     image: '/film/layout-night.webp',
     alt: 'A low bed in a wood room under a skylight of stars, facing a night meadow.',
-    description: 'A bedroom aimed at the view. The joke is how much there is to see.',
+    description: 'A bedroom aimed at the view. The glass gives the night back.',
     focus: 'center',
   },
   {
@@ -78,7 +78,7 @@ export const roomConcepts: RoomConcept[] = [
   },
   {
     slug: 'root-access',
-    name: 'Root Access',
+    name: 'Leaf Skywalker',
     shell: 'farm',
     image: '/film/farm-wall.webp',
     alt: 'A glass room in tall grass at dusk, its long side filled with a wall of plants.',

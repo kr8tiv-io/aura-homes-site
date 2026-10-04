@@ -204,17 +204,18 @@ p {
   stroke-dashoffset: 0;
 }
 .aura-halo {
-  fill: #c4a07a;
-  stroke: none;
+  fill: none;
+  stroke: #c4a07a;
+  stroke-width: 1.35;
   opacity: 1;
 }
 /* The nav blends with difference. This blue paints back as bronze #c4a07a on the alabaster page. */
 .site-nav .aura-halo {
-  fill: #305375;
+  stroke: #305375;
 }
 body.nav-on-film .site-nav .aura-halo,
 body[data-living-nav] .site-nav .aura-halo {
-  fill: #c4a07a;
+  stroke: #c4a07a;
 }
 .nav-name,
 .foot-name {
@@ -258,6 +259,14 @@ body[data-living-nav] .site-nav .aura-halo {
   font-size: clamp(1.35rem, 2.2vw, 1.9rem);
   line-height: 1.28;
   letter-spacing: -0.02em;
+}
+.foot-quiet {
+  margin: 0.45rem 0 0;
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+  color: rgba(244, 243, 239, 0.78);
 }
 .foot-place {
   margin: 0.9rem 0 0;
@@ -451,6 +460,9 @@ body[data-living-nav] .site-nav .aura-halo {
   opacity: 0.7;
   animation-name: grain-drift-b;
   animation-duration: 41s;
+}
+.film-grain.is-paused .film-grain-pane {
+  animation-play-state: paused;
 }
 @keyframes grain-drift-a {
   from { transform: translate3d(0, 0, 0); }
@@ -671,7 +683,7 @@ body[data-living-nav] .nav-cta:focus-visible {
 }
 .sigil-horizon { stroke-width: 1; }
 .sigil-ridge { stroke-width: 1.35; stroke-miterlimit: 8; }
-.sigil-halo { fill: currentColor; }
+.sigil-halo { fill: none; stroke: currentColor; stroke-width: 1; }
 .sigil-mark {
   opacity: 1;
   transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
@@ -827,10 +839,11 @@ body.menu-open .site-nav { z-index: 80; }
   pointer-events: none;
 }
 .menu-halo {
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
-  background: #c4a07a;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  background: transparent;
+  border: 1px solid #c4a07a;
   opacity: 0;
   transform: translateY(-4px);
   transition:
@@ -2302,4 +2315,87 @@ html.lenis body {
 .ambient:focus-visible {
   outline: 1px solid currentColor;
   outline-offset: 4px;
+}
+
+/* First visit on an inner page. The ridge opens, the ring arrives, then both leave. */
+.ridge-load {
+  position: fixed;
+  inset: 0;
+  z-index: 78;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: transparent;
+}
+html.ridge-seen .ridge-load {
+  display: none;
+}
+.ridge-load-mark {
+  position: relative;
+  width: min(8.5rem, 46vw);
+}
+.ridge-load-clip {
+  overflow: hidden;
+  transform: scaleX(0);
+  transform-origin: left center;
+  mix-blend-mode: difference;
+}
+.ridge-load-ridge {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.ridge-load-ridge path {
+  fill: none;
+  stroke: #f4f3ef;
+  stroke-width: 3.2;
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+  stroke-miterlimit: 8;
+}
+.ridge-load-halo {
+  position: absolute;
+  left: 50%;
+  top: 8%;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-left: -0.675rem;
+  border: 1px solid #c4a07a;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ridge-load-clip {
+    animation: ridge-draw 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .ridge-load-halo {
+    animation: ridge-halo 0.32s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  }
+  .ridge-load {
+    animation: ridge-leave 0.24s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
+  }
+}
+@keyframes ridge-draw {
+  to { transform: scaleX(1); }
+}
+@keyframes ridge-halo {
+  to { opacity: 1; }
+}
+@keyframes ridge-leave {
+  to { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ridge-load-clip {
+    transform: none;
+    animation: none;
+  }
+  .ridge-load-halo {
+    opacity: 1;
+    animation: none;
+  }
+  .ridge-load {
+    animation: ridge-leave 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
 }

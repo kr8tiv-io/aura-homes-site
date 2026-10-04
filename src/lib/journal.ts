@@ -23,7 +23,7 @@ export const legacyNotes: JournalCard[] = [
     href: '/journal/aura-farms',
     title: 'Aura Farms, grown on the wall',
     excerpt:
-      'Vertical aeroponics in the same room: what it is, who can buy it, and what a free-food network would ask of it.',
+      'Vertical aeroponics in the same room: what it is, who can buy it, and what a later label would ask of it.',
     date: '2026-09-30',
     tags: ['Farm'],
     cover: '/film/farm-wall.webp',
@@ -32,7 +32,7 @@ export const legacyNotes: JournalCard[] = [
   {
     href: '/journal/water-from-the-air',
     title: 'Water from the air, bottled in the room',
-    excerpt: 'H20 comes later. The generator and the bottling line still need further research.',
+    excerpt: 'Thirst Contact comes later. The generator and the bottling line still need further research.',
     date: '2026-09-30',
     tags: ['Water'],
     cover: '/film/water-line.webp',
@@ -40,9 +40,9 @@ export const legacyNotes: JournalCard[] = [
   },
   {
     href: '/journal/free-food-and-water',
-    title: 'Free food, free water, named by the label',
+    title: 'A label, later',
     excerpt:
-      'The network we hope to build: an advertiser’s name on the jug or the harvest. The person who takes it does not pay.',
+      'Thirst Contact and the farm wall, and a network that is not live. The room you can ask for stays a room.',
     date: '2026-09-30',
     tags: ['Hope'],
     cover: '/film/layout-forest.webp',

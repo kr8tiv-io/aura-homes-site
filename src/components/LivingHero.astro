@@ -157,9 +157,11 @@ const hasStill = Astro.slots.has('still');
 
   @media (min-width: 801px) and (prefers-reduced-motion: no-preference) {
     .living-hero-film.is-live {
-      will-change: transform;
       animation: living-breath 18s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
     }
+  }
+  .living-hero.is-off .living-hero-film {
+    animation-play-state: paused;
   }
 
   @keyframes living-breath {
@@ -272,7 +274,9 @@ const hasStill = Astro.slots.has('still');
 
       const watch = new IntersectionObserver(
         (entries) => {
-          if (!entries.some((entry) => entry.isIntersecting)) {
+          const on = entries.some((entry) => entry.isIntersecting);
+          hero.classList.toggle('is-off', !on);
+          if (!on) {
             if (video.classList.contains('is-live')) video.pause();
             return;
           }
