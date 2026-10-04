@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { holdPageMotion } from './motion';
+import { motionTime, onQuality, qualityProfile } from '../three/quality';
 import { registerView, stagePageScroll } from '../three/stage';
 
 /** Faint meadow for the cream sections. Drawn by the shared stage. */
-export function mountWash(canvas: HTMLCanvasElement) {
+function mountWashNow(canvas: HTMLCanvasElement) {
   const theme = canvas.dataset.wash || 'room';
   const look =
     theme === 'resort'
@@ -74,7 +75,7 @@ export function mountWash(canvas: HTMLCanvasElement) {
     layer: 'wash',
     draw: () => stagePageScroll() >= window.innerHeight * 0.82,
     update(progress) {
-      const t = performance.now() * 0.001;
+      const t = motionTime(performance.now());
       const drift = progress * 1.6;
       camera.position.set(-0.2 + drift + Math.sin(t * 0.22) * 0.22, 1.45, 8);
       camera.lookAt(drift * 0.2, 3.15, -4);
@@ -96,6 +97,45 @@ export function mountWash(canvas: HTMLCanvasElement) {
       view.destroy();
       geometries.forEach((geo) => geo.dispose());
       materials.forEach((mat) => mat.dispose());
+    },
+  };
+  return api;
+}
+
+export function mountWash(canvas: HTMLCanvasElement) {
+  let dead = false;
+  let inner: ReturnType<typeof mountWashNow> | null = null;
+  let progress = 0;
+
+  const boot = () => {
+    if (dead || inner || qualityProfile().tier === 'off') return;
+    inner = mountWashNow(canvas);
+    inner.setProgress(progress);
+  };
+
+  const stop = onQuality((next) => {
+    if (dead) return;
+    if (next.tier === 'off') {
+      inner?.destroy();
+      inner = null;
+      return;
+    }
+    if (!inner) boot();
+  });
+
+  boot();
+
+  const api = {
+    setProgress(t: number) {
+      progress = t;
+      inner?.setProgress(t);
+    },
+    destroy() {
+      if (dead) return;
+      dead = true;
+      stop();
+      inner?.destroy();
+      inner = null;
     },
   };
   holdPageMotion(api.destroy);

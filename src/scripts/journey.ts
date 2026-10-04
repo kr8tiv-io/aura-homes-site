@@ -1,21 +1,48 @@
 import { gsap, ScrollTrigger, prefersReducedMotion, holdPageMotion } from './motion';
-import { mountMeadow } from './meadow';
-import { mountWash } from './wash';
-import { mountField } from './field';
+import { onQuality, qualityProfile } from '../three/quality';
 import { bindShots } from './shots';
 import { bindReels } from './reel';
+
+type SceneHandle = { setProgress: (t: number) => void; destroy: () => void };
 
 /** Word rises, pinned passages, mouse shots, and the scroll-tinted field. */
 export function bindJourneyMotion() {
   const field = document.querySelector<HTMLCanvasElement>('[data-field]');
   if (!field || field.dataset.journeyBound === 'yes') return;
   field.dataset.journeyBound = 'yes';
+  void startJourney();
+}
+
+async function startJourney() {
   const reduce = prefersReducedMotion();
   const mm = gsap.matchMedia();
-  const meadows = gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => mountMeadow(canvas));
-  const washes = gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => mountWash(canvas));
-  const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
-  const fieldFx = fieldCanvas ? mountField(fieldCanvas) : null;
+  const meadows: SceneHandle[] = [];
+  const washes: SceneHandle[] = [];
+  let fieldFx: SceneHandle | null = null;
+  let scenesTask: Promise<void> | null = null;
+
+  const ensureScenes = () => {
+    if (qualityProfile().tier === 'off') return Promise.resolve();
+    if (scenesTask) return scenesTask;
+    scenesTask = (async () => {
+      const [meadowMod, washMod, fieldMod] = await Promise.all([
+        import('./meadow'),
+        import('./wash'),
+        import('./field'),
+      ]);
+      if (meadows.length) return;
+      meadows.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => meadowMod.mountMeadow(canvas)));
+      washes.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => washMod.mountWash(canvas)));
+      const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
+      fieldFx = fieldCanvas ? fieldMod.mountField(fieldCanvas) : null;
+    })();
+    return scenesTask;
+  };
+
+  await ensureScenes();
+  const stopQuality = onQuality(() => {
+    void ensureScenes();
+  });
 
   const ctx = gsap.context(() => {
     const stopShots = bindShots();
@@ -92,7 +119,6 @@ export function bindJourneyMotion() {
     mm.add('(prefers-reduced-motion: no-preference)', () => {
       const mobile = window.matchMedia('(max-width: 800px)').matches;
       gsap.utils.toArray<HTMLElement>('[data-passage]').forEach((section, index) => {
-        const meadow = meadows[index];
         const ghost = section.querySelector('.passage-ghost');
         const copy = section.querySelector('.passage-copy');
         const spacer = section.nextElementSibling instanceof HTMLElement && section.nextElementSibling.hasAttribute('data-passage-spacer')
@@ -108,7 +134,7 @@ export function bindJourneyMotion() {
           anticipatePin: 1,
           onUpdate: (self) => {
             const p = self.progress;
-            meadow?.setProgress(p);
+            meadows[index]?.setProgress(p);
             if (ghost) {
               gsap.set(ghost, {
                 y: -190 * p,
@@ -163,6 +189,7 @@ export function bindJourneyMotion() {
   const release = () => {
     if (released) return;
     released = true;
+    stopQuality();
     ctx.revert();
     mm.revert();
     meadows.forEach((meadow) => meadow.destroy());

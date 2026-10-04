@@ -20,6 +20,7 @@ import {
 } from 'postprocessing';
 import { N8AOPostPass } from 'n8ao';
 import { configureRenderer, loadEnvironment, releaseEnvironment } from './loaders';
+import { displayDpr, ensureQuality, hdriFor, noteFrame, onQuality, qualityProfile, setDebugStats } from './quality';
 import { prefersReducedMotion } from '../scripts/motion';
 
 declare module 'n8ao' {
@@ -51,6 +52,10 @@ export type StageView = {
   layer?: StageLayer;
   hdri?: string;
   envIntensity?: number;
+  /** Drop geometries once the passage is more than two screens away. */
+  suspend?: () => void;
+  /** Rebuild after the passage comes back within two screens. */
+  resume?: () => void;
 };
 
 type Composer = EffectComposer & { depthRenderTarget: THREE.WebGLRenderTarget | null };
@@ -67,6 +72,8 @@ type Entry = {
   toneEffect: ToneMappingEffect | null;
   pw: number;
   ph: number;
+  dormant: boolean;
+  baseHdri: string;
 };
 
 const LAYER_ORDER: StageLayer[] = ['wash', 'field', 'scene'];
@@ -84,6 +91,8 @@ let listening = false;
 let sizeW = 0;
 let sizeH = 0;
 let sizePr = 0;
+let approachObserver: IntersectionObserver | null = null;
+let viewportObserver: IntersectionObserver | null = null;
 
 let quad: THREE.Mesh | null = null;
 let quadScene: THREE.Scene | null = null;
@@ -106,13 +115,6 @@ const srgbToLinear = `
     return mix(lo, hi, step(vec3(0.04045), c));
   }
 `;
-
-function pixelRatioCap(): number {
-  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-  if (prefersReducedMotion() || saveData) return 1;
-  if (window.matchMedia('(max-width: 800px), (pointer: coarse)').matches) return 1.25;
-  return 1.5;
-}
 
 function splashBlocks(): boolean {
   const spacer = document.querySelector<HTMLElement>('[data-splash-spacer]');
@@ -145,14 +147,78 @@ function requestDraw() {
   });
 }
 
+function shouldRun(): boolean {
+  if (!renderer || !canvas || document.hidden) return false;
+  if (qualityProfile().tier === 'off') return false;
+  const stageRect = canvas.getBoundingClientRect();
+  if (stageRect.bottom <= 0 || stageRect.top >= window.innerHeight || stageRect.width < 2) return false;
+  for (const entry of entries) {
+    if (entry.dead || entry.dormant) continue;
+    const rect = entry.view.element.getBoundingClientRect();
+    if (!onScreen(rect)) continue;
+    if (entry.view.draw && entry.view.draw() === false) continue;
+    return true;
+  }
+  return false;
+}
+
+function clearStage() {
+  if (!renderer) return;
+  const w = sizeW || window.innerWidth;
+  const h = sizeH || window.innerHeight;
+  renderer.setRenderTarget(null);
+  renderer.setScissorTest(false);
+  renderer.setViewport(0, 0, w, h);
+  renderer.setClearColor(0x000000, 0);
+  renderer.clear(true, true, true);
+}
+
+function syncLoop() {
+  if (!renderer || !booted) return;
+  if (prefersReducedMotion() || !shouldRun()) {
+    if (looping) {
+      renderer.setAnimationLoop(null);
+      looping = false;
+      clearStage();
+    }
+    return;
+  }
+  if (looping) return;
+  looping = true;
+  lastTime = 0;
+  renderer.setAnimationLoop(onFrame);
+}
+
+function onFrame(time: number) {
+  if (!shouldRun()) {
+    renderer?.setAnimationLoop(null);
+    looping = false;
+    clearStage();
+    return;
+  }
+  draw(time);
+}
+
 function onScroll() {
   if (!booted) maybeBoot();
   else if (prefersReducedMotion()) requestDraw();
+  else syncLoop();
 }
 
 function onResize() {
   if (!renderer || !booted) return;
   resizeRenderer();
+  if (prefersReducedMotion()) requestDraw();
+  else syncLoop();
+}
+
+function onVisibility() {
+  if (document.hidden) {
+    renderer?.setAnimationLoop(null);
+    looping = false;
+    return;
+  }
+  syncLoop();
   if (prefersReducedMotion()) requestDraw();
 }
 
@@ -163,6 +229,7 @@ function armListeners() {
   window.addEventListener('wheel', onScroll, { passive: true });
   window.addEventListener('touchmove', onScroll, { passive: true });
   window.addEventListener('resize', onResize);
+  document.addEventListener('visibilitychange', onVisibility);
 }
 
 function dropListeners() {
@@ -172,13 +239,14 @@ function dropListeners() {
   window.removeEventListener('wheel', onScroll);
   window.removeEventListener('touchmove', onScroll);
   window.removeEventListener('resize', onResize);
+  document.removeEventListener('visibilitychange', onVisibility);
 }
 
 function resizeRenderer() {
   if (!renderer) return;
   const w = window.innerWidth;
   const h = window.innerHeight;
-  const pr = pixelRatioCap();
+  const pr = displayDpr();
   if (w === sizeW && h === sizeH && pr === sizePr) return;
   sizeW = w;
   sizeH = h;
@@ -195,6 +263,7 @@ function placeCanvas(node: HTMLCanvasElement) {
 
 function maybeBoot() {
   if (booted || bootFailed) return;
+  if (qualityProfile().tier === 'off') return;
   if (splashBlocks()) return;
   if (!entries.some((entry) => !entry.dead)) return;
   try {
@@ -224,10 +293,13 @@ function boot() {
   gl.outputColorSpace = THREE.SRGBColorSpace;
   gl.toneMapping = THREE.NoToneMapping;
   gl.toneMappingExposure = 1;
-  gl.shadowMap.enabled = true;
+  const profile = qualityProfile();
+  gl.shadowMap.enabled = profile.shadowMapSize > 0;
   gl.shadowMap.type = THREE.PCFShadowMap;
   gl.shadowMap.autoUpdate = true;
+  gl.transmissionResolutionScale = profile.transmissionScale;
   gl.autoClear = false;
+  gl.info.autoReset = false;
   gl.setClearColor(0x000000, 0);
   configureRenderer(gl);
 
@@ -236,22 +308,11 @@ function boot() {
   booted = true;
   resizeRenderer();
   ensureQuad();
+  ensureObservers();
+  if (viewportObserver) viewportObserver.observe(node);
 
   if (prefersReducedMotion()) requestDraw();
-  else startLoop();
-}
-
-function startLoop() {
-  if (looping) return;
-  looping = true;
-  lastTime = 0;
-  const tick = (time: number) => {
-    if (!looping) return;
-    raf = requestAnimationFrame(tick);
-    if (document.hidden) return;
-    draw(time);
-  };
-  raf = requestAnimationFrame(tick);
+  else syncLoop();
 }
 
 function ensureQuad() {
@@ -343,11 +404,7 @@ function makeComposer(entry: Entry): EffectComposer | null {
   /* setSize would resize the shared canvas. Fit the buffers only. */
   composer.autoRenderToScreen = false;
 
-  const bloom = new BloomEffect({
-    mipmapBlur: true,
-    luminanceThreshold: 0.9,
-    intensity: 0.35,
-  });
+  const profile = qualityProfile();
   const tone = new ToneMappingEffect({
     mode: view.tone === 'neutral' ? ToneMappingMode.NEUTRAL : ToneMappingMode.AGX,
   });
@@ -355,18 +412,28 @@ function makeComposer(entry: Entry): EffectComposer | null {
   noise.blendMode.opacity.value = 0.025;
   const vignette = new VignetteEffect({ offset: 0.2, darkness: 0.25 });
   const smaa = new SMAAEffect();
-  const effect = new EffectPass(camera, bloom, tone, smaa, vignette, noise);
+  const effects = [tone, smaa, vignette, noise];
+  if (profile.bloom) {
+    effects.unshift(
+      new BloomEffect({
+        mipmapBlur: true,
+        luminanceThreshold: 0.9,
+        intensity: 0.35,
+      }),
+    );
+  }
+  const effect = new EffectPass(camera, ...effects);
   effect.renderToScreen = true;
 
   const renderPass = new RenderPass(view.scene, camera);
   renderPass.renderToScreen = false;
   composer.addPass(renderPass);
 
-  if (view.ao) {
+  if (view.ao && profile.ao) {
     const ao = new N8AOPostPass(view.scene, camera, 2, 2);
     ao.configuration.gammaCorrection = false;
     ao.setQualityMode('Performance');
-    ao.configuration.halfRes = true;
+    ao.configuration.halfRes = profile.aoHalfRes;
     ao.configuration.aoRadius = 1.5;
     ao.configuration.intensity = 2.5;
     ao.renderToScreen = false;
@@ -467,9 +534,12 @@ function paintScene(entry: Entry, rect: DOMRect, dt: number) {
 
 function draw(time: number) {
   if (!renderer || !booted) return;
-  const dt = lastTime ? Math.min(0.05, (time - lastTime) / 1000) : 1 / 60;
+  const raw = lastTime ? time - lastTime : 16.7;
+  const dt = Math.min(0.05, Math.max(0, raw) / 1000) || 1 / 60;
   lastTime = time;
+  noteFrame(raw);
   resizeRenderer();
+  renderer.info.reset();
 
   renderer.setRenderTarget(null);
   renderer.setScissorTest(false);
@@ -479,7 +549,7 @@ function draw(time: number) {
 
   for (const layer of LAYER_ORDER) {
     for (const entry of entries) {
-      if (entry.dead || (entry.view.layer ?? 'scene') !== layer) continue;
+      if (entry.dead || entry.dormant || (entry.view.layer ?? 'scene') !== layer) continue;
       const rect = entry.view.element.getBoundingClientRect();
       const visible = onScreen(rect);
       const camera = entry.view.camera;
@@ -511,12 +581,75 @@ function draw(time: number) {
   }
 
   if (canvas) canvas.dataset.stageViews = String(entries.filter((entry) => !entry.dead).length);
+  setDebugStats({
+    calls: renderer.info.render.calls,
+    tris: renderer.info.render.triangles,
+    textures: renderer.info.memory.textures,
+  });
+}
+
+function suspendEntry(entry: Entry) {
+  if (entry.dormant || entry.dead) return;
+  if (getComputedStyle(entry.view.element).position === 'fixed') return;
+  entry.dormant = true;
+  entry.composer?.dispose();
+  entry.composer = null;
+  entry.toneEffect = null;
+  entry.ready = false;
+  entry.compileStarted = false;
+  entry.envAsked = false;
+  entry.envReady = !entry.view.hdri;
+  entry.view.element.closest('.passage')?.classList.remove('is-stage');
+  try {
+    entry.view.suspend?.();
+  } catch {
+    /* A released view must not stop the others. */
+  }
+}
+
+function resumeEntry(entry: Entry) {
+  if (!entry.dormant || entry.dead) return;
+  try {
+    entry.view.resume?.();
+  } catch {
+    return;
+  }
+  entry.dormant = false;
+  entry.ready = false;
+  entry.compileStarted = false;
+  entry.envAsked = false;
+  entry.envReady = !entry.view.hdri;
+}
+
+function ensureObservers() {
+  if (approachObserver) return;
+  approachObserver = new IntersectionObserver(
+    (records) => {
+      for (const record of records) {
+        const entry = entries.find((item) => item.view.element === record.target);
+        if (!entry || entry.dead) continue;
+        if (record.isIntersecting) resumeEntry(entry);
+        else suspendEntry(entry);
+      }
+      syncLoop();
+    },
+    { rootMargin: '200% 0px 200% 0px' },
+  );
+  viewportObserver = new IntersectionObserver(() => {
+    syncLoop();
+    if (prefersReducedMotion()) requestDraw();
+  });
 }
 
 function disposeStage() {
   looping = false;
   cancelAnimationFrame(raf);
   raf = 0;
+  renderer?.setAnimationLoop(null);
+  approachObserver?.disconnect();
+  viewportObserver?.disconnect();
+  approachObserver = null;
+  viewportObserver = null;
   dropListeners();
   for (const entry of entries) {
     entry.composer?.dispose();
@@ -547,6 +680,9 @@ function disposeStage() {
 }
 
 export function registerView(view: StageView): { setProgress: (t: number) => void; destroy: () => void } {
+  ensureQuality();
+  const baseHdri = view.hdri ?? '';
+  if (baseHdri) view.hdri = hdriFor(baseHdri);
   const entry: Entry = {
     view,
     progress: 0,
@@ -559,9 +695,14 @@ export function registerView(view: StageView): { setProgress: (t: number) => voi
     toneEffect: null,
     pw: 0,
     ph: 0,
+    dormant: false,
+    baseHdri,
   };
   entries.push(entry);
   if (view.layer === 'wash' || view.layer === 'field') view.element.dataset.stageHost = 'on';
+  ensureObservers();
+  approachObserver?.observe(view.element);
+  viewportObserver?.observe(view.element);
   armListeners();
   maybeBoot();
 
@@ -575,6 +716,8 @@ export function registerView(view: StageView): { setProgress: (t: number) => voi
       if (gone || entry.dead) return;
       gone = true;
       entry.dead = true;
+      approachObserver?.unobserve(view.element);
+      viewportObserver?.unobserve(view.element);
       entry.composer?.dispose();
       entry.composer = null;
       entries = entries.filter((item) => item !== entry);
@@ -587,3 +730,28 @@ export function registerView(view: StageView): { setProgress: (t: number) => voi
 export function stagePageScroll(): number {
   return pageScroll();
 }
+
+onQuality((profile) => {
+  if (!renderer || profile.tier === 'off') return;
+  renderer.transmissionResolutionScale = profile.transmissionScale;
+  renderer.shadowMap.enabled = profile.shadowMapSize > 0;
+  for (const entry of entries) {
+    entry.composer?.dispose();
+    entry.composer = null;
+    entry.toneEffect = null;
+    entry.pw = 0;
+    entry.ph = 0;
+    if (!entry.baseHdri) continue;
+    const next = hdriFor(entry.baseHdri);
+    if (next === entry.view.hdri) continue;
+    entry.view.hdri = next;
+    entry.envAsked = false;
+    entry.envReady = false;
+    entry.ready = false;
+    entry.compileStarted = false;
+  }
+  sizePr = -1;
+  resizeRenderer();
+  if (prefersReducedMotion()) requestDraw();
+  else syncLoop();
+});

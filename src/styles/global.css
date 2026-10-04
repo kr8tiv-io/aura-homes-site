@@ -1749,6 +1749,34 @@ html.lenis body {
 .passage.is-stage {
   background: transparent;
 }
+.passage.is-still {
+  background-color: #10202c;
+  background-position: center;
+  background-size: cover;
+}
+.passage.is-still::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: rgba(12, 13, 14, 0.46);
+}
+.stage-debug {
+  position: fixed;
+  left: 1rem;
+  bottom: 4.5rem;
+  z-index: 80;
+  margin: 0;
+  padding: 0.45rem 0.6rem;
+  pointer-events: none;
+  white-space: pre;
+  font-family: var(--font-inter), sans-serif;
+  font-size: 11px;
+  line-height: 1.45;
+  letter-spacing: 0.04em;
+  color: #f4f3ef;
+  background: rgba(12, 13, 14, 0.78);
+}
 canvas[data-stage-host='on'] {
   visibility: hidden;
 }
