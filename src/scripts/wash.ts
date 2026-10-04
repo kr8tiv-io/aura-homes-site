@@ -1,12 +1,9 @@
 import * as THREE from 'three';
+import { holdPageMotion } from './motion';
+import { registerView, stagePageScroll } from '../three/stage';
 
-/** Faint meadow for the cream sections. One fixed canvas, alpha only. */
+/** Faint meadow for the cream sections. Drawn by the shared stage. */
 export function mountWash(canvas: HTMLCanvasElement) {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
-  renderer.setClearColor(0x000000, 0);
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-
   const theme = canvas.dataset.wash || 'room';
   const look =
     theme === 'resort'
@@ -69,66 +66,38 @@ export function mountWash(canvas: HTMLCanvasElement) {
     trees.push(tree);
   }
 
-  let progress = 0;
-  let lastW = 0;
-  let lastH = 0;
-
-  const resize = () => {
-    const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
-    if (w < 2 || h < 2 || (w === lastW && h === lastH)) return;
-    lastW = w;
-    lastH = h;
-    renderer.setSize(w, h, false);
-    camera.aspect = w / h;
-    camera.updateProjectionMatrix();
-  };
-
-  const render = (time = performance.now()) => {
-    const lenis = (window as Window & { __lenis?: { scroll?: number } }).__lenis;
-    const y = lenis?.scroll ?? window.scrollY;
-    if (y < window.innerHeight * 0.82) return;
-    resize();
-    const t = time * 0.001;
-    const drift = progress * 1.6;
-    camera.position.set(-0.2 + drift + Math.sin(t * 0.22) * 0.22, 1.45, 8);
-    camera.lookAt(drift * 0.2, 3.15, -4);
-    for (const tree of trees) {
-      const phase = tree.userData.phase as number;
-      tree.rotation.z = Math.sin(t * 0.45 + phase) * 0.03;
-      tree.position.x = (tree.userData.baseX as number) + Math.sin(t * 0.3 + phase) * 0.08;
-    }
-    renderer.render(scene, camera);
-  };
-
-  render();
-
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let visible = true;
-  const observer = new IntersectionObserver((entries) => {
-    visible = entries.some((entry) => entry.isIntersecting);
+  let dead = false;
+  const view = registerView({
+    element: canvas,
+    scene,
+    camera,
+    layer: 'wash',
+    draw: () => stagePageScroll() >= window.innerHeight * 0.82,
+    update(progress) {
+      const t = performance.now() * 0.001;
+      const drift = progress * 1.6;
+      camera.position.set(-0.2 + drift + Math.sin(t * 0.22) * 0.22, 1.45, 8);
+      camera.lookAt(drift * 0.2, 3.15, -4);
+      for (const tree of trees) {
+        const phase = tree.userData.phase as number;
+        tree.rotation.z = Math.sin(t * 0.45 + phase) * 0.03;
+        tree.position.x = (tree.userData.baseX as number) + Math.sin(t * 0.3 + phase) * 0.08;
+      }
+    },
   });
-  observer.observe(canvas);
 
-  let raf = 0;
-  const tick = (time: number) => {
-    raf = requestAnimationFrame(tick);
-    if (!visible || document.hidden) return;
-    render(time);
-  };
-  if (!reduce) raf = requestAnimationFrame(tick);
-
-  return {
+  const api = {
     setProgress(t: number) {
-      progress = Math.min(Math.max(t, 0), 1);
-      if (reduce) render();
+      view.setProgress(t);
     },
     destroy() {
-      cancelAnimationFrame(raf);
-      observer.disconnect();
+      if (dead) return;
+      dead = true;
+      view.destroy();
       geometries.forEach((geo) => geo.dispose());
       materials.forEach((mat) => mat.dispose());
-      renderer.dispose();
     },
   };
+  holdPageMotion(api.destroy);
+  return api;
 }

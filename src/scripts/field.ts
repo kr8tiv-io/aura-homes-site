@@ -1,11 +1,9 @@
 import * as THREE from 'three';
+import { holdPageMotion, prefersReducedMotion } from './motion';
+import { registerView, stagePageScroll } from '../three/stage';
 
 /** Soft light in the cream space, plus a slow highlight under each marked heading. */
 export function mountField(canvas: HTMLCanvasElement) {
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: false, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
-  renderer.setClearColor(0x000000, 0);
-
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
   camera.position.z = 2;
@@ -152,31 +150,13 @@ export function mountField(canvas: HTMLCanvasElement) {
     return { mesh, mat };
   });
 
-  let progress = 0;
-  let lastW = 0;
-  let lastH = 0;
-  const resize = () => {
-    const w = canvas.clientWidth;
-    const h = canvas.clientHeight;
-    if (w < 2 || h < 2 || (w === lastW && h === lastH)) return;
-    lastW = w;
-    lastH = h;
-    renderer.setSize(w, h, false);
-  };
-
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const reduce = prefersReducedMotion();
   const pointer = new THREE.Vector2();
   const aim = new THREE.Vector2();
   const onPointer = (event: PointerEvent) => {
     aim.set((event.clientX / window.innerWidth) * 2 - 1, (event.clientY / window.innerHeight) * -2 + 1);
   };
   if (!reduce) window.addEventListener('pointermove', onPointer, { passive: true });
-  let raf = 0;
-  let cleared = false;
-  const pageScroll = () => {
-    const lenis = (window as Window & { __lenis?: { scroll?: number } }).__lenis;
-    return lenis?.scroll ?? window.scrollY;
-  };
 
   const roomBands =
     theme === 'room'
@@ -190,68 +170,59 @@ export function mountField(canvas: HTMLCanvasElement) {
   const roomStops = [0, 0.3, 0.58, 1];
   const mixBand = (a: number[], b: number[], t: number) => a.map((v, i) => v + (b[i] - v) * t);
 
-  const render = (time = performance.now()) => {
-    pointer.lerp(aim, 0.04);
-    if (pageScroll() < window.innerHeight * 0.82) {
-      if (!cleared) {
-        renderer.clear();
-        cleared = true;
+  let dead = false;
+  const view = registerView({
+    element: canvas,
+    scene,
+    camera,
+    layer: 'field',
+    draw: () => stagePageScroll() >= window.innerHeight * 0.82,
+    update(progress) {
+      pointer.lerp(aim, reduce ? 1 : 0.04);
+      if (roomBands) {
+        let band = 0;
+        while (band < roomStops.length - 2 && progress > roomStops[band + 1]) band += 1;
+        const span = roomStops[band + 1] - roomStops[band] || 1;
+        const blend = Math.min(1, Math.max(0, (progress - roomStops[band]) / span));
+        const from = roomBands[band];
+        const to = roomBands[band + 1];
+        bgMat.uniforms.uMist.value.set(...mixBand(from.mist, to.mist, blend));
+        bgMat.uniforms.uFar.value.set(...mixBand(from.far, to.far, blend));
+        bgMat.uniforms.uMid.value.set(...mixBand(from.mid, to.mid, blend));
+        bgMat.uniforms.uNear.value.set(...mixBand(from.near, to.near, blend));
       }
-      return;
-    }
-    cleared = false;
-    resize();
-    if (roomBands) {
-      let band = 0;
-      while (band < roomStops.length - 2 && progress > roomStops[band + 1]) band += 1;
-      const span = roomStops[band + 1] - roomStops[band] || 1;
-      const blend = Math.min(1, Math.max(0, (progress - roomStops[band]) / span));
-      const from = roomBands[band];
-      const to = roomBands[band + 1];
-      bgMat.uniforms.uMist.value.set(...mixBand(from.mist, to.mist, blend));
-      bgMat.uniforms.uFar.value.set(...mixBand(from.far, to.far, blend));
-      bgMat.uniforms.uMid.value.set(...mixBand(from.mid, to.mid, blend));
-      bgMat.uniforms.uNear.value.set(...mixBand(from.near, to.near, blend));
-    }
-    bgMat.uniforms.uTime.value = time * 0.001;
-    bgMat.uniforms.uScroll.value = progress;
-    bgMat.uniforms.uPointer.value.copy(pointer);
-    const marks = canvas.ownerDocument.querySelectorAll<HTMLElement>('[data-glow]');
-    const w = canvas.clientWidth || 1;
-    const h = canvas.clientHeight || 1;
-    slots.forEach((slot, i) => {
-      const el = marks[i];
-      if (!el) {
-        slot.mat.opacity = 0;
-        return;
-      }
-      const rect = el.getBoundingClientRect();
-      const entered = 1 - Math.min(1, Math.max(0, (rect.top - h * 0.78) / (h * 0.32)));
-      const lift = entered * entered * (3 - 2 * entered);
-      const cx = ((rect.left + rect.width * 0.32) / w) * 2 - 1;
-      const cy = -(((rect.bottom - 4) / h) * 2 - 1);
-      slot.mesh.position.set(cx, cy - (1 - lift) * 0.05, 0);
-      slot.mesh.scale.set(Math.max(0.45, (rect.width / w) * 2.4), 0.85 + lift * 0.35, 1);
-      slot.mat.uniforms.uAlpha.value = lift * 0.26;
-    });
-    renderer.render(scene, camera);
-  };
+      bgMat.uniforms.uTime.value = performance.now() * 0.001;
+      bgMat.uniforms.uScroll.value = progress;
+      bgMat.uniforms.uPointer.value.copy(pointer);
+      const marks = canvas.ownerDocument.querySelectorAll<HTMLElement>('[data-glow]');
+      const w = canvas.clientWidth || window.innerWidth || 1;
+      const h = canvas.clientHeight || window.innerHeight || 1;
+      slots.forEach((slot, i) => {
+        const el = marks[i];
+        if (!el) {
+          slot.mat.uniforms.uAlpha.value = 0;
+          return;
+        }
+        const rect = el.getBoundingClientRect();
+        const entered = 1 - Math.min(1, Math.max(0, (rect.top - h * 0.78) / (h * 0.32)));
+        const lift = entered * entered * (3 - 2 * entered);
+        const cx = ((rect.left + rect.width * 0.32) / w) * 2 - 1;
+        const cy = -(((rect.bottom - 4) / h) * 2 - 1);
+        slot.mesh.position.set(cx, cy - (1 - lift) * 0.05, 0);
+        slot.mesh.scale.set(Math.max(0.45, (rect.width / w) * 2.4), 0.85 + lift * 0.35, 1);
+        slot.mat.uniforms.uAlpha.value = lift * 0.26;
+      });
+    },
+  });
 
-  const tick = (time: number) => {
-    raf = requestAnimationFrame(tick);
-    if (document.hidden) return;
-    render(time);
-  };
-  if (reduce) render();
-  else raf = requestAnimationFrame(tick);
-
-  return {
+  const api = {
     setProgress(t: number) {
-      progress = Math.min(1, Math.max(0, t));
-      if (reduce) render();
+      view.setProgress(t);
     },
     destroy() {
-      cancelAnimationFrame(raf);
+      if (dead) return;
+      dead = true;
+      view.destroy();
       window.removeEventListener('pointermove', onPointer);
       bg.geometry.dispose();
       bgMat.dispose();
@@ -259,7 +230,8 @@ export function mountField(canvas: HTMLCanvasElement) {
         slot.mesh.geometry.dispose();
         slot.mat.dispose();
       });
-      renderer.dispose();
     },
   };
+  holdPageMotion(api.destroy);
+  return api;
 }
