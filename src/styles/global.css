@@ -198,24 +198,31 @@ p {
   fill: none;
   stroke: currentColor;
   stroke-linecap: butt;
-  stroke-linejoin: miter;
+  stroke-linejoin: round;
   stroke-width: 10;
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
 }
+.aura-glow {
+  stroke: none;
+}
 .aura-halo {
   fill: none;
   stroke: #c4a07a;
-  stroke-width: 1.35;
-  opacity: 1;
+  stroke-width: 7.5;
+  stroke-linecap: round;
+  opacity: 0.4;
 }
-/* The nav blends with difference. This blue paints back as bronze #c4a07a on the alabaster page. */
-.site-nav .aura-halo {
-  stroke: #305375;
-}
+/* The nav blends with difference. Inverse blue paints back as bronze #c4a07a on alabaster. */
+.site-nav .aura-halo { stroke: #305375; }
+.site-nav .aura-glow { fill: url(#aura-soft-inv); }
 body.nav-on-film .site-nav .aura-halo,
 body[data-living-nav] .site-nav .aura-halo {
   stroke: #c4a07a;
+}
+body.nav-on-film .site-nav .aura-glow,
+body[data-living-nav] .site-nav .aura-glow {
+  fill: url(#aura-soft);
 }
 .nav-name,
 .foot-name {
@@ -364,10 +371,16 @@ body[data-living-nav] .site-nav .aura-halo {
   .aura-logo.is-play .aura-ridge {
     animation: aura-draw 1.2s cubic-bezier(0.65, 0, 0.35, 1) both;
   }
-  .aura-logo.is-play .aura-halo {
+  .aura-logo.is-play .aura-halo,
+  .aura-logo.is-play .aura-glow {
     transform-box: fill-box;
     transform-origin: center;
+  }
+  .aura-logo.is-play .aura-halo {
     animation: aura-halo 1.8s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
+  }
+  .aura-logo.is-play .aura-glow {
+    animation: aura-glow 1.8s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
   }
 }
 @keyframes aura-draw {
@@ -375,19 +388,24 @@ body[data-living-nav] .site-nav .aura-halo {
   to { stroke-dashoffset: 0; }
 }
 @keyframes aura-halo {
-  0% { opacity: 0; transform: scale(0.97); }
-  38% { opacity: 1; transform: scale(1); }
-  68% { opacity: 0.42; transform: scale(1.045); }
+  0% { opacity: 0; transform: scale(0.96); }
+  100% { opacity: 0.4; transform: scale(1); }
+}
+@keyframes aura-glow {
+  0% { opacity: 0; transform: scale(0.96); }
   100% { opacity: 1; transform: scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .aura-ridge,
-  .aura-halo {
+  .aura-halo,
+  .aura-glow {
     animation: none;
     stroke-dashoffset: 0;
-    opacity: 1;
     transform: none;
   }
+  .aura-ridge { opacity: 1; }
+  .aura-halo { opacity: 0.4; }
+  .aura-glow { opacity: 1; }
 }
 
 ::selection {
@@ -679,11 +697,16 @@ body[data-living-nav] .nav-cta:focus-visible {
   fill: none;
   stroke: currentColor;
   stroke-linecap: butt;
-  stroke-linejoin: miter;
+  stroke-linejoin: round;
 }
 .sigil-horizon { stroke-width: 1; }
-.sigil-ridge { stroke-width: 1.35; stroke-miterlimit: 8; }
-.sigil-halo { fill: none; stroke: currentColor; stroke-width: 1; }
+.sigil-ridge { stroke-width: 1.35; }
+.sigil-halo { fill: none; stroke: #305375; stroke-width: 1.05; opacity: 0.4; }
+.sigil-glow { fill: #305375; stroke: none; opacity: 0.12; }
+body.nav-on-film .sigil-halo,
+body[data-living-nav] .sigil-halo { stroke: #c4a07a; }
+body.nav-on-film .sigil-glow,
+body[data-living-nav] .sigil-glow { fill: #c4a07a; }
 .sigil-mark {
   opacity: 1;
   transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
@@ -819,8 +842,7 @@ body.menu-open .site-nav { z-index: 80; }
   stroke: rgba(244, 243, 239, 0.46);
   stroke-width: 1.65;
   stroke-linecap: butt;
-  stroke-linejoin: miter;
-  stroke-miterlimit: 8;
+  stroke-linejoin: round;
   vector-effect: non-scaling-stroke;
 }
 .menu-halo-anchor {
@@ -851,14 +873,14 @@ body.menu-open .site-nav { z-index: 80; }
     transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .nav-panel.is-open:not(.is-gsap) .menu-halo {
-  opacity: 1;
+  opacity: 0.4;
   transform: translateY(-22px);
 }
 .menu-glow {
   width: 78px;
   height: 78px;
   margin: -39px 0 0 -39px;
-  background: radial-gradient(circle, rgba(196, 160, 122, 0.72) 0%, rgba(196, 160, 122, 0) 68%);
+  background: radial-gradient(circle, rgba(196, 160, 122, 0.12) 0%, rgba(196, 160, 122, 0) 70%);
   opacity: 0;
 }
 .nav-copy {
@@ -920,9 +942,8 @@ body.menu-open .site-nav { z-index: 80; }
   }
 }
 @keyframes menu-glow-once {
-  0% { opacity: 0; transform: translateY(-4px) scale(0.55); }
-  46% { opacity: 0.28; transform: translateY(-22px) scale(1.05); }
-  100% { opacity: 0; transform: translateY(-22px) scale(1.65); }
+  0% { opacity: 0; transform: translateY(-4px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(-22px) scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .sigil-mark,
@@ -936,8 +957,8 @@ body.menu-open .site-nav { z-index: 80; }
   }
   .nav-panel.is-open .menu-horizon { transform: scaleX(1); }
   .nav-panel.is-open .menu-ridge { opacity: 1; }
-  .nav-panel.is-open .menu-halo { opacity: 1; transform: translateY(-22px); }
-  .menu-glow { opacity: 0; }
+  .nav-panel.is-open .menu-halo { opacity: 0.4; transform: translateY(-22px); }
+  .nav-panel.is-open .menu-glow { opacity: 1; transform: translateY(-22px); }
 }
 @media (max-width: 1100px) {
   .nav-groups { grid-template-columns: max-content; gap: 1.05rem; }
@@ -2400,18 +2421,18 @@ html.ridge-seen .ridge-load {
   stroke: #f4f3ef;
   stroke-width: 3.2;
   stroke-linecap: butt;
-  stroke-linejoin: miter;
-  stroke-miterlimit: 8;
+  stroke-linejoin: round;
 }
 .ridge-load-halo {
   position: absolute;
   left: 50%;
   top: 8%;
-  width: 1.35rem;
-  height: 1.35rem;
-  margin-left: -0.675rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-left: -0.425rem;
   border: 1px solid #c4a07a;
   border-radius: 50%;
+  box-shadow: 0 0 8px rgba(196, 160, 122, 0.3);
   opacity: 0;
   pointer-events: none;
 }
@@ -2430,7 +2451,7 @@ html.ridge-seen .ridge-load {
   to { transform: scaleX(1); }
 }
 @keyframes ridge-halo {
-  to { opacity: 1; }
+  to { opacity: 0.4; }
 }
 @keyframes ridge-leave {
   to { opacity: 0; }
@@ -2441,7 +2462,7 @@ html.ridge-seen .ridge-load {
     animation: none;
   }
   .ridge-load-halo {
-    opacity: 1;
+    opacity: 0.4;
     animation: none;
   }
   .ridge-load {

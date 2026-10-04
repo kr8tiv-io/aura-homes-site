@@ -4,7 +4,7 @@ import { ClientRouter } from 'astro:transitions';
 import { Font, getImage } from 'astro:assets';
 import Ambient from '../components/Ambient.astro';
 import RidgeLoad from '../components/RidgeLoad.astro';
-import mark from '../assets/logo/aura-mark.svg?raw';
+import AuraMark from '../components/AuraMark.astro';
 import cabinPoster from '../../public/film/cabin-poster-hi.webp';
 import { organizationJson } from '../lib/organization';
 
@@ -142,7 +142,7 @@ const foot = menu.flatMap((group) => group.links);
     {isHome ? (
       <header class="site-nav">
         <a href="/" class="nav-brand">
-          <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
+          <AuraMark play />
           <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
           <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
         </a>
@@ -156,7 +156,8 @@ const foot = menu.flatMap((group) => group.links);
             <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
               <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
               <g class="sigil-mark">
-                <circle class="sigil-halo" cx="32" cy="7.2" r="3.15" fill="none" />
+                <circle class="sigil-glow" cx="32" cy="10" r="3.1" />
+                <circle class="sigil-halo" cx="32" cy="10" r="1.72" fill="none" />
                 <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
               </g>
             </svg>
@@ -167,7 +168,7 @@ const foot = menu.flatMap((group) => group.links);
     ) : (
       <header class="site-nav" transition:name="site-nav" transition:persist="site-nav" transition:animate="none">
         <a href="/" class="nav-brand">
-          <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
+          <AuraMark play />
           <span class="nav-name">Aura</span>
           <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
         </a>
@@ -181,7 +182,8 @@ const foot = menu.flatMap((group) => group.links);
             <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
               <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
               <g class="sigil-mark">
-                <circle class="sigil-halo" cx="32" cy="7.2" r="3.15" fill="none" />
+                <circle class="sigil-glow" cx="32" cy="10" r="3.1" />
+                <circle class="sigil-halo" cx="32" cy="10" r="1.72" fill="none" />
                 <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
               </g>
             </svg>
@@ -261,7 +263,7 @@ const foot = menu.flatMap((group) => group.links);
     {showFoot && (
       <footer class="site-foot">
         <a href="/" class="foot-brand">
-          <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
+          <AuraMark play />
           <span class="foot-name">Aura</span>
         </a>
         <p class="foot-line">{tagline}</p>
@@ -668,7 +670,7 @@ const foot = menu.flatMap((group) => group.links);
           gsap.set(panel, { opacity: 0 });
           gsap.set(line, { scaleX: 0.08, transformOrigin: '100% 50%' });
           gsap.set(halo, { opacity: 0, y: -4 });
-          gsap.set(glow, { opacity: 0, y: -4, scale: 0.55 });
+          gsap.set(glow, { opacity: 0, y: -4, scale: 0.96 });
           gsap.set(menuBits(), { opacity: 0, y: 14 });
         }
         panel.removeAttribute('hidden');
@@ -686,11 +688,8 @@ const foot = menu.flatMap((group) => group.links);
         menuTl.to(panel, { opacity: 1, duration: 1.05, ease: 'power2.inOut' }, 0);
         if (line) menuTl.to(line, { scaleX: 1, duration: 1.7, ease: 'power3.inOut', transformOrigin: '100% 50%' }, 0);
         menuTl.to(wipe, { p: 1, duration: 1.9, ease: 'power3.inOut', onUpdate: applyWipe }, 0.12);
-        if (halo) menuTl.to(halo, { opacity: 1, y: -22, duration: 1.5, ease: 'power2.inOut' }, 0.85);
-        if (glow) {
-          menuTl.to(glow, { opacity: 0.3, y: -22, scale: 1.05, duration: 1.5, ease: 'power2.inOut' }, 0.85);
-          menuTl.to(glow, { opacity: 0, scale: 1.65, duration: 1.15, ease: 'power1.inOut' }, 2.15);
-        }
+        if (halo) menuTl.to(halo, { opacity: 0.4, y: -22, duration: 1.5, ease: 'power2.inOut' }, 0.85);
+        if (glow) menuTl.to(glow, { opacity: 1, y: -22, scale: 1, duration: 1.6, ease: 'power2.inOut' }, 0.85);
         menuTl.to(menuBits(), { y: 0, opacity: 1, duration: 0.95, stagger: 0.04, ease: 'power3.out' }, 0.32);
       };
       menuBtn?.addEventListener('click', () => {
