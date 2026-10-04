@@ -25,7 +25,7 @@ const brandTitle = (raw: string) => {
   return `${raw} | Aura Homes`;
 };
 const title = brandTitle(rawTitle);
-const path = Astro.url.pathname;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const origin = Astro.site ?? Astro.url.origin;
 const pageUrl = new URL(path, origin).href;
 const canonical = pageUrl;
@@ -294,6 +294,7 @@ const foot = innerMenu.flatMap((group) => group.links);
         </nav>
         <p class="foot-reach">Email: TODO</p>
         <p class="foot-reach">Phone: TODO</p>
+        <a class="foot-credit" href="/credits" aria-current={path === '/credits' ? 'page' : undefined}>Credits</a>
       </footer>
     )}
 
