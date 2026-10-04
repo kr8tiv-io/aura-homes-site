@@ -1,0 +1,11 @@
+---
+import mark from '../assets/logo/aura-mark.svg?raw';
+
+interface Props {
+  play?: boolean;
+}
+
+const { play = false } = Astro.props;
+---
+
+<span class:list={['aura-logo', { 'is-play': play }]} aria-hidden="true" set:html={mark} />
