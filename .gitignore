@@ -5,3 +5,16 @@ dist/
 .env.*
 !.env.example
 data/signups.jsonl
+
+# Local KTX-Software install for npm run assets. Not a site file.
+tools/ktx-software/
+
+# Scratch files for the 3D pipeline.
+assets-src/.tmp/
+
+# Raw pine mesh is 251 MB. URL is in assets-src/SOURCES.md.
+assets-src/models/pine_sapling_medium/pine_sapling_medium.bin
+
+# Optimized pine meshes still over 25 MB. LOD2 is small enough to commit.
+public/models/pine_sapling_medium.glb
+public/models/pine_sapling_medium.lod1.glb

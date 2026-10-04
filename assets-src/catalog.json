@@ -1,0 +1,774 @@
+{
+  "hdris": [
+    {
+      "slug": "alps_field",
+      "name": "Alps Field",
+      "authors": [
+        "Andreas Mischok"
+      ],
+      "page": "https://polyhaven.com/a/alps_field",
+      "files": [
+        {
+          "res": "1k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/alps_field_1k.hdr",
+          "size": 1614313,
+          "kept": true,
+          "path": "hdri/alps_field_1k.hdr"
+        },
+        {
+          "res": "2k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/alps_field_2k.hdr",
+          "size": 6531494,
+          "kept": true,
+          "path": "hdri/alps_field_2k.hdr"
+        }
+      ]
+    },
+    {
+      "slug": "evening_meadow",
+      "name": "Evening Meadow",
+      "authors": [
+        "Alexander Scholten"
+      ],
+      "page": "https://polyhaven.com/a/evening_meadow",
+      "files": [
+        {
+          "res": "1k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/evening_meadow_1k.hdr",
+          "size": 1677046,
+          "kept": true,
+          "path": "hdri/evening_meadow_1k.hdr"
+        },
+        {
+          "res": "2k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/evening_meadow_2k.hdr",
+          "size": 6670341,
+          "kept": true,
+          "path": "hdri/evening_meadow_2k.hdr"
+        }
+      ]
+    },
+    {
+      "slug": "qwantani_dusk_2_puresky",
+      "name": "Qwantani Dusk 2 (Pure Sky)",
+      "authors": [
+        "Greg Zaal",
+        "Jarod Guest"
+      ],
+      "page": "https://polyhaven.com/a/qwantani_dusk_2_puresky",
+      "files": [
+        {
+          "res": "1k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/qwantani_dusk_2_puresky_1k.hdr",
+          "size": 1166018,
+          "kept": true,
+          "path": "hdri/qwantani_dusk_2_puresky_1k.hdr"
+        },
+        {
+          "res": "2k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/qwantani_dusk_2_puresky_2k.hdr",
+          "size": 4612798,
+          "kept": true,
+          "path": "hdri/qwantani_dusk_2_puresky_2k.hdr"
+        }
+      ]
+    },
+    {
+      "slug": "kloofendal_48d_partly_cloudy_puresky",
+      "name": "Kloofendal 48d Partly Cloudy (Pure Sky)",
+      "authors": [
+        "Greg Zaal",
+        "Jarod Guest"
+      ],
+      "page": "https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky",
+      "files": [
+        {
+          "res": "1k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/kloofendal_48d_partly_cloudy_puresky_1k.hdr",
+          "size": 1435119,
+          "kept": true,
+          "path": "hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr"
+        },
+        {
+          "res": "2k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/kloofendal_48d_partly_cloudy_puresky_2k.hdr",
+          "size": 5451493,
+          "kept": true,
+          "path": "hdri/kloofendal_48d_partly_cloudy_puresky_2k.hdr"
+        }
+      ]
+    },
+    {
+      "slug": "rogland_clear_night",
+      "name": "Rogland Clear Night",
+      "authors": [
+        "Greg Zaal"
+      ],
+      "page": "https://polyhaven.com/a/rogland_clear_night",
+      "files": [
+        {
+          "res": "1k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/rogland_clear_night_1k.hdr",
+          "size": 1694136,
+          "kept": true,
+          "path": "hdri/rogland_clear_night_1k.hdr"
+        },
+        {
+          "res": "2k",
+          "url": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/2k/rogland_clear_night_2k.hdr",
+          "size": 6838156,
+          "kept": true,
+          "path": "hdri/rogland_clear_night_2k.hdr"
+        }
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "slug": "fine_grained_wood",
+      "name": "Fine Grained Wood",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "page": "https://polyhaven.com/a/fine_grained_wood",
+      "maps": [
+        {
+          "map": "diff",
+          "key": "Diffuse",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/fine_grained_wood/fine_grained_wood_col_2k.jpg",
+          "size": 1327517,
+          "kept": true,
+          "path": "textures/fine_grained_wood/diff.jpg"
+        },
+        {
+          "map": "nor_gl",
+          "key": "nor_gl",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/fine_grained_wood/fine_grained_wood_nor_gl_2k.jpg",
+          "size": 855682,
+          "kept": true,
+          "path": "textures/fine_grained_wood/nor_gl.jpg"
+        },
+        {
+          "map": "rough",
+          "key": "Rough",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/fine_grained_wood/fine_grained_wood_rough_2k.jpg",
+          "size": 871792,
+          "kept": true,
+          "path": "textures/fine_grained_wood/rough.jpg"
+        },
+        {
+          "map": "ao",
+          "key": "AO",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/fine_grained_wood/fine_grained_wood_ao_2k.jpg",
+          "size": 2360200,
+          "kept": true,
+          "path": "textures/fine_grained_wood/ao.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "weathered_brown_planks",
+      "name": "Weathered Brown Planks",
+      "authors": [
+        "Dimitrios Savva",
+        "Rico Cilliers"
+      ],
+      "page": "https://polyhaven.com/a/weathered_brown_planks",
+      "maps": [
+        {
+          "map": "diff",
+          "key": "Diffuse",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/weathered_brown_planks/weathered_brown_planks_diff_2k.jpg",
+          "size": 911358,
+          "kept": true,
+          "path": "textures/weathered_brown_planks/diff.jpg"
+        },
+        {
+          "map": "nor_gl",
+          "key": "nor_gl",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/weathered_brown_planks/weathered_brown_planks_nor_gl_2k.jpg",
+          "size": 1029733,
+          "kept": true,
+          "path": "textures/weathered_brown_planks/nor_gl.jpg"
+        },
+        {
+          "map": "rough",
+          "key": "Rough",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/weathered_brown_planks/weathered_brown_planks_rough_2k.jpg",
+          "size": 944154,
+          "kept": true,
+          "path": "textures/weathered_brown_planks/rough.jpg"
+        },
+        {
+          "map": "ao",
+          "key": "AO",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/weathered_brown_planks/weathered_brown_planks_ao_2k.jpg",
+          "size": 600648,
+          "kept": true,
+          "path": "textures/weathered_brown_planks/ao.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "metal_plate",
+      "name": "Metal Plate",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "page": "https://polyhaven.com/a/metal_plate",
+      "maps": [
+        {
+          "map": "diff",
+          "key": "Diffuse",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/metal_plate/metal_plate_diff_2k.jpg",
+          "size": 2670774,
+          "kept": true,
+          "path": "textures/metal_plate/diff.jpg"
+        },
+        {
+          "map": "nor_gl",
+          "key": "nor_gl",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/metal_plate/metal_plate_nor_gl_2k.jpg",
+          "size": 2516654,
+          "kept": true,
+          "path": "textures/metal_plate/nor_gl.jpg"
+        },
+        {
+          "map": "rough",
+          "key": "Rough",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/metal_plate/metal_plate_rough_2k.jpg",
+          "size": 3045988,
+          "kept": true,
+          "path": "textures/metal_plate/rough.jpg"
+        },
+        {
+          "map": "ao",
+          "key": "AO",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/metal_plate/metal_plate_ao_2k.jpg",
+          "size": 2392031,
+          "kept": true,
+          "path": "textures/metal_plate/ao.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "forrest_ground_01",
+      "name": "Forest Ground 01",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "page": "https://polyhaven.com/a/forrest_ground_01",
+      "maps": [
+        {
+          "map": "diff",
+          "key": "Diffuse",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forrest_ground_01/forrest_ground_01_diff_2k.jpg",
+          "size": 3077552,
+          "kept": true,
+          "path": "textures/forrest_ground_01/diff.jpg"
+        },
+        {
+          "map": "nor_gl",
+          "key": "nor_gl",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forrest_ground_01/forrest_ground_01_nor_gl_2k.jpg",
+          "size": 5551101,
+          "kept": true,
+          "path": "textures/forrest_ground_01/nor_gl.jpg"
+        },
+        {
+          "map": "rough",
+          "key": "Rough",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forrest_ground_01/forrest_ground_01_rough_2k.jpg",
+          "size": 920422,
+          "kept": true,
+          "path": "textures/forrest_ground_01/rough.jpg"
+        },
+        {
+          "map": "ao",
+          "key": "AO",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/forrest_ground_01/forrest_ground_01_ao_2k.jpg",
+          "size": 2493578,
+          "kept": true,
+          "path": "textures/forrest_ground_01/ao.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "brown_mud_leaves_01",
+      "name": "Brown Mud Leaves 01",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "page": "https://polyhaven.com/a/brown_mud_leaves_01",
+      "maps": [
+        {
+          "map": "diff",
+          "key": "Diffuse",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_mud_leaves_01/brown_mud_leaves_01_diff_2k.jpg",
+          "size": 4539452,
+          "kept": true,
+          "path": "textures/brown_mud_leaves_01/diff.jpg"
+        },
+        {
+          "map": "nor_gl",
+          "key": "nor_gl",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_mud_leaves_01/brown_mud_leaves_01_nor_gl_2k.jpg",
+          "size": 5688696,
+          "kept": true,
+          "path": "textures/brown_mud_leaves_01/nor_gl.jpg"
+        },
+        {
+          "map": "rough",
+          "key": "Rough",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_mud_leaves_01/brown_mud_leaves_01_rough_2k.jpg",
+          "size": 2421908,
+          "kept": true,
+          "path": "textures/brown_mud_leaves_01/rough.jpg"
+        },
+        {
+          "map": "ao",
+          "key": "AO",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/brown_mud_leaves_01/brown_mud_leaves_01_ao_2k.jpg",
+          "size": 3813568,
+          "kept": true,
+          "path": "textures/brown_mud_leaves_01/ao.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "rocky_terrain_02",
+      "name": "Rocky Terrain 02",
+      "authors": [
+        "Amal Kumar"
+      ],
+      "page": "https://polyhaven.com/a/rocky_terrain_02",
+      "maps": [
+        {
+          "map": "diff",
+          "key": "Diffuse",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rocky_terrain_02/rocky_terrain_02_diff_2k.jpg",
+          "size": 3232826,
+          "kept": true,
+          "path": "textures/rocky_terrain_02/diff.jpg"
+        },
+        {
+          "map": "nor_gl",
+          "key": "nor_gl",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rocky_terrain_02/rocky_terrain_02_nor_gl_2k.jpg",
+          "size": 4149208,
+          "kept": true,
+          "path": "textures/rocky_terrain_02/nor_gl.jpg"
+        },
+        {
+          "map": "rough",
+          "key": "Rough",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rocky_terrain_02/rocky_terrain_02_rough_2k.jpg",
+          "size": 1589303,
+          "kept": true,
+          "path": "textures/rocky_terrain_02/rough.jpg"
+        },
+        {
+          "map": "ao",
+          "key": "AO",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/rocky_terrain_02/rocky_terrain_02_ao_2k.jpg",
+          "size": 1767074,
+          "kept": true,
+          "path": "textures/rocky_terrain_02/ao.jpg"
+        }
+      ]
+    },
+    {
+      "slug": "bark_brown_02",
+      "name": "Bark Brown 02",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "page": "https://polyhaven.com/a/bark_brown_02",
+      "maps": [
+        {
+          "map": "diff",
+          "key": "Diffuse",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_diff_2k.jpg",
+          "size": 2356592,
+          "kept": true,
+          "path": "textures/bark_brown_02/diff.jpg"
+        },
+        {
+          "map": "nor_gl",
+          "key": "nor_gl",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_nor_gl_2k.jpg",
+          "size": 3707907,
+          "kept": true,
+          "path": "textures/bark_brown_02/nor_gl.jpg"
+        },
+        {
+          "map": "rough",
+          "key": "Rough",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_rough_2k.jpg",
+          "size": 1236654,
+          "kept": true,
+          "path": "textures/bark_brown_02/rough.jpg"
+        },
+        {
+          "map": "ao",
+          "key": "AO",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/bark_brown_02/bark_brown_02_ao_2k.jpg",
+          "size": 1919982,
+          "kept": true,
+          "path": "textures/bark_brown_02/ao.jpg"
+        }
+      ]
+    }
+  ],
+  "models": [
+    {
+      "slug": "barrel_stove",
+      "name": "Barrel Stove",
+      "authors": [
+        "MP"
+      ],
+      "page": "https://polyhaven.com/a/barrel_stove",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/barrel_stove/barrel_stove_1k.gltf",
+          "size": 2747,
+          "path": "models/barrel_stove/barrel_stove_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/barrel_stove/barrel_stove_nor_gl_1k.jpg",
+          "size": 228496,
+          "path": "models/barrel_stove/textures/barrel_stove_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/barrel_stove/barrel_stove.bin",
+          "size": 267680,
+          "path": "models/barrel_stove/barrel_stove.bin",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/barrel_stove/barrel_stove_diff_1k.jpg",
+          "size": 858608,
+          "path": "models/barrel_stove/textures/barrel_stove_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/barrel_stove/barrel_stove_arm_1k.jpg",
+          "size": 789380,
+          "path": "models/barrel_stove/textures/barrel_stove_arm_1k.jpg",
+          "kept": true
+        }
+      ],
+      "total": 2146911
+    },
+    {
+      "slug": "stone_fire_pit",
+      "name": "Stone Fire Pit",
+      "authors": [
+        "Sebastian Platen"
+      ],
+      "page": "https://polyhaven.com/a/stone_fire_pit",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/stone_fire_pit/stone_fire_pit_1k.gltf",
+          "size": 2792,
+          "path": "models/stone_fire_pit/stone_fire_pit_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/4k/stone_fire_pit/stone_fire_pit.bin",
+          "size": 96220,
+          "path": "models/stone_fire_pit/stone_fire_pit.bin",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/stone_fire_pit/stone_fire_pit_diff_1k.jpg",
+          "size": 785670,
+          "path": "models/stone_fire_pit/textures/stone_fire_pit_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/stone_fire_pit/stone_fire_pit_arm_1k.jpg",
+          "size": 681441,
+          "path": "models/stone_fire_pit/textures/stone_fire_pit_arm_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/stone_fire_pit/stone_fire_pit_nor_gl_1k.jpg",
+          "size": 969822,
+          "path": "models/stone_fire_pit/textures/stone_fire_pit_nor_gl_1k.jpg",
+          "kept": true
+        }
+      ],
+      "total": 2535945
+    },
+    {
+      "slug": "wooden_bucket_01",
+      "name": "Wooden Bucket 01",
+      "authors": [
+        "James Ray Cock"
+      ],
+      "page": "https://polyhaven.com/a/wooden_bucket_01",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/wooden_bucket_01/wooden_bucket_01_1k.gltf",
+          "size": 4248,
+          "path": "models/wooden_bucket_01/wooden_bucket_01_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/wooden_bucket_01/wooden_bucket_01.bin",
+          "size": 158408,
+          "path": "models/wooden_bucket_01/wooden_bucket_01.bin",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bucket_01/wooden_bucket_01_arm_1k.jpg",
+          "size": 777463,
+          "path": "models/wooden_bucket_01/textures/wooden_bucket_01_arm_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bucket_01/wooden_bucket_01_nor_gl_1k.jpg",
+          "size": 693440,
+          "path": "models/wooden_bucket_01/textures/wooden_bucket_01_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/wooden_bucket_01/wooden_bucket_01_diff_1k.jpg",
+          "size": 698083,
+          "path": "models/wooden_bucket_01/textures/wooden_bucket_01_diff_1k.jpg",
+          "kept": true
+        }
+      ],
+      "total": 2331642
+    },
+    {
+      "slug": "fern_02",
+      "name": "Fern 02",
+      "authors": [
+        "Rob Tuytel",
+        "Rico Cilliers"
+      ],
+      "page": "https://polyhaven.com/a/fern_02",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/fern_02/fern_02_1k.gltf",
+          "size": 6899,
+          "path": "models/fern_02/fern_02_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/fern_02/fern_02.bin",
+          "size": 176176,
+          "path": "models/fern_02/fern_02.bin",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fern_02/fern_02_nor_gl_1k.jpg",
+          "size": 367222,
+          "path": "models/fern_02/textures/fern_02_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fern_02/fern_02_diff_1k.jpg",
+          "size": 315705,
+          "path": "models/fern_02/textures/fern_02_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/fern_02/fern_02_arm_1k.jpg",
+          "size": 280359,
+          "path": "models/fern_02/textures/fern_02_arm_1k.jpg",
+          "kept": true
+        }
+      ],
+      "total": 1146361
+    },
+    {
+      "slug": "rock_moss_set_01",
+      "name": "Rock Moss Set 01",
+      "authors": [
+        "Kless Gyzen"
+      ],
+      "page": "https://polyhaven.com/a/rock_moss_set_01",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/rock_moss_set_01/rock_moss_set_01_1k.gltf",
+          "size": 9987,
+          "path": "models/rock_moss_set_01/rock_moss_set_01_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_01/rock_moss_set_01_rough_1k.jpg",
+          "size": 82624,
+          "path": "models/rock_moss_set_01/textures/rock_moss_set_01_rough_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_01/rock_moss_set_01_nor_gl_1k.jpg",
+          "size": 209975,
+          "path": "models/rock_moss_set_01/textures/rock_moss_set_01_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/rock_moss_set_01/rock_moss_set_01_diff_1k.jpg",
+          "size": 168099,
+          "path": "models/rock_moss_set_01/textures/rock_moss_set_01_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/rock_moss_set_01/rock_moss_set_01.bin",
+          "size": 1466380,
+          "path": "models/rock_moss_set_01/rock_moss_set_01.bin",
+          "kept": true
+        }
+      ],
+      "total": 1937065
+    },
+    {
+      "slug": "tree_stump_01",
+      "name": "Tree Stump 01",
+      "authors": [
+        "Rob Tuytel"
+      ],
+      "page": "https://polyhaven.com/a/tree_stump_01",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/tree_stump_01/tree_stump_01_1k.gltf",
+          "size": 2793,
+          "path": "models/tree_stump_01/tree_stump_01_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/tree_stump_01/tree_stump_01.bin",
+          "size": 965380,
+          "path": "models/tree_stump_01/tree_stump_01.bin",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tree_stump_01/tree_stump_01_diff_1k.jpg",
+          "size": 907451,
+          "path": "models/tree_stump_01/textures/tree_stump_01_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tree_stump_01/tree_stump_01_nor_gl_1k.jpg",
+          "size": 1238404,
+          "path": "models/tree_stump_01/textures/tree_stump_01_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/tree_stump_01/tree_stump_01_arm_1k.jpg",
+          "size": 825646,
+          "path": "models/tree_stump_01/textures/tree_stump_01_arm_1k.jpg",
+          "kept": true
+        }
+      ],
+      "total": 3939674
+    },
+    {
+      "slug": "pine_sapling_medium",
+      "name": "Pine Sapling Medium",
+      "authors": [
+        "Rob Tuytel",
+        "Rico Cilliers"
+      ],
+      "page": "https://polyhaven.com/a/pine_sapling_medium",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/pine_sapling_medium/pine_sapling_medium_1k.gltf",
+          "size": 16365,
+          "path": "models/pine_sapling_medium/pine_sapling_medium_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_medium/pine_sapling_medium_bark_nor_gl_1k.jpg",
+          "size": 1016849,
+          "path": "models/pine_sapling_medium/textures/pine_sapling_medium_bark_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_medium/pine_sapling_medium_bark_diff_1k.jpg",
+          "size": 725265,
+          "path": "models/pine_sapling_medium/textures/pine_sapling_medium_bark_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_medium/pine_sapling_medium_bark_arm_1k.jpg",
+          "size": 801278,
+          "path": "models/pine_sapling_medium/textures/pine_sapling_medium_bark_arm_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_medium/pine_sapling_medium_twig_nor_gl_1k.jpg",
+          "size": 797935,
+          "path": "models/pine_sapling_medium/textures/pine_sapling_medium_twig_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_medium/pine_sapling_medium_twig_diff_1k.jpg",
+          "size": 510932,
+          "path": "models/pine_sapling_medium/textures/pine_sapling_medium_twig_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/pine_sapling_medium/pine_sapling_medium_twig_arm_1k.jpg",
+          "size": 474787,
+          "path": "models/pine_sapling_medium/textures/pine_sapling_medium_twig_arm_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/pine_sapling_medium/pine_sapling_medium.bin",
+          "size": 263481032,
+          "path": "models/pine_sapling_medium/pine_sapling_medium.bin",
+          "kept": false
+        }
+      ],
+      "total": 267824443
+    },
+    {
+      "slug": "dandelion_01",
+      "name": "Dandelion 01",
+      "authors": [
+        "Rob Tuytel",
+        "Rico Cilliers"
+      ],
+      "page": "https://polyhaven.com/a/dandelion_01",
+      "files": [
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/1k/dandelion_01/dandelion_01_1k.gltf",
+          "size": 8915,
+          "path": "models/dandelion_01/dandelion_01_1k.gltf",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dandelion_01/dandelion_01_nor_gl_1k.jpg",
+          "size": 495857,
+          "path": "models/dandelion_01/textures/dandelion_01_nor_gl_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dandelion_01/dandelion_01_diff_1k.jpg",
+          "size": 470035,
+          "path": "models/dandelion_01/textures/dandelion_01_diff_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/jpg/1k/dandelion_01/dandelion_01_arm_1k.jpg",
+          "size": 448489,
+          "path": "models/dandelion_01/textures/dandelion_01_arm_1k.jpg",
+          "kept": true
+        },
+        {
+          "url": "https://dl.polyhaven.org/file/ph-assets/Models/gltf/8k/dandelion_01/dandelion_01.bin",
+          "size": 1676648,
+          "path": "models/dandelion_01/dandelion_01.bin",
+          "kept": true
+        }
+      ],
+      "total": 3099944
+    }
+  ]
+}
