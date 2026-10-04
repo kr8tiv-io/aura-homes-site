@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RevealHeading from '../components/RevealHeading.astro';
+---
+
+<BaseLayout
+  title="Aura H2O"
+  description="Aura H2O will draw water from the air. Premium cans and glass, ethical sponsors only, from Chapter 3 of the master plan. Coming later."
+  descriptor="Aura H2O"
+>
+  <main id="top">
+    <section class="page-lead">
+      <p class="story-kicker">Coming later</p>
+      <RevealHeading as="h1">Aura H2O</RevealHeading>
+      <p class="story-lede">
+        Aura H2O will draw water from the air. The unit belongs to Chapter 3 of the master plan, beside the room rather than instead of it. Premium cans and glass will hold what the air gives up. Sponsors, when they arrive, will be ethical ones only.
+      </p>
+      <p class="story-lede">The generator is still ahead. The room you can ask for now stays a room.</p>
+      <p class="later-actions">
+        <a href="/master-plan">Read the master plan</a>
+        <a href="/pre-order">Get a quote</a>
+      </p>
+    </section>
+    <section class="later-hero">
+      <img
+        src="/media/video/water-line-poster.webp"
+        alt="A quiet line inside an oak room, where water from the air will be held in glass."
+        width="1920"
+        height="1280"
+      />
+    </section>
+  </main>
+</BaseLayout>
