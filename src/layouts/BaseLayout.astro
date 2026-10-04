@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import { Font, getImage } from 'astro:assets';
 import Ambient from '../components/Ambient.astro';
+import RidgeLoad from '../components/RidgeLoad.astro';
 import mark from '../assets/logo/aura-mark.svg?raw';
 import cabinPoster from '../../public/film/cabin-poster-hi.webp';
 import { organizationJson } from '../lib/organization';
@@ -13,8 +14,9 @@ interface Props {
   descriptor?: string;
 }
 
-const tagline = 'Bring you back to nature, one beautiful room at a time.';
-const about = 'Beautiful second-life rooms that bring people back to nature, one room at a time.';
+const tagline = 'Return to Aura.';
+const taglineMore = 'One beautiful room at a time.';
+const about = 'Return to Aura. One beautiful room at a time.';
 const { title: rawTitle, description = about, descriptor = 'On your land' } = Astro.props;
 const brandTitle = (raw: string) => {
   if (raw === 'Aura Homes' || raw.endsWith('| Aura Homes')) return raw;
@@ -30,7 +32,7 @@ const canonical = pageUrl;
 const og = await getImage({ src: cabinPoster, width: 1200, format: 'webp', quality: 72 });
 const ogImage = new URL(og.src, origin).href;
 const organization = organizationJson(origin);
-const ogAlt = 'An Aura Homes room at dusk, set in a meadow.';
+const ogAlt = 'An Aura room at dusk, set in a meadow.';
 const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
 const showFoot = !isHome && !isBuilder;
@@ -85,7 +87,16 @@ const foot = menu.flatMap((group) => group.links);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <Font cssVariable="--font-cinzel" preload />
-    <Font cssVariable="--font-inter" />
+    <Font cssVariable="--font-inter" preload />
+    {!isHome && (
+      <script is:inline>
+        try {
+          if (localStorage.getItem('aura-ridge') === '1') document.documentElement.classList.add('ridge-seen');
+        } catch (error) {
+          /* a private window can still play the ridge once */
+        }
+      </script>
+    )}
     <script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
     <meta property="og:site_name" content="Aura Homes" />
     <meta property="og:title" content={title} />
@@ -145,7 +156,7 @@ const foot = menu.flatMap((group) => group.links);
             <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
               <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
               <g class="sigil-mark">
-                <circle class="sigil-halo" cx="32" cy="8.5" r="1.65" />
+                <circle class="sigil-halo" cx="32" cy="7.2" r="3.15" fill="none" />
                 <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
               </g>
             </svg>
@@ -157,7 +168,7 @@ const foot = menu.flatMap((group) => group.links);
       <header class="site-nav" transition:name="site-nav" transition:persist="site-nav" transition:animate="none">
         <a href="/" class="nav-brand">
           <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
-          <span class="nav-name">Aura Homes</span>
+          <span class="nav-name">Aura</span>
           <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
         </a>
         <nav class="nav-words" aria-label="Pages">
@@ -170,7 +181,7 @@ const foot = menu.flatMap((group) => group.links);
             <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
               <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
               <g class="sigil-mark">
-                <circle class="sigil-halo" cx="32" cy="8.5" r="1.65" />
+                <circle class="sigil-halo" cx="32" cy="7.2" r="3.15" fill="none" />
                 <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
               </g>
             </svg>
@@ -196,7 +207,7 @@ const foot = menu.flatMap((group) => group.links);
           </div>
         </div>
         <div class="nav-copy">
-          <p class="nav-thesis">{tagline}</p>
+          <p class="nav-thesis">{tagline} {taglineMore}</p>
           <div class="nav-groups">
             {menu.map((group) => (
               <div>
@@ -226,7 +237,7 @@ const foot = menu.flatMap((group) => group.links);
           </div>
         </div>
         <div class="nav-copy">
-          <p class="nav-thesis">{tagline}</p>
+          <p class="nav-thesis">{tagline} {taglineMore}</p>
           <div class="nav-groups">
             {menu.map((group) => (
               <div>
@@ -242,6 +253,7 @@ const foot = menu.flatMap((group) => group.links);
     )}
 
     <Ambient persist={!isHome} />
+    {!isHome && <RidgeLoad />}
 
     <div class="page-main relative z-10">
       <slot />
@@ -250,9 +262,10 @@ const foot = menu.flatMap((group) => group.links);
       <footer class="site-foot">
         <a href="/" class="foot-brand">
           <span class="aura-logo is-play" aria-hidden="true" set:html={mark} />
-          <span class="foot-name">Aura Homes</span>
+          <span class="foot-name">Aura</span>
         </a>
         <p class="foot-line">{tagline}</p>
+        <p class="foot-quiet">{taglineMore}</p>
         <p class="foot-place">Edmonton, Alberta. Shipping across Canada.</p>
         <nav class="foot-nav" aria-label="Footer">
           {foot.map((item) => (
@@ -271,6 +284,7 @@ const foot = menu.flatMap((group) => group.links);
       import { bindSiteCursor } from '../scripts/cursor';
       import { bindAmbient } from '../scripts/ambient';
       import { bindFields } from '../scripts/forms';
+      import { bindRidgeLoad } from '../scripts/ridge-load';
 
       initSmoothScroll();
       bindDaylight();
@@ -543,10 +557,18 @@ const foot = menu.flatMap((group) => group.links);
       bindSiteCursor();
       bindAmbient();
       bindFields();
+      bindRidgeLoad();
+      const grain = document.querySelector('.film-grain');
+      if (grain) {
+        const syncGrain = () => grain.classList.toggle('is-paused', document.hidden);
+        document.addEventListener('visibilitychange', syncGrain);
+        syncGrain();
+      }
       document.addEventListener('astro:page-load', () => {
         bindLogos();
         bindAmbient();
         bindFields();
+        bindRidgeLoad();
         window.__lenis?.resize();
       });
 

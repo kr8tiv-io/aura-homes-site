@@ -251,7 +251,7 @@ const topics = [
             ['Message', fieldText('message')],
           ].map(([label, value]) => `${label}: ${value || ''}`);
           const joiner = action.includes('?') ? '&' : '?';
-          window.location.href = `${action}${joiner}subject=${encodeURIComponent('Aura Homes note')}&body=${encodeURIComponent(lines.join('\n'))}`;
+          window.location.href = `${action}${joiner}subject=${encodeURIComponent('Aura note')}&body=${encodeURIComponent(lines.join('\n'))}`;
           showThanks(true);
         } else {
           showThanks(false);

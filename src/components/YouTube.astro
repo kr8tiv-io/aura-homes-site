@@ -4,7 +4,7 @@ interface Props {
   title?: string;
 }
 
-const { id = '', title = 'Aura Homes build film' } = Astro.props;
+const { id = '', title = 'Aura build film' } = Astro.props;
 const videoId = /^[A-Za-z0-9_-]{11}$/.test(id) ? id : '';
 ---
 

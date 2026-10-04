@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 188" fill="none" class="aura-lockup">
-  <circle class="aura-halo" cx="100" cy="17" r="6.4" fill="#c4a07a" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 188" fill="none" class="aura-lockup">
+  <circle class="aura-halo" cx="100" cy="18" r="14" fill="none" stroke="#c4a07a" stroke-width="1.35" vector-effect="non-scaling-stroke" />
   <path class="aura-ridge" pathLength="1" fill="none" stroke="currentColor" stroke-width="10" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="8" d="M8 154H46L58 168L72 154L100 48L128 154L142 168L154 154H192" />
-  <text class="aura-word" x="236" y="128" fill="currentColor" font-family="Cinzel, Palatino, Palatino Linotype, serif" font-size="30" font-weight="400" letter-spacing="0.22em">AURA HOMES</text>
+  <text class="aura-word" x="228" y="128" fill="currentColor" font-family="Cinzel, Palatino, Palatino Linotype, serif" font-size="30" font-weight="400" letter-spacing="0.22em">AURA</text>
 </svg>
