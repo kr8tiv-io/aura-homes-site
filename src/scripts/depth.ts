@@ -65,7 +65,7 @@ export function bindDepthImages() {
 
   roots.forEach((root) => {
     const frame =
-      root.closest<HTMLElement>('.story-bleed, .wild-frame, .stay-frame') ?? root;
+      root.closest<HTMLElement>('.story-bleed, .wild-frame, .stay-frame, .living-hero') ?? root;
     const zoom = readZoom(frame);
     const origin = frame.dataset.depthOrigin || '50% 50%';
     const originY = readOriginY(origin);

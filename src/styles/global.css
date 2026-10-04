@@ -212,7 +212,8 @@ p {
 .site-nav .aura-halo {
   fill: #305375;
 }
-body.nav-on-film .site-nav .aura-halo {
+body.nav-on-film .site-nav .aura-halo,
+body[data-living-nav] .site-nav .aura-halo {
   fill: #c4a07a;
 }
 .nav-name,
@@ -557,12 +558,14 @@ body.nav-on-film .site-nav .aura-halo {
   pointer-events: auto;
 }
 /* Ivory over footage. Difference blend cannot hold a stable white on the hero. */
-body.nav-on-film .site-nav {
+body.nav-on-film .site-nav,
+body[data-living-nav] .site-nav {
   mix-blend-mode: normal;
   color: #f4f3ef;
   text-shadow: 0 1px 2px rgba(8, 12, 16, 0.65), 0 8px 22px rgba(8, 12, 16, 0.35);
 }
-body.nav-on-film .site-nav::before {
+body.nav-on-film .site-nav::before,
+body[data-living-nav] .site-nav::before {
   content: "";
   position: absolute;
   z-index: -1;
@@ -574,18 +577,25 @@ body.nav-on-film .site-nav::before {
   pointer-events: none;
 }
 body.nav-on-film .nav-words a,
-body.nav-on-film .nav-descriptor {
+body.nav-on-film .nav-descriptor,
+body[data-living-nav] .nav-words a,
+body[data-living-nav] .nav-descriptor {
   opacity: 1;
 }
 body.nav-on-film .nav-words a:hover,
-body.nav-on-film .nav-words a:focus-visible {
+body.nav-on-film .nav-words a:focus-visible,
+body[data-living-nav] .nav-words a:hover,
+body[data-living-nav] .nav-words a:focus-visible {
   opacity: 0.78;
 }
-body.nav-on-film .nav-words a[aria-current='page'] {
+body.nav-on-film .nav-words a[aria-current='page'],
+body[data-living-nav] .nav-words a[aria-current='page'] {
   opacity: 1;
 }
 body.nav-on-film .nav-cta:hover,
-body.nav-on-film .nav-cta:focus-visible {
+body.nav-on-film .nav-cta:focus-visible,
+body[data-living-nav] .nav-cta:hover,
+body[data-living-nav] .nav-cta:focus-visible {
   text-shadow: none;
 }
 @media (min-width: 768px) {
