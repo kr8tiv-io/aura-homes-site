@@ -17,6 +17,7 @@
     "@astrojs/node": "^11.1.6",
     "@astrojs/react": "^7.0.0",
     "@astrojs/sitemap": "^3.7.4",
+    "@pmndrs/detect-gpu": "^6.0.25",
     "@react-three/drei": "^10.7.9",
     "@react-three/fiber": "^9.8.1",
     "@react-three/postprocessing": "^3.1.3",

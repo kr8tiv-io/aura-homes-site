@@ -85,7 +85,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section class="passage" data-passage aria-label="Held in the grass">
-      <canvas data-meadow data-scene="grass"></canvas>
+      <canvas data-meadow data-scene="grass" data-poster="/film/story-meadow-side.webp"></canvas>
       <p class="passage-ghost" aria-hidden="true">Grass</p>
       <div class="passage-copy">
         <p class="story-kicker">The field</p>
@@ -162,7 +162,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section class="passage" data-passage aria-label="Two sides of clear polycarbonate">
-      <canvas data-meadow data-scene="glass"></canvas>
+      <canvas data-meadow data-scene="glass" data-poster="/film/story-room.webp"></canvas>
       <p class="passage-ghost" aria-hidden="true">Clear</p>
       <div class="passage-copy">
         <p class="story-kicker">The glass</p>
@@ -217,7 +217,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section class="passage" data-passage aria-label="Tub under clear panels">
-      <canvas data-meadow data-scene="steam"></canvas>
+      <canvas data-meadow data-scene="steam" data-poster="/film/layout-gazebo.webp"></canvas>
       <p class="passage-ghost" aria-hidden="true">Steam</p>
       <div class="passage-copy">
         <p class="story-kicker">The tub</p>
@@ -239,7 +239,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section id="passage" class="passage" data-passage aria-label="Dusk meadow">
-      <canvas data-meadow data-scene="far"></canvas>
+      <canvas data-meadow data-scene="far" data-poster="/film/story-meadow-side.webp"></canvas>
       <p class="passage-ghost" aria-hidden="true">Field</p>
       <div class="passage-copy">
         <p class="story-kicker">Later</p>
@@ -271,15 +271,14 @@ import Journeys from '../components/Journeys.astro';
   </main>
 
   <script>
-    import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+    import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad, holdPageMotion } from '../scripts/motion';
     import { bindFilmScrub } from '../scripts/film-scrub';
-    import { mountMeadow } from '../scripts/meadow';
-    import { mountWash } from '../scripts/wash';
-    import { mountField } from '../scripts/field';
+    import { onQuality, qualityProfile } from '../three/quality';
     import { bindShots } from '../scripts/shots';
     import { bindReels } from '../scripts/reel';
 
     onPageLoad(() => {
+    void (async () => {
     const reduce = prefersReducedMotion();
     const mm = gsap.matchMedia();
 
@@ -295,10 +294,35 @@ import Journeys from '../components/Journeys.astro';
       else film.addEventListener('loadeddata', markReady, { once: true });
     }
 
-    const meadows = gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => mountMeadow(canvas));
-    const washes = gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => mountWash(canvas));
-    const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
-    const fieldFx = fieldCanvas ? mountField(fieldCanvas) : null;
+    type SceneHandle = { setProgress: (t: number) => void; destroy: () => void };
+    const meadows: SceneHandle[] = [];
+    const washes: SceneHandle[] = [];
+    let fieldFx: SceneHandle | null = null;
+    let scenesTask: Promise<void> | null = null;
+
+    const ensureScenes = () => {
+      if (qualityProfile().tier === 'off') return Promise.resolve();
+      if (scenesTask) return scenesTask;
+      scenesTask = (async () => {
+        const [meadowMod, washMod, fieldMod] = await Promise.all([
+          import('../scripts/meadow'),
+          import('../scripts/wash'),
+          import('../scripts/field'),
+        ]);
+        if (meadows.length) return;
+        meadows.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => meadowMod.mountMeadow(canvas)));
+        washes.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => washMod.mountWash(canvas)));
+        const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
+        fieldFx = fieldCanvas ? fieldMod.mountField(fieldCanvas) : null;
+      })();
+      return scenesTask;
+    };
+
+    await ensureScenes();
+    const stopQuality = onQuality(() => {
+      void ensureScenes();
+    });
+    holdPageMotion(stopQuality);
 
     const ctx = gsap.context(() => {
       const stopShots = bindShots();
@@ -455,7 +479,6 @@ import Journeys from '../components/Journeys.astro';
         });
 
         gsap.utils.toArray<HTMLElement>('[data-passage]').forEach((section, index) => {
-          const meadow = meadows[index];
           const ghost = section.querySelector('.passage-ghost');
           const copy = section.querySelector('.passage-copy');
           const spacer = section.nextElementSibling instanceof HTMLElement && section.nextElementSibling.hasAttribute('data-passage-spacer')
@@ -471,7 +494,7 @@ import Journeys from '../components/Journeys.astro';
             anticipatePin: 1,
             onUpdate: (self) => {
               const p = self.progress;
-              meadow?.setProgress(p);
+              meadows[index]?.setProgress(p);
               if (ghost) {
                 gsap.set(ghost, {
                   y: -190 * p,
@@ -525,6 +548,7 @@ import Journeys from '../components/Journeys.astro';
 
     if (import.meta.hot) {
       import.meta.hot.dispose(() => {
+        stopQuality();
         ctx.revert();
         mm.revert();
         meadows.forEach((meadow) => meadow.destroy());
@@ -532,6 +556,7 @@ import Journeys from '../components/Journeys.astro';
         fieldFx?.destroy();
       });
     }
+    })();
     });
   </script>
 </BaseLayout>

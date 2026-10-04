@@ -1,6 +1,14 @@
 import * as THREE from 'three';
 import { holdPageMotion } from './motion';
+import { hideStill, motionTime, onQuality, qualityProfile, showStill, type QualityProfile } from '../three/quality';
 import { registerView, type StageTone } from '../three/stage';
+
+let activeProfile: QualityProfile | null = null;
+let treeAnchorZ = 0;
+
+function profile(): QualityProfile {
+  return activeProfile ?? qualityProfile();
+}
 
 /** Scroll-driven passage worlds. Atmosphere only: no cabin mesh. The stage draws them. */
 
@@ -57,9 +65,19 @@ function addTree(
   x: number,
   z: number,
   h: number,
-  _radius = 0.28,
 ) {
-  void _radius;
+  const dist = Math.hypot(x, z - treeAnchorZ);
+  if (dist > profile().impostorDistance) {
+    const geo = new THREE.ConeGeometry(h * 0.28, h, 5);
+    geometries.push(geo);
+    const stand = new THREE.Mesh(geo, mat);
+    stand.position.set(x, h / 2, z);
+    stand.userData.phase = x * 0.2 + z;
+    stand.userData.baseX = x;
+    scene.add(stand);
+    trees.push(stand);
+    return;
+  }
   const group = new THREE.Group();
   const trunkGeo = new THREE.CylinderGeometry(h * 0.035, h * 0.055, h * 0.5, 6);
   const leafGeo = new THREE.IcosahedronGeometry(1, 0);
@@ -181,8 +199,13 @@ function addBeam(
 }
 
 function sunShadow(light: THREE.DirectionalLight, size = 12) {
+  const map = profile().shadowMapSize;
+  if (map <= 0) {
+    light.castShadow = false;
+    return;
+  }
   light.castShadow = true;
-  light.shadow.mapSize.set(1024, 1024);
+  light.shadow.mapSize.set(map, map);
   light.shadow.bias = -0.0004;
   light.shadow.normalBias = 0.035;
   const cam = light.shadow.camera;
@@ -258,15 +281,23 @@ function buildGrass(): BuiltScene {
   geometries.push(tuftGeo);
   const tuftMat = new THREE.MeshStandardMaterial({ color: '#5c7456', roughness: 0.92 });
   materials.push(tuftMat);
-  const tufts = new THREE.InstancedMesh(tuftGeo, tuftMat, 380);
+  const tuftCount = Math.max(24, Math.round(380 * profile().grassScale));
+  const tufts = new THREE.InstancedMesh(tuftGeo, tuftMat, tuftCount);
   const tuftDummy = new THREE.Object3D();
-  for (let i = 0; i < 380; i++) {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = 1.2 + Math.random() * 24;
+  let tuftSeed = 0x51ed;
+  const tuftRand = () => {
+    tuftSeed = (tuftSeed + 0x6d2b79f5) | 0;
+    let mix = Math.imul(tuftSeed ^ (tuftSeed >>> 15), 1 | tuftSeed);
+    mix = (mix + Math.imul(mix ^ (mix >>> 7), 61 | mix)) ^ mix;
+    return ((mix ^ (mix >>> 14)) >>> 0) / 4294967296;
+  };
+  for (let i = 0; i < tuftCount; i++) {
+    const angle = tuftRand() * Math.PI * 2;
+    const radius = 1.2 + tuftRand() * 24;
     tuftDummy.position.set(Math.cos(angle) * radius * 0.7, 0.14, -3 - Math.abs(Math.sin(angle)) * radius);
-    tuftDummy.rotation.y = Math.random() * Math.PI;
-    const scale = 0.65 + Math.random() * 1.4;
-    tuftDummy.scale.set(scale, 0.55 + Math.random() * 1.2, scale);
+    tuftDummy.rotation.y = tuftRand() * Math.PI;
+    const scale = 0.65 + tuftRand() * 1.4;
+    tuftDummy.scale.set(scale, 0.55 + tuftRand() * 1.2, scale);
     tuftDummy.updateMatrix();
     tufts.setMatrixAt(i, tuftDummy.matrix);
   }
@@ -277,6 +308,7 @@ function buildGrass(): BuiltScene {
   addRidge(scene, geometries, ridgeMat, 130, 12, -2, -62);
 
   const trees: THREE.Object3D[] = [];
+  treeAnchorZ = 16;
   const clusters: Array<[number, number, number]> = [
     [-11, -14, 5.4],
     [-8.6, -16.5, 3.6],
@@ -301,7 +333,7 @@ function buildGrass(): BuiltScene {
     [-4.8, -9.2, 1.1],
     [5.2, -9.6, 0.8],
   ];
-  for (const [x, z, h] of shrubs) addTree(scene, geometries, shrubMat, trees, x, z, h, 0.46);
+  for (const [x, z, h] of shrubs) addTree(scene, geometries, shrubMat, trees, x, z, h);
 
   const rocks: Array<[number, number, number]> = [
     [-2.4, -5.5, 0.55],
@@ -354,7 +386,7 @@ function buildGrass(): BuiltScene {
     materials,
     textures,
     render(time, progress) {
-      const t = time * 0.001;
+      const t = motionTime(time);
       const p = 0.35 + progress * 0.65;
       bg.copy(day).lerp(dusk, p);
       scene.background = bg;
@@ -520,6 +552,7 @@ function buildGlass(): BuiltScene {
   scene.add(lamp);
 
   const trees: THREE.Object3D[] = [];
+  treeAnchorZ = 8.4;
   for (const [x, z, h] of [
     [-7.5, -9, 4.2],
     [-10, -13, 3.4],
@@ -537,7 +570,7 @@ function buildGlass(): BuiltScene {
     materials,
     textures,
     render(time, progress) {
-      const t = time * 0.001;
+      const t = motionTime(time);
       const dolly = progress * 0.7;
       camera.position.set(-1.6 - dolly * 0.2, 4.35, 8.4 - dolly);
       camera.lookAt(3.1, 1.55, -1.7);
@@ -677,6 +710,7 @@ function buildSteam(): BuiltScene {
   scene.add(pipe);
 
   const trees: THREE.Object3D[] = [];
+  treeAnchorZ = 2.6;
   for (const [x, z, h] of [
     [-4.6, -4.2, 3.6],
     [-5.8, -7, 4.4],
@@ -691,7 +725,9 @@ function buildSteam(): BuiltScene {
   const puffs: THREE.Mesh[] = [];
   const puffGeo = new THREE.SphereGeometry(0.14, 8, 6);
   geometries.push(puffGeo);
-  for (let i = 0; i < 10; i++) {
+  const puffCount = Math.max(8, profile().steamParticles);
+  const puffGain = Math.min(1, 10 / puffCount);
+  for (let i = 0; i < puffCount; i++) {
     const puffMat = new THREE.MeshBasicMaterial({
       color: '#f4efe8',
       transparent: true,
@@ -713,7 +749,7 @@ function buildSteam(): BuiltScene {
     materials,
     textures,
     render(time, progress) {
-      const t = time * 0.001;
+      const t = motionTime(time);
       bg.set('#241910').lerp(steamNight, progress);
       scene.background = bg;
       (scene.fog as THREE.FogExp2).color.copy(bg);
@@ -729,7 +765,7 @@ function buildSteam(): BuiltScene {
         puff.position.set(Math.sin(phase * 3) * 0.35, 0.7 + life * 2.3, Math.cos(phase * 2) * 0.35);
         const s = 0.4 + life * 1.1;
         puff.scale.setScalar(s);
-        (puff.material as THREE.MeshBasicMaterial).opacity = (1 - life) * 0.28;
+        (puff.material as THREE.MeshBasicMaterial).opacity = (1 - life) * 0.28 * puffGain;
       }
     },
   };
@@ -804,7 +840,7 @@ function buildFar(): BuiltScene {
     materials,
     textures,
     render(time, progress) {
-      const t = time * 0.001;
+      const t = motionTime(time);
       bg.copy(daySky).lerp(night, progress);
       scene.background = bg;
       (scene.fog as THREE.FogExp2).color.copy(bg);
@@ -863,6 +899,7 @@ function buildSnow(): BuiltScene {
   addRidge(scene, geometries, peakMat, 150, 22, -4, -78);
 
   const trees: THREE.Object3D[] = [];
+  treeAnchorZ = 14.2;
   for (const [x, z, h] of [
     [-12, -9, 4.4],
     [-14.5, -15, 5.4],
@@ -993,7 +1030,7 @@ function buildSnow(): BuiltScene {
     materials,
     textures,
     render(time, progress) {
-      const t = time * 0.001;
+      const t = motionTime(time);
       bg.copy(daySky).lerp(dusk, progress * 0.55);
       scene.background = bg;
       (scene.fog as THREE.FogExp2).color.copy(bg);
@@ -1091,13 +1128,14 @@ function buildSlope(): BuiltScene {
   }
 
   const trees: THREE.Object3D[] = [];
+  treeAnchorZ = 8;
   for (const [x, z, h] of [
     [-12, -10, 3.6],
     [-14, -16, 5],
     [10, -12, 4.2],
     [12.5, -18, 5.4],
   ] as Array<[number, number, number]>) {
-    addTree(scene, geometries, treeMat, trees, x, z, h, 0.22);
+    addTree(scene, geometries, treeMat, trees, x, z, h);
   }
 
   return {
@@ -1107,7 +1145,7 @@ function buildSlope(): BuiltScene {
     materials,
     textures,
     render(time, progress) {
-      const t = time * 0.001;
+      const t = motionTime(time);
       camera.position.set(2.2 - progress * 0.4, 2.4 + progress * 1.6, 8 - progress * 2);
       camera.lookAt(1.6, 2.6 + progress * 1.2, -14);
       sway(trees, t, 0.012);
@@ -1133,38 +1171,124 @@ const LOOK: Record<SceneKey, { exposure: number; tone: StageTone; hdri: string; 
   steam: { exposure: 1.08, tone: 'agx', hdri: '/hdri/qwantani_dusk_2_puresky_1k.hdr', env: 0.2, ao: true },
 };
 
-export function mountMeadow(canvas: HTMLCanvasElement) {
+function disposeBuilt(built: BuiltScene) {
+  built.scene.environment = null;
+  built.geometries.forEach((geo) => geo.dispose());
+  built.materials.forEach((mat) => mat.dispose());
+  built.textures.forEach((tex) => tex.dispose());
+  built.scene.clear();
+}
+
+function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
   const key = sceneKey(canvas);
   canvas.dataset.sceneLive = key;
   const look = LOOK[key];
-  const built = BUILDERS[key]();
   let dead = false;
+  let built: BuiltScene | null = null;
 
-  const view = registerView({
+  const build = () => {
+    activeProfile = qualityProfile();
+    return BUILDERS[key]();
+  };
+
+  const spec = {
     element: canvas,
-    scene: built.scene,
-    camera: built.camera,
+    scene: new THREE.Scene(),
+    camera: new THREE.PerspectiveCamera(34, 1, 0.1, 160),
     ao: look.ao,
     exposure: look.exposure,
     tone: look.tone,
     hdri: look.hdri,
     envIntensity: look.env,
-    update(progress) {
-      built.render(performance.now(), progress);
+    update(progress: number) {
+      built?.render(performance.now(), progress);
     },
+    suspend() {
+      if (!built) return;
+      disposeBuilt(built);
+      built = null;
+    },
+    resume() {
+      if (built || dead) return;
+      built = build();
+      spec.scene = built.scene;
+      spec.camera = built.camera;
+    },
+  };
+  const view = registerView(spec);
+
+  const rebuild = () => {
+    if (!built) return;
+    disposeBuilt(built);
+    built = build();
+    spec.scene = built.scene;
+    spec.camera = built.camera;
+  };
+
+  built = build();
+  spec.scene = built.scene;
+  spec.camera = built.camera;
+  view.setProgress(readProgress());
+
+  const stop = onQuality((next) => {
+    if (dead || next.tier === 'off') return;
+    rebuild();
   });
 
-  const api = {
+  return {
     setProgress(t: number) {
       view.setProgress(t);
     },
     destroy() {
       if (dead) return;
       dead = true;
+      stop();
       view.destroy();
-      built.geometries.forEach((geo) => geo.dispose());
-      built.materials.forEach((mat) => mat.dispose());
-      built.textures.forEach((tex) => tex.dispose());
+      if (built) disposeBuilt(built);
+      built = null;
+    },
+  };
+}
+
+export function mountMeadow(canvas: HTMLCanvasElement) {
+  let dead = false;
+  let inner: ReturnType<typeof mountMeadowNow> | null = null;
+  let progress = 0;
+
+  const boot = () => {
+    if (dead || inner) return;
+    if (qualityProfile().tier === 'off') {
+      showStill(canvas);
+      return;
+    }
+    hideStill(canvas);
+    inner = mountMeadowNow(canvas, () => progress);
+  };
+
+  const stop = onQuality((next) => {
+    if (dead) return;
+    if (next.tier === 'off') {
+      inner?.destroy();
+      inner = null;
+      showStill(canvas);
+      return;
+    }
+    if (!inner) boot();
+  });
+
+  boot();
+
+  const api = {
+    setProgress(t: number) {
+      progress = t;
+      inner?.setProgress(t);
+    },
+    destroy() {
+      if (dead) return;
+      dead = true;
+      stop();
+      inner?.destroy();
+      inner = null;
     },
   };
   holdPageMotion(api.destroy);

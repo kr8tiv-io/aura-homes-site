@@ -159,6 +159,15 @@ export const credits: Credit[] = [
     category: 'Code and libraries',
   },
   {
+    name: 'detect-gpu',
+    author: 'Tim van Scherpenzeel',
+    license: 'MIT',
+    link: 'https://github.com/pmndrs/detect-gpu',
+    licenseLink: mit,
+    usedFor: 'Choosing a quality tier for the meadow stage from the GPU.',
+    category: 'Code and libraries',
+  },
+  {
     name: 'n8ao',
     author: 'N8python',
     license: 'CC0 / ISC',

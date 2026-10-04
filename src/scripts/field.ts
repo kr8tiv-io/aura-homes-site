@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { holdPageMotion, prefersReducedMotion } from './motion';
+import { motionTime, onQuality, qualityProfile } from '../three/quality';
 import { registerView, stagePageScroll } from '../three/stage';
 
 /** Soft light in the cream space, plus a slow highlight under each marked heading. */
-export function mountField(canvas: HTMLCanvasElement) {
+function mountFieldNow(canvas: HTMLCanvasElement) {
   const scene = new THREE.Scene();
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
   camera.position.z = 2;
@@ -191,7 +192,7 @@ export function mountField(canvas: HTMLCanvasElement) {
         bgMat.uniforms.uMid.value.set(...mixBand(from.mid, to.mid, blend));
         bgMat.uniforms.uNear.value.set(...mixBand(from.near, to.near, blend));
       }
-      bgMat.uniforms.uTime.value = performance.now() * 0.001;
+      bgMat.uniforms.uTime.value = motionTime(performance.now());
       bgMat.uniforms.uScroll.value = progress;
       bgMat.uniforms.uPointer.value.copy(pointer);
       const marks = canvas.ownerDocument.querySelectorAll<HTMLElement>('[data-glow]');
@@ -230,6 +231,45 @@ export function mountField(canvas: HTMLCanvasElement) {
         slot.mesh.geometry.dispose();
         slot.mat.dispose();
       });
+    },
+  };
+  return api;
+}
+
+export function mountField(canvas: HTMLCanvasElement) {
+  let dead = false;
+  let inner: ReturnType<typeof mountFieldNow> | null = null;
+  let progress = 0;
+
+  const boot = () => {
+    if (dead || inner || qualityProfile().tier === 'off') return;
+    inner = mountFieldNow(canvas);
+    inner.setProgress(progress);
+  };
+
+  const stop = onQuality((next) => {
+    if (dead) return;
+    if (next.tier === 'off') {
+      inner?.destroy();
+      inner = null;
+      return;
+    }
+    if (!inner) boot();
+  });
+
+  boot();
+
+  const api = {
+    setProgress(t: number) {
+      progress = t;
+      inner?.setProgress(t);
+    },
+    destroy() {
+      if (dead) return;
+      dead = true;
+      stop();
+      inner?.destroy();
+      inner = null;
     },
   };
   holdPageMotion(api.destroy);
