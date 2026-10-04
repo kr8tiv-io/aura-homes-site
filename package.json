@@ -10,7 +10,8 @@
     "build": "node scripts/check-credits.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "media": "node scripts/optimize-media.mjs"
+    "media": "node scripts/optimize-media.mjs",
+    "assets": "node scripts/optimize-3d.mjs"
   },
   "dependencies": {
     "@astrojs/node": "^11.1.6",
@@ -30,5 +31,9 @@
   },
   "allowScripts": {
     "esbuild": true
+  },
+  "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1",
+    "@gltf-transform/core": "^4.5.1"
   }
 }
