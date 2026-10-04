@@ -1,6 +1,7 @@
 ---
 import DepthImage from '../components/DepthImage.astro';
 import HeroMist from '../components/HeroMist.astro';
+import LivingHero from '../components/LivingHero.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import WindowFrame from '../components/WindowFrame.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -12,7 +13,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   descriptor="Story"
 >
   <main id="top" class="story-essay">
-    <section class="page-lead story-chapter" id="why" aria-labelledby="why-title">
+    <LivingHero
+      id="why"
+      labelledby="why-title"
+      film="/film/hero/meadow.mp4"
+      poster="/film/story-meadow-side.webp"
+      alt="A low glass room in tall grass, with a cedar tub and a hanging daybed, pines and a pale mountain behind."
+      width={1280}
+      height={922}
+      eager
+    >
       <div data-rise>
         <p class="story-kicker">Why we exist</p>
         <RevealHeading as="h1" id="why-title">Back to where we came from.</RevealHeading>
@@ -20,6 +30,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           Aura exists to bring people back to where we came from. Back to our roots, more time outside, closer to nature.
         </p>
       </div>
+    </LivingHero>
+
+    <section class="story-chapter story-follow">
       <div class="story-prose" data-rise>
         <p>
           An extension of your home, one you're proud of. Beautiful, and slick. A steel frame, smooth glass, and the land still doing most of the talking.
@@ -135,9 +148,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     z-index: 1;
     padding: 14vh 8vw 16vh;
   }
-  .story-essay .story-chapter.page-lead {
-    padding-top: 22vh;
-    padding-bottom: 12vh;
+  .story-essay .story-follow {
+    padding-top: 10vh;
+  }
+  .story-follow .story-prose {
+    margin-top: 0;
   }
   :global(.story-essay .story-chapter h2),
   :global(.story-founder h2) {
@@ -235,8 +250,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .story-essay .story-chapter {
       padding: 10vh 1.5rem 12vh;
     }
-    .story-essay .story-chapter.page-lead {
-      padding-top: 18vh;
+    .story-essay .story-follow {
+      padding-top: 8vh;
     }
     .story-bleed {
       height: 72vh;

@@ -1,0 +1,303 @@
+---
+import HeroMist from './HeroMist.astro';
+import Still from './Still.astro';
+import { posterSrc } from '../lib/stills';
+
+interface Props {
+  film: string;
+  poster: string;
+  alt: string;
+  width: number;
+  height: number;
+  eager?: boolean;
+  id?: string;
+  labelledby?: string;
+}
+
+const {
+  film,
+  poster,
+  alt,
+  width,
+  height,
+  eager = false,
+  id,
+  labelledby,
+} = Astro.props;
+
+const posterUrl = await posterSrc(poster);
+const hasStill = Astro.slots.has('still');
+---
+
+<section
+  class="living-hero"
+  id={id}
+  data-living-hero
+  aria-labelledby={labelledby}
+>
+  <div class="living-hero-stage">
+    {
+      hasStill ? (
+        <slot name="still" />
+      ) : (
+        <Still
+          src={poster}
+          alt={alt}
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : undefined}
+        />
+      )
+    }
+    <video
+      class="living-hero-film"
+      poster={posterUrl}
+      data-living-src={film}
+      muted
+      loop
+      playsinline
+      preload="none"
+      disablepictureinpicture
+      width={width}
+      height={height}
+      aria-hidden="true"
+      tabindex="-1"></video>
+  </div>
+  <div class="living-hero-shade" aria-hidden="true"></div>
+  <HeroMist />
+  <div class="living-hero-copy">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .living-hero {
+    position: relative;
+    z-index: 1;
+    height: 100vh;
+    height: 100svh;
+    min-height: 34rem;
+    overflow: hidden;
+    color: #f4f3ef;
+    background: #0c0d0e;
+  }
+  .living-hero-stage {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .living-hero-stage :global(picture.still-frame) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .living-hero-stage :global(picture.still-frame img) {
+    object-fit: cover;
+  }
+  .living-hero-film {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transform: scale(1);
+    pointer-events: none;
+  }
+  .living-hero-film.is-live {
+    opacity: 1;
+    transition: opacity 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .living-hero-shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(
+        to top,
+        rgba(12, 13, 14, 0.66) 0%,
+        rgba(12, 13, 14, 0.1) 40%,
+        rgba(12, 13, 14, 0.28) 100%
+      ),
+      radial-gradient(ellipse 78% 72% at 50% 42%, transparent 48%, rgba(12, 13, 14, 0.34) 100%);
+  }
+  .living-hero :global(.hero-mist) {
+    z-index: 2;
+  }
+  .living-hero-copy {
+    position: absolute;
+    z-index: 3;
+    left: 8vw;
+    bottom: 12vh;
+    width: min(34rem, 52vw);
+  }
+  .living-hero-copy :global(h1),
+  .living-hero-copy :global(h2) {
+    margin: 0;
+    max-width: 9em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.7rem, 5.4vw, 5.2rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    color: #f4f3ef;
+    text-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  }
+  .living-hero-copy :global(.story-kicker) {
+    color: #c4a07a;
+  }
+  .living-hero-copy :global(.story-lede) {
+    max-width: 24rem;
+    margin-top: 1.35rem;
+    color: rgba(244, 243, 239, 0.84);
+    text-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  @media (min-width: 801px) and (prefers-reduced-motion: no-preference) {
+    .living-hero-film.is-live {
+      will-change: transform;
+      animation: living-breath 18s cubic-bezier(0.45, 0, 0.55, 1) infinite alternate;
+    }
+  }
+
+  @keyframes living-breath {
+    from { transform: scale(1); }
+    to { transform: scale(1.05); }
+  }
+
+  @media (max-width: 800px) {
+    .living-hero {
+      min-height: 0;
+    }
+    .living-hero-copy {
+      left: 1.5rem;
+      bottom: 8vh;
+      width: min(34rem, calc(100% - 3rem));
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .living-hero-film {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  import { holdPageMotion, onPageLoad, prefersReducedMotion } from '../scripts/motion';
+
+  type NetInfo = { saveData?: boolean; effectiveType?: string };
+
+  /** Desktop, and not a metered or slow link. A missing Network Information API counts as fast. */
+  function fastDesktop() {
+    if (prefersReducedMotion()) return false;
+    if (!window.matchMedia('(min-width: 801px) and (any-pointer: fine)').matches) return false;
+    const conn = (navigator as Navigator & { connection?: NetInfo }).connection;
+    if (!conn) return true;
+    if (conn.saveData) return false;
+    return conn.effectiveType !== 'slow-2g' && conn.effectiveType !== '2g' && conn.effectiveType !== '3g';
+  }
+
+  function bindLivingHeroes() {
+    const heroes = Array.from(document.querySelectorAll<HTMLElement>('[data-living-hero]'));
+    if (!heroes.length) {
+      document.body.removeAttribute('data-living-nav');
+      return;
+    }
+    if (heroes.some((hero) => hero.dataset.livingBound === 'yes')) return;
+
+    const allow = fastDesktop();
+    const stops: Array<() => void> = [];
+
+    const syncNav = () => {
+      const cover = heroes.some((hero) => hero.hasAttribute('data-covers-nav'));
+      document.body.toggleAttribute('data-living-nav', cover);
+    };
+
+    heroes.forEach((hero) => {
+      const box = hero.getBoundingClientRect();
+      if (box.top < window.innerHeight * 0.14 && box.bottom > 0) {
+        hero.setAttribute('data-covers-nav', '');
+      }
+    });
+    syncNav();
+
+    const navWatch = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          entry.target.toggleAttribute('data-covers-nav', entry.isIntersecting);
+        });
+        syncNav();
+      },
+      { rootMargin: '0px 0px -86% 0px', threshold: 0 },
+    );
+
+    heroes.forEach((hero) => {
+      hero.dataset.livingBound = 'yes';
+      navWatch.observe(hero);
+
+      const video = hero.querySelector<HTMLVideoElement>('video[data-living-src]');
+      if (!video || !allow) return;
+      const src = video.dataset.livingSrc;
+      if (!src) return;
+
+      let attached = false;
+      const visible = () => {
+        const box = hero.getBoundingClientRect();
+        return box.bottom > window.innerHeight * 0.05 && box.top < window.innerHeight * 0.95;
+      };
+      const reveal = () => {
+        if (!video.isConnected || !visible()) return;
+        video.classList.add('is-live');
+        video.play()?.catch(() => {
+          video.classList.remove('is-live');
+        });
+      };
+      const attach = () => {
+        if (attached) return;
+        attached = true;
+        video.muted = true;
+        video.defaultMuted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = 'metadata';
+        video.src = src;
+        video.load();
+        if (video.readyState >= 2) reveal();
+        else video.addEventListener('loadeddata', reveal, { once: true });
+        video.addEventListener('error', () => video.classList.remove('is-live'), { once: true });
+      };
+
+      const watch = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((entry) => entry.isIntersecting)) {
+            if (video.classList.contains('is-live')) video.pause();
+            return;
+          }
+          attach();
+          if (video.readyState >= 2) reveal();
+        },
+        { rootMargin: '18% 0px', threshold: 0.2 },
+      );
+      watch.observe(hero);
+      stops.push(() => {
+        watch.disconnect();
+        video.pause();
+      });
+    });
+
+    holdPageMotion(() => {
+      navWatch.disconnect();
+      stops.forEach((stop) => stop());
+      heroes.forEach((hero) => {
+        delete hero.dataset.livingBound;
+        hero.removeAttribute('data-covers-nav');
+      });
+      document.body.removeAttribute('data-living-nav');
+    });
+  }
+
+  onPageLoad(() => bindLivingHeroes());
+</script>

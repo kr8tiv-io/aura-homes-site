@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import LivingHero from '../components/LivingHero.astro';
 import Materials from '../components/Materials.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import ShotHold from '../components/ShotHold.astro';
@@ -21,12 +22,23 @@ const uses = [
   descriptor="Rooms"
 >
   <main id="top" class="room-collection">
-    <section class="page-lead">
-      <p class="story-kicker">Rooms</p>
-      <RevealHeading as="h1">The rooms.</RevealHeading>
-      <p class="story-lede">A vibrant extension of your home, in synergy with nature.</p>
-      <p class="room-note">Every unit is built one at a time. Concepts shown; details evolve as we build.</p>
-    </section>
+    <LivingHero
+      labelledby="rooms-title"
+      film="/film/hero/room.mp4"
+      poster="/film/story-room.webp"
+      alt="An open wood room at dusk, linen seating inside, a meadow and a dark treeline beyond the glass."
+      width={1280}
+      height={914}
+      eager
+    >
+      <div data-rise>
+        <p class="story-kicker">Rooms</p>
+        <RevealHeading as="h1" id="rooms-title">The rooms.</RevealHeading>
+        <p class="story-lede">A vibrant extension of your home, in synergy with nature.</p>
+      </div>
+    </LivingHero>
+
+    <p class="room-note">Every unit is built one at a time. Concepts shown; details evolve as we build.</p>
 
     <ul class="room-uses" data-rise>
       {uses.map(([index, label]) => (
@@ -76,8 +88,11 @@ const uses = [
 
 <style>
   .room-note {
+    position: relative;
+    z-index: 1;
     max-width: 32rem;
-    margin: 1.6rem 0 0;
+    margin: 0;
+    padding: 6vh 8vw 0;
     font-weight: 300;
     font-size: 0.95rem;
     line-height: 1.6;
@@ -233,6 +248,9 @@ const uses = [
     }
   }
   @media (max-width: 800px) {
+    .room-note {
+      padding: 4vh 1.5rem 0;
+    }
     .room-uses {
       display: flex;
       gap: 2.2rem;
