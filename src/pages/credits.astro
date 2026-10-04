@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RevealHeading from '../components/RevealHeading.astro';
+import { creditCategories, credits } from '../data/credits';
+
+const groups = creditCategories
+  .map((category) => ({
+    category,
+    entries: credits.filter((entry) => entry.category === category),
+  }))
+  .filter((group) => group.entries.length > 0);
+---
+
+<BaseLayout
+  title="Credits"
+  description="Aura Homes credits the open-source libraries, fonts, models, and techniques the site stands on."
+  descriptor="Credits"
+>
+  <main id="top" class="credits">
+    <header class="page-lead">
+      <RevealHeading as="h1">Credits</RevealHeading>
+      <p class="story-lede">Aura stands on the generosity of open-source makers. Thank you.</p>
+    </header>
+    {groups.map((group) => (
+      <section class="credit-group" aria-labelledby={group.category.replaceAll(' ', '-').toLowerCase()}>
+        <h2 id={group.category.replaceAll(' ', '-').toLowerCase()}>{group.category}</h2>
+        <table>
+          <caption class="sr-only">{group.category}</caption>
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Author</th>
+              <th scope="col">License</th>
+              <th scope="col">Used for</th>
+            </tr>
+          </thead>
+          <tbody>
+            {group.entries.map((entry) => (
+              <tr>
+                <td data-label="Name">
+                  <a href={entry.link}>{entry.name}</a>
+                </td>
+                <td data-label="Author">{entry.author}</td>
+                <td data-label="License">
+                  {entry.licenseLink ? <a href={entry.licenseLink}>{entry.license}</a> : entry.license}
+                </td>
+                <td data-label="Used for">{entry.usedFor}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    ))}
+  </main>
+</BaseLayout>

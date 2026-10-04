@@ -7,7 +7,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "node scripts/check-credits.mjs && astro build",
     "preview": "astro preview",
     "astro": "astro",
     "media": "node scripts/optimize-media.mjs"
