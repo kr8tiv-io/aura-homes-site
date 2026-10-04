@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
 import { Font, getImage } from 'astro:assets';
+import Ambient from '../components/Ambient.astro';
 import mark from '../assets/logo/aura-mark.svg?raw';
 import cabinPoster from '../../public/film/cabin-poster-hi.webp';
 import { organizationJson } from '../lib/organization';
@@ -149,7 +150,7 @@ const foot = menu.flatMap((group) => group.links);
               </g>
             </svg>
           </button>
-          <a href="/pre-order" class="nav-cta">Pre-order</a>
+          <a href="/pre-order" class="nav-cta is-slide"><span class="slide-face"><span class="slide-line">Pre-order</span><span class="slide-line" aria-hidden="true">Pre-order</span></span></a>
         </div>
       </header>
     ) : (
@@ -174,7 +175,7 @@ const foot = menu.flatMap((group) => group.links);
               </g>
             </svg>
           </button>
-          {!isBuilder && <a href="/pre-order" class="nav-cta" aria-current={path === '/pre-order' ? 'page' : undefined}>Pre-order</a>}
+          {!isBuilder && <a href="/pre-order" class="nav-cta is-slide" aria-current={path === '/pre-order' ? 'page' : undefined}><span class="slide-face"><span class="slide-line">Pre-order</span><span class="slide-line" aria-hidden="true">Pre-order</span></span></a>}
         </div>
       </header>
     )}
@@ -240,6 +241,8 @@ const foot = menu.flatMap((group) => group.links);
       </div>
     )}
 
+    <Ambient persist={!isHome} />
+
     <div class="page-main relative z-10">
       <slot />
     </div>
@@ -266,6 +269,8 @@ const foot = menu.flatMap((group) => group.links);
       import { initSmoothScroll, resetPageMotion, stopSmoothScroll, ScrollTrigger } from '../scripts/motion';
       import { bindDaylight } from '../scripts/daylight';
       import { bindSiteCursor } from '../scripts/cursor';
+      import { bindAmbient } from '../scripts/ambient';
+      import { bindFields } from '../scripts/forms';
 
       initSmoothScroll();
       bindDaylight();
@@ -536,8 +541,12 @@ const foot = menu.flatMap((group) => group.links);
       };
       bindLogos();
       bindSiteCursor();
+      bindAmbient();
+      bindFields();
       document.addEventListener('astro:page-load', () => {
         bindLogos();
+        bindAmbient();
+        bindFields();
         window.__lenis?.resize();
       });
 
@@ -545,7 +554,7 @@ const foot = menu.flatMap((group) => group.links);
       const panel = document.getElementById('story-menu');
       const pageMain = document.querySelector('.page-main') as HTMLElement | null;
       const foot = document.querySelector('.site-foot') as HTMLElement | null;
-      const navLock = Array.from(document.querySelectorAll('.nav-brand, .nav-words, .nav-cta')) as HTMLElement[];
+      const navLock = Array.from(document.querySelectorAll('.nav-brand, .nav-words, .nav-cta, .ambient')) as HTMLElement[];
       const line = panel?.querySelector('.menu-horizon') as HTMLElement | null;
       const clip = panel?.querySelector('.menu-ridge-clip') as HTMLElement | null;
       const shift = panel?.querySelector('.menu-ridge-shift') as HTMLElement | null;

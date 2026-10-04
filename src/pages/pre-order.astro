@@ -47,24 +47,27 @@ const offgrid = [
       <form class="join-card quote-form" id="quote-form" action={formAction} method="post">
         <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <div class="quote-grid">
-          <div>
+          <div class="field">
+            <input id="quote-name" name="name" type="text" autocomplete="name" required maxlength="80" placeholder=" " />
             <label for="quote-name">Name</label>
-            <input id="quote-name" name="name" type="text" autocomplete="name" required maxlength="80" />
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
+          <div class="field">
+            <input id="quote-email" name="email" type="email" autocomplete="email" required maxlength="120" placeholder=" " />
             <label for="quote-email">Email</label>
-            <input id="quote-email" name="email" type="email" autocomplete="email" required maxlength="120" />
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
+          <div class="field">
+            <input id="quote-phone" name="phone" type="tel" autocomplete="tel" maxlength="40" placeholder=" " />
             <label for="quote-phone">Phone (optional)</label>
-            <input id="quote-phone" name="phone" type="tel" autocomplete="tel" maxlength="40" />
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
+          <div class="field">
+            <input id="quote-location" name="location" type="text" autocomplete="address-level2" required maxlength="120" placeholder=" " />
             <label for="quote-location">City, province or country</label>
-            <input id="quote-location" name="location" type="text" autocomplete="address-level2" required maxlength="120" />
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
-            <label for="quote-model">Model</label>
+          <div class="field">
             <select id="quote-model" name="model" required>
               {roomConcepts.map((room) => (
                 <option value={room.slug}>{room.name}</option>
@@ -72,49 +75,56 @@ const offgrid = [
               <option value="custom">Custom / bring my own trailer</option>
               <option value="unsure" selected>Not sure yet</option>
             </select>
+            <label for="quote-model">Model</label>
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
-            <label for="quote-use">Intended use</label>
+          <div class="field">
             <select id="quote-use" name="use" required>
               <option value="" selected disabled>Choose one</option>
               {uses.map(([value, label]) => (
                 <option value={value}>{label}</option>
               ))}
             </select>
+            <label for="quote-use">Intended use</label>
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
-            <label for="quote-finish">Polycarbonate finish</label>
+          <div class="field">
             <select id="quote-finish" name="finish" required>
               {finishes.map(([value, label]) => (
                 <option value={value} selected={value === 'undecided'}>{label}</option>
               ))}
             </select>
+            <label for="quote-finish">Polycarbonate finish</label>
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
-            <label for="quote-offgrid">Off-grid interest</label>
+          <div class="field">
             <select id="quote-offgrid" name="offgrid" required>
               <option value="" selected disabled>Choose one</option>
               {offgrid.map(([value, label]) => (
                 <option value={value}>{label}</option>
               ))}
             </select>
+            <label for="quote-offgrid">Off-grid interest</label>
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div class="is-wide">
+          <div class="field is-wide">
+            <input id="quote-timeline" name="timeline" type="text" required maxlength="160" placeholder=" " />
             <label for="quote-timeline">Timeline</label>
-            <input id="quote-timeline" name="timeline" type="text" required maxlength="160" />
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div class="is-wide">
+          <div class="field is-wide">
+            <textarea id="quote-message" name="message" required maxlength="2000" placeholder=" "></textarea>
             <label for="quote-message">Message</label>
-            <textarea id="quote-message" name="message" required maxlength="2000"></textarea>
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
         </div>
-        <button type="submit">Get a quote</button>
-        <p class="join-status" data-quote-status role="status"></p>
+        <button type="submit" class="is-slide"><span class="slide-face"><span class="slide-line">Get a quote</span><span class="slide-line" aria-hidden="true">Get a quote</span></span></button>
+        <p class="join-status" data-quote-status role="status"><span data-status-line></span></p>
       </form>
 
       <div class="join-card quote-thanks" id="quote-thanks" hidden>
         <RevealHeading as="h2" tabindex="-1">We have your note.</RevealHeading>
-        <p>We will reach out personally. Nothing was charged.</p>
+        <p data-sent-host><span>We will reach out personally. Nothing was charged.</span></p>
       </div>
     </section>
   </main>
@@ -202,6 +212,7 @@ const offgrid = [
 
 <script>
   import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+  import { showSentMark } from '../scripts/forms';
 
   onPageLoad(() => {
   const form = document.getElementById('quote-form');
@@ -289,6 +300,8 @@ const offgrid = [
     if (!(form instanceof HTMLFormElement) || !(thanks instanceof HTMLElement)) return;
     form.hidden = true;
     thanks.hidden = false;
+    const host = thanks.querySelector('[data-sent-host]');
+    if (host instanceof HTMLElement) showSentMark(host);
     const title = thanks.querySelector('h2');
     if (title instanceof HTMLElement) title.focus();
     if (!prefersReducedMotion()) {
@@ -309,8 +322,9 @@ const offgrid = [
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const status = form.querySelector('[data-quote-status]');
+      const statusLine = status?.querySelector('[data-status-line]');
       const button = form.querySelector('button[type="submit"]');
-      if (!(status instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
+      if (!(status instanceof HTMLElement) || !(statusLine instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
       if (fieldText('company') !== '') {
         showThanks();
         return;
@@ -319,7 +333,7 @@ const offgrid = [
       const action = form.getAttribute('action') || '';
       try {
         if (action.startsWith('https://')) {
-          status.textContent = 'Sending.';
+          statusLine.textContent = 'Sending.';
           const res = await fetch(action, {
             method: 'POST',
             body: new FormData(form),
@@ -344,7 +358,7 @@ const offgrid = [
         }
         showThanks();
       } catch {
-        status.textContent = 'The line did not answer. Try again in a moment.';
+        statusLine.textContent = 'The line did not answer. Try again in a moment.';
         button.disabled = false;
       }
     });

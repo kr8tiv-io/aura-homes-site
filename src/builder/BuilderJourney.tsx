@@ -1,6 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { bindRevealHeadings } from '../scripts/reveal-heading';
+import { ambientWanted, setAmbient } from '../scripts/ambient';
 import StoryCanvas from './StoryCanvas';
+
+function SlideText({ text }: { text: string }) {
+  return (
+    <span className="slide-face">
+      <span className="slide-line">{text}</span>
+      <span className="slide-line" aria-hidden="true">{text}</span>
+    </span>
+  );
+}
 
 type Beat = {
   id: string;
@@ -94,7 +104,6 @@ export default function BuilderJourney() {
   const progressRef = useRef(0);
   const sectionsRef = useRef<Array<HTMLElement | null>>([]);
   const plateRefs = useRef<Array<HTMLElement | null>>([]);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const [entered, setEntered] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [reduced, setReduced] = useState(false);
@@ -119,10 +128,7 @@ export default function BuilderJourney() {
     setLeaving(true);
     window.setTimeout(() => {
       setEntered(true);
-      if (withSound && audioRef.current) {
-        audioRef.current.volume = 0.35;
-        audioRef.current.play().then(() => setSound(true)).catch(() => setSound(false));
-      }
+      if (withSound) void setAmbient(true);
     }, 460);
   }, []);
 
@@ -203,26 +209,28 @@ export default function BuilderJourney() {
     bindRevealHeadings(document.getElementById('byo-root') ?? document);
   }, [entered]);
 
+  useEffect(() => {
+    const sync = () => setSound(ambientWanted());
+    sync();
+    document.addEventListener('aura-ambient', sync);
+    return () => document.removeEventListener('aura-ambient', sync);
+  }, []);
+
   const toggleSound = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    if (sound) {
-      audio.pause();
-      setSound(false);
-    } else {
-      audio.volume = 0.35;
-      audio.play().then(() => setSound(true)).catch(() => setSound(false));
-    }
+    void setAmbient(!ambientWanted());
   };
 
   return (
     <div className="b-root">
-      <audio ref={audioRef} src="/film/forest-ambience.mp3" loop preload="none" />
       <StoryCanvas progressRef={progressRef} reduced={reduced} night={night} shotKey={shotKey} />
 
       <div className="b-hud">
-        <button type="button" onClick={() => setNight((n) => !n)}>{night ? 'Day' : 'Night'}</button>
-        <button type="button" onClick={toggleSound}>{sound ? 'Sound off' : 'Sound'}</button>
+        <button type="button" className="is-slide" onClick={() => setNight((n) => !n)}>
+          <SlideText text={night ? 'Day' : 'Night'} />
+        </button>
+        <button type="button" className="is-slide" onClick={toggleSound}>
+          <SlideText text={sound ? 'Sound off' : 'Sound'} />
+        </button>
       </div>
 
       <div className="b-stage" aria-live="polite">
@@ -238,7 +246,7 @@ export default function BuilderJourney() {
             <h2 data-reveal-heading data-reveal-when="visible">{b.heading}</h2>
             <p>{b.body}</p>
             {b.href && b.cta ? (
-              <a href={b.href} target="_blank" rel="noreferrer">{b.cta}</a>
+              <a className="is-slide" href={b.href} target="_blank" rel="noreferrer"><SlideText text={b.cta} /></a>
             ) : null}
           </article>
         ))}
@@ -323,7 +331,7 @@ export default function BuilderJourney() {
           <p className="b-brief">
             {length}. {glass} glass. {use}.
           </p>
-          <a className="b-quote" href={quoteHref}>Send this design with a quote request</a>
+          <a className="b-quote is-slide" href={quoteHref}><SlideText text="Send this design with a quote request" /></a>
           <p className="b-links">
             <a href={SOURCE} target="_blank" rel="noreferrer">Build it on GitHub</a>
           </p>
@@ -347,8 +355,8 @@ export default function BuilderJourney() {
             <p className="b-kicker">The clearing</p>
             <h1 data-reveal-heading data-reveal-display="yes">Build Your Own.</h1>
             <p>Walk the clearing, then set the room.</p>
-            <button type="button" onClick={() => enter(true)}>Enter the clearing</button>
-            <button type="button" className="b-quiet" onClick={() => enter(false)}>Enter quietly</button>
+            <button type="button" className="is-slide" onClick={() => enter(true)}><SlideText text="Enter the clearing" /></button>
+            <button type="button" className="b-quiet is-slide" onClick={() => enter(false)}><SlideText text="Enter quietly" /></button>
           </div>
         </div>
       )}

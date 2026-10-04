@@ -122,12 +122,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     letter-spacing: -0.02em;
     color: #14120e;
     text-decoration: none;
-    border-bottom: 1px solid #9c7a55;
-    padding-bottom: 0.2rem;
-    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .wild-links a:hover {
-    opacity: 0.55;
   }
 
   @media (max-width: 800px) {
@@ -136,11 +130,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .wild-links a {
-      transition: none;
-    }
-  }
+
 </style>
 
 <script>

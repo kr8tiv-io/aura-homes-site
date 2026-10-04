@@ -1,0 +1,46 @@
+---
+interface Props {
+  persist?: boolean;
+}
+
+const { persist = false } = Astro.props;
+---
+
+{
+  persist ? (
+    <>
+      <button
+        type="button"
+        class="ambient"
+        data-ambient
+        aria-pressed="false"
+        aria-label="Forest sound, off"
+        transition:name="ambient"
+        transition:persist="ambient"
+        transition:animate="none"
+      >
+        <span class="ambient-wave" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+      </button>
+      <audio
+        id="ambient-audio"
+        src="/film/forest-ambience.mp3"
+        loop
+        preload="none"
+        transition:name="ambient-audio"
+        transition:persist="ambient-audio"
+        transition:animate="none"
+      />
+    </>
+  ) : (
+    <>
+      <button type="button" class="ambient" data-ambient aria-pressed="false" aria-label="Forest sound, off">
+        <span class="ambient-wave" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+      </button>
+      <audio id="ambient-audio" src="/film/forest-ambience.mp3" loop preload="none" />
+    </>
+  )
+}
