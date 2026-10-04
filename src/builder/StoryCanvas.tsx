@@ -12,12 +12,15 @@ export default function StoryCanvas({
   progressRef,
   reduced,
   night = false,
+  shotKey = null,
 }: {
   progressRef: React.MutableRefObject<number>;
   reduced: boolean;
   night?: boolean;
+  shotKey?: string | null;
 }) {
   const [webgl, setWebgl] = useState<boolean | null>(null);
+  const [present, setPresent] = useState(true);
 
   useEffect(() => {
     try {
@@ -33,6 +36,38 @@ export default function StoryCanvas({
     }
   }, []);
 
+  useEffect(() => {
+    if (webgl !== true) return;
+    const el = document.querySelector(".b-root canvas");
+    if (!el) return;
+    let seen = true;
+    let tab = document.visibilityState === "visible";
+    const apply = () => {
+      const box = el.getBoundingClientRect();
+      const sized = box.width > 2 && box.height > 2;
+      const run = tab && (!sized || seen);
+      setPresent((prev) => (prev === run ? prev : run));
+    };
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        seen = entry.isIntersecting;
+        apply();
+      },
+      { threshold: 0 }
+    );
+    io.observe(el);
+    const onVis = () => {
+      tab = document.visibilityState === "visible";
+      apply();
+    };
+    document.addEventListener("visibilitychange", onVis);
+    apply();
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+    };
+  }, [webgl]);
+
   if (webgl === null) return null;
   if (webgl === false) return <StillScene />;
 
@@ -42,7 +77,7 @@ export default function StoryCanvas({
       /* Cap at 2. A 3x display stays at 2 so the clearing does not pay for
          a full device buffer. */
       dpr={[1, 2]}
-      frameloop={reduced ? "demand" : "always"}
+      frameloop={!present ? "never" : reduced ? "demand" : "always"}
       /* far was 140 — the mountain range sits well beyond that and was being
          clipped into a grey slab across the sky. 260 clears the range from
          every camera beat while keeping the near/far ratio modest enough not
@@ -51,6 +86,7 @@ export default function StoryCanvas({
       camera={{ fov: 38, near: 0.4, far: 260, position: [-4.5, 5.4, 17.5] }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
+        gl.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
         gl.setClearColor(0x000000, 0);
         /* ACES over AgX (both trialled, Aug 2026): AgX's gentler highlight
            rolloff helped the dusk sun, but it desaturated the emerald
@@ -64,7 +100,7 @@ export default function StoryCanvas({
       aria-hidden
     >
       <Suspense fallback={null}>
-        <Scene progressRef={progressRef} reduced={reduced} night={night} />
+        <Scene progressRef={progressRef} reduced={reduced} night={night} shotKey={shotKey} />
       </Suspense>
     </Canvas>
   );

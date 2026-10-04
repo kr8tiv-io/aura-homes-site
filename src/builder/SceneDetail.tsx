@@ -323,10 +323,11 @@ function mergeNonIndexed(geos: THREE.BufferGeometry[]) {
   return out;
 }
 
-/** The key direction every baked-light surface in this file agrees on.
- *  It matches the LightArc's daytime sun in Scene.tsx. If that moves, this
- *  moves — inconsistent light is worse than no light. */
-const KEY = new THREE.Vector3(18, 16, 13).normalize();
+/** Daytime sun for every baked surface in this file.
+ *  About 16 degrees up, the same direction as LightArc in Scene.tsx.
+ *  If that sun moves, this moves with it. */
+export const GOLDEN_SUN = new THREE.Vector3(-0.72, 0.28, 0.63).normalize();
+const KEY = GOLDEN_SUN;
 
 function cloudGeometry(seed: number) {
   const parts: THREE.BufferGeometry[] = [];
@@ -1269,11 +1270,11 @@ function GrassField({
              terrain, so every blade lifted off the lawn as a pale spike. */
           uColTip: { value: new THREE.Color("#93b06a") },
           uSunDir: { value: KEY.clone() },
-          uSunCol: { value: new THREE.Color("#fff3dd") },
+          uSunCol: { value: new THREE.Color("#ffc98a") },
           uSunI: { value: 1.15 },
           uHemiSky: { value: new THREE.Color("#dcecf4") },
           uHemiGround: { value: new THREE.Color("#7a8b5e") },
-          uFogColor: { value: new THREE.Color("#e3ede7") },
+          uFogColor: { value: new THREE.Color("#f0d2b0") },
           uFogNear: { value: 30 },
           uFogFar: { value: 88 },
           uNight: { value: 0 },
@@ -1288,14 +1289,14 @@ function GrassField({
     () =>
       dusk.add((d: number) => {
         const u = mat.uniforms;
-        (u.uSunCol.value as THREE.Color).setHex(0xfff3dd).lerp(new THREE.Color("#ffc48c"), d);
+        (u.uSunCol.value as THREE.Color).set("#ffc98a").lerp(new THREE.Color("#ffb46b"), d);
         /* v1 warmed the tip toward #d8c07e at 0.75 strength — a genuine
            orange, and BRAND.md section 2 contains none. #bdb887 is the same
            move in muted sage-gold and stays inside the palette. */
         (u.uColTip.value as THREE.Color).setHex(0x93b06a).lerp(new THREE.Color("#9aa863"), d * 0.55);
         (u.uSunDir.value as THREE.Vector3)
           .copy(KEY)
-          .lerp(new THREE.Vector3(-18, 7, 18).normalize(), d)
+          .lerp(new THREE.Vector3(-22, 5.5, 16).normalize(), d)
           .normalize();
         u.uSunI.value = 1.15 - d * 0.3;
       }),
@@ -1676,6 +1677,7 @@ function Bollard({ position, night }: { position: [number, number]; night: numbe
           emissive="#ffca7a"
           emissiveIntensity={0.25 + night * 2.4}
           roughness={0.4}
+          toneMapped={false}
         />
       </mesh>
     </group>
@@ -1707,6 +1709,7 @@ function OutdoorLighting({ night }: { night: number }) {
             emissive="#ffb86b"
             emissiveIntensity={0.2 + night * 2.6}
             roughness={0.5}
+            toneMapped={false}
           />
         </mesh>
       ))}
