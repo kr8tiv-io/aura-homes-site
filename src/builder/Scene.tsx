@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useRef, useState, useLayoutEffect } from "react";
+import { useEffect, useMemo, useRef, useState, useLayoutEffect } from "react";
 import * as THREE from "three";
+import { gsap } from "gsap";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useGLTF, Sparkles, Html, Environment, SoftShadows } from "@react-three/drei";
+import { useGLTF, Sparkles, Html, Environment, SoftShadows, ContactShadows } from "@react-three/drei";
 import { EffectComposer, Bloom, Vignette, Noise } from "@react-three/postprocessing";
 const withBase = (p: string) => p.replace("/models/", "/models/builder/");
-import SceneDetail, { meadowShade, trailTrodden } from "./SceneDetail";
+import SceneDetail, { meadowShade, trailTrodden, GOLDEN_SUN } from "./SceneDetail";
 
 /* ------------------------------------------------------------------ */
 /* One continuous camera journey (kage-inspired motion, ours in every  */
@@ -66,6 +67,21 @@ const CTRL: Ctrl[] = [
 ];
 
 const REDUCED_SHOT = { p: [9.4, 4.3, 13.4], t: [0.2, 2.2, 1.2], fov: 38 } as const;
+
+/* Option shots. The last control the visitor changes wins. Keys match the
+   select labels in BuilderJourney, prefixed with the control name. */
+const SHOTS: Record<string, { p: [number, number, number]; t: [number, number, number]; fov: number }> = {
+  "use:A room": { p: [6.8, 2.8, 12.4], t: [0.2, 2.0, 1.4], fov: 38 },
+  "use:Glass on piles": { p: [4.2, 2.2, 9.6], t: [2.2, 1.2, 4.6], fov: 36 },
+  "use:A farm wall": { p: [-8.2, 2.6, 8.4], t: [-0.4, 2.2, 0.6], fov: 40 },
+  "use:Water from the air": { p: [3.4, 7.2, 12.8], t: [0.6, 3.4, 0.2], fov: 34 },
+  "glass:Clear": { p: [0.4, 2.1, 11.2], t: [0, 2.2, 0], fov: 36 },
+  "glass:Mirror": { p: [7.6, 2.4, 8.8], t: [0.2, 2.0, 1.2], fov: 38 },
+  "glass:Tinted": { p: [2.8, 1.7, 9.4], t: [0, 2.0, 0.4], fov: 40 },
+  "length:20 ft": { p: [4.2, 2.2, 8.6], t: [0, 1.8, 0.8], fov: 42 },
+  "length:28 ft": { p: [7.2, 3.2, 12.6], t: [0, 1.9, 1.0], fov: 38 },
+  "length:36 ft": { p: [10.4, 4.6, 16.8], t: [0, 2.0, 1.0], fov: 34 },
+};
 
 /* ------------------------------ assets ------------------------------ */
 
@@ -685,7 +701,7 @@ function SunShafts({
     () =>
       new THREE.Quaternion().setFromUnitVectors(
         new THREE.Vector3(0, 1, 0),
-        new THREE.Vector3(18, 16, 13).normalize()
+        GOLDEN_SUN.clone()
       ),
     []
   );
@@ -1233,7 +1249,7 @@ function HotTub({ position, dusk, frozen = false }: { position: [number, number,
     () =>
       dusk.add((d) => {
         if (water.current) water.current.emissiveIntensity = 0.1 + d * 0.26;
-        if (stoveGlow.current) stoveGlow.current.emissiveIntensity = 0.18 + d * 0.45;
+        if (stoveGlow.current) stoveGlow.current.emissiveIntensity = 0.35 + d * 1.15;
       }),
     [dusk]
   );
@@ -1306,8 +1322,9 @@ function HotTub({ position, dusk, frozen = false }: { position: [number, number,
             ref={stoveGlow}
             color="#6a4a32"
             emissive="#e39a55"
-            emissiveIntensity={0.22}
+            emissiveIntensity={0.35}
             roughness={0.8}
+            toneMapped={false}
           />
         </mesh>
         <mesh castShadow position={[0.04, 1.05, 0]}>
@@ -1478,10 +1495,16 @@ function StringLights({ points, dusk }: { points: [number, number, number][]; du
     }
     return { wire, bulbs };
   }, [points]);
-  const mat = useMemo(
-    () => new THREE.MeshStandardMaterial({ color: "#efe6d2", emissive: "#ffcf8a", emissiveIntensity: 0.03, roughness: 0.4 }),
-    []
-  );
+  const mat = useMemo(() => {
+    const m = new THREE.MeshStandardMaterial({
+      color: "#efe6d2",
+      emissive: "#ffcf8a",
+      emissiveIntensity: 0.03,
+      roughness: 0.4,
+    });
+    m.toneMapped = false;
+    return m;
+  }, []);
   useLayoutEffect(
     () =>
       dusk.add((d) => {
@@ -2017,9 +2040,39 @@ function Hotspots() {
 
 /* ------------------------------- rig -------------------------------- */
 
-function CameraRig({ progressRef, reduced }: { progressRef: React.MutableRefObject<number>; reduced: boolean }) {
+function CameraRig({
+  progressRef,
+  reduced,
+  shotKey,
+}: {
+  progressRef: React.MutableRefObject<number>;
+  reduced: boolean;
+  shotKey: string | null;
+}) {
   const { camera } = useThree();
-  const rig = useRef({ smooth: 0, mx: 0, my: 0, started: -1, lastDusk: -1 });
+  const rig = useRef({
+    smooth: 0,
+    mx: 0,
+    my: 0,
+    started: -1,
+    lastDusk: -1,
+    prevP: -1,
+    still: 0,
+    returning: false,
+    orbitT: 0,
+  });
+  const pose = useRef({
+    px: 0,
+    py: 0,
+    pz: 0,
+    tx: 0,
+    ty: 0,
+    tz: 0,
+    fov: 38,
+    blend: 0,
+    orbit: 0,
+  });
+  const tween = useRef<gsap.core.Tween | null>(null);
   const curves = useMemo(() => {
     const P = new THREE.CatmullRomCurve3(
       CTRL.map((c) => new THREE.Vector3(c.p[0], c.ground ? terrainH(c.p[0], c.p[2]) + c.p[1] : c.p[1], c.p[2])),
@@ -2033,20 +2086,79 @@ function CameraRig({ progressRef, reduced }: { progressRef: React.MutableRefObje
   const _p = useMemo(() => new THREE.Vector3(), []);
   const _t = useMemo(() => new THREE.Vector3(), []);
   const _d = useMemo(() => new THREE.Vector3(), []);
+  const _shotP = useMemo(() => new THREE.Vector3(), []);
+  const _shotT = useMemo(() => new THREE.Vector3(), []);
+  const _off = useMemo(() => new THREE.Vector3(), []);
+  const _sph = useMemo(() => new THREE.Spherical(), []);
 
   useLayoutEffect(() => {
-    if (reduced) {
+    if (reduced && !shotKey) {
       camera.position.set(...REDUCED_SHOT.p);
       camera.lookAt(new THREE.Vector3(...REDUCED_SHOT.t));
       (camera as THREE.PerspectiveCamera).fov = REDUCED_SHOT.fov;
       camera.updateProjectionMatrix();
       document.documentElement.style.setProperty("--st-dusk", "1");
     }
-  }, [camera, reduced]);
+  }, [camera, reduced, shotKey]);
+
+  useEffect(() => {
+    if (!shotKey) return;
+    const shot = SHOTS[shotKey];
+    if (!shot) return;
+    const hold = pose.current;
+    const cam = camera as THREE.PerspectiveCamera;
+    if (hold.blend < 0.5) {
+      const dir = new THREE.Vector3();
+      cam.getWorldDirection(dir);
+      hold.px = cam.position.x;
+      hold.py = cam.position.y;
+      hold.pz = cam.position.z;
+      hold.tx = cam.position.x + dir.x * 8;
+      hold.ty = cam.position.y + dir.y * 8;
+      hold.tz = cam.position.z + dir.z * 8;
+      hold.fov = cam.fov;
+      hold.orbit = 0;
+    }
+    hold.blend = 1;
+    rig.current.returning = false;
+    tween.current?.kill();
+    if (reduced) {
+      hold.px = shot.p[0];
+      hold.py = shot.p[1];
+      hold.pz = shot.p[2];
+      hold.tx = shot.t[0];
+      hold.ty = shot.t[1];
+      hold.tz = shot.t[2];
+      hold.fov = shot.fov;
+      cam.position.set(shot.p[0], shot.p[1], shot.p[2]);
+      cam.lookAt(shot.t[0], shot.t[1], shot.t[2]);
+      cam.fov = shot.fov;
+      cam.updateProjectionMatrix();
+      return;
+    }
+    const tw = gsap.to(hold, {
+      px: shot.p[0],
+      py: shot.p[1],
+      pz: shot.p[2],
+      tx: shot.t[0],
+      ty: shot.t[1],
+      tz: shot.t[2],
+      fov: shot.fov,
+      duration: 2.8,
+      ease: "power3.inOut",
+      overwrite: "auto",
+    });
+    tween.current = tw;
+    return () => {
+      tw.kill();
+      if (tween.current === tw) tween.current = null;
+    };
+  }, [shotKey, reduced, camera]);
 
   useFrame((state, dt) => {
     if (reduced) return;
     const r = rig.current;
+    const hold = pose.current;
     const d = Math.min(dt, 1 / 20);
     r.smooth = THREE.MathUtils.damp(r.smooth, progressRef.current, 5, d);
     r.mx = THREE.MathUtils.damp(r.mx, state.pointer.x, 3, d);
@@ -2054,16 +2166,34 @@ function CameraRig({ progressRef, reduced }: { progressRef: React.MutableRefObje
     if (r.started < 0) r.started = state.clock.elapsedTime;
     const intro = easeOutCubic(clamp01((state.clock.elapsedTime - r.started) / 2.2));
 
+    if (r.prevP < 0) r.prevP = progressRef.current;
+    else {
+      const dp = Math.abs(progressRef.current - r.prevP);
+      r.prevP = progressRef.current;
+      if (dp > 0.012) {
+        r.still = 0;
+        if (hold.blend > 0.02) {
+          tween.current?.kill();
+          r.returning = true;
+        }
+      } else r.still += d;
+    }
+    if (r.returning) {
+      hold.blend = THREE.MathUtils.damp(hold.blend, 0, 1.4, d);
+      if (hold.blend < 0.008) {
+        hold.blend = 0;
+        r.returning = false;
+      }
+    }
+
     const N = 6; // beats 0..6
     const u = clamp01(r.smooth / N);
     curves.P.getPoint(u, _p);
     curves.T.getPoint(u, _t);
-    // fov follows the even-indexed beat controls
     const fi = Math.min(Math.floor(r.smooth), N - 1);
     const ff = clamp01(r.smooth - fi);
     let fov = THREE.MathUtils.lerp(CTRL[fi * 2].fov, CTRL[Math.min(fi + 1, N) * 2].fov, ff);
 
-    // Tall-frame fix: step back along the view axis and open the lens.
     const aspect = state.size.width / state.size.height;
     const nf = clamp01((1.55 - aspect) / 1.0);
     if (nf > 0) {
@@ -2073,20 +2203,44 @@ function CameraRig({ progressRef, reduced }: { progressRef: React.MutableRefObje
       fov *= 1 + nf * 0.32;
     }
 
-    // Opening dolly.
     const io = 1 - intro;
     _p.z += io * 4.2;
     _p.y += io * 0.5;
     fov += io * 6;
 
-    // Pointer parallax — hand-held, fading deeper into the journey.
+    if (hold.blend > 0.0008) {
+      _shotP.set(hold.px, hold.py, hold.pz);
+      _shotT.set(hold.tx, hold.ty, hold.tz);
+      _p.lerp(_shotP, hold.blend);
+      _t.lerp(_shotT, hold.blend);
+      fov = THREE.MathUtils.lerp(fov, hold.fov, hold.blend);
+    }
+
     const par = 1 - clamp01(r.smooth / 1.6) * 0.5;
     _p.x += r.mx * 0.5 * par;
     _p.y += r.my * 0.28 * par;
     _t.x -= r.mx * 0.16 * par;
     _t.y -= r.my * 0.09 * par;
 
-    // Never sink into the terrain.
+    const tweening = !!tween.current?.isActive();
+    const holding = hold.blend < 0.02 || hold.blend > 0.98;
+    const orbitOn = intro >= 1 && r.still >= 1.5 && !tweening && !r.returning && holding;
+    /* A full turn would pass through the room. This is a slow arc, about
+       26 degrees either way, so the idle camera stays outside. */
+    if (orbitOn) r.orbitT += d;
+    const sway = orbitOn ? Math.sin(r.orbitT * 0.12) * 0.46 : 0;
+    hold.orbit = THREE.MathUtils.damp(hold.orbit, sway, 1.4, d);
+
+    if (Math.abs(hold.orbit) > 1e-4) {
+      _off.subVectors(_p, _t);
+      if (_off.lengthSq() > 0.04) {
+        _sph.setFromVector3(_off);
+        _sph.theta += hold.orbit;
+        _off.setFromSpherical(_sph);
+        _p.copy(_t).add(_off);
+      }
+    }
+
     const minY = terrainH(_p.x, _p.z) + 0.7;
     if (_p.y < minY) _p.y = minY;
 
@@ -2098,7 +2252,6 @@ function CameraRig({ progressRef, reduced }: { progressRef: React.MutableRefObje
       pc.updateProjectionMatrix();
     }
 
-    // Publish dusk to the DOM sky (throttled).
     const dusk = smoothstep(4.0, 6.0, r.smooth);
     if (Math.abs(dusk - r.lastDusk) > 0.01) {
       r.lastDusk = dusk;
@@ -2143,36 +2296,35 @@ function LightArc({
   reduced,
   dusk,
   night = 0,
+  skyAmt,
 }: {
   progressRef: React.MutableRefObject<number>;
   reduced: boolean;
   dusk: Dusk;
   night?: number;
+  skyAmt: React.MutableRefObject<{ night: number; dusk: number }>;
 }) {
   const sun = useRef<THREE.DirectionalLight>(null);
   const hemi = useRef<THREE.HemisphereLight>(null);
   const { scene } = useThree();
   const rig = useRef({ smooth: 0 });
-  /* THE KEY. It used to sit at (16, 26, 12) — 52 degrees of elevation, which
-     is nearly overhead: every prop's shadow collapsed underneath it and only
-     the deck, which is large, showed any contact at all. Rocks, fence posts,
-     lanterns and chairs looked pasted on. (18, 16, 13) is 33 degrees, so a
-     0.5 m rock throws a 0.8 m shadow the camera can actually see. The same
-     vector is the baked light in SceneDetail's KEY — one key, one direction,
-     everywhere. */
+  /* Golden hour, about 16 degrees. The same vector is GOLDEN_SUN in
+     SceneDetail, so the baked meadow and the live sun agree. The scroll
+     then lowers it a little further. Night swaps in the moon. */
+  const dayP = useMemo(() => GOLDEN_SUN.clone().multiplyScalar(28), []);
   const cools = useMemo(
     () => ({
-      sunP: new THREE.Vector3(18, 16, 13).multiplyScalar(1.5),
-      sunC: new THREE.Color("#fff3dd"),
-      fogC: new THREE.Color("#e3ede7"),
+      sunP: dayP,
+      sunC: new THREE.Color("#ffc98a"),
+      fogC: new THREE.Color("#f0d2b0"),
     }),
-    []
+    [dayP]
   );
   const warms = useMemo(
     () => ({
-      sunP: new THREE.Vector3(-18, 7, 18),
+      sunP: new THREE.Vector3(-22, 5.5, 16),
       sunC: new THREE.Color("#ffb46b"),
-      fogC: new THREE.Color("#eedcc6"),
+      fogC: new THREE.Color("#e7c4a4"),
     }),
     []
   );
@@ -2180,7 +2332,7 @@ function LightArc({
     () => ({
       sunP: new THREE.Vector3(-14, 30, -10), // moon
       sunC: new THREE.Color("#9fb6d8"),
-      fogC: new THREE.Color("#161f2b"),
+      fogC: new THREE.Color("#1a1f29"),
     }),
     []
   );
@@ -2193,7 +2345,9 @@ function LightArc({
     /* The scroll dusk arc and the night toggle compose rather than compete:
        night FLOORS the arc at full, so flipping to night at the top of the
        page lands in the same warm-then-dark place the journey would have. */
-    const d = Math.max(smoothstep(4.0, 6.0, rig.current.smooth), night);
+    const scrollDusk = smoothstep(4.0, 6.0, rig.current.smooth);
+    skyAmt.current.dusk = scrollDusk;
+    const d = Math.max(scrollDusk, night);
     dusk.set(d);
     if (sun.current) {
       _v.lerpVectors(cools.sunP, warms.sunP, d);
@@ -2203,7 +2357,7 @@ function LightArc({
       _c.lerpColors(cools.sunC, warms.sunC, d);
       _c.lerp(nights.sunC, night);
       sun.current.color.copy(_c);
-      sun.current.intensity = (2.6 - d * 0.9) * (1 - night * 0.82);
+      sun.current.intensity = (2.2 - d * 0.7) * (1 - night * 0.82);
     }
     if (hemi.current) hemi.current.intensity = (0.32 - d * 0.08) * (1 - night * 0.72);
     /* The sky bake is the soft fill. It eases down with dusk, and almost
@@ -2219,14 +2373,14 @@ function LightArc({
 
   return (
     <>
-      <hemisphereLight ref={hemi} args={["#d5e4ee", "#8ea184", 0.32]} />
+      <hemisphereLight ref={hemi} args={["#f4e7d6", "#8a7d62", 0.32]} />
       <ambientLight intensity={0.05} />
       <directionalLight
         ref={sun}
         castShadow
-        position={[27, 24, 19.5]}
-        color="#fff3dd"
-        intensity={2.6}
+        position={[GOLDEN_SUN.x * 28, GOLDEN_SUN.y * 28, GOLDEN_SUN.z * 28]}
+        color="#ffc98a"
+        intensity={2.2}
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.00025}
         shadow-normalBias={0.012}
@@ -2255,29 +2409,75 @@ const SKY_VERT = `
   }
 `;
 const SKY_FRAG = `
+  uniform float uNight;
+  uniform float uDusk;
+  uniform vec3 uSunDir;
   varying vec3 vPos;
   void main() {
     vec3 n = normalize(vPos);
     float h = n.y;
-    vec3 zenith = vec3(0.70, 0.82, 0.90);
-    vec3 horizon = vec3(0.97, 0.90, 0.78);
-    vec3 ground = vec3(0.42, 0.50, 0.36);
-    vec3 sky = mix(horizon, zenith, smoothstep(0.0, 0.62, h));
-    vec3 col = mix(ground, sky, smoothstep(-0.18, 0.06, h));
-    vec3 sunDir = normalize(vec3(0.55, 0.48, 0.42));
-    float glow = pow(max(dot(n, sunDir), 0.0), 3.5);
-    float sun = pow(max(dot(n, sunDir), 0.0), 36.0);
-    col += vec3(1.05, 0.82, 0.55) * glow * 0.28;
-    col += vec3(1.35, 1.05, 0.72) * sun * 2.1;
+    float k = clamp(uNight, 0.0, 1.0);
+    float dusk = clamp(uDusk, 0.0, 1.0);
+    vec3 zenith = mix(vec3(0.55, 0.68, 0.82), vec3(0.03, 0.05, 0.09), k);
+    vec3 horizon = mix(mix(vec3(0.941, 0.824, 0.690), vec3(0.906, 0.769, 0.643), dusk), vec3(0.10, 0.12, 0.16), k);
+    vec3 ground = mix(vec3(0.28, 0.24, 0.18), vec3(0.04, 0.045, 0.05), k);
+    vec3 sky = mix(horizon, zenith, smoothstep(0.0, 0.55, h));
+    vec3 col = mix(ground, sky, smoothstep(-0.16, 0.05, h));
+    float nd = max(dot(n, normalize(uSunDir)), 0.0);
+    float day = 1.0 - k;
+    col += vec3(1.02, 0.70, 0.38) * pow(nd, 2.0) * 0.36 * day;
+    col += vec3(1.08, 0.74, 0.42) * pow(nd, 12.0) * 0.62 * day;
+    float moon = pow(max(dot(n, normalize(vec3(0.48, 0.78, -0.40))), 0.0), 20.0);
+    col += vec3(0.70, 0.80, 0.94) * moon * 0.42 * k;
     gl_FragColor = vec4(col, 1.0);
   }
 `;
 
+function skyUniforms() {
+  return {
+    uNight: { value: 0 },
+    uDusk: { value: 0 },
+    uSunDir: { value: GOLDEN_SUN.clone() },
+  };
+}
+
 function OutdoorSky() {
+  const uniforms = useMemo(() => skyUniforms(), []);
   return (
     <mesh scale={90}>
-      <sphereGeometry args={[1, 20, 14]} />
-      <shaderMaterial side={THREE.BackSide} depthWrite={false} vertexShader={SKY_VERT} fragmentShader={SKY_FRAG} />
+      <sphereGeometry args={[1, 24, 16]} />
+      <shaderMaterial
+        side={THREE.BackSide}
+        depthWrite={false}
+        uniforms={uniforms}
+        vertexShader={SKY_VERT}
+        fragmentShader={SKY_FRAG}
+      />
+    </mesh>
+  );
+}
+
+function SkyDome({ skyAmt }: { skyAmt: React.MutableRefObject<{ night: number; dusk: number }> }) {
+  const mat = useRef<THREE.ShaderMaterial>(null);
+  const uniforms = useMemo(() => skyUniforms(), []);
+  useFrame(() => {
+    const m = mat.current;
+    if (!m) return;
+    m.uniforms.uNight.value = skyAmt.current.night;
+    m.uniforms.uDusk.value = skyAmt.current.dusk;
+  });
+  return (
+    <mesh scale={200} renderOrder={-20} raycast={() => null}>
+      <sphereGeometry args={[1, 32, 18]} />
+      <shaderMaterial
+        ref={mat}
+        side={THREE.BackSide}
+        depthWrite={false}
+        fog={false}
+        uniforms={uniforms}
+        vertexShader={SKY_VERT}
+        fragmentShader={SKY_FRAG}
+      />
     </mesh>
   );
 }
@@ -2288,10 +2488,12 @@ export default function Scene({
   progressRef,
   reduced,
   night = false,
+  shotKey = null,
 }: {
   progressRef: React.MutableRefObject<number>;
   reduced: boolean;
   night?: boolean;
+  shotKey?: string | null;
 }) {
   const dusk = useDuskRegistry();
   const archGlass = useArchGlass();
@@ -2300,15 +2502,18 @@ export default function Scene({
 
   /* Night is a target the whole scene damps toward rather than a hard swap,
      so the toggle reads as the sun going down instead of a light switch.
-     The scroll-driven dusk arc still runs underneath it — night simply
-     floors it at full, which is why the two never fight. */
+     Lambda 1.05 takes a few seconds. The scroll dusk arc still runs
+     underneath it, and night floors that arc at full. */
   const nightRef = useRef(0);
+  const skyAmt = useRef({ night: 0, dusk: 0 });
+  const publishedNight = useRef(-1);
   const [nightAmt, setNightAmt] = useState(0);
   useFrame((_, dt) => {
-    const target = night ? 1 : 0;
-    const v = THREE.MathUtils.damp(nightRef.current, target, 2.2, Math.min(dt, 1 / 20));
-    if (Math.abs(v - nightRef.current) > 0.0005) {
-      nightRef.current = v;
+    const v = THREE.MathUtils.damp(nightRef.current, night ? 1 : 0, 1.05, Math.min(dt, 1 / 20));
+    nightRef.current = v;
+    skyAmt.current.night = v;
+    if (Math.abs(v - publishedNight.current) > 0.0005) {
+      publishedNight.current = v;
       setNightAmt(Number(v.toFixed(3)));
       document.documentElement.style.setProperty("--st-night", v.toFixed(3));
     }
@@ -2316,17 +2521,30 @@ export default function Scene({
 
   return (
     <>
-      <fog attach="fog" args={["#e3ede7", 30, 88]} />
+      <fog attach="fog" args={["#f0d2b0", 30, 88]} />
       {/* PCSS — the sun key gets a real penumbra: crisp at the caster's
           foot, softening with distance, which is the single strongest
           "expensive light" cue a shadow can carry. Mounted with the scene
           so shaders compile once, naturally. */}
       <SoftShadows size={14} samples={10} focus={0.4} />
-      <LightArc progressRef={progressRef} reduced={reduced} dusk={dusk} night={nightAmt} />
+      <LightArc progressRef={progressRef} reduced={reduced} dusk={dusk} night={nightAmt} skyAmt={skyAmt} />
+      <SkyDome skyAmt={skyAmt} />
 
       <Environment resolution={64} frames={1}>
         <OutdoorSky />
       </Environment>
+
+      <ContactShadows
+        position={[0.4, 0.02, 2.2]}
+        scale={16}
+        opacity={0.42}
+        blur={2.6}
+        far={7}
+        resolution={512}
+        frames={6}
+        color="#14120e"
+        smooth
+      />
 
       {/* Stars — only ever built once, faded in by the night amount. */}
       <StarField amount={nightAmt} />
@@ -2377,7 +2595,7 @@ export default function Scene({
       <Sparkles count={80} scale={[28, 8, 28]} position={[0, 3.5, 2]} size={1.6} speed={reduced ? 0 : 0.25} opacity={0.28} color="#fff6dd" />
       <SunShafts progressRef={progressRef} night={nightAmt} reduced={reduced} />
 
-      <CameraRig progressRef={progressRef} reduced={reduced} />
+      <CameraRig progressRef={progressRef} reduced={reduced} shotKey={shotKey} />
 
       {/* N8AO was trialled here (round1–2b) and REJECTED. Its grounding gain was
           subtle, but the n8ao pass resolves a depth-STENCIL buffer that this AMD
@@ -2390,7 +2608,7 @@ export default function Scene({
           than a post SMAA pass could, and with no depth-reading effect in the
           chain it is completely clean. */}
       <EffectComposer multisampling={4}>
-        <Bloom mipmapBlur intensity={0.25} luminanceThreshold={0.9} luminanceSmoothing={0.3} />
+        <Bloom mipmapBlur intensity={0.16} luminanceThreshold={0.78} luminanceSmoothing={0.25} />
         <Vignette eskil={false} offset={0.16} darkness={0.26} />
         <Noise opacity={0.03} />
       </EffectComposer>

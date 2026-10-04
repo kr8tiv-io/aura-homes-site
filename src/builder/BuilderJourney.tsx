@@ -104,6 +104,7 @@ export default function BuilderJourney() {
   const [use, setUse] = useState<UseChoice>('A room');
   const [glass, setGlass] = useState<GlassChoice>('Clear');
   const [length, setLength] = useState<LengthChoice>('28 ft');
+  const [shotKey, setShotKey] = useState<string | null>(null);
   const quoteHref = `/pre-order?finish=${glassSlug[glass]}&length=${lengthSlug[length]}&design=${useSlug[use]}`;
 
   useEffect(() => {
@@ -217,7 +218,7 @@ export default function BuilderJourney() {
   return (
     <div className="b-root">
       <audio ref={audioRef} src="/film/forest-ambience.mp3" loop preload="none" />
-      <StoryCanvas progressRef={progressRef} reduced={reduced} night={night} />
+      <StoryCanvas progressRef={progressRef} reduced={reduced} night={night} shotKey={shotKey} />
 
       <div className="b-hud">
         <button type="button" onClick={() => setNight((n) => !n)}>{night ? 'Day' : 'Night'}</button>
@@ -281,19 +282,40 @@ export default function BuilderJourney() {
           <form className="b-form" onSubmit={(e) => e.preventDefault()}>
             <label>
               Use
-              <select value={use} onChange={(e) => setUse(e.target.value as UseChoice)}>
+              <select
+                value={use}
+                onChange={(e) => {
+                  const v = e.target.value as UseChoice;
+                  setUse(v);
+                  setShotKey(`use:${v}`);
+                }}
+              >
                 {USES.map((item) => <option key={item}>{item}</option>)}
               </select>
             </label>
             <label>
               Glass
-              <select value={glass} onChange={(e) => setGlass(e.target.value as GlassChoice)}>
+              <select
+                value={glass}
+                onChange={(e) => {
+                  const v = e.target.value as GlassChoice;
+                  setGlass(v);
+                  setShotKey(`glass:${v}`);
+                }}
+              >
                 {GLASS.map((item) => <option key={item}>{item}</option>)}
               </select>
             </label>
             <label>
               Length of the room
-              <select value={length} onChange={(e) => setLength(e.target.value as LengthChoice)}>
+              <select
+                value={length}
+                onChange={(e) => {
+                  const v = e.target.value as LengthChoice;
+                  setLength(v);
+                  setShotKey(`length:${v}`);
+                }}
+              >
                 {LENGTHS.map((item) => <option key={item}>{item}</option>)}
               </select>
             </label>
