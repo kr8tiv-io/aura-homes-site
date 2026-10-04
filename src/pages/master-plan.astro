@@ -573,17 +573,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     min-height: 44px;
     color: #c4a07a;
     text-decoration: none;
-    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .plan-links a {
     font-size: 0.72rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
   }
-  .plan-links a:hover,
-  .plan-host-ask a:hover {
-    opacity: 0.55;
-  }
+
   .plan-later {
     margin-top: 0.85rem;
     font-size: 0.72rem;
@@ -597,9 +593,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .plan-host-ask a {
     font-size: 0.95rem;
     letter-spacing: 0.01em;
-    text-decoration: underline;
-    text-decoration-color: rgba(196, 160, 122, 0.7);
-    text-underline-offset: 0.22em;
+    text-decoration: none;
   }
   .plan-close {
     margin: 12vh 8vw 18vh;
@@ -673,12 +667,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .plan-links a,
-    .plan-host-ask a {
-      transition: none;
-    }
-  }
+
 </style>
 
 <script>

@@ -31,35 +31,39 @@ const topics = [
       <form class="join-card contact-form" id="contact-form" action={formAction} method="post">
         <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <div class="contact-grid">
-          <div>
+          <div class="field">
+            <input id="contact-name" name="name" type="text" autocomplete="name" required maxlength="80" placeholder=" " />
             <label for="contact-name">Name</label>
-            <input id="contact-name" name="name" type="text" autocomplete="name" required maxlength="80" />
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div>
+          <div class="field">
+            <input id="contact-email" name="email" type="email" autocomplete="email" required maxlength="120" placeholder=" " />
             <label for="contact-email">Email</label>
-            <input id="contact-email" name="email" type="email" autocomplete="email" required maxlength="120" />
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div class="is-wide">
-            <label for="contact-topic">Topic</label>
+          <div class="field is-wide">
             <select id="contact-topic" name="topic" required>
               <option value="" selected disabled>Choose one</option>
               {topics.map(([value, label]) => (
                 <option value={value}>{label}</option>
               ))}
             </select>
+            <label for="contact-topic">Topic</label>
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
-          <div class="is-wide">
+          <div class="field is-wide">
+            <textarea id="contact-message" name="message" required maxlength="2000" placeholder=" "></textarea>
             <label for="contact-message">Message</label>
-            <textarea id="contact-message" name="message" required maxlength="2000"></textarea>
+            <span class="field-glow" aria-hidden="true"></span>
           </div>
         </div>
-        <button type="submit">Send the note</button>
-        <p class="join-status" data-contact-status role="status"></p>
+        <button type="submit" class="is-slide"><span class="slide-face"><span class="slide-line">Send the note</span><span class="slide-line" aria-hidden="true">Send the note</span></span></button>
+        <p class="join-status" data-contact-status role="status"><span data-status-line></span></p>
       </form>
 
       <div class="join-card contact-thanks" id="contact-thanks" hidden>
         <RevealHeading as="h2" tabindex="-1">We have your note.</RevealHeading>
-        <p data-contact-thanks-line>We read everything.</p>
+        <p data-sent-host><span data-contact-thanks-line>We read everything.</span></p>
       </div>
     </section>
 
@@ -143,12 +147,6 @@ const topics = [
   .contact-reach a {
     color: #866243;
     text-decoration: none;
-    border-bottom: 1px solid rgba(156, 122, 85, 0.55);
-    padding-bottom: 0.08rem;
-    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .contact-reach a:hover {
-    opacity: 0.55;
   }
   @media (prefers-reduced-motion: no-preference) {
     .contact-form button {
@@ -169,8 +167,7 @@ const topics = [
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .contact-form button,
-    .contact-reach a {
+    .contact-form button {
       transition: none;
     }
   }
@@ -178,6 +175,7 @@ const topics = [
 
 <script>
   import { gsap, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+  import { clearSentMark, showSentMark } from '../scripts/forms';
 
   onPageLoad(() => {
   const form = document.getElementById('contact-form');
@@ -202,10 +200,15 @@ const topics = [
   const showThanks = (sent: boolean) => {
     if (!(form instanceof HTMLFormElement) || !(thanks instanceof HTMLElement)) return;
     const line = thanks.querySelector('[data-contact-thanks-line]');
+    const host = thanks.querySelector('[data-sent-host]');
     if (line) {
       line.textContent = sent
         ? 'We read everything.'
         : 'The inbox is not open yet, so this note stayed here.';
+    }
+    if (host instanceof HTMLElement) {
+      clearSentMark(host);
+      if (sent) showSentMark(host);
     }
     form.hidden = true;
     thanks.hidden = false;
@@ -221,8 +224,9 @@ const topics = [
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const status = form.querySelector('[data-contact-status]');
+      const statusLine = status?.querySelector('[data-status-line]');
       const button = form.querySelector('button[type="submit"]');
-      if (!(status instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
+      if (!(status instanceof HTMLElement) || !(statusLine instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
       if (fieldText('company') !== '') {
         showThanks(false);
         return;
@@ -231,7 +235,7 @@ const topics = [
       const action = form.getAttribute('action') || '';
       try {
         if (action.startsWith('https://')) {
-          status.textContent = 'Sending.';
+          statusLine.textContent = 'Sending.';
           const res = await fetch(action, {
             method: 'POST',
             body: new FormData(form),
@@ -253,7 +257,7 @@ const topics = [
           showThanks(false);
         }
       } catch {
-        status.textContent = 'The line did not answer. Try again in a moment.';
+        statusLine.textContent = 'The line did not answer. Try again in a moment.';
         button.disabled = false;
       }
     });

@@ -149,12 +149,6 @@ const json = {
   .journal-prose :global(a) {
     color: #866243;
     text-decoration: none;
-    border-bottom: 1px solid rgba(156, 122, 85, 0.55);
-    padding-bottom: 0.08rem;
-    transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-  }
-  .journal-prose :global(a:hover) {
-    opacity: 0.55;
   }
   .journal-prose :global(.article-next) {
     margin-top: 3rem;
@@ -182,9 +176,5 @@ const json = {
       margin-right: 1.5rem;
     }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .journal-prose :global(a) {
-      transition: none;
-    }
-  }
+
 </style>
