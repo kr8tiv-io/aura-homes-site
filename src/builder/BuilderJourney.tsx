@@ -107,6 +107,7 @@ export default function BuilderJourney() {
   const [entered, setEntered] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [reduced, setReduced] = useState(false);
+  const [filmOk, setFilmOk] = useState(false);
   const [night, setNight] = useState(false);
   const [sound, setSound] = useState(false);
   const [active, setActive] = useState(0);
@@ -122,6 +123,27 @@ export default function BuilderJourney() {
     set();
     mq.addEventListener('change', set);
     return () => mq.removeEventListener('change', set);
+  }, []);
+
+  useEffect(() => {
+    const wide = window.matchMedia('(min-width: 801px)');
+    const fine = window.matchMedia('(pointer: fine)');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+    const slow = () => {
+      const type = conn?.effectiveType;
+      return Boolean(conn?.saveData) || type === 'slow-2g' || type === '2g' || type === '3g';
+    };
+    const set = () => setFilmOk(wide.matches && fine.matches && !reduce.matches && !slow());
+    set();
+    wide.addEventListener('change', set);
+    fine.addEventListener('change', set);
+    reduce.addEventListener('change', set);
+    return () => {
+      wide.removeEventListener('change', set);
+      fine.removeEventListener('change', set);
+      reduce.removeEventListener('change', set);
+    };
   }, []);
 
   const enter = useCallback((withSound: boolean) => {
@@ -340,16 +362,29 @@ export default function BuilderJourney() {
 
       {!entered && (
         <div className={`b-gate${leaving ? ' is-leaving' : ''}`} role="dialog" aria-label="Enter the clearing">
-          {!reduced && (
+          <picture className="b-gate-still">
+            <source srcSet="/media/video/builder-enter-poster.avif" type="image/avif" />
+            <img
+              src="/media/video/builder-enter-poster.webp"
+              alt=""
+              width={1920}
+              height={1296}
+            />
+          </picture>
+          {filmOk && (
             <video
               className="b-gate-video"
-              src="/film/builder-enter.mp4"
+              poster="/media/video/builder-enter-poster.webp"
               autoPlay
               muted
               loop
               playsInline
+              preload="metadata"
               aria-hidden
-            />
+            >
+              <source src="/media/video/builder-enter.webm" type="video/webm" />
+              <source src="/media/video/builder-enter.mp4" type="video/mp4" />
+            </video>
           )}
           <div className="b-gate-copy">
             <p className="b-kicker">The clearing</p>

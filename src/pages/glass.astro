@@ -3,10 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
 import RevealHeading from '../components/RevealHeading.astro';
-import { posterSrc } from '../lib/stills';
-
-const deckPoster = await posterSrc('/film/resort-deck.webp');
-const towerPoster = await posterSrc('/film/resort-tower.webp');
+import AngleSet from '../components/AngleSet.astro';
 ---
 
 <BaseLayout title="The glass | Aura Homes" description="Return to Aura. One beautiful room at a time.">
@@ -26,7 +23,7 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
 
     <section class="story-still">
       <figure class="story-figure">
-        <video poster={deckPoster} data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="tilt" data-play="push" aria-label="A-frame in snow with a wide deck, cargo net, and glass floor lit from beneath"></video>
+        <video poster="/media/video/deck-poster.webp" data-film="/media/video/deck.mp4" data-film-webm="/media/video/deck.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1290" data-shot="tilt" data-play="push" aria-label="A-frame in snow with a wide deck, cargo net, and glass floor lit from beneath"></video>
       </figure>
       <div>
         <p class="story-kicker">The floor</p>
@@ -39,7 +36,7 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video poster={towerPoster} data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="lift" data-play="rise" aria-label="Round glass tower in snow, with mesh balconies and a lit floor"></video>
+        <video poster="/media/video/tower-poster.webp" data-film="/media/video/tower.mp4" data-film-webm="/media/video/tower.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="2160" data-shot="lift" data-play="rise" aria-label="Round glass tower in snow, with mesh balconies and a lit floor"></video>
       </figure>
       <div>
         <p class="story-kicker">The balcony</p>
@@ -49,6 +46,33 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
         </p>
       </div>
     </section>
+
+    <AngleSet
+      kicker="Closer"
+      title="The same glass, other hours."
+      angles={[
+        {
+          src: '/media/specialty/aframe-deck-detail-dusk.jpg',
+          alt: 'Close view of an A-frame glass deck at dusk, a steaming round wood tub, a floor lit from beneath, a cargo net in front, and snowy mountains beyond.',
+          caption: 'The floor, lit, with the tub and the net.',
+        },
+        {
+          src: '/media/specialty/aframe-aerial-blue-hour-snow.jpg',
+          alt: 'Aerial view of an A-frame in snow among pines at blue hour, lit stairs rising to a glass deck, a river and snow peaks beyond.',
+          caption: 'Blue hour over the valley, the deck still warm.',
+        },
+        {
+          src: '/media/specialty/tower-glass-detail-blue-hour.jpg',
+          alt: 'Close curved glass of a round tower at blue hour, wood sofas inside, a snowy mesh hammock, and a telescope on the roof rail, with snow mountains behind.',
+          caption: 'Curved glass, a hammock, and the first snow.',
+        },
+        {
+          src: '/media/specialty/tower-winter-dusk-wide.jpg',
+          alt: 'A round glass tower in a snow field at deep blue dusk, spiral stair, sauna, tub, pines, snow peaks, and a line of string lights.',
+          caption: 'The tower at dusk, stairs down to the snow.',
+        },
+      ]}
+    />
 
     <section class="passage" data-passage aria-label="Helical piles">
       <canvas data-meadow data-scene="slope"></canvas>

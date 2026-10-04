@@ -25,9 +25,7 @@ const {
 } = Astro.props;
 
 const image = still(src);
-const widths = [640, 960, 1280, 1600, image.width].filter(
-  (width, index, all) => width <= image.width && all.indexOf(width) === index,
-);
+const widths = [1280, 1920, 2560].filter((width) => width <= image.width);
 const pictureAttributes: Record<string, string> = {
   class: natural ? 'still-frame is-natural' : 'still-frame',
 };

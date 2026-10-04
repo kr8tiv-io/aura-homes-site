@@ -1,0 +1,40 @@
+---
+import Still from './Still.astro';
+
+interface Angle {
+  src: string;
+  alt: string;
+  caption: string;
+}
+
+interface Props {
+  kicker: string;
+  title: string;
+  angles: Angle[];
+}
+
+const { kicker, title, angles } = Astro.props;
+const headingId = title
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, '-')
+  .replace(/^-|-$/g, '');
+---
+
+<section class="angle-set" aria-labelledby={headingId}>
+  <header class="angle-set-head">
+    <p class="story-kicker">{kicker}</p>
+    <h2 id={headingId}>{title}</h2>
+  </header>
+  <ul class="angle-grid">
+    {
+      angles.map((angle) => (
+        <li>
+          <figure>
+            <Still src={angle.src} alt={angle.alt} sizes="(max-width: 800px) 92vw, 46vw" />
+            <figcaption>{angle.caption}</figcaption>
+          </figure>
+        </li>
+      ))
+    }
+  </ul>
+</section>

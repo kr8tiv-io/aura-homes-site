@@ -3,10 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
 import RevealHeading from '../components/RevealHeading.astro';
-import { posterSrc } from '../lib/stills';
-
-const deckPoster = await posterSrc('/film/resort-deck.webp');
-const towerPoster = await posterSrc('/film/resort-tower.webp');
+import AngleSet from '../components/AngleSet.astro';
 ---
 
 <BaseLayout title="The resorts | Aura Homes" description="Return to Aura. One beautiful room at a time.">
@@ -26,7 +23,7 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
 
     <section class="story-still">
       <figure class="story-figure">
-        <video poster={deckPoster} data-film="/film/scroll/deck.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1200" data-shot="wipe" data-play="wipe" aria-label="Snowy A-frame resort with an underlit glass deck, cargo net, sauna, and hot tub"></video>
+        <video poster="/media/video/deck-poster.webp" data-film="/media/video/deck.mp4" data-film-webm="/media/video/deck.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1290" data-shot="wipe" data-play="wipe" aria-label="Snowy A-frame resort with an underlit glass deck, cargo net, sauna, and hot tub"></video>
       </figure>
       <div>
         <p class="story-kicker">Canada</p>
@@ -39,7 +36,7 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video poster={towerPoster} data-film="/film/scroll/tower.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1800" data-shot="drift" data-play="drift" aria-label="Round multi-level glass tower in snow, with mesh balconies and hammocks"></video>
+        <video poster="/media/video/tower-poster.webp" data-film="/media/video/tower.mp4" data-film-webm="/media/video/tower.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="2160" data-shot="drift" data-play="drift" aria-label="Round multi-level glass tower in snow, with mesh balconies and hammocks"></video>
       </figure>
       <div>
         <p class="story-kicker">The tower</p>
@@ -47,6 +44,38 @@ const towerPoster = await posterSrc('/film/resort-tower.webp');
         <p>Mesh balconies, hammocks, and a floor that glows. A small resort can be one building, if the building is this sure of itself.</p>
       </div>
     </section>
+
+    <AngleSet
+      kicker="Hours"
+      title="The same stay, other hours."
+      angles={[
+        {
+          src: '/media/specialty/aframe-golden-hour-meadow.jpg',
+          alt: 'A black A-frame on a lit glass deck in a wildflower meadow at golden hour, with a sauna, a steaming tub, forest, and golden peaks.',
+          caption: 'Golden hour in the meadow, mountains behind the glass.',
+        },
+        {
+          src: '/media/specialty/tower-golden-hour-meadow.jpg',
+          alt: 'A round glass tower in a wildflower meadow at golden hour, spiral stair, tub, and telescope, with the sun in the glass and snow peaks behind the pines.',
+          caption: 'The round tower catching the last sun.',
+        },
+        {
+          src: '/media/specialty/tower-lake-summer-dusk.jpg',
+          alt: 'A round glass tower on a deck over a lake at pink summer dusk, spiral stair, a sauna box over the water, a tub, pines, and rock peaks.',
+          caption: 'Summer dusk, the tower beside still water.',
+        },
+        {
+          src: '/media/specialty/tower-aerial-sunrise.jpg',
+          alt: 'Aerial view of a round glass tower above a cloud-filled valley at sunrise, with snow, pines, a spiral stair, sauna, tub, and telescope.',
+          caption: 'Sunrise above the cloud line.',
+        },
+        {
+          src: '/media/specialty/tower-night-stars.jpg',
+          alt: 'A round two-level glass tower at night, mesh rail, spiral stair, sauna, tub, and telescope, under the Milky Way and a faint aurora over snow.',
+          caption: 'Night, with the Milky Way overhead.',
+        },
+      ]}
+    />
 
     <section class="story-open">
       <p class="story-kicker">Costa Rica</p>

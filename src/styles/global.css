@@ -1432,6 +1432,7 @@ html.lenis body {
 .splash,
 .story-open,
 .story-still,
+.angle-set,
 .passage,
 .ways,
 .journeys,
@@ -1529,6 +1530,44 @@ html.lenis body {
   max-width: 26rem;
   font-weight: 300;
   line-height: 1.6;
+  color: rgba(20, 18, 14, 0.72);
+}
+.angle-set {
+  padding: 4vh 8vw 16vh;
+  color: #14120e;
+}
+.angle-set-head {
+  margin-bottom: clamp(2rem, 5vw, 4rem);
+}
+.angle-set h2 {
+  margin: 0;
+  max-width: 14em;
+  font-family: var(--font-cinzel);
+  font-weight: 300;
+  font-size: clamp(2rem, 3.4vw, 3.1rem);
+  letter-spacing: -0.03em;
+}
+.angle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 3vw, 2.75rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.angle-grid figure {
+  margin: 0;
+}
+.angle-grid picture.still-frame,
+.angle-grid picture.still-frame img {
+  height: min(52vh, 520px);
+}
+.angle-grid figcaption {
+  margin: 0.85rem 0 0;
+  max-width: 28rem;
+  font-weight: 300;
+  font-size: 0.95rem;
+  line-height: 1.55;
   color: rgba(20, 18, 14, 0.72);
 }
 
@@ -1811,6 +1850,16 @@ html.lenis body {
   }
   .story-figure img,
   .story-figure video {
+    height: 58vh;
+  }
+  .angle-set {
+    padding: 4vh 1.5rem 10vh;
+  }
+  .angle-grid {
+    grid-template-columns: 1fr;
+  }
+  .angle-grid picture.still-frame,
+  .angle-grid picture.still-frame img {
     height: 58vh;
   }
   .ways,
