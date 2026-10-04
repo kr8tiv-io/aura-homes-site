@@ -29,6 +29,7 @@ const mit = 'https://opensource.org/licenses/MIT';
 const apache = 'https://www.apache.org/licenses/LICENSE-2.0';
 const cc0 = 'https://polyhaven.com/license';
 const ofl = 'https://openfontlicense.org/open-font-license-official-text/';
+const zlib = 'https://opensource.org/license/zlib';
 
 export const credits: Credit[] = [
   {
@@ -73,7 +74,7 @@ export const credits: Credit[] = [
     license: 'MIT',
     link: 'https://threejs.org',
     licenseLink: mit,
-    usedFor: 'The room builder, the meadow, and the shared model loaders.',
+    usedFor: 'The room builder, the shared meadow stage, and the model loaders.',
     category: 'Code and libraries',
   },
   {
@@ -146,6 +147,24 @@ export const credits: Credit[] = [
     link: 'https://github.com/pmndrs/react-postprocessing',
     licenseLink: mit,
     usedFor: 'Bloom, vignette, and grain on the builder.',
+    category: 'Code and libraries',
+  },
+  {
+    name: 'postprocessing',
+    author: 'Poimandres',
+    license: 'Zlib',
+    link: 'https://github.com/pmndrs/postprocessing',
+    licenseLink: zlib,
+    usedFor: 'Bloom, tone mapping, SMAA, vignette, and grain on the meadow views.',
+    category: 'Code and libraries',
+  },
+  {
+    name: 'n8ao',
+    author: 'N8python',
+    license: 'CC0 / ISC',
+    link: 'https://github.com/N8python/n8ao',
+    licenseLink: 'https://github.com/N8python/n8ao/blob/main/README.md',
+    usedFor: 'Ambient occlusion on the unit and the tub.',
     category: 'Code and libraries',
   },
   {
@@ -349,7 +368,7 @@ export const credits: Credit[] = [
     license: 'CC0',
     link: 'https://polyhaven.com/a/alps_field',
     licenseLink: cc0,
-    usedFor: 'Alpine light. 1k for the environment, 2k if the sky is visible.',
+    usedFor: 'Alpine light for the grass, the far meadow, and the slope. 1k for the environment, 2k if the sky is visible.',
     category: 'Textures and HDRIs',
     files: ['hdri/alps_field_1k.hdr', 'hdri/alps_field_2k.hdr'],
   },
@@ -359,7 +378,7 @@ export const credits: Credit[] = [
     license: 'CC0',
     link: 'https://polyhaven.com/a/evening_meadow',
     licenseLink: cc0,
-    usedFor: 'Dusk in a meadow. 1k for the environment, 2k if the sky is visible.',
+    usedFor: 'Dusk light for the snow passage. 1k for the environment, 2k if the sky is visible.',
     category: 'Textures and HDRIs',
     files: ['hdri/evening_meadow_1k.hdr', 'hdri/evening_meadow_2k.hdr'],
   },
@@ -369,7 +388,7 @@ export const credits: Credit[] = [
     license: 'CC0',
     link: 'https://polyhaven.com/a/qwantani_dusk_2_puresky',
     licenseLink: cc0,
-    usedFor: 'A clear dusk sky. 1k for the environment, 2k if the sky is visible.',
+    usedFor: 'Dusk light for the tub. 1k for the environment, 2k if the sky is visible.',
     category: 'Textures and HDRIs',
     files: ['hdri/qwantani_dusk_2_puresky_1k.hdr', 'hdri/qwantani_dusk_2_puresky_2k.hdr'],
   },
@@ -379,7 +398,7 @@ export const credits: Credit[] = [
     license: 'CC0',
     link: 'https://polyhaven.com/a/kloofendal_48d_partly_cloudy_puresky',
     licenseLink: cc0,
-    usedFor: 'A partly cloudy sky. 1k for the environment, 2k if the sky is visible.',
+    usedFor: 'Daylight for the glass unit. 1k for the environment, 2k if the sky is visible.',
     category: 'Textures and HDRIs',
     files: ['hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr', 'hdri/kloofendal_48d_partly_cloudy_puresky_2k.hdr'],
   },

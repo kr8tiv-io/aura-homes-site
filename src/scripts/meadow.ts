@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { holdPageMotion } from './motion';
+import { registerView, type StageTone } from '../three/stage';
 
-/** Scroll-driven passage worlds. Atmosphere only: no cabin mesh, no post stack. */
+/** Scroll-driven passage worlds. Atmosphere only: no cabin mesh. The stage draws them. */
 
 type SceneKey = 'grass' | 'glass' | 'steam' | 'far' | 'snow' | 'slope';
 
@@ -1123,88 +1124,49 @@ const BUILDERS: Record<SceneKey, () => BuiltScene> = {
   slope: buildSlope,
 };
 
+const LOOK: Record<SceneKey, { exposure: number; tone: StageTone; hdri: string; env: number; ao: boolean }> = {
+  grass: { exposure: 1.02, tone: 'agx', hdri: '/hdri/alps_field_1k.hdr', env: 0.35, ao: false },
+  far: { exposure: 1.02, tone: 'agx', hdri: '/hdri/alps_field_1k.hdr', env: 0.35, ao: false },
+  slope: { exposure: 0.94, tone: 'agx', hdri: '/hdri/alps_field_1k.hdr', env: 0.35, ao: false },
+  snow: { exposure: 0.94, tone: 'agx', hdri: '/hdri/evening_meadow_1k.hdr', env: 0.4, ao: false },
+  glass: { exposure: 1.02, tone: 'neutral', hdri: '/hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr', env: 0.62, ao: true },
+  steam: { exposure: 1.08, tone: 'agx', hdri: '/hdri/qwantani_dusk_2_puresky_1k.hdr', env: 0.2, ao: true },
+};
+
 export function mountMeadow(canvas: HTMLCanvasElement) {
   const key = sceneKey(canvas);
   canvas.dataset.sceneLive = key;
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = key === 'steam' ? 1.08 : key === 'snow' || key === 'slope' ? 0.94 : 1.02;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-
+  const look = LOOK[key];
   const built = BUILDERS[key]();
-  const { scene, camera } = built;
-  let envTarget: THREE.WebGLRenderTarget | null = null;
-  if (key === 'glass' || key === 'steam' || key === 'snow') {
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
-  }
-  if (key === 'glass' || key === 'steam' || key === 'snow') {
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const room = new RoomEnvironment();
-    envTarget = pmrem.fromScene(room, 0.04);
-    scene.environment = envTarget.texture;
-    scene.environmentIntensity = key === 'steam' ? 0.2 : key === 'snow' ? 0.4 : 0.62;
-    room.dispose();
-    pmrem.dispose();
-  }
+  let dead = false;
 
-  let progress = 0;
-  let lastW = 0;
-  let lastH = 0;
-
-  const resize = () => {
-    const w = canvas.clientWidth || window.innerWidth;
-    const h = canvas.clientHeight || window.innerHeight;
-    if (w === lastW && h === lastH) return;
-    lastW = w;
-    lastH = h;
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
-    renderer.setSize(w, h, false);
-    camera.aspect = w / Math.max(h, 1);
-    camera.updateProjectionMatrix();
-  };
-
-  const render = (time = performance.now()) => {
-    resize();
-    built.render(time, progress);
-    renderer.render(scene, camera);
-  };
-
-  resize();
-  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let visible = false;
-  const observer = new IntersectionObserver(
-    (entries) => {
-      visible = entries.some((entry) => entry.isIntersecting);
+  const view = registerView({
+    element: canvas,
+    scene: built.scene,
+    camera: built.camera,
+    ao: look.ao,
+    exposure: look.exposure,
+    tone: look.tone,
+    hdri: look.hdri,
+    envIntensity: look.env,
+    update(progress) {
+      built.render(performance.now(), progress);
     },
-    { rootMargin: '180px' },
-  );
-  observer.observe(canvas);
-  let raf = 0;
-  const tick = (time: number) => {
-    raf = requestAnimationFrame(tick);
-    if (!visible || document.hidden) return;
-    render(time);
-  };
-  if (!reduce) raf = requestAnimationFrame(tick);
-  const onResize = () => render();
-  window.addEventListener('resize', onResize);
+  });
 
-  return {
+  const api = {
     setProgress(t: number) {
-      progress = Math.min(Math.max(t, 0), 1);
-      if (reduce) render();
+      view.setProgress(t);
     },
     destroy() {
-      cancelAnimationFrame(raf);
-      observer.disconnect();
-      window.removeEventListener('resize', onResize);
+      if (dead) return;
+      dead = true;
+      view.destroy();
       built.geometries.forEach((geo) => geo.dispose());
       built.materials.forEach((mat) => mat.dispose());
       built.textures.forEach((tex) => tex.dispose());
-      envTarget?.dispose();
-      renderer.dispose();
     },
   };
+  holdPageMotion(api.destroy);
+  return api;
 }

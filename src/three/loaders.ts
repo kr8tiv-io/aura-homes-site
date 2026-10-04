@@ -29,13 +29,25 @@ const hdrLoader = new HDRLoader(loadingManager);
 const modelCache = new Map<string, Promise<GLTF>>();
 const envCache = new Map<string, Promise<THREE.Texture>>();
 
-let ktxReady = false;
+let pmrem: THREE.PMREMGenerator | null = null;
+let pmremRenderer: THREE.WebGLRenderer | null = null;
+
+function environmentGenerator(renderer: THREE.WebGLRenderer): THREE.PMREMGenerator {
+  if (pmrem && pmremRenderer === renderer) return pmrem;
+  pmrem?.dispose();
+  pmrem = new THREE.PMREMGenerator(renderer);
+  pmrem.compileEquirectangularShader();
+  pmremRenderer = renderer;
+  return pmrem;
+}
+
+let boundRenderer: THREE.WebGLRenderer | null = null;
 
 /** Tell the KTX2 transcoder which GPU formats this renderer can use. */
 export function configureRenderer(renderer: THREE.WebGLRenderer): void {
-  if (ktxReady) return;
+  if (boundRenderer === renderer) return;
   ktx2Loader.detectSupport(renderer);
-  ktxReady = true;
+  boundRenderer = renderer;
 }
 
 export function loadModel(url: string): Promise<GLTF> {
@@ -57,10 +69,8 @@ export function loadEnvironment(renderer: THREE.WebGLRenderer, url: string): Pro
   const cached = envCache.get(url);
   if (cached) return cached;
   const pending = hdrLoader.loadAsync(url).then((hdr) => {
-    const pmrem = new THREE.PMREMGenerator(renderer);
-    const env = pmrem.fromEquirectangular(hdr).texture;
+    const env = environmentGenerator(renderer).fromEquirectangular(hdr).texture;
     hdr.dispose();
-    pmrem.dispose();
     return env;
   });
   envCache.set(url, pending);
@@ -68,6 +78,17 @@ export function loadEnvironment(renderer: THREE.WebGLRenderer, url: string): Pro
     if (envCache.get(url) === pending) envCache.delete(url);
   });
   return pending;
+}
+
+/** Drop cached environment maps when the shared renderer goes away. */
+export function releaseEnvironment(): void {
+  for (const pending of envCache.values()) {
+    pending.then((texture) => texture.dispose()).catch(() => {});
+  }
+  envCache.clear();
+  pmrem?.dispose();
+  pmrem = null;
+  pmremRenderer = null;
 }
 
 export { dracoLoader, gltfLoader, hdrLoader, ktx2Loader, loadingManager };
