@@ -218,7 +218,7 @@ export const credits: Credit[] = [
     license: 'Standard "no charge" license',
     link: 'https://gsap.com',
     licenseLink: 'https://gsap.com/standard-license',
-    usedFor: 'Menu, page, and camera motion.',
+    usedFor: 'Menu, page, and camera motion, and the slow heat behind a heading.',
     category: 'Code and libraries',
   },
   {
@@ -661,11 +661,11 @@ export const credits: Credit[] = [
   },
   {
     name: 'webgl-noise',
-    author: 'Stefan Gustavson',
+    author: 'Ian McEwan, Ashima Arts, and Stefan Gustavson',
     license: 'MIT',
     link: 'https://github.com/stegu/webgl-noise',
     licenseLink: mit,
-    usedFor: 'Simplex curl that drifts the steam as it rises, and the falling snow.',
+    usedFor: 'Simplex curl that drifts the steam as it rises, the falling snow, and the slow heat shimmer behind headings.',
     category: 'Techniques and inspiration',
   },
   {

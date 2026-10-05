@@ -707,8 +707,74 @@ body[data-living-nav] .sigil-ring { stroke: #c4a07a; }
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 60;
-  mix-blend-mode: soft-light;
+  z-index: 12;
+  visibility: hidden;
+  mix-blend-mode: multiply;
+}
+.warmth-canvas.is-live {
+  visibility: visible;
+}
+.warmth-canvas.is-screen {
+  mix-blend-mode: screen;
+}
+.heading-heat {
+  pointer-events: auto;
+}
+html[data-heading-glow="css"] .heading-heat {
+  position: relative;
+  isolation: isolate;
+}
+html[data-heading-glow="css"] .heading-heat::before,
+html[data-heading-glow="css"] a:focus-within .heading-heat::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 50%;
+  top: 55%;
+  width: 128%;
+  height: 170%;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0);
+  background: radial-gradient(ellipse at center, rgba(184, 100, 42, 0.7) 0%, rgba(242, 194, 122, 0.28) 46%, transparent 72%);
+  filter: blur(14px);
+  transition: opacity 2.4s linear;
+}
+html[data-heading-glow="css"] .heading-heat:hover::before,
+html[data-heading-glow="css"] .heading-heat:focus-within::before,
+html[data-heading-glow="css"] a:focus-within .heading-heat::before {
+  transition-duration: 1.2s;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+html[data-heading-glow="css"] .heading-heat[data-heat-tone="light"]:hover::before,
+html[data-heading-glow="css"] .heading-heat[data-heat-tone="light"]:focus-within::before,
+html[data-heading-glow="css"] a:focus-within .heading-heat[data-heat-tone="light"]::before {
+  opacity: 0.46;
+  mix-blend-mode: multiply;
+}
+html[data-heading-glow="css"] .heading-heat[data-heat-tone="dark"]:hover::before,
+html[data-heading-glow="css"] .heading-heat[data-heat-tone="dark"]:focus-within::before,
+html[data-heading-glow="css"] a:focus-within .heading-heat[data-heat-tone="dark"]::before {
+  opacity: 0.82;
+  mix-blend-mode: screen;
+}
+@media (prefers-reduced-motion: reduce) {
+  html[data-heading-glow="css"] .heading-heat::before,
+  html[data-heading-glow="css"] .heading-heat:hover::before,
+  html[data-heading-glow="css"] .heading-heat:focus-within::before,
+  html[data-heading-glow="css"] a:focus-within .heading-heat::before {
+    transition: none;
+  }
+  html[data-heading-glow="css"] .heading-heat[data-heat-tone="light"]:hover::before,
+  html[data-heading-glow="css"] .heading-heat[data-heat-tone="light"]:focus-within::before,
+  html[data-heading-glow="css"] a:focus-within .heading-heat[data-heat-tone="light"]::before {
+    opacity: 0.32;
+  }
+  html[data-heading-glow="css"] .heading-heat[data-heat-tone="dark"]:hover::before,
+  html[data-heading-glow="css"] .heading-heat[data-heat-tone="dark"]:focus-within::before,
+  html[data-heading-glow="css"] a:focus-within .heading-heat[data-heat-tone="dark"]::before {
+    opacity: 0.45;
+  }
 }
 /* Day passing. Three static suns, opacity only, under the nav. */
 .daylight {
