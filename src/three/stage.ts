@@ -646,11 +646,49 @@ function draw(time: number) {
   }
 
   if (canvas) canvas.dataset.stageViews = String(entries.filter((entry) => !entry.dead).length);
+  let bytes = 0;
+  if (debugTextures) bytes = visibleTextureBytes();
   setDebugStats({
     calls: renderer.info.render.calls,
     tris: renderer.info.render.triangles,
     textures: renderer.info.memory.textures,
+    bytes,
   });
+}
+
+const debugTextures = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug3d');
+
+function visibleTextureBytes() {
+  const seen = new Set<THREE.Texture>();
+  let bytes = 0;
+  const add = (tex: THREE.Texture | null | undefined) => {
+    if (!tex || seen.has(tex)) return;
+    seen.add(tex);
+    const image = tex.image as { width?: number; height?: number } | undefined;
+    const w = image?.width ?? 0;
+    const h = image?.height ?? 0;
+    if (w > 0 && h > 0) bytes += w * h * 4;
+  };
+  for (const entry of entries) {
+    if (entry.dead || entry.dormant) continue;
+    const rect = entry.view.element.getBoundingClientRect();
+    if (!onScreen(rect)) continue;
+    const scene = entry.view.scene;
+    if (scene.environment) add(scene.environment);
+    if (scene.background instanceof THREE.Texture) add(scene.background);
+    scene.traverse((node) => {
+      const mesh = node as THREE.Mesh;
+      const material = mesh.material;
+      if (!material) return;
+      const list = Array.isArray(material) ? material : [material];
+      for (const item of list) {
+        for (const value of Object.values(item)) {
+          if (value instanceof THREE.Texture) add(value);
+        }
+      }
+    });
+  }
+  return bytes;
 }
 
 function suspendEntry(entry: Entry) {
