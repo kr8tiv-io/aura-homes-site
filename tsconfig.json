@@ -1,5 +1,16 @@
 {
   "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
   "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "exclude": [
+    "dist",
+    "src/three/meadow-v1/Scene.tsx",
+    "src/three/meadow-v1/SceneDetail.tsx",
+    "src/three/meadow-v1/StoryCanvas.tsx"
+  ]
 }

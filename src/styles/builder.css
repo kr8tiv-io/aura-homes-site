@@ -1,7 +1,13 @@
 .b-root {
   position: relative;
   color: #f4f3ef;
-  background: #101610;
+  background: transparent;
+}
+.b-world {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
 }
 .b-root h1,
 .b-root h2 {
