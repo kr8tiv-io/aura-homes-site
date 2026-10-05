@@ -147,6 +147,9 @@ export function mountGoldenGrove(
   textures: THREE.Texture[],
   alive: () => boolean,
   onEmpty?: () => void,
+  heightAt: (x: number, z: number) => number = sampleTerrainHeight,
+  clear?: { x: number; z: number; r: number },
+  props = true,
 ): GroveHandle {
   const pending: { mesh: InstancedMesh2; source: THREE.Mesh }[] = [];
   const baked = new Set<InstancedMesh2>();
@@ -156,11 +159,16 @@ export function mountGoldenGrove(
   const groups = VARIANTS.map(() => [] as { x: number; y: number; z: number; rot: number; scale: number }[]);
   SCATTER.slice(0, count).forEach((spot, index) => {
     if (sampleMeadowClearance(spot.pos[0], spot.pos[2]) < 0.35) return;
+    if (clear) {
+      const dx = spot.pos[0] - clear.x;
+      const dz = spot.pos[2] - clear.z;
+      if (dx * dx + dz * dz < clear.r * clear.r) return;
+    }
     const variant = index % VARIANTS.length;
     const height = HEIGHTS[variant] * (spot.scale ?? 1);
     groups[variant].push({
       x: spot.pos[0],
-      y: sampleTerrainHeight(spot.pos[0], spot.pos[2]),
+      y: heightAt(spot.pos[0], spot.pos[2]),
       z: spot.pos[2],
       rot: spot.rotY ?? 0,
       scale: height,
@@ -213,7 +221,7 @@ export function mountGoldenGrove(
     if (alive()) onEmpty?.();
   });
 
-  placeGoldenProps(scene, geometries, materials, alive);
+  if (props) placeGoldenProps(scene, geometries, materials, alive);
 
   return {
     claimRenderer(renderer) {

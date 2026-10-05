@@ -9,6 +9,7 @@
   "include": [".astro/types.d.ts", "**/*"],
   "exclude": [
     "dist",
+    "_archive",
     "src/three/meadow-v1/Scene.tsx",
     "src/three/meadow-v1/SceneDetail.tsx",
     "src/three/meadow-v1/StoryCanvas.tsx"

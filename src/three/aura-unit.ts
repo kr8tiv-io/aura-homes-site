@@ -11,9 +11,18 @@ import { UNIT_LENGTH, UNIT_WIDTH } from './meadow-v1/meadow/geometry';
 
 export type GlazeFinish = 'clear' | 'mirror' | 'tinted';
 
+export type AuraUnitOptions = {
+  /** Cooler, rougher panes. The silhouette picks up a white frost. */
+  frost?: boolean;
+  /** Lamp starts low, so setMood can bring it up with the night. */
+  rising?: boolean;
+};
+
 export type AuraUnit = {
   object: THREE.Group;
   setFinish: (finish: GlazeFinish, seconds?: number) => void;
+  /** 0 is a dim room. 1 is the warm night interior. */
+  setMood: (night: number) => void;
   dispose: () => void;
 };
 
@@ -200,7 +209,7 @@ function customModel() {
   return customPromise;
 }
 
-export function createAuraUnit(): AuraUnit {
+export function createAuraUnit(options: AuraUnitOptions = {}): AuraUnit {
   const object = new THREE.Group();
   object.name = 'AuraUnit';
   const shell = new THREE.Group();
@@ -232,6 +241,14 @@ export function createAuraUnit(): AuraUnit {
       mat.attenuationDistance = glaze.attenuationDistance;
       mat.color.copy(glaze.color);
       mat.attenuationColor.copy(glaze.attenuation);
+      if (options.frost) {
+        mat.roughness = Math.max(mat.roughness, 0.3);
+        mat.clearcoat = 0.12;
+        mat.clearcoatRoughness = 0.64;
+        mat.thickness = 0.016;
+        mat.attenuationDistance = Math.min(mat.attenuationDistance, 0.7);
+        mat.attenuationColor.lerp(new THREE.Color('#d5e4ea'), 0.7);
+      }
     }
   };
 
@@ -321,6 +338,17 @@ export function createAuraUnit(): AuraUnit {
 
   const makePane = () => {
     const mat = createPolycarbonateMaterial();
+    if (options.frost) {
+      mat.customProgramCacheKey = () => 'aura-frost';
+      mat.onBeforeCompile = (shader) => {
+        shader.fragmentShader = shader.fragmentShader.replace(
+          '#include <tonemapping_fragment>',
+          `float auraEdge = pow(1.0 - clamp(abs(dot(normalize(normal), normalize(vViewPosition))), 0.0, 1.0), 2.0);
+gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62);
+#include <tonemapping_fragment>`,
+        );
+      };
+    }
     mats.push(mat);
     panes.push(mat);
     return mat;
@@ -476,6 +504,16 @@ export function createAuraUnit(): AuraUnit {
   lamp.position.set(0.08, 1.02, -1.9);
   lamp.castShadow = false;
   object.add(lamp);
+  if (options.rising) {
+    lamp.intensity = 2.4;
+    shadeMat.emissiveIntensity = 0.22;
+  }
+  const setMood = (night: number) => {
+    const n = THREE.MathUtils.clamp(night, 0, 1);
+    const floor = options.frost ? 9 : 2.4;
+    lamp.intensity = THREE.MathUtils.lerp(floor, 28, n);
+    shadeMat.emissiveIntensity = THREE.MathUtils.lerp(options.frost ? 0.85 : 0.22, 2.35, n);
+  };
 
   const shadowTex = contactMap();
   if (shadowTex) {
@@ -644,6 +682,7 @@ export function createAuraUnit(): AuraUnit {
   return {
     object,
     setFinish,
+    setMood,
     dispose() {
       if (!alive) return;
       alive = false;

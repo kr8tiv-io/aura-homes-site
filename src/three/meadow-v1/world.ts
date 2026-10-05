@@ -5,7 +5,7 @@
 */
 import * as THREE from 'three';
 import { registerView, type StageTone } from '../stage';
-import { loadModel } from '../loaders';
+import { hdrLoader, ktx2Loader, loadEnvironment, loadModel, whenKtx2 } from '../loaders';
 import { motionTime, onQuality, qualityProfile } from '../quality';
 import { prefersReducedMotion } from '../../scripts/motion';
 import { AURA_UNIT_SLOT, HOT_TUB_SLOT } from './meadow/geometry';
@@ -53,7 +53,7 @@ export type MeadowWorldOptions = {
   hdri?: string;
   envIntensity?: number;
   ao?: boolean;
-  /** Homepage grass and far only. The builder keeps the day fly-over. */
+  /** Homepage grass only. The builder keeps the day fly-over. */
   grade?: 'golden';
   hdriPinned?: boolean;
   shadow?: 'soft';
@@ -64,12 +64,26 @@ export type MeadowWorldOptions = {
   product?: boolean;
   /** Skip pointer drift. The intro pull still runs when intro is set. */
   steady?: boolean;
-  /** Fill the empty AuraUnitSlot. Grass and far leave the slot empty. */
+  /** Fill the empty AuraUnitSlot. Grass leaves the slot empty. */
   occupyUnit?: (slot: THREE.Group) => (() => void) | void;
-  /** Fill HotTubSlot. Grass and far leave the slot empty. */
+  /** Fill HotTubSlot. Grass leaves the slot empty. */
   occupyTub?: (slot: THREE.Group) => (() => void) | void;
   /** After the camera is placed. The renderer arrives on the second frame. */
   onFrame?: (frame: MeadowFrame) => void;
+  /** Scroll from dusk into night. Stars and the warm lights follow it. */
+  nightScroll?: boolean;
+  /** Second environment. The sky eases from `hdri` into this as night rises. */
+  hdriNight?: string;
+  /** Ground height. The slope passage passes a steeper ridge. */
+  heightAt?: (x: number, z: number) => number;
+  /** Skip grass so rock or snow stays the ground. Default is the meadow. */
+  meadow?: boolean;
+  /** PBR ground. Meadow keeps the coloured terrain. */
+  ground?: 'meadow' | 'rock' | 'snow';
+  /** Open the far plane, keep the mountain layers, and use height fog. */
+  vista?: boolean;
+  /** Drop trees and stones inside this radius. The slope deck uses it. */
+  clear?: { x: number; z: number; r: number };
 };
 
 export type MeadowFrame = {
@@ -126,12 +140,15 @@ export const GRASS_SPLINE: SplinePoint[] = [
   { p: [-14.2, 2.05, -8.4], t: [5.05, 5.39, 5.53], fov: 36, ground: 1 },
   { p: [-13.4, 1.95, -9.6], t: [5.85, 5.29, 4.33], fov: 35, ground: 1 },
 ];
-/** Same settle, eased a little closer. No jump from the grass passage. */
+/**
+ * Starts near the unit, then drifts back and rises so the room is a small
+ * warm light in the dusk meadow. Heights are world space.
+ */
 export const FAR_SPLINE: SplinePoint[] = [
-  { p: [-13.4, 1.95, -9.6], t: [5.85, 5.29, 4.33], fov: 35, ground: 1 },
-  { p: [-12.64, 1.85, -9.14], t: [5.03, 4.72, 3.64], fov: 35, ground: 1 },
-  { p: [-11.67, 1.85, -8.44], t: [6.0, 4.72, 4.34], fov: 34, ground: 1 },
-  { p: [-11.2, 1.8, -8.1], t: [6.3, 4.6, 4.6], fov: 34, ground: 1 },
+  { p: [6.4, 2.2, 12.8], t: [1.5, 1.35, 2.1], fov: 34 },
+  { p: [11, 7.4, 26], t: [0.7, 1.9, 0.5], fov: 34 },
+  { p: [18, 18, 48], t: [0.25, 2.8, 0.15], fov: 32 },
+  { p: [24, 36, 86], t: [0.15, 3.6, 0.05], fov: 28 },
 ];
 
 export const REDUCED_SHOT: MeadowShot = {
@@ -252,7 +269,7 @@ function ridged(x: number, y: number, octaves = 5) {
   return sum;
 }
 
-function makeTerrain(segments: number) {
+function makeTerrain(segments: number, heightAt: (x: number, z: number) => number = sampleTerrainHeight) {
   const geo = new THREE.PlaneGeometry(170, 170, segments, segments);
   geo.rotateX(-Math.PI / 2);
   const position = geo.attributes.position as THREE.BufferAttribute;
@@ -265,7 +282,7 @@ function makeTerrain(segments: number) {
   for (let i = 0; i < position.count; i += 1) {
     const x = position.getX(i);
     const z = position.getZ(i);
-    position.setY(i, sampleTerrainHeight(x, z));
+    position.setY(i, heightAt(x, z));
     const n1 = 0.5 + 0.5 * Math.sin(x * 0.23 + z * 0.17 + 1.2);
     const n2 = 0.5 + 0.5 * Math.sin(x * 0.61 - z * 0.43 + 4);
     tmp.copy(cA).lerp(cB, n1).lerp(cC, n2 * 0.25);
@@ -311,6 +328,22 @@ float terraNoise(vec2 p){
 }`,
       );
   };
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.receiveShadow = true;
+  mesh.name = 'Terrain';
+  return mesh;
+}
+
+function makeTexturedGround(segments: number, heightAt: (x: number, z: number) => number, color: string) {
+  const geo = new THREE.PlaneGeometry(170, 170, segments, segments);
+  geo.rotateX(-Math.PI / 2);
+  const position = geo.attributes.position as THREE.BufferAttribute;
+  for (let i = 0; i < position.count; i += 1) {
+    position.setY(i, heightAt(position.getX(i), position.getZ(i)));
+  }
+  geo.computeVertexNormals();
+  if (geo.getAttribute('uv')) geo.setAttribute('uv2', geo.getAttribute('uv'));
+  const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.94, metalness: 0 });
   const mesh = new THREE.Mesh(geo, mat);
   mesh.receiveShadow = true;
   mesh.name = 'Terrain';
@@ -531,7 +564,7 @@ function addStars(parent: THREE.Group) {
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   const mat = new THREE.PointsMaterial({
-    size: 1.15,
+    size: 2,
     sizeAttenuation: true,
     color: '#dfe9f5',
     transparent: true,
@@ -594,6 +627,7 @@ function placeNormalized(
   height: number,
   placements: { pos: [number, number, number]; rotY?: number; scale?: number }[],
   sway: THREE.Object3D[],
+  heightAt: (x: number, z: number) => number = sampleTerrainHeight,
 ) {
   const box = new THREE.Box3().setFromObject(src);
   const size = new THREE.Vector3();
@@ -625,7 +659,7 @@ function placeNormalized(
     obj.scale.setScalar(k * scale);
     const pivot = new THREE.Group();
     pivot.add(obj);
-    const y = sampleTerrainHeight(placement.pos[0], placement.pos[2]) - 0.06;
+    const y = heightAt(placement.pos[0], placement.pos[2]) - 0.06;
     pivot.position.set(placement.pos[0], y, placement.pos[2]);
     pivot.rotation.y = placement.rotY ?? 0;
     group.add(pivot);
@@ -666,13 +700,13 @@ function addLiteForest(parent: THREE.Group, geometries: THREE.BufferGeometry[], 
   parent.add(group);
 }
 
-function addSlots(parent: THREE.Group) {
+function addSlots(parent: THREE.Group, heightAt: (x: number, z: number) => number = sampleTerrainHeight) {
   const unit = new THREE.Group();
   unit.name = 'AuraUnitSlot';
-  unit.position.set(AURA_UNIT_SLOT.x, sampleTerrainHeight(AURA_UNIT_SLOT.x, AURA_UNIT_SLOT.z), AURA_UNIT_SLOT.z);
+  unit.position.set(AURA_UNIT_SLOT.x, heightAt(AURA_UNIT_SLOT.x, AURA_UNIT_SLOT.z), AURA_UNIT_SLOT.z);
   const tub = new THREE.Group();
   tub.name = 'HotTubSlot';
-  tub.position.set(HOT_TUB_SLOT.x, sampleTerrainHeight(HOT_TUB_SLOT.x, HOT_TUB_SLOT.z), HOT_TUB_SLOT.z);
+  tub.position.set(HOT_TUB_SLOT.x, heightAt(HOT_TUB_SLOT.x, HOT_TUB_SLOT.z), HOT_TUB_SLOT.z);
   parent.add(unit, tub);
 }
 
@@ -775,12 +809,15 @@ function disposeBuilt(built: Built, scene: THREE.Scene) {
 
 export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions = {}): MeadowHandle {
   const golden = options.grade === 'golden';
+  const vista = options.vista === true;
+  const heightAt = options.heightAt ?? sampleTerrainHeight;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.4, golden ? 1100 : 260);
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.4, golden || vista ? 1100 : 260);
   camera.position.set(-4.5, 5.4, 17.5);
-  const fog = new THREE.Fog(golden ? '#e4c9a4' : '#e3ede7', golden ? 28 : 30, golden ? 140 : 88);
+  const vistaFog = options.ground === 'snow' ? '#d5e3ee' : options.ground === 'rock' ? '#c9d3da' : '#d2c2ae';
+  const fog = new THREE.Fog(golden ? '#e4c9a4' : vista ? vistaFog : '#e3ede7', golden || vista ? 24 : 30, golden || vista ? 140 : 88);
   scene.fog = fog;
-  scene.background = golden ? null : fog.color;
+  scene.background = golden || options.hdriNight ? null : fog.color;
 
   let spline = options.spline?.length ? options.spline : FLYOVER_SPLINE;
   let timeOfDay: TimeOfDay = options.timeOfDay ?? 'scroll';
@@ -821,6 +858,10 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
 
   let claim: ((renderer: THREE.WebGLRenderer) => void) | null = null;
   let frameRenderer: THREE.WebGLRenderer | null = null;
+  let skyNight: { value: number } | null = null;
+  let duskEnv: THREE.Texture | null = null;
+  let nightEnv: THREE.Texture | null = null;
+  let envsAsked = false;
 
   const applyShadow = () => {
     const map = qualityProfile().shadowMapSize;
@@ -839,6 +880,56 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     cam.top = span;
     cam.bottom = -span;
     cam.updateProjectionMatrix();
+  };
+
+  const dressGround = (mesh: THREE.Mesh, kind: 'rock' | 'snow', generation: number) => {
+    const mat = mesh.material as THREE.MeshStandardMaterial;
+    const repeat = kind === 'snow' ? 26 : 18;
+    const apply = (maps: THREE.Texture[]) => {
+      if (dead || generation !== built.generation) {
+        for (const tex of maps) tex.dispose();
+        return;
+      }
+      const [diff, nor, rough, ao] = maps;
+      for (const tex of maps) {
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(repeat, repeat);
+        tex.anisotropy = 8;
+      }
+      diff.colorSpace = THREE.SRGBColorSpace;
+      nor.colorSpace = THREE.NoColorSpace;
+      rough.colorSpace = THREE.NoColorSpace;
+      ao.colorSpace = THREE.NoColorSpace;
+      mat.map = diff;
+      mat.normalMap = nor;
+      mat.roughnessMap = rough;
+      mat.aoMap = ao;
+      mat.aoMapIntensity = kind === 'snow' ? 0.45 : 0.7;
+      mat.color.set('#ffffff');
+      mat.needsUpdate = true;
+      built.textures.push(...maps);
+    };
+    if (kind === 'rock') {
+      void whenKtx2()
+        .then(() =>
+          Promise.all([
+            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/diff.ktx2')),
+            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/nor_gl.ktx2')),
+            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/rough.ktx2')),
+            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/ao.ktx2')),
+          ]),
+        )
+        .then(apply)
+        .catch(() => undefined);
+      return;
+    }
+    const loader = new THREE.TextureLoader();
+    void Promise.all(
+      ['diff', 'nor_gl', 'rough', 'ao'].map((name) => loader.loadAsync(asset(`textures/snow_02/${name}.jpg`))),
+    )
+      .then(apply)
+      .catch(() => undefined);
   };
 
   const paintGrass = (mat: THREE.ShaderMaterial | null, duskAmt: number, nightAmt: number) => {
@@ -873,11 +964,20 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     }
     scene.add(hemi, ambient, sun, fill);
     const segments = qualityProfile().tier === 'ultra' || qualityProfile().tier === 'high' ? 160 : 96;
-    const terrain = golden ? makeGoldenTerrain(segments, built.textures, built.materials) : makeTerrain(segments);
+    const terrain = options.ground === 'rock' || options.ground === 'snow'
+      ? makeTexturedGround(segments, heightAt, options.ground === 'snow' ? '#e7eef2' : '#8d8680')
+      : golden
+        ? makeGoldenTerrain(segments, built.textures, built.materials)
+        : makeTerrain(segments, heightAt);
     built.geometries.push(terrain.geometry);
-    if (!golden) built.materials.push(terrain.material as THREE.Material);
+    if (!golden) {
+      const material = terrain.material as THREE.Material;
+      if (vista) applyHeightFog(material);
+      built.materials.push(material);
+    }
     scene.add(terrain);
-    addSlots(scene);
+    if (options.ground === 'rock' || options.ground === 'snow') dressGround(terrain as THREE.Mesh, options.ground, built.generation);
+    addSlots(scene, heightAt);
     const releases: Array<() => void> = [];
     const take = (name: string, occupy?: (slot: THREE.Group) => (() => void) | void) => {
       if (!occupy) return;
@@ -945,11 +1045,40 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       claim = grove.claimRenderer;
       return;
     }
+    if (vista) {
+      const alive = () => !dead && !suspended && generation === built.generation;
+      const grove = mountGoldenGrove(
+        scene,
+        built.geometries,
+        built.materials,
+        built.textures,
+        alive,
+        undefined,
+        heightAt,
+        options.clear,
+        !options.ground,
+      );
+      claim = grove.claimRenderer;
+      return;
+    }
     if (profile.tier === 'low') {
       addLiteForest(scene, built.geometries, built.materials, scale);
       return;
     }
-    const count = (list: typeof PATCHES) => list.slice(0, Math.max(1, Math.ceil(list.length * Math.min(1, scale))));
+    const kept = (list: typeof PATCHES) => {
+      const zone = options.clear;
+      if (!zone) return list;
+      const r2 = zone.r * zone.r;
+      return list.filter((item) => {
+        const dx = item.pos[0] - zone.x;
+        const dz = item.pos[2] - zone.z;
+        return dx * dx + dz * dz > r2;
+      });
+    };
+    const count = (list: typeof PATCHES) => {
+      const source = kept(list);
+      return source.slice(0, Math.max(1, Math.ceil(source.length * Math.min(1, scale))));
+    };
     void Promise.all([
       loadModel(asset('models/pines.glb')),
       loadModel(asset('models/pine-teal.glb')),
@@ -971,25 +1100,97 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       tint(pines.scene);
       tint(teal.scene);
       tint(rocks.scene, true);
-      const pinesGroup = placeNormalized(pines.scene, 5.2, count(PATCHES), built.sway);
-      const tealGroup = placeNormalized(teal.scene, 4.3, count(TEAL_PINES), built.sway);
-      const rockGroup = placeNormalized(rocks.scene, 1.4, count(ROCKS), []);
-      const lanternGroup = placeNormalized(lantern.scene, 0.38, count(LANTERNS), []);
+      const pinesGroup = placeNormalized(pines.scene, 5.2, count(PATCHES), built.sway, heightAt);
+      const tealGroup = placeNormalized(teal.scene, 4.3, count(TEAL_PINES), built.sway, heightAt);
+      const rockGroup = placeNormalized(rocks.scene, 1.4, count(ROCKS), [], heightAt);
+      const lanternGroup = options.ground ? null : placeNormalized(lantern.scene, 0.38, count(LANTERNS), [], heightAt);
       pinesGroup.name = 'Forest';
       tealGroup.name = 'TealForest';
-      scene.add(pinesGroup, tealGroup, rockGroup, lanternGroup);
+      scene.add(pinesGroup, tealGroup, rockGroup);
+      if (lanternGroup) scene.add(lanternGroup);
       for (const group of [pinesGroup, tealGroup, rockGroup, lanternGroup]) {
+        if (!group) continue;
         group.traverse((node) => {
           const mesh = node as THREE.Mesh;
           if (!mesh.isMesh) return;
           const material = mesh.material;
           const list = Array.isArray(material) ? material : [material];
-          for (const item of list) if (item) built.materials.push(item);
+          for (const item of list) {
+            if (!item) continue;
+            if (vista) applyHeightFog(item);
+            built.materials.push(item);
+          }
         });
       }
     }).catch(() => {
-      if (!dead && !suspended && generation === built.generation) addLiteForest(scene, built.geometries, built.materials, scale);
+      if (!vista && !dead && !suspended && generation === built.generation) addLiteForest(scene, built.geometries, built.materials, scale);
     });
+  };
+
+  const addNightSky = (generation: number) => {
+    const nightMix = { value: 0 };
+    skyNight = nightMix;
+    const hold = new THREE.DataTexture(new Uint8Array([18, 22, 28, 255]), 1, 1);
+    hold.colorSpace = THREE.LinearSRGBColorSpace;
+    hold.needsUpdate = true;
+    built.textures.push(hold);
+    const mat = new THREE.ShaderMaterial({
+      uniforms: {
+        uFrom: { value: hold as THREE.Texture },
+        uTo: { value: hold as THREE.Texture },
+        uNight: nightMix,
+      },
+      vertexShader: /* glsl */ `
+        varying vec3 vDir;
+        void main() {
+          vec4 world = modelMatrix * vec4(position, 1.0);
+          vDir = world.xyz - cameraPosition;
+          gl_Position = projectionMatrix * viewMatrix * world;
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D uFrom;
+        uniform sampler2D uTo;
+        uniform float uNight;
+        varying vec3 vDir;
+        void main() {
+          vec3 dir = normalize(vDir);
+          vec2 uv = vec2(atan(dir.z, dir.x) * 0.15915494 + 0.5, asin(clamp(dir.y, -1.0, 1.0)) * 0.31830989 + 0.5);
+          vec3 day = texture2D(uFrom, uv).rgb;
+          vec3 night = texture2D(uTo, uv).rgb;
+          gl_FragColor = vec4(mix(day, night, clamp(uNight, 0.0, 1.0)), 1.0);
+        }
+      `,
+      side: THREE.BackSide,
+      depthWrite: false,
+      fog: false,
+    });
+    const geo = new THREE.SphereGeometry(480, 28, 16);
+    built.geometries.push(geo);
+    built.materials.push(mat);
+    const dome = new THREE.Mesh(geo, mat);
+    dome.name = 'NightSky';
+    dome.frustumCulled = false;
+    dome.renderOrder = -20;
+    scene.add(dome);
+    const take = (url: string, key: 'uFrom' | 'uTo') => {
+      hdrLoader.load(asset(url), (tex) => {
+        if (dead || generation !== built.generation) {
+          tex.dispose();
+          return;
+        }
+        tex.colorSpace = THREE.LinearSRGBColorSpace;
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.magFilter = THREE.LinearFilter;
+        tex.minFilter = THREE.LinearFilter;
+        tex.generateMipmaps = false;
+        mat.uniforms[key].value = tex;
+        built.textures.push(tex);
+        scene.background = null;
+      });
+    };
+    if (options.hdri) take(options.hdri, 'uFrom');
+    if (options.hdriNight) take(options.hdriNight, 'uTo');
   };
 
   const buildAtmosphere = () => {
@@ -1006,6 +1207,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     const stars = addStars(scene);
     built.geometries.push(stars.geo);
     built.stars = stars.mat;
+    if (options.hdriNight && options.hdri) addNightSky(generation);
     const mistTex = softDisc();
     if (mistTex) {
       built.textures.push(mistTex);
@@ -1013,10 +1215,12 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         const mat = new THREE.SpriteMaterial({ map: mistTex, transparent: true, depthWrite: false, opacity: 0.15 });
         built.materials.push(mat);
         const sprite = new THREE.Sprite(mat);
-        sprite.position.set(spec.pos[0], spec.pos[1], spec.pos[2]);
+        const lift = options.heightAt || options.ground ? heightAt(spec.pos[0], spec.pos[2]) : 0;
+        const mistY = lift + spec.pos[1];
+        sprite.position.set(spec.pos[0], mistY, spec.pos[2]);
         sprite.scale.set(spec.scale, spec.scale * 0.4, 1);
         sprite.userData.base = spec.pos[0];
-        sprite.userData.y = spec.pos[1];
+        sprite.userData.y = mistY;
         sprite.userData.speed = spec.speed;
         sprite.userData.index = built.mist.length;
         scene.add(sprite);
@@ -1037,7 +1241,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     scene.add(birds);
     built.birds = birds;
     const shaftTier = qualityProfile().tier;
-    const shaftsOn = options.product ? false : golden ? shaftTier === 'medium' : shaftTier !== 'low';
+    const shaftsOn = options.ground ? false : options.product ? false : golden ? shaftTier === 'medium' : shaftTier !== 'low';
     const shaftTex = shaftTexture();
     if (shaftTex && shaftsOn) {
       built.textures.push(shaftTex);
@@ -1073,6 +1277,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   };
 
   const buildMeadow = () => {
+    if (options.meadow === false) return;
     const profile = qualityProfile();
     const scale = profile.grassScale * density;
     if (scale <= 0) return;
@@ -1137,7 +1342,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     built.generation = ticket;
     claim = null;
     scene.fog = fog;
-    scene.background = golden ? null : fog.color;
+    scene.background = golden || options.hdriNight ? null : fog.color;
     curves = makeCurves(spline);
     buildCore();
     window.setTimeout(() => {
@@ -1177,6 +1382,14 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     claimRenderer(renderer) {
       frameRenderer = renderer;
       claim?.(renderer);
+      if (envsAsked || !options.hdriNight || !options.hdri) return;
+      envsAsked = true;
+      void loadEnvironment(renderer, asset(options.hdri)).then((texture) => {
+        if (!dead) duskEnv = texture;
+      }).catch(() => undefined);
+      void loadEnvironment(renderer, asset(options.hdriNight)).then((texture) => {
+        if (!dead) nightEnv = texture;
+      }).catch(() => undefined);
     },
     update(progress, dt) {
       if (dead || suspended) return;
@@ -1201,8 +1414,12 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       const clock = grassClock(reduced, elapsed || FROZEN_T);
       const u = clamp01(rig.smooth);
       const scrollDusk = spline.length >= 13 ? smoothstep(4 / 6, 1, u) : smoothstep(0.45, 1, u);
-      const duskTarget = options.product || timeOfDay === 'day' ? 0 : timeOfDay === 'dusk' || timeOfDay === 'night' ? 1 : scrollDusk;
-      const nightTarget = options.product ? 0 : timeOfDay === 'night' ? 1 : 0;
+      let duskTarget = options.product || timeOfDay === 'day' ? 0 : timeOfDay === 'dusk' || timeOfDay === 'night' ? 1 : scrollDusk;
+      let nightTarget = options.product ? 0 : timeOfDay === 'night' ? 1 : 0;
+      if (options.nightScroll && !options.product) {
+        duskTarget = Math.max(duskTarget, smoothstep(0, 0.42, u));
+        nightTarget = smoothstep(0.18, 0.92, u);
+      }
       rig.dusk = reduced ? duskTarget : THREE.MathUtils.damp(rig.dusk, Math.max(duskTarget, nightTarget), 5, step);
       rig.night = reduced ? nightTarget : THREE.MathUtils.damp(rig.night, nightTarget, 2.2, step);
 
@@ -1249,7 +1466,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
             camT.y -= rig.my * 0.09 * par;
           }
         }
-        const minY = sampleTerrainHeight(camP.x, camP.z) + 0.7;
+        const minY = heightAt(camP.x, camP.z) + 0.7;
         if (camP.y < minY) camP.y = minY;
         camera.position.copy(camP);
         camera.lookAt(camT);
@@ -1262,6 +1479,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       const duskAmt = golden ? 0.68 : rig.dusk;
       const nightAmt = golden ? 0 : rig.night;
       if (golden) {
+        heightFog.color.value.set('#e4c9a4');
         sun.position.copy(camera.position).addScaledVector(EVENING_SUN, 46);
         sun.target.position.copy(camera.position);
         sun.target.updateMatrixWorld();
@@ -1282,7 +1500,15 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         sun.intensity = (2.6 - duskAmt * 0.9) * (1 - nightAmt * 0.82);
         hemi.intensity = (0.5 - duskAmt * 0.18) * (1 - nightAmt * 0.72);
         scratch.copy(coolFog).lerp(warmFog, duskAmt).lerp(nightFog, nightAmt);
+        if (options.ground === 'snow') scratch.lerp(coolFog, 0.72);
         fog.color.copy(scratch);
+        if (vista) {
+          heightFog.color.value.copy(fog.color);
+          heightFog.falloff.value = options.ground === 'rock' ? 0.16 : 0.28;
+          heightFog.near.value = 16;
+          heightFog.far.value = options.ground === 'snow' ? 96 : 130;
+          heightFog.sun.value.copy(sun.position).normalize();
+        }
       }
       if (options.product) {
         sun.color.set('#fff3dd');
@@ -1298,6 +1524,12 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
 
       if (built.snow) paintSnow(built.snow, duskAmt, nightAmt);
       if (built.stars) built.stars.opacity = nightAmt * 0.95;
+      if (skyNight) skyNight.value = nightAmt;
+      if (duskEnv && nightEnv) {
+        scene.environment = nightAmt < 0.5 ? duskEnv : nightEnv;
+        const edge = nightAmt < 0.5 ? 1 - nightAmt * 2 : (nightAmt - 0.5) * 2;
+        scene.environmentIntensity = (options.envIntensity ?? 0.45) * (0.28 + 0.72 * edge);
+      }
       paintGrass(built.heroMat, duskAmt, nightAmt);
       paintGrass(built.fillMat, duskAmt, nightAmt);
       paintGrass(built.flowerMat, duskAmt, nightAmt);
@@ -1348,13 +1580,22 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       built.clouds.forEach((cloud) => {
         const phase = cloud.userData.phase as number;
         cloud.position.x = (cloud.userData.baseX as number) + Math.sin(clock * 0.05 + phase) * 1.4 * wind;
+        if (options.nightScroll) {
+          const mat = (cloud as THREE.Mesh).material as THREE.MeshBasicMaterial;
+          if (mat?.color) mat.color.setScalar(1 - nightAmt * 0.94);
+        }
       });
       built.mist.forEach((sprite) => {
         const index = sprite.userData.index as number;
         const speed = sprite.userData.speed as number;
         sprite.position.x = (sprite.userData.base as number) + Math.sin(clock * speed * 2 + index * 1.8) * 2.4 * (reduced ? 0 : 1);
         sprite.position.y = (sprite.userData.y as number) + Math.sin(clock * speed + index) * 0.3 * (reduced ? 0 : 1);
+        if (options.nightScroll) sprite.material.opacity = 0.15 * (1 - nightAmt);
       });
+      if (options.nightScroll && built.birds) {
+        const birdMat = built.birds.material as THREE.MeshBasicMaterial;
+        birdMat.opacity = 0.55 * (1 - nightAmt);
+      }
       if (built.birds) {
         const dummy = new THREE.Object3D();
         for (let i = 0; i < 8; i += 1) {
