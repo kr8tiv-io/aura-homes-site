@@ -42,18 +42,29 @@ function environmentGenerator(renderer: THREE.WebGLRenderer): THREE.PMREMGenerat
 }
 
 let boundRenderer: THREE.WebGLRenderer | null = null;
+let markKtx2Ready: () => void = () => {};
+const ktx2Ready = new Promise<void>((resolve) => {
+  markKtx2Ready = resolve;
+});
+
+/** Resolves once the live renderer has told KTX2 which formats it can use. */
+export function whenKtx2(): Promise<void> {
+  return ktx2Ready;
+}
 
 /** Tell the KTX2 transcoder which GPU formats this renderer can use. */
 export function configureRenderer(renderer: THREE.WebGLRenderer): void {
-  if (boundRenderer === renderer) return;
-  ktx2Loader.detectSupport(renderer);
-  boundRenderer = renderer;
+  if (boundRenderer !== renderer) {
+    ktx2Loader.detectSupport(renderer);
+    boundRenderer = renderer;
+  }
+  markKtx2Ready();
 }
 
 export function loadModel(url: string): Promise<GLTF> {
   const cached = modelCache.get(url);
   if (cached) return cached;
-  const pending = gltfLoader.loadAsync(url);
+  const pending = ktx2Ready.then(() => gltfLoader.loadAsync(url));
   modelCache.set(url, pending);
   pending.catch(() => {
     if (modelCache.get(url) === pending) modelCache.delete(url);

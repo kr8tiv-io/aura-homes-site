@@ -493,13 +493,15 @@ import Journeys from '../components/Journeys.astro';
           const spacer = section.nextElementSibling instanceof HTMLElement && section.nextElementSibling.hasAttribute('data-passage-spacer')
             ? section.nextElementSibling
             : null;
+          const sceneName = section.querySelector('[data-scene]')?.getAttribute('data-scene');
+          const passageScrub = sceneName === 'grass' || sceneName === 'far' ? 0.8 : 1;
           ScrollTrigger.create({
             trigger: section,
             start: 'top top',
             end: () => `+=${spacer?.offsetHeight || Math.round(window.innerHeight * (mobile ? 1.2 : 1.6))}`,
             pin: true,
             pinSpacing: false,
-            scrub: 1,
+            scrub: passageScrub,
             anticipatePin: 1,
             onUpdate: (self) => {
               const p = self.progress;

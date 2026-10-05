@@ -22,6 +22,7 @@ import { N8AOPostPass } from 'n8ao';
 import { configureRenderer, loadEnvironment, releaseEnvironment } from './loaders';
 import { displayDpr, ensureQuality, hdriFor, noteFrame, onQuality, qualityProfile, setDebugStats } from './quality';
 import { prefersReducedMotion } from '../scripts/motion';
+import { TinySunFlareEffect } from './meadow-v1/flare';
 
 declare module 'n8ao' {
   export class N8AOPostPass extends Pass {
@@ -51,7 +52,18 @@ export type StageView = {
   tone?: StageTone;
   layer?: StageLayer;
   hdri?: string;
+  /** Keep this exact HDRI. Quality will not swap 1k for 2k. */
+  hdriPinned?: boolean;
   envIntensity?: number;
+  /** Soft shadows only while this view is the one being painted. */
+  shadow?: 'soft';
+  bloom?: { threshold: number; intensity: number };
+  /** High and ultra only. The light must already cast a shadow. */
+  godrays?: THREE.DirectionalLight;
+  /** High tier only. */
+  flare?: boolean;
+  /** Bake impostors once the shared renderer exists. */
+  claimRenderer?: (renderer: THREE.WebGLRenderer) => void;
   /** Drop geometries once the passage is more than two screens away. */
   suspend?: () => void;
   /** Rebuild after the passage comes back within two screens. */
@@ -93,6 +105,12 @@ let sizeH = 0;
 let sizePr = 0;
 let approachObserver: IntersectionObserver | null = null;
 let viewportObserver: IntersectionObserver | null = null;
+let godraysCtor: (new (
+  light: THREE.DirectionalLight,
+  camera: THREE.PerspectiveCamera,
+  params?: { density?: number; maxDensity?: number; color?: THREE.Color; raymarchSteps?: number; gammaCorrection?: boolean; resolutionScale?: number },
+) => Pass) | null = null;
+let godraysLoading = false;
 
 let quad: THREE.Mesh | null = null;
 let quadScene: THREE.Scene | null = null;
@@ -399,7 +417,9 @@ function makeComposer(entry: Entry): EffectComposer | null {
   const composer = new EffectComposer(renderer, {
     depthBuffer: true,
     stencilBuffer: true,
-    frameBufferType: THREE.UnsignedByteType,
+    // Half float so the evening sky and the sun disc reach AgX. An 8-bit buffer
+    // clamps that whole dome to white, and AgX then paints it one gray.
+    frameBufferType: THREE.HalfFloatType,
   });
   /* setSize would resize the shared canvas. Fit the buffers only. */
   composer.autoRenderToScreen = false;
@@ -417,10 +437,13 @@ function makeComposer(entry: Entry): EffectComposer | null {
     effects.unshift(
       new BloomEffect({
         mipmapBlur: true,
-        luminanceThreshold: 0.9,
-        intensity: 0.35,
+        luminanceThreshold: view.bloom?.threshold ?? 0.9,
+        intensity: view.bloom?.intensity ?? 0.35,
       }),
     );
+  }
+  if (view.flare && profile.tier === 'high' && camera instanceof THREE.PerspectiveCamera && view.godrays) {
+    effects.push(new TinySunFlareEffect(view.godrays.position, camera));
   }
   const effect = new EffectPass(camera, ...effects);
   effect.renderToScreen = true;
@@ -440,10 +463,50 @@ function makeComposer(entry: Entry): EffectComposer | null {
     composer.addPass(ao);
   }
 
+  if (
+    view.godrays &&
+    godraysCtor &&
+    (profile.tier === 'high' || profile.tier === 'ultra') &&
+    camera instanceof THREE.PerspectiveCamera
+  ) {
+    const rays = new godraysCtor(view.godrays, camera, {
+      density: 1 / 96,
+      maxDensity: 0.32,
+      color: new THREE.Color('#ffb56a'),
+      raymarchSteps: 36,
+      gammaCorrection: false,
+      resolutionScale: 0.5,
+    });
+    rays.renderToScreen = false;
+    composer.addPass(rays);
+  }
+
   composer.addPass(effect);
   entry.toneEffect = tone;
   entry.composer = composer;
   return composer;
+}
+
+function ensureGodrays(entry: Entry) {
+  const tier = qualityProfile().tier;
+  if (!entry.view.godrays || (tier !== 'high' && tier !== 'ultra') || godraysCtor || godraysLoading) return;
+  godraysLoading = true;
+  void import('three-good-godrays')
+    .then((mod) => {
+      godraysCtor = mod.GodraysPass as typeof godraysCtor;
+      for (const item of entries) {
+        if (!item.view.godrays || item.dead) continue;
+        item.composer?.dispose();
+        item.composer = null;
+        item.toneEffect = null;
+        item.pw = 0;
+        item.ph = 0;
+      }
+      requestDraw();
+    })
+    .catch(() => {
+      godraysLoading = false;
+    });
 }
 
 function prepareView(entry: Entry) {
@@ -528,6 +591,8 @@ function paintScene(entry: Entry, rect: DOMRect, dt: number) {
   renderer.setViewport(left, bottom, rect.width, rect.height);
   renderer.setScissor(left, bottom, rect.width, rect.height);
   renderer.toneMappingExposure = entry.view.exposure ?? 1;
+  ensureGodrays(entry);
+  entry.view.claimRenderer?.(renderer);
   composer.render(dt);
   entry.view.element.closest('.passage')?.classList.add('is-stage');
 }
@@ -682,7 +747,7 @@ function disposeStage() {
 export function registerView(view: StageView): { setProgress: (t: number) => void; destroy: () => void } {
   ensureQuality();
   const baseHdri = view.hdri ?? '';
-  if (baseHdri) view.hdri = hdriFor(baseHdri);
+  if (baseHdri && !view.hdriPinned) view.hdri = hdriFor(baseHdri);
   const entry: Entry = {
     view,
     progress: 0,
@@ -741,7 +806,7 @@ onQuality((profile) => {
     entry.toneEffect = null;
     entry.pw = 0;
     entry.ph = 0;
-    if (!entry.baseHdri) continue;
+    if (!entry.baseHdri || entry.view.hdriPinned) continue;
     const next = hdriFor(entry.baseHdri);
     if (next === entry.view.hdri) continue;
     entry.view.hdri = next;

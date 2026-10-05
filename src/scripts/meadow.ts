@@ -1164,8 +1164,8 @@ const BUILDERS: Record<SceneKey, () => BuiltScene> = {
 };
 
 const LOOK: Record<SceneKey, { exposure: number; tone: StageTone; hdri: string; env: number; ao: boolean }> = {
-  grass: { exposure: 1.02, tone: 'agx', hdri: '/hdri/alps_field_1k.hdr', env: 0.35, ao: false },
-  far: { exposure: 1.02, tone: 'agx', hdri: '/hdri/alps_field_1k.hdr', env: 0.35, ao: false },
+  grass: { exposure: 1.06, tone: 'agx', hdri: '/hdri/evening_meadow_1k.hdr', env: 0.42, ao: false },
+  far: { exposure: 1.06, tone: 'agx', hdri: '/hdri/evening_meadow_1k.hdr', env: 0.42, ao: false },
   slope: { exposure: 0.94, tone: 'agx', hdri: '/hdri/alps_field_1k.hdr', env: 0.35, ao: false },
   snow: { exposure: 0.94, tone: 'agx', hdri: '/hdri/evening_meadow_1k.hdr', env: 0.4, ao: false },
   glass: { exposure: 1.02, tone: 'neutral', hdri: '/hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr', env: 0.62, ao: true },
@@ -1189,11 +1189,17 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
       spline: key === 'grass' ? GRASS_SPLINE : FAR_SPLINE,
       timeOfDay: key === 'grass' ? 'day' : 'scroll',
       density: 1,
+      grade: 'golden',
       exposure: look.exposure,
       tone: look.tone,
       hdri: look.hdri,
+      hdriPinned: true,
       envIntensity: look.env,
       ao: false,
+      shadow: 'soft',
+      bloom: { threshold: 0.8, intensity: 0.28 },
+      godrays: true,
+      flare: true,
     });
     world.setProgress(readProgress());
     return {
