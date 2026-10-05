@@ -323,6 +323,7 @@ const foot = innerMenu.flatMap((group) => group.links);
       import { bindAmbient } from '../scripts/ambient';
       import { bindFields } from '../scripts/forms';
       import { bindRidgeLoad } from '../scripts/ridge-load';
+      import { bindHeadingGlow, disposeHeadingGlow } from '../scripts/heading-glow';
 
       initSmoothScroll();
       bindDaylight();
@@ -461,127 +462,7 @@ const foot = innerMenu.flatMap((group) => group.links);
         }
       }
 
-      const warmth = document.getElementById('warmth-canvas') as HTMLCanvasElement | null;
-      let warmthRaf = 0;
-      if (warmth && !builderPage) {
-        const gl = warmth.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
-        if (gl) {
-          const vert = `attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }`;
-          const frag = `precision mediump float;
-            uniform vec2 uRes;
-            uniform float uTime;
-            uniform vec3 uL[8];
-            void main() {
-              float glow = 0.0;
-              for (int i = 0; i < 8; i++) {
-                float r = max(uL[i].z, 1.0);
-                vec2 d = gl_FragCoord.xy - uL[i].xy;
-                glow += exp(-dot(d, d) / (r * r)) * step(12.0, uL[i].z);
-              }
-              float warmth = 0.32 + 0.68 * (0.5 + 0.5 * sin(uTime * 0.22));
-              vec3 ivory = vec3(0.98, 0.93, 0.84);
-              vec3 amber = vec3(1.0, 0.74, 0.42);
-              float alpha = clamp(glow, 0.0, 1.0) * (0.22 + warmth * 0.34);
-              gl_FragColor = vec4(mix(ivory, amber, warmth), alpha);
-            }`;
-          const compile = (type: number, src: string) => {
-            const shader = gl.createShader(type);
-            if (!shader) return null;
-            gl.shaderSource(shader, src);
-            gl.compileShader(shader);
-            return shader;
-          };
-          const program = gl.createProgram();
-          const vs = compile(gl.VERTEX_SHADER, vert);
-          const fs = compile(gl.FRAGMENT_SHADER, frag);
-          if (program && vs && fs) {
-            gl.attachShader(program, vs);
-            gl.attachShader(program, fs);
-            gl.linkProgram(program);
-            gl.useProgram(program);
-            const buffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-            const loc = gl.getAttribLocation(program, 'a');
-            gl.enableVertexAttribArray(loc);
-            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-            const uRes = gl.getUniformLocation(program, 'uRes');
-            const uTime = gl.getUniformLocation(program, 'uTime');
-            const uL = gl.getUniformLocation(program, 'uL[0]');
-            const lights = new Float32Array(24);
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-            const resizeWarmth = () => {
-              const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-              warmth.width = Math.floor(window.innerWidth * dpr);
-              warmth.height = Math.floor(window.innerHeight * dpr);
-              gl.viewport(0, 0, warmth.width, warmth.height);
-            };
-            const measureWarmth = () => {
-              lights.fill(0);
-              const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-              const spots: Array<{ x: number; y: number; r: number }> = [];
-              const nav = document.querySelector('.nav-words');
-              if (nav) {
-                const rect = nav.getBoundingClientRect();
-                if (rect.width > 0) {
-                  spots.push({
-                    x: (rect.left + rect.width / 2) * dpr,
-                    y: warmth.height - (rect.top + rect.height / 2) * dpr,
-                    r: Math.max(rect.width * 0.62, 140) * dpr,
-                  });
-                }
-              }
-              const heads = Array.from(document.querySelectorAll('h1, h2'))
-                .map((el) => el.getBoundingClientRect())
-                .filter((rect) => rect.width > 8 && rect.bottom > 0 && rect.top < window.innerHeight)
-                .sort(
-                  (a, b) =>
-                    Math.abs(a.top + a.height / 2 - window.innerHeight * 0.4) -
-                    Math.abs(b.top + b.height / 2 - window.innerHeight * 0.4),
-                )
-                .slice(0, 7);
-              for (const rect of heads) {
-                spots.push({
-                  x: (rect.left + rect.width / 2) * dpr,
-                  y: warmth.height - (rect.top + rect.height / 2) * dpr,
-                  r: Math.max(rect.width, rect.height * 2.4, 150) * 0.62 * dpr,
-                });
-              }
-              spots.slice(0, 8).forEach((spot, i) => {
-                lights[i * 3] = spot.x;
-                lights[i * 3 + 1] = spot.y;
-                lights[i * 3 + 2] = spot.r;
-              });
-            };
-            window.addEventListener('resize', () => {
-              resizeWarmth();
-              measureWarmth();
-            }, { passive: true });
-            resizeWarmth();
-            measureWarmth();
-            let frame = 0;
-            const drawWarmth = (time: number) => {
-              frame += 1;
-              if (frame % 4 === 0) measureWarmth();
-              gl.uniform2f(uRes, warmth.width, warmth.height);
-              gl.uniform1f(uTime, time * 0.001);
-              gl.uniform3fv(uL, lights);
-              gl.drawArrays(gl.TRIANGLES, 0, 3);
-            };
-            const reducedWarmth = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reducedWarmth) drawWarmth(4200);
-            else {
-              const tick = (time: number) => {
-                warmthRaf = requestAnimationFrame(tick);
-                if (document.hidden) return;
-                drawWarmth(time);
-              };
-              warmthRaf = requestAnimationFrame(tick);
-            }
-          }
-        }
-      }
+      bindHeadingGlow();
 
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const playedLogos = new WeakSet<Element>();
@@ -818,7 +699,7 @@ const foot = innerMenu.flatMap((group) => group.links);
       if (import.meta.hot) {
         import.meta.hot.dispose(() => {
           cancelAnimationFrame(tracerRaf);
-          cancelAnimationFrame(warmthRaf);
+          disposeHeadingGlow();
           menuTl?.kill();
         });
       }
