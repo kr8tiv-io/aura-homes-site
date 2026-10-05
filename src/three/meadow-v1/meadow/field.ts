@@ -43,7 +43,9 @@ const rectDistanceTo = (x: number, z: number, rect: GroundRect) =>
 export function sampleMeadowClearance(x: number, z: number, tight = false): number {
   const fade = (distance: number, pad: number, feather: number) => clamp01((distance - pad) / feather);
   const unit = tight ? [0.08, 0.28] : [0.22, 0.85];
-  const tub = tight ? [TUB_RADIUS + 0.04, 0.35] : [TUB_RADIUS + 0.2, 0.7];
+  // Gazebo posts sit about 1.48 m from the tub centre. The loose pad is the
+  // hero grass, so that ring stays bare. The tight pad still clears the deck.
+  const tub = tight ? [TUB_RADIUS + 0.45, 0.4] : [TUB_RADIUS + 0.7, 0.55];
   const unitClear = fade(rectDistanceTo(x, z, UNIT_RECT), unit[0], unit[1]);
   const tubClear = fade(Math.hypot(x - TUB_CENTER.x, z - TUB_CENTER.z), tub[0], tub[1]);
   return Math.min(unitClear, tubClear);

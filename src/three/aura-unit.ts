@@ -123,6 +123,34 @@ function smudgeMap() {
   return tex;
 }
 
+let sharedSmudge: THREE.Texture | null | undefined;
+
+/** One polycarbonate pane. Each caller keeps its own material. */
+export function createPolycarbonateMaterial(): THREE.MeshPhysicalMaterial {
+  if (sharedSmudge === undefined) sharedSmudge = smudgeMap();
+  const mat = new THREE.MeshPhysicalMaterial({
+    color: '#ffffff',
+    metalness: 0,
+    roughness: 0.04,
+    roughnessMap: sharedSmudge ?? undefined,
+    transmission: 1,
+    thickness: GLASS_T,
+    ior: 1.586,
+    specularIntensity: 1,
+    clearcoat: 0.3,
+    clearcoatRoughness: 0.12,
+    envMapIntensity: 1,
+    attenuationColor: '#eef6f7',
+    attenuationDistance: 2,
+    transparent: true,
+    opacity: 1,
+    depthWrite: false,
+    side: THREE.DoubleSide,
+  });
+  mat.name = 'polycarbonate';
+  return mat;
+}
+
 function contactMap() {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
@@ -291,30 +319,8 @@ export function createAuraUnit(): AuraUnit {
   });
   mats.push(steel, cedar, oak, oakFloor, linen, shadeMat, dark, screenMat);
 
-  const smudge = smudgeMap();
-  if (smudge) texs.push(smudge);
-
   const makePane = () => {
-    const mat = new THREE.MeshPhysicalMaterial({
-      color: '#ffffff',
-      metalness: 0,
-      roughness: 0.04,
-      roughnessMap: smudge ?? undefined,
-      transmission: 1,
-      thickness: GLASS_T,
-      ior: 1.586,
-      specularIntensity: 1,
-      clearcoat: 0.3,
-      clearcoatRoughness: 0.12,
-      envMapIntensity: 1,
-      attenuationColor: '#eef6f7',
-      attenuationDistance: 2,
-      transparent: true,
-      opacity: 1,
-      depthWrite: false,
-      side: THREE.DoubleSide,
-    });
-    mat.name = 'polycarbonate';
+    const mat = createPolycarbonateMaterial();
     mats.push(mat);
     panes.push(mat);
     return mat;
