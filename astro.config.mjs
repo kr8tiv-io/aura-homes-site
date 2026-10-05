@@ -17,7 +17,7 @@ export default defineConfig({
   integrations: [
     react(),
     sitemap({
-      filter: (page) => !/\/(?:builder|api)(?:\/|$)/.test(new URL(page).pathname),
+      filter: (page) => !/\/(?:builder|api|dev)(?:\/|$)/.test(new URL(page).pathname),
     }),
   ],
   fonts: [

@@ -2,11 +2,12 @@
   Parametric Aura room. Length runs along local +Z, matching the meadow
   footprint (UNIT_LENGTH). The fully clear long side faces local +X.
   The door side faces local -X, with one panel slid open.
-  A later GLB at public/models/custom/aura-unit.glb replaces this shell.
+  A GLB at public/models/custom/aura-unit.glb replaces this shell when it is present.
 */
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
-import { ktx2Loader, loadModel, whenKtx2 } from './loaders';
+import { loadCustomModel, placeCustomModel } from './custom-models';
+import { ktx2Loader, whenKtx2 } from './loaders';
 import { UNIT_LENGTH, UNIT_WIDTH } from './meadow-v1/meadow/geometry';
 
 export type GlazeFinish = 'clear' | 'mirror' | 'tinted';
@@ -191,24 +192,6 @@ function isGlazeFinish(value: string): value is GlazeFinish {
   return value === 'clear' || value === 'mirror' || value === 'tinted';
 }
 
-let customPromise: Promise<THREE.Object3D | null> | null = null;
-
-function customModel() {
-  if (customPromise) return customPromise;
-  customPromise = (async () => {
-    const url = asset('models/custom/aura-unit.glb');
-    try {
-      const head = await fetch(url, { method: 'HEAD' });
-      if (!head.ok) return null;
-      const gltf = await loadModel(url);
-      return gltf.scene;
-    } catch {
-      return null;
-    }
-  })();
-  return customPromise;
-}
-
 export function createAuraUnit(options: AuraUnitOptions = {}): AuraUnit {
   const object = new THREE.Group();
   object.name = 'AuraUnit';
@@ -221,6 +204,7 @@ export function createAuraUnit(options: AuraUnitOptions = {}): AuraUnit {
   const texs: THREE.Texture[] = [];
   let panes: THREE.MeshPhysicalMaterial[] = [];
   let alive = true;
+  let releasePlaced = () => {};
   let from = FINISH.clear;
   let to = FINISH.clear;
   let fadeStart = 0;
@@ -618,31 +602,11 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
 
   const adopt = (source: THREE.Object3D) => {
     if (!alive) return;
-    const root = source.clone(true);
-    root.name = 'AuraUnitModel';
-    const retired = [...panes];
-    const found: THREE.MeshPhysicalMaterial[] = [];
-    root.traverse((node) => {
-      const mesh = node as THREE.Mesh;
-      if (!mesh.isMesh) return;
-      mesh.castShadow = true;
-      mesh.receiveShadow = true;
-      const named = /polycarbonate|glass/i.test(mesh.name);
-      const list = Array.isArray(mesh.material) ? mesh.material : [mesh.material];
-      const next = list.map((mat) => {
-        if (!named && !(mat && /polycarbonate|glass/i.test(mat.name))) return mat;
-        const paneMat = makePane();
-        found.push(paneMat);
-        return paneMat;
-      });
-      if (next.some((mat, index) => mat !== list[index])) {
-        mesh.material = Array.isArray(mesh.material) ? next : next[0];
-        mesh.castShadow = false;
-        mesh.receiveShadow = false;
-        mesh.renderOrder = 10;
-      }
+    const retired = new Set(panes);
+    const placed = placeCustomModel(source, 'aura-unit', {
+      polycarbonate: () => makePane(),
     });
-    if (found.length === 0) return;
+    const found = panes.filter((mat) => !retired.has(mat));
     shell.traverse((node) => {
       const mesh = node as THREE.Mesh;
       if (!mesh.isMesh || !mesh.geometry) return;
@@ -657,7 +621,9 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
       if (index >= 0) mats.splice(index, 1);
       mat.dispose();
     }
-    object.add(root);
+    for (const mat of placed.materials) mats.push(mat);
+    object.add(placed.object);
+    releasePlaced = placed.release;
     const live = new Set<THREE.Material>();
     object.traverse((node) => {
       const mesh = node as THREE.Mesh;
@@ -674,8 +640,9 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
     write(to);
   };
 
-  void customModel().then((scene) => {
-    if (!alive || !scene) return;
+  void loadCustomModel('aura-unit').then((scene) => {
+    if (!scene) return;
+    if (!alive) return;
     adopt(scene);
   });
 
@@ -686,6 +653,7 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
     dispose() {
       if (!alive) return;
       alive = false;
+      releasePlaced();
       object.removeFromParent();
       for (const geo of geos) geo.dispose();
       for (const mat of mats) mat.dispose();

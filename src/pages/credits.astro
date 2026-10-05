@@ -2,11 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import { creditCategories, credits } from '../data/credits';
+import { customModelCredits } from '../../scripts/custom-credits.mjs';
 
+const entries = [...credits, ...(await customModelCredits())];
 const groups = creditCategories
   .map((category) => ({
     category,
-    entries: credits.filter((entry) => entry.category === category),
+    entries: entries.filter((entry) => entry.category === category),
   }))
   .filter((group) => group.entries.length > 0);
 ---
