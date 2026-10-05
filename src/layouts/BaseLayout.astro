@@ -175,12 +175,16 @@ const foot = innerMenu.flatMap((group) => group.links);
         </nav>
         <div class="nav-tools">
           <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
-            <svg class="nav-sigil" viewBox="0 0 64 48" aria-hidden="true">
-              <line class="sigil-horizon" x1="6" y1="34" x2="58" y2="34" />
+            <svg class="nav-sigil" viewBox="0 0 200 188" aria-hidden="true">
               <g class="sigil-mark">
-                <circle class="sigil-glow" cx="32" cy="10" r="3.1" />
-                <circle class="sigil-halo" cx="32" cy="10" r="1.72" fill="none" />
-                <path class="sigil-ridge" d="M15 34H22.02L24.24 36.59L26.83 34L32 14.41L37.17 34L39.76 36.59L41.98 34H49" />
+                <ellipse class="sigil-ring" cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" fill="none" stroke="#c4a07a" stroke-width="2" />
+                <g class="sigil-ridge">
+                  <path d="M6.000,172.810 L41.915,140.885 L60.831,159.801 L100.000,54.046 L139.169,159.801 L158.085,140.885 L194.000,172.810 L194.000,167.190 L157.915,135.115 L140.831,152.199 L100.000,41.954 L59.169,152.199 L42.085,135.115 L6.000,167.190 Z" />
+                  <path d="M6.000,167.790 L6.000,164.390 L6.900,164.390 Q6.900,166.390 13.000,160.968 L13.000,161.568 Z" />
+                  <path d="M6.000,172.210 L6.000,175.610 L6.900,175.610 Q6.900,172.010 13.000,166.587 L13.000,165.987 Z" />
+                  <path d="M194.000,167.790 L194.000,164.390 L193.100,164.390 Q193.100,166.390 187.000,160.968 L187.000,161.568 Z" />
+                  <path d="M194.000,172.210 L194.000,175.610 L193.100,175.610 Q193.100,172.010 187.000,166.587 L187.000,165.987 Z" />
+                </g>
               </g>
             </svg>
           </button>
@@ -218,14 +222,19 @@ const foot = innerMenu.flatMap((group) => group.links);
           <div class="menu-ridge-clip">
             <div class="menu-ridge-shift">
               <svg class="menu-ridge" viewBox="0 0 200 188" fill="none">
-                <path vector-effect="non-scaling-stroke" d="M8 154H46L58 168L72 154L100 48L128 154L142 168L154 154H192" />
+                <g class="aura-ridge">
+                  <path d="M6.000,172.810 L41.915,140.885 L60.831,159.801 L100.000,54.046 L139.169,159.801 L158.085,140.885 L194.000,172.810 L194.000,167.190 L157.915,135.115 L140.831,152.199 L100.000,41.954 L59.169,152.199 L42.085,135.115 L6.000,167.190 Z" />
+                  <path d="M6.000,167.790 L6.000,164.390 L6.900,164.390 Q6.900,166.390 13.000,160.968 L13.000,161.568 Z" />
+                  <path d="M6.000,172.210 L6.000,175.610 L6.900,175.610 Q6.900,172.010 13.000,166.587 L13.000,165.987 Z" />
+                  <path d="M194.000,167.790 L194.000,164.390 L193.100,164.390 Q193.100,166.390 187.000,160.968 L187.000,161.568 Z" />
+                  <path d="M194.000,172.210 L194.000,175.610 L193.100,175.610 Q193.100,172.010 187.000,166.587 L187.000,165.987 Z" />
+                </g>
               </svg>
             </div>
           </div>
-          <div class="menu-halo-anchor">
-            <span class="menu-glow"></span>
-            <span class="menu-halo"></span>
-          </div>
+          <svg class="menu-ring" viewBox="0 0 200 188" fill="none" aria-hidden="true">
+            <ellipse class="aura-ring" cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" />
+          </svg>
         </div>
         <div class="nav-copy">
           <p class="nav-thesis">{tagline} {taglineMore}</p>
@@ -248,13 +257,19 @@ const foot = innerMenu.flatMap((group) => group.links);
           <div class="menu-ridge-clip">
             <div class="menu-ridge-shift">
               <svg class="menu-ridge" viewBox="0 0 200 188" fill="none" shape-rendering="geometricPrecision">
-                <path vector-effect="non-scaling-stroke" shape-rendering="geometricPrecision" d="M8 154H46L58 168L72 154L100 48L128 154L142 168L154 154H192" />
+                <g class="aura-ridge">
+                  <path d="M6.000,172.810 L41.915,140.885 L60.831,159.801 L100.000,54.046 L139.169,159.801 L158.085,140.885 L194.000,172.810 L194.000,167.190 L157.915,135.115 L140.831,152.199 L100.000,41.954 L59.169,152.199 L42.085,135.115 L6.000,167.190 Z" />
+                  <path d="M6.000,167.790 L6.000,164.390 L6.900,164.390 Q6.900,166.390 13.000,160.968 L13.000,161.568 Z" />
+                  <path d="M6.000,172.210 L6.000,175.610 L6.900,175.610 Q6.900,172.010 13.000,166.587 L13.000,165.987 Z" />
+                  <path d="M194.000,167.790 L194.000,164.390 L193.100,164.390 Q193.100,166.390 187.000,160.968 L187.000,161.568 Z" />
+                  <path d="M194.000,172.210 L194.000,175.610 L193.100,175.610 Q193.100,172.010 187.000,166.587 L187.000,165.987 Z" />
+                </g>
               </svg>
             </div>
           </div>
-          <div class="menu-halo-anchor">
-            <span class="menu-halo"></span>
-          </div>
+          <svg class="menu-ring" viewBox="0 0 200 188" fill="none" aria-hidden="true">
+            <ellipse class="aura-ring" cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" />
+          </svg>
         </div>
         <div class="nav-copy">
           <p class="nav-thesis">{tagline} {taglineMore}</p>
@@ -609,11 +624,10 @@ const foot = innerMenu.flatMap((group) => group.links);
       const clip = panel?.querySelector('.menu-ridge-clip') as HTMLElement | null;
       const shift = panel?.querySelector('.menu-ridge-shift') as HTMLElement | null;
       const ridge = panel?.querySelector('.menu-ridge') as HTMLElement | null;
-      const halo = panel?.querySelector('.menu-halo') as HTMLElement | null;
-      const glow = panel?.querySelector('.menu-glow') as HTMLElement | null;
+      const ring = panel?.querySelector('.menu-ring') as HTMLElement | null;
       const menuBits = () => panel?.querySelectorAll('.nav-thesis, .nav-groups a, .nav-groups p') ?? [];
       const motionOff = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const menuPaint = [panel, line, clip, shift, ridge, halo, glow].filter(Boolean);
+      const menuPaint = [panel, line, clip, shift, ridge, ring].filter(Boolean);
       let menuTl: gsap.core.Timeline | null = null;
       let menuGeneration = 0;
       let menuOpen = false;
@@ -679,7 +693,7 @@ const foot = innerMenu.flatMap((group) => group.links);
           },
         });
         menuTl.to(menuBits(), { opacity: 0, duration: 0.4, ease: 'power2.inOut' }, 0);
-        menuTl.to([halo, glow, ridge].filter(Boolean), { opacity: 0, duration: 0.5, ease: 'power2.inOut' }, 0);
+        menuTl.to([ring, ridge].filter(Boolean), { opacity: 0, duration: 0.5, ease: 'power2.inOut' }, 0);
         if (line) menuTl.to(line, { scaleX: 0.08, duration: 0.6, ease: 'power3.inOut', transformOrigin: '100% 50%' }, 0);
         menuTl.to(panel, { opacity: 0, duration: 0.6, ease: 'power2.inOut' }, 0.05);
       };
@@ -700,8 +714,7 @@ const foot = innerMenu.flatMap((group) => group.links);
           gsap.set(ridge, { opacity: 1 });
           gsap.set(panel, { opacity: 0 });
           gsap.set(line, { scaleX: 0.08, transformOrigin: '100% 50%' });
-          gsap.set(halo, { opacity: 0, y: -4 });
-          if (glow) gsap.set(glow, { opacity: 0, y: -4, scale: 0.96 });
+          gsap.set(ring, { opacity: 0 });
           gsap.set(menuBits(), { opacity: 0, y: 14 });
         }
         panel.removeAttribute('hidden');
@@ -720,8 +733,7 @@ const foot = innerMenu.flatMap((group) => group.links);
         menuTl.to(panel, { opacity: 1, duration: 1.05, ease: 'power2.inOut' }, 0);
         if (line) menuTl.to(line, { scaleX: 1, duration: horizon ? 1.2 : 1.7, ease: 'power3.inOut', transformOrigin: '100% 50%' }, 0);
         menuTl.to(wipe, { p: 1, duration: horizon ? 1.2 : 1.9, ease: 'power3.inOut', onUpdate: applyWipe }, horizon ? 0.05 : 0.12);
-        if (halo) menuTl.to(halo, { opacity: 0.4, y: -22, duration: horizon ? 0.8 : 1.5, ease: 'power2.inOut' }, horizon ? 1.15 : 0.85);
-        if (glow) menuTl.to(glow, { opacity: 1, y: -22, scale: 1, duration: 1.6, ease: 'power2.inOut' }, 0.85);
+        if (ring) menuTl.to(ring, { opacity: 1, duration: horizon ? 0.8 : 1.1, ease: 'power2.inOut' }, horizon ? 1.15 : 1);
         menuTl.to(menuBits(), { y: 0, opacity: 1, duration: 0.95, stagger: 0.04, ease: 'power3.out' }, 0.32);
       };
       menuBtn?.addEventListener('click', () => {

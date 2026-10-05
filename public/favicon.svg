@@ -1,5 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" fill="#0c0d0e" />
-  <path fill="none" stroke="#f4f3ef" stroke-width="1.7" stroke-linecap="butt" stroke-linejoin="round" d="M1.8 24.6H7.6L9.4 26.8L11.6 24.6L16 8.2L20.4 24.6L22.6 26.8L24.4 24.6H30.2" />
-  <circle cx="16" cy="4.45" r="1.47" fill="none" stroke="#c4a07a" stroke-width="1.3" opacity="0.45" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-14 -18 228 228">
+<title>Aura</title>
+<rect x="-14" y="-18" width="228" height="228" fill="#0c0d0e"/>
+<ellipse cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" fill="none" stroke="#c4a07a" stroke-width="4.6"/>
+<path d="M6.000,176.021 L41.818,144.182 L61.782,164.146 L100.000,60.957 L138.218,164.146 L158.182,144.182 L194.000,176.021 L194.000,163.979 L157.818,131.818 L141.782,147.854 L100.000,35.043 L58.218,147.854 L42.182,131.818 L6.000,163.979 Z" fill="#f4f3ef"/>
+<path d="M6.000,164.579 L6.000,159.880 L7.317,159.880 Q7.317,162.808 13.000,157.757 L13.000,158.357 Z" fill="#f4f3ef"/>
+<path d="M6.000,175.421 L6.000,180.120 L7.317,180.120 Q7.317,174.850 13.000,169.799 L13.000,169.199 Z" fill="#f4f3ef"/>
+<path d="M194.000,164.579 L194.000,159.880 L192.683,159.880 Q192.683,162.808 187.000,157.757 L187.000,158.357 Z" fill="#f4f3ef"/>
+<path d="M194.000,175.421 L194.000,180.120 L192.683,180.120 Q192.683,174.850 187.000,169.799 L187.000,169.199 Z" fill="#f4f3ef"/>
 </svg>
