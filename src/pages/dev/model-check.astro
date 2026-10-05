@@ -1,0 +1,143 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import RevealHeading from '../../components/RevealHeading.astro';
+---
+
+<BaseLayout
+  title="Model check"
+  description="Aura Homes studio turntable for a custom model dropped into the site."
+  descriptor="Studio"
+  noindex
+>
+  <main class="model-check">
+    <header class="page-lead">
+      <RevealHeading as="h1">Model check</RevealHeading>
+      <p class="story-lede">A dropped model, on a slow turn, in the meadow light.</p>
+    </header>
+    <div data-model-check>
+      <div class="model-stage">
+        <canvas data-model-canvas aria-label="Custom model on a turntable"></canvas>
+      </div>
+      <div class="model-pick" data-model-pick role="group" aria-label="Custom model slot">
+        <button type="button" data-slot="aura-unit" aria-pressed="true">The room</button>
+        <button type="button" data-slot="hot-tub">The tub</button>
+        <button type="button" data-slot="gazebo">The gazebo</button>
+        <button type="button" data-slot="a-frame">The A-frame</button>
+      </div>
+      <section class="model-readout" aria-live="polite">
+        <p class="model-empty" data-model-empty>Nothing is in the custom folder yet.</p>
+        <dl class="model-stats" data-model-stats hidden></dl>
+        <ul class="model-warn" data-model-warn></ul>
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<script>
+  import '../../scripts/model-check';
+</script>
+
+<style>
+  .model-check {
+    color: #14120e;
+  }
+  .model-stage {
+    margin: 0 8vw;
+    background: #0c0d0e;
+  }
+  .model-stage canvas {
+    display: block;
+    width: 100%;
+    height: min(68vh, 42rem);
+    background: #0c0d0e;
+  }
+  .model-pick {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.25rem 8vw 0;
+  }
+  .model-pick button {
+    min-height: 44px;
+    padding: 0 1rem;
+    border: 1px solid rgba(20, 18, 14, 0.35);
+    background: transparent;
+    color: inherit;
+    font-family: var(--font-cinzel);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .model-pick button[aria-pressed='true'] {
+    border-color: #9c7a55;
+    color: #9c7a55;
+  }
+  .model-pick button:focus-visible {
+    outline: 1px solid #9c7a55;
+    outline-offset: 3px;
+  }
+  .model-readout {
+    margin: 1.5rem 8vw 12vh;
+    max-width: 40rem;
+  }
+  .model-empty,
+  .model-warn,
+  .model-stats {
+    font-weight: 300;
+    line-height: 1.5;
+  }
+  .model-stats {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 0.35rem 1rem;
+    margin: 0;
+  }
+  .model-stats div {
+    display: contents;
+  }
+  .model-stats dt {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #9c7a55;
+  }
+  .model-stats dd {
+    margin: 0;
+  }
+  .model-warn {
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+    color: #6e5438;
+  }
+  .model-warn li + li {
+    margin-top: 0.35rem;
+  }
+  @media (max-width: 800px) {
+    .model-stage,
+    .model-pick,
+    .model-readout {
+      margin-left: 1.5rem;
+      margin-right: 1.5rem;
+    }
+    .model-stage canvas {
+      height: 52vh;
+    }
+    .model-stats {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+    .model-stats dt {
+      margin-top: 0.65rem;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .model-stage canvas {
+      scroll-behavior: auto;
+    }
+  }
+</style>

@@ -6,6 +6,8 @@
  *   UASTC for normal maps, ETC1S for colour, Meshopt,
  *   then LOD1 (ratio 0.5) and LOD2 (ratio 0.15).
  *   Writes public/models/<name>.glb, <name>.lod1.glb, <name>.lod2.glb.
+ *   A .glb dropped in public/models/custom (not a lod) is optimized in place
+ *   to custom/<name>.glb, custom/<name>.lod1.glb, and custom/<name>.lod2.glb.
  *
  * Textures in assets-src/textures (png or jpeg):
  *   the same KTX2 choice, max 2048, written under public/textures as .ktx2.
@@ -177,7 +179,7 @@ async function compressTextures(input, output) {
   await rm(uastc, { force: true });
 }
 
-async function optimizeModel(file) {
+async function optimizeModel(file, outDir = modelsOut) {
   const name = modelName(file.rel);
   const work = path.join(scratch, name);
   await rm(work, { recursive: true, force: true });
@@ -194,11 +196,11 @@ async function optimizeModel(file) {
   await transform('resize', welded, resized, ['--width', MAX_EDGE, '--height', MAX_EDGE]);
   await compressTextures(resized, ktx);
 
-  await mkdir(modelsOut, { recursive: true });
+  await mkdir(outDir, { recursive: true });
   const outputs = [
-    { ratio: null, file: path.join(modelsOut, `${name}.glb`) },
-    { ratio: '0.5', file: path.join(modelsOut, `${name}.lod1.glb`) },
-    { ratio: '0.15', file: path.join(modelsOut, `${name}.lod2.glb`) },
+    { ratio: null, file: path.join(outDir, `${name}.glb`) },
+    { ratio: '0.5', file: path.join(outDir, `${name}.lod1.glb`) },
+    { ratio: '0.15', file: path.join(outDir, `${name}.lod2.glb`) },
   ];
 
   for (const output of outputs) {
@@ -325,6 +327,27 @@ async function copyHdri() {
   }
 }
 
+function isDroppedGlb(name) {
+  return /\.glb$/i.test(name) && !/\.lod\d+\.glb$/i.test(name);
+}
+
+async function optimizeCustomDrops(wanted) {
+  const dir = path.join(modelsOut, 'custom');
+  if (!existsSync(dir)) return 0;
+  let count = 0;
+  for (const name of await readdir(dir)) {
+    if (!isDroppedGlb(name)) continue;
+    const rel = name;
+    if (!wanted(rel)) continue;
+    const abs = path.join(dir, name);
+    const info = await stat(abs);
+    if (!info.isFile()) continue;
+    await optimizeModel({ abs, rel }, dir);
+    count += 1;
+  }
+  return count;
+}
+
 async function main() {
   if (!existsSync(cli)) {
     throw new Error('Install @gltf-transform/cli before running npm run assets.');
@@ -345,14 +368,15 @@ async function main() {
 
   const models = (await walk(modelsSrc, (name) => /\.(gltf|glb)$/i.test(name))).filter((file) => wanted(file.rel));
   for (const model of models) await optimizeModel(model);
+  const customCount = await optimizeCustomDrops(wanted);
 
   const textures = (await walk(texturesSrc, (name) => /\.(png|jpe?g)$/i.test(name))).filter((file) => wanted(file.rel));
   for (const texture of textures) await optimizeTexture(texture);
 
   if (!only.length || only.some((item) => item.includes('hdri') || item.endsWith('.hdr'))) await copyHdri();
   await rm(scratch, { recursive: true, force: true });
-  if (!models.length && !textures.length && !existsSync(hdriSrc)) {
-    console.log('No files in assets-src/models, assets-src/textures, or assets-src/hdri.');
+  if (!models.length && !customCount && !textures.length && !existsSync(hdriSrc)) {
+    console.log('No files in assets-src/models, assets-src/textures, assets-src/hdri, or public/models/custom.');
   }
 }
 

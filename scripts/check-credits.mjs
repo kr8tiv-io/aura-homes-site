@@ -7,6 +7,7 @@
 import { readdir, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { customModelCredits } from './custom-credits.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const creditsPath = path.join(root, 'src', 'data', 'credits.ts');
@@ -18,6 +19,10 @@ for (const block of source.matchAll(/files\s*:\s*\[([\s\S]*?)\]/g)) {
   for (const hit of block[1].matchAll(/['"]([^'"]+)['"]/g)) {
     mentioned.push(hit[1].replaceAll('\\', '/').replace(/^\/+/, '').replace(/^public\//, ''));
   }
+}
+
+for (const entry of await customModelCredits(root)) {
+  for (const file of entry.files ?? []) mentioned.push(file);
 }
 
 function covers(rel) {
@@ -38,7 +43,7 @@ async function walk(dir, relDir) {
     const rel = `${relDir}/${name}`.replaceAll('\\', '/');
     const info = await stat(abs);
     if (info.isDirectory()) found.push(...(await walk(abs, rel)));
-    else found.push(rel);
+    else if (!['.md', '.json', '.txt'].includes(path.extname(name).toLowerCase())) found.push(rel);
   }
   return found;
 }

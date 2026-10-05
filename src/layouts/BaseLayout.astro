@@ -12,12 +12,13 @@ interface Props {
   title: string;
   description?: string;
   descriptor?: string;
+  noindex?: boolean;
 }
 
 const tagline = 'Return to Aura.';
 const taglineMore = 'One beautiful room at a time.';
 const about = 'Return to Aura. One beautiful room at a time.';
-const { title: rawTitle, description = about, descriptor = 'On your land' } = Astro.props;
+const { title: rawTitle, description = about, descriptor = 'On your land', noindex = false } = Astro.props;
 const brandTitle = (raw: string) => {
   if (raw === 'Aura Homes' || raw.endsWith('| Aura Homes')) return raw;
   if (raw.startsWith('Aura Homes | ')) return `${raw.slice('Aura Homes | '.length)} | Aura Homes`;
@@ -107,6 +108,7 @@ const foot = innerMenu.flatMap((group) => group.links);
     {!isHome && <ClientRouter />}
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     <Font cssVariable="--font-cinzel" preload />
     <Font cssVariable="--font-inter" preload />

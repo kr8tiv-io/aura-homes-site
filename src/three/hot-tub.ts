@@ -13,6 +13,7 @@ import { motionTime, qualityProfile } from './quality';
 import { HOT_TUB_SLOT } from './meadow-v1/meadow/geometry';
 import { sampleTerrainHeight } from './meadow-v1/meadow/field';
 import { createPolycarbonateMaterial } from './aura-unit';
+import { loadCustomModel, placeCustomModel } from './custom-models';
 import { createSteam, type SteamFrame } from './fx/steam';
 
 export type TubFrame = {
@@ -206,6 +207,67 @@ export function steamOrbit(): { p: [number, number, number]; t: [number, number,
   ];
 }
 
+export type TubWater = {
+  material: THREE.MeshPhysicalMaterial;
+  uniforms: { uWaterTime: { value: number } };
+  textures: THREE.Texture[];
+};
+
+/** The tub water from the meadow passage. Callers share one material so the scroll stays in step. */
+export function createTubWaterMaterial(): TubWater {
+  const normal1 = new THREE.TextureLoader().load(asset('textures/water/Water_1_M_Normal.jpg'));
+  const normal2 = new THREE.TextureLoader().load(asset('textures/water/Water_2_M_Normal.jpg'));
+  const textures: THREE.Texture[] = [];
+  for (const tex of [normal1, normal2]) {
+    tex.colorSpace = THREE.NoColorSpace;
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    textures.push(tex);
+  }
+  const material = new THREE.MeshPhysicalMaterial({
+    color: '#e4f0ee',
+    metalness: 0,
+    roughness: 0.05,
+    transmission: 0.9,
+    thickness: 0.2,
+    ior: 1.333,
+    specularIntensity: 1,
+    envMapIntensity: 1.15,
+    attenuationColor: '#2f4a48',
+    attenuationDistance: 0.6,
+    normalMap: normal1,
+    normalScale: new THREE.Vector2(0.16, 0.16),
+    transparent: true,
+    side: THREE.DoubleSide,
+  });
+  material.name = 'water';
+  const uniforms = { uWaterTime: { value: 0 } };
+  material.onBeforeCompile = (shader) => {
+    shader.uniforms.tWater2 = { value: normal2 };
+    shader.uniforms.uWaterTime = uniforms.uWaterTime;
+    shader.fragmentShader = `uniform sampler2D tWater2;\nuniform float uWaterTime;\n${shader.fragmentShader}`;
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <normal_fragment_maps>',
+      `
+        vec3 mapN = texture2D(normalMap, vNormalMapUv + vec2(uWaterTime * 0.012, uWaterTime * 0.007)).xyz * 2.0 - 1.0;
+        vec3 mapN2 = texture2D(tWater2, vNormalMapUv * 1.35 + vec2(-uWaterTime * 0.009, uWaterTime * 0.014)).xyz * 2.0 - 1.0;
+        mapN = normalize(vec3(mapN.xy + mapN2.xy * 0.65, mapN.z));
+        mapN.xy *= normalScale;
+        normal = normalize(tbn * mapN);
+      `,
+    );
+    shader.fragmentShader = shader.fragmentShader.replace(
+      '#include <output_fragment>',
+      `
+        float auraFres = pow(1.0 - clamp(dot(normalize(normal), normalize(vViewPosition)), 0.0, 1.0), 4.0);
+        outgoingLight += auraFres * vec3(0.22, 0.28, 0.3);
+        #include <output_fragment>
+      `,
+    );
+  };
+  return { material, uniforms, textures };
+}
+
 export function createHotTub(): HotTub {
   const object = new THREE.Group();
   object.name = 'HotTub';
@@ -219,6 +281,7 @@ export function createHotTub(): HotTub {
   const woods: THREE.MeshStandardMaterial[] = [];
   const metals: THREE.MeshStandardMaterial[] = [];
   let alive = true;
+  let releasePlaced = () => {};
 
   const wood = new THREE.MeshStandardMaterial({
     color: '#ffffff',
@@ -338,55 +401,11 @@ export function createHotTub(): HotTub {
   addMesh('Step', beveled(0.46, 0.1, 0.28, 0.012), stepMat, 0.05, 0.05, 1.08);
   addMesh('Step', beveled(0.42, 0.1, 0.24, 0.012), stepMat, 0.02, 0.16, 0.9);
 
-  const normal1 = new THREE.TextureLoader().load(asset('textures/water/Water_1_M_Normal.jpg'));
-  const normal2 = new THREE.TextureLoader().load(asset('textures/water/Water_2_M_Normal.jpg'));
-  for (const tex of [normal1, normal2]) {
-    tex.colorSpace = THREE.NoColorSpace;
-    tex.wrapS = THREE.RepeatWrapping;
-    tex.wrapT = THREE.RepeatWrapping;
-    texs.push(tex);
-  }
-  const waterMat = new THREE.MeshPhysicalMaterial({
-    color: '#e4f0ee',
-    metalness: 0,
-    roughness: 0.05,
-    transmission: 0.9,
-    thickness: 0.2,
-    ior: 1.333,
-    specularIntensity: 1,
-    envMapIntensity: 1.15,
-    attenuationColor: '#2f4a48',
-    attenuationDistance: 0.6,
-    normalMap: normal1,
-    normalScale: new THREE.Vector2(0.16, 0.16),
-    transparent: true,
-    side: THREE.DoubleSide,
-  });
+  const tubWater = createTubWaterMaterial();
+  const waterMat = tubWater.material;
+  const waterUniforms = tubWater.uniforms;
+  texs.push(...tubWater.textures);
   mats.push(waterMat);
-  const waterUniforms = { uWaterTime: { value: 0 } };
-  waterMat.onBeforeCompile = (shader) => {
-    shader.uniforms.tWater2 = { value: normal2 };
-    shader.uniforms.uWaterTime = waterUniforms.uWaterTime;
-    shader.fragmentShader = `uniform sampler2D tWater2;\nuniform float uWaterTime;\n${shader.fragmentShader}`;
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <normal_fragment_maps>',
-      `
-        vec3 mapN = texture2D(normalMap, vNormalMapUv + vec2(uWaterTime * 0.012, uWaterTime * 0.007)).xyz * 2.0 - 1.0;
-        vec3 mapN2 = texture2D(tWater2, vNormalMapUv * 1.35 + vec2(-uWaterTime * 0.009, uWaterTime * 0.014)).xyz * 2.0 - 1.0;
-        mapN = normalize(vec3(mapN.xy + mapN2.xy * 0.65, mapN.z));
-        mapN.xy *= normalScale;
-        normal = normalize(tbn * mapN);
-      `,
-    );
-    shader.fragmentShader = shader.fragmentShader.replace(
-      '#include <output_fragment>',
-      `
-        float auraFres = pow(1.0 - clamp(dot(normalize(normal), normalize(vViewPosition)), 0.0, 1.0), 4.0);
-        outgoingLight += auraFres * vec3(0.22, 0.28, 0.3);
-        #include <output_fragment>
-      `,
-    );
-  };
   const water = addMesh('Water', new THREE.CircleGeometry(0.8, 48), waterMat, 0, WATER_Y, 0, false);
   water.rotation.x = -Math.PI / 2;
   water.castShadow = false;
@@ -632,6 +651,29 @@ export function createHotTub(): HotTub {
     }
   }).catch(() => undefined);
 
+  void loadCustomModel('hot-tub').then((scene) => {
+    if (!scene || !alive) return;
+    const placed = placeCustomModel(scene, 'hot-tub', {
+      polycarbonate: () => {
+        const mat = createPolycarbonateMaterial();
+        mats.push(mat);
+        return mat;
+      },
+      water: () => waterMat,
+    });
+    if (!alive) {
+      placed.release();
+      return;
+    }
+    for (const child of [...body.children]) {
+      if (child.name === 'WoodStove' || child.name === 'Gazebo') continue;
+      child.visible = false;
+    }
+    for (const mat of placed.materials) mats.push(mat);
+    body.add(placed.object);
+    releasePlaced = placed.release;
+  });
+
   return {
     object,
     body,
@@ -665,6 +707,7 @@ export function createHotTub(): HotTub {
     dispose() {
       if (!alive) return;
       alive = false;
+      releasePlaced();
       steam.dispose();
       object.removeFromParent();
       for (const geo of geos) geo.dispose();
@@ -763,6 +806,26 @@ export function createTubPlace(): TubPlace {
   object.updateMatrixWorld(true);
   tub.body.attach(shelter);
 
+  let releaseGazebo = () => {};
+  void loadCustomModel('gazebo').then((scene) => {
+    if (!scene || !shelter.parent) return;
+    const placed = placeCustomModel(scene, 'gazebo', {
+      polycarbonate: () => {
+        const mat = createPolycarbonateMaterial();
+        mats.push(mat);
+        return mat;
+      },
+    });
+    if (!shelter.parent) {
+      placed.release();
+      return;
+    }
+    for (const child of [...shelter.children]) child.removeFromParent();
+    for (const mat of placed.materials) mats.push(mat);
+    shelter.add(placed.object);
+    releaseGazebo = placed.release;
+  });
+
   void whenKtx2().then(() =>
     Promise.all([
       ktx2Loader.loadAsync(asset('textures/fine_grained_wood/diff.ktx2')),
@@ -814,6 +877,7 @@ export function createTubPlace(): TubPlace {
       tub.update(frame);
     },
     dispose() {
+      releaseGazebo();
       tub.dispose();
       object.removeFromParent();
       for (const geo of geos) geo.dispose();
