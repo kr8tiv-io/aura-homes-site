@@ -62,8 +62,23 @@ export type MeadowWorldOptions = {
   flare?: boolean;
   /** Daylight product shot. One warm sun, no intro pull, no pointer drift. */
   product?: boolean;
+  /** Skip pointer drift. The intro pull still runs when intro is set. */
+  steady?: boolean;
   /** Fill the empty AuraUnitSlot. Grass and far leave the slot empty. */
   occupyUnit?: (slot: THREE.Group) => (() => void) | void;
+  /** Fill HotTubSlot. Grass and far leave the slot empty. */
+  occupyTub?: (slot: THREE.Group) => (() => void) | void;
+  /** After the camera is placed. The renderer arrives on the second frame. */
+  onFrame?: (frame: MeadowFrame) => void;
+};
+
+export type MeadowFrame = {
+  camera: THREE.PerspectiveCamera;
+  dt: number;
+  dusk: number;
+  night: number;
+  reduced: boolean;
+  renderer: THREE.WebGLRenderer | null;
 };
 
 export type MeadowHandle = {
@@ -805,6 +820,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   const camD = new THREE.Vector3();
 
   let claim: ((renderer: THREE.WebGLRenderer) => void) | null = null;
+  let frameRenderer: THREE.WebGLRenderer | null = null;
 
   const applyShadow = () => {
     const map = qualityProfile().shadowMapSize;
@@ -862,12 +878,20 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     if (!golden) built.materials.push(terrain.material as THREE.Material);
     scene.add(terrain);
     addSlots(scene);
-    if (options.occupyUnit) {
-      const slot = scene.getObjectByName('AuraUnitSlot');
-      if (slot instanceof THREE.Group) {
-        const release = options.occupyUnit(slot);
-        if (typeof release === 'function') built.release = release;
-      }
+    const releases: Array<() => void> = [];
+    const take = (name: string, occupy?: (slot: THREE.Group) => (() => void) | void) => {
+      if (!occupy) return;
+      const slot = scene.getObjectByName(name);
+      if (!(slot instanceof THREE.Group)) return;
+      const release = occupy(slot);
+      if (typeof release === 'function') releases.push(release);
+    };
+    take('AuraUnitSlot', options.occupyUnit);
+    take('HotTubSlot', options.occupyTub);
+    if (releases.length) {
+      built.release = () => {
+        for (const release of releases) release();
+      };
     }
   };
 
@@ -1151,6 +1175,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     godrays: options.godrays ? sun : undefined,
     flare: options.flare,
     claimRenderer(renderer) {
+      frameRenderer = renderer;
       claim?.(renderer);
     },
     update(progress, dt) {
@@ -1216,7 +1241,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
           camP.z += opening * 4.2;
           camP.y += opening * 0.5;
           fov += opening * 6;
-          if (!reduced) {
+          if (!reduced && !options.steady) {
             const par = 1 - clamp01((u * 6) / 1.6) * 0.5;
             camP.x += rig.mx * 0.5 * par;
             camP.y += rig.my * 0.28 * par;
@@ -1345,6 +1370,15 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         }
         built.birds.instanceMatrix.needsUpdate = true;
       }
+      options.onFrame?.({
+        camera,
+        dt: step,
+        dusk: rig.dusk,
+        night: rig.night,
+        reduced,
+        renderer: frameRenderer,
+      });
+
       const shaftWindow = smoothstep(0.55 / 6, 1.3 / 6, u) * (1 - smoothstep(2.6 / 6, 3.4 / 6, u));
       built.shafts.forEach((mat, index) => {
         mat.opacity = (reduced ? 0 : shaftWindow * (1 - nightAmt) * SHAFTS[index].o * 0.32);

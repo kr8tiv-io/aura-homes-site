@@ -4,6 +4,7 @@ import { hideStill, motionTime, onQuality, qualityProfile, showStill, type Quali
 import { registerView, type StageTone } from '../three/stage';
 import { FAR_SPLINE, GRASS_SPLINE, mountMeadowWorld } from '../three/meadow-v1/world';
 import { createAuraUnit, glassOrbit, type AuraUnit, type GlazeFinish } from '../three/aura-unit';
+import { createHotTub, createTubPlace, steamOrbit, type TubPlace } from '../three/hot-tub';
 
 let activeProfile: QualityProfile | null = null;
 let treeAnchorZ = 0;
@@ -22,7 +23,8 @@ type BuiltScene = {
   geometries: THREE.BufferGeometry[];
   materials: THREE.Material[];
   textures: THREE.Texture[];
-  render: (time: number, progress: number) => void;
+  release?: () => void;
+  render: (time: number, progress: number, renderer?: THREE.WebGLRenderer | null) => void;
 };
 
 const KEYS: SceneKey[] = ['grass', 'glass', 'steam', 'far', 'snow', 'slope'];
@@ -219,31 +221,6 @@ function sunShadow(light: THREE.DirectionalLight, size = 12) {
   cam.bottom = -size;
 }
 
-function rippleTexture() {
-  const canvas = document.createElement('canvas');
-  canvas.width = 128;
-  canvas.height = 128;
-  const g = canvas.getContext('2d');
-  if (!g) return null;
-  const img = g.createImageData(128, 128);
-  for (let y = 0; y < 128; y++) {
-    for (let x = 0; x < 128; x++) {
-      const n = Math.sin(x * 0.37) * Math.cos(y * 0.29);
-      const i = (y * 128 + x) * 4;
-      img.data[i] = 128 + n * 48;
-      img.data[i + 1] = 128 + Math.cos(x * 0.21 + y * 0.17) * 24;
-      img.data[i + 2] = 255;
-      img.data[i + 3] = 255;
-    }
-  }
-  g.putImageData(img, 0, 0);
-  const tex = new THREE.CanvasTexture(canvas);
-  tex.wrapS = THREE.RepeatWrapping;
-  tex.wrapT = THREE.RepeatWrapping;
-  tex.repeat.set(2, 2);
-  return tex;
-}
-
 function buildGrass(): BuiltScene {
   const scene = new THREE.Scene();
   const day = new THREE.Color('#6e8494');
@@ -410,195 +387,6 @@ function buildGrass(): BuiltScene {
         attr.setY(i, flyBase[i * 3 + 1] + Math.sin(t * 1.3 + i * 0.6) * 0.16);
       }
       attr.needsUpdate = true;
-    },
-  };
-}
-
-function buildSteam(): BuiltScene {
-  const scene = new THREE.Scene();
-  const bg = new THREE.Color('#1c1814');
-  scene.background = bg;
-  scene.fog = new THREE.FogExp2(0x1c1814, 0.048);
-  scene.add(new THREE.HemisphereLight(0x8a7564, 0x2a241c, 0.72));
-  const moon = new THREE.DirectionalLight(0xc5d4e6, 0.85);
-  moon.position.set(-8, 10, 6);
-  sunShadow(moon, 10);
-  scene.add(moon);
-  const warm = new THREE.DirectionalLight(0xffb46b, 0.7);
-  warm.position.set(6, 3.2, 4);
-  scene.add(warm);
-  const coals = new THREE.PointLight(0xffb46b, 1.1, 2.4, 2);
-  coals.position.set(0, 0.42, 0);
-  scene.add(coals);
-
-  const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 40);
-  const geometries: THREE.BufferGeometry[] = [];
-  const materials: THREE.Material[] = [];
-  const textures: THREE.Texture[] = [];
-  const groundMat = new THREE.MeshStandardMaterial({
-    color: '#1a241c',
-    map: keep(textures, speckle('#243028', '#101612', 5)),
-    roughness: 0.95,
-    metalness: 0,
-  });
-  const ripple = keep(textures, rippleTexture());
-  const tubMat = new THREE.MeshStandardMaterial({ color: '#8d6a48', roughness: 0.82, metalness: 0.02, flatShading: true });
-  const rimMat = new THREE.MeshStandardMaterial({ color: '#6f5744', roughness: 0.78, metalness: 0.04 });
-  const waterMat = new THREE.MeshStandardMaterial({
-    color: '#c9865a',
-    roughness: 0.16,
-    metalness: 0.08,
-    emissive: '#ffb46b',
-    emissiveIntensity: 0.28,
-    normalMap: ripple,
-    normalScale: new THREE.Vector2(0.22, 0.22),
-  });
-  const glassMat = glassMaterial('#e7eef2', 0.88, 0.12);
-  glassMat.roughness = 0.08;
-  glassMat.envMapIntensity = 0.28;
-  const frameMat = new THREE.MeshStandardMaterial({ color: '#c5ced4', roughness: 0.34, metalness: 0.62 });
-  const roofMat = new THREE.MeshStandardMaterial({ color: '#2a3136', roughness: 0.5, metalness: 0.4 });
-  const deckMat = new THREE.MeshStandardMaterial({ color: '#3a342c', roughness: 0.72, metalness: 0.12 });
-  const stoneMat = new THREE.MeshStandardMaterial({ color: '#8d968f', roughness: 0.94, metalness: 0.02 });
-  const pipeMat = new THREE.MeshStandardMaterial({ color: '#8a918c', roughness: 0.42, metalness: 0.62 });
-  const treeMat = new THREE.MeshStandardMaterial({ color: '#14201a', roughness: 0.9, metalness: 0 });
-  materials.push(groundMat, tubMat, rimMat, waterMat, glassMat, frameMat, roofMat, deckMat, stoneMat, pipeMat, treeMat);
-
-  const ground = new THREE.Mesh(new THREE.PlaneGeometry(40, 40), groundMat);
-  ground.rotation.x = -Math.PI / 2;
-  ground.receiveShadow = true;
-  geometries.push(ground.geometry);
-  scene.add(ground);
-
-  const span = 3.5;
-  const wallH = 2.2;
-  const roofY = 0.16 + wallH;
-  const deck = new THREE.Mesh(new THREE.BoxGeometry(span + 0.7, 0.14, span + 0.7), deckMat);
-  deck.position.y = 0.07;
-  deck.receiveShadow = true;
-  deck.castShadow = true;
-  geometries.push(deck.geometry);
-  scene.add(deck);
-  const roof = new THREE.Mesh(new THREE.BoxGeometry(span + 0.45, 0.09, span + 0.45), roofMat);
-  roof.position.y = roofY + 0.05;
-  roof.castShadow = true;
-  roof.receiveShadow = true;
-  geometries.push(roof.geometry);
-  scene.add(roof);
-
-  for (const [x, z] of [
-    [-span / 2, -span / 2],
-    [span / 2, -span / 2],
-    [-span / 2, span / 2],
-    [span / 2, span / 2],
-  ] as Array<[number, number]>) {
-    addPost(scene, geometries, frameMat, x, z, wallH, 0.14);
-  }
-  addBeam(scene, geometries, frameMat, 0, roofY, -span / 2, span, 0.055, 0.055);
-  addBeam(scene, geometries, frameMat, 0, roofY, span / 2, span, 0.055, 0.055);
-  addBeam(scene, geometries, frameMat, -span / 2, roofY, 0, 0.055, 0.055, span);
-  addBeam(scene, geometries, frameMat, span / 2, roofY, 0, 0.055, 0.055, span);
-
-  const wallGeo = new THREE.PlaneGeometry(span - 0.16, wallH - 0.08);
-  geometries.push(wallGeo);
-  const back = new THREE.Mesh(wallGeo, glassMat);
-  back.position.set(0, 0.16 + wallH / 2, -span / 2);
-  scene.add(back);
-  const left = new THREE.Mesh(wallGeo, glassMat);
-  left.position.set(-span / 2, 0.16 + wallH / 2, 0);
-  left.rotation.y = Math.PI / 2;
-  scene.add(left);
-  for (const mullion of [-0.7, 0.7]) {
-    addBeam(scene, geometries, frameMat, mullion, 0.16 + wallH / 2, -span / 2 + 0.02, 0.03, wallH - 0.12, 0.03);
-    addBeam(scene, geometries, frameMat, -span / 2 + 0.02, 0.16 + wallH / 2, mullion, 0.03, wallH - 0.12, 0.03);
-  }
-
-  const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.28, 1.4, 0.16, 8), stoneMat);
-  pad.position.y = 0.2;
-  pad.castShadow = true;
-  pad.receiveShadow = true;
-  geometries.push(pad.geometry);
-  scene.add(pad);
-  const tub = new THREE.Mesh(new THREE.CylinderGeometry(0.86, 0.94, 0.7, 14), tubMat);
-  tub.position.y = 0.58;
-  tub.castShadow = true;
-  geometries.push(tub.geometry);
-  scene.add(tub);
-  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.055, 8, 16), rimMat);
-  rim.rotation.x = Math.PI / 2;
-  rim.position.y = 0.94;
-  rim.castShadow = true;
-  geometries.push(rim.geometry);
-  scene.add(rim);
-  const water = new THREE.Mesh(new THREE.CircleGeometry(0.8, 28), waterMat);
-  water.rotation.x = -Math.PI / 2;
-  water.position.y = 0.88;
-  geometries.push(water.geometry);
-  scene.add(water);
-  const pipe = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.85, 8), pipeMat);
-  pipe.position.set(1.05, 0.7, -0.15);
-  pipe.castShadow = true;
-  geometries.push(pipe.geometry);
-  scene.add(pipe);
-
-  const trees: THREE.Object3D[] = [];
-  treeAnchorZ = 2.6;
-  for (const [x, z, h] of [
-    [-4.6, -4.2, 3.6],
-    [-5.8, -7, 4.4],
-    [4.8, -3.8, 3.3],
-    [6, -6.4, 4.6],
-    [-2.4, -8.2, 2.8],
-    [2.8, -8.6, 3],
-  ] as Array<[number, number, number]>) {
-    addTree(scene, geometries, treeMat, trees, x, z, h);
-  }
-
-  const puffs: THREE.Mesh[] = [];
-  const puffGeo = new THREE.SphereGeometry(0.14, 8, 6);
-  geometries.push(puffGeo);
-  const puffCount = Math.max(8, profile().steamParticles);
-  const puffGain = Math.min(1, 10 / puffCount);
-  for (let i = 0; i < puffCount; i++) {
-    const puffMat = new THREE.MeshBasicMaterial({
-      color: '#f4efe8',
-      transparent: true,
-      opacity: 0.22,
-      depthWrite: false,
-    });
-    materials.push(puffMat);
-    const puff = new THREE.Mesh(puffGeo, puffMat);
-    puff.userData.phase = i * 0.62;
-    scene.add(puff);
-    puffs.push(puff);
-  }
-  const steamNight = new THREE.Color('#100e12');
-
-  return {
-    scene,
-    camera,
-    geometries,
-    materials,
-    textures,
-    render(time, progress) {
-      const t = motionTime(time);
-      bg.set('#241910').lerp(steamNight, progress);
-      scene.background = bg;
-      (scene.fog as THREE.FogExp2).color.copy(bg);
-      camera.position.set(5.8 - progress * 0.3, 2.55, 2.6 - progress * 0.15);
-      camera.lookAt(-0.15, 1.05, -0.35);
-      sway(trees, t, 0.012);
-      warm.intensity = 0.28 + Math.sin(t * 0.6) * 0.04;
-      coals.intensity = 0.9 + Math.sin(t * 1.6) * 0.15;
-      if (ripple) ripple.offset.set(t * 0.012, t * 0.018);
-      for (const puff of puffs) {
-        const phase = puff.userData.phase as number;
-        const life = (t * 0.18 + phase) % 1;
-        puff.position.set(Math.sin(phase * 3) * 0.35, 0.7 + life * 2.3, Math.cos(phase * 2) * 0.35);
-        const s = 0.4 + life * 1.1;
-        puff.scale.setScalar(s);
-        (puff.material as THREE.MeshBasicMaterial).opacity = (1 - life) * 0.28 * puffGain;
-      }
     },
   };
 }
@@ -854,6 +642,10 @@ function buildSnow(): BuiltScene {
 
   const dusk = new THREE.Color('#8ea4b8');
   const daySky = new THREE.Color('#d5e2ee');
+  const tub = createHotTub();
+  tub.object.position.set(8, 2.13, -12.45);
+  scene.add(tub.object);
+  const stoveAt = new THREE.Vector3();
 
   return {
     scene,
@@ -861,7 +653,10 @@ function buildSnow(): BuiltScene {
     geometries,
     materials,
     textures,
-    render(time, progress) {
+    release() {
+      tub.dispose();
+    },
+    render(time, progress, renderer) {
       const t = motionTime(time);
       bg.copy(daySky).lerp(dusk, progress * 0.55);
       scene.background = bg;
@@ -870,6 +665,15 @@ function buildSnow(): BuiltScene {
       camera.lookAt(6.2, 3.1, -17);
       sway(trees, t, 0.01);
       under.intensity = 3.6 + Math.sin(t * 0.8) * 0.4;
+      const night = Math.max(0, (progress - 0.35) / 0.65);
+      tub.update({
+        camera,
+        renderer: renderer ?? null,
+        dusk: progress,
+        night,
+        reduced: prefersReducedMotion(),
+        stoveWorld: stoveAt,
+      });
     },
   };
 }
@@ -985,9 +789,8 @@ function buildSlope(): BuiltScene {
   };
 }
 
-const BUILDERS: Record<Exclude<SceneKey, 'glass'>, () => BuiltScene> = {
+const BUILDERS: Record<Exclude<SceneKey, 'glass' | 'steam'>, () => BuiltScene> = {
   grass: buildGrass,
-  steam: buildSteam,
   far: buildFar,
   snow: buildSnow,
   slope: buildSlope,
@@ -1020,6 +823,7 @@ function bindGlaze(canvas: HTMLCanvasElement, unit: AuraUnit) {
 }
 
 function disposeBuilt(built: BuiltScene) {
+  built.release?.();
   built.scene.environment = null;
   built.geometries.forEach((geo) => geo.dispose());
   built.materials.forEach((mat) => mat.dispose());
@@ -1094,8 +898,53 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
       },
     };
   }
+  if (key === 'steam') {
+    let place: TubPlace | null = null;
+    const world = mountMeadowWorld(canvas, {
+      spline: steamOrbit(),
+      timeOfDay: 'dusk',
+      density: 1,
+      exposure: 1.02,
+      tone: look.tone,
+      hdri: look.hdri,
+      hdriPinned: true,
+      envIntensity: 0.72,
+      ao: true,
+      shadow: 'soft',
+      bloom: { threshold: 0.9, intensity: 0.42 },
+      steady: true,
+      occupyUnit(slot) {
+        const unit = createAuraUnit();
+        slot.add(unit.object);
+        return () => unit.dispose();
+      },
+      occupyTub(slot) {
+        place?.dispose();
+        place = createTubPlace();
+        slot.add(place.object);
+        const current = place;
+        return () => {
+          current.dispose();
+          if (place === current) place = null;
+        };
+      },
+      onFrame(info) {
+        place?.update(info);
+      },
+    });
+    world.setProgress(readProgress());
+    return {
+      setProgress(t: number) {
+        world.setProgress(t);
+      },
+      destroy() {
+        world.destroy();
+      },
+    };
+  }
   let dead = false;
   let built: BuiltScene | null = null;
+  let frameRenderer: THREE.WebGLRenderer | null = null;
 
   const build = () => {
     activeProfile = qualityProfile();
@@ -1111,8 +960,11 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
     tone: look.tone,
     hdri: look.hdri,
     envIntensity: look.env,
+    claimRenderer(renderer: THREE.WebGLRenderer) {
+      frameRenderer = renderer;
+    },
     update(progress: number) {
-      built?.render(performance.now(), progress);
+      built?.render(performance.now(), progress, frameRenderer);
     },
     suspend() {
       if (!built) return;
