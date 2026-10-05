@@ -194,35 +194,26 @@ p {
   height: auto;
   overflow: visible;
 }
-.aura-ridge {
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: butt;
-  stroke-linejoin: round;
-  stroke-width: 10;
-  stroke-dasharray: 1;
-  stroke-dashoffset: 0;
-}
-.aura-glow {
+.aura-ridge,
+.aura-ridge path {
+  fill: currentColor;
   stroke: none;
 }
-.aura-halo {
+.aura-ring {
   fill: none;
   stroke: #c4a07a;
-  stroke-width: 7.5;
-  stroke-linecap: round;
-  opacity: 0.4;
+  stroke-width: 2;
 }
-/* The nav blends with difference. Inverse blue paints back as bronze #c4a07a on alabaster. */
-.site-nav .aura-halo { stroke: #305375; }
-.site-nav .aura-glow { fill: url(#aura-soft-inv); }
-body.nav-on-film .site-nav .aura-halo,
-body[data-living-nav] .site-nav .aura-halo {
+/* At the locked nav width a 2-unit stroke falls under a pixel, so the ring disappears. */
+.aura-logo .aura-ring,
+.nav-sigil .sigil-ring {
+  stroke-width: 6;
+}
+/* The nav blends with difference. Inverse bronze paints back as #c4a07a on alabaster. */
+.site-nav .aura-ring { stroke: #3b5f85; }
+body.nav-on-film .site-nav .aura-ring,
+body[data-living-nav] .site-nav .aura-ring {
   stroke: #c4a07a;
-}
-body.nav-on-film .site-nav .aura-glow,
-body[data-living-nav] .site-nav .aura-glow {
-  fill: url(#aura-soft);
 }
 .nav-name,
 .foot-name {
@@ -386,43 +377,27 @@ body[data-living-nav] .site-nav .aura-glow {
 }
 @media (prefers-reduced-motion: no-preference) {
   .aura-logo.is-play .aura-ridge {
-    animation: aura-draw 1.2s cubic-bezier(0.65, 0, 0.35, 1) both;
+    animation: aura-reveal 1s cubic-bezier(0.65, 0, 0.35, 1) both;
   }
-  .aura-logo.is-play .aura-halo,
-  .aura-logo.is-play .aura-glow {
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  .aura-logo.is-play .aura-halo {
-    animation: aura-halo 1.8s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
-  }
-  .aura-logo.is-play .aura-glow {
-    animation: aura-glow 1.8s cubic-bezier(0.22, 1, 0.36, 1) 1.2s both;
+  .aura-logo.is-play .aura-ring {
+    animation: aura-ring 0.8s cubic-bezier(0.22, 1, 0.36, 1) 1s both;
   }
 }
-@keyframes aura-draw {
-  from { stroke-dashoffset: 1; }
-  to { stroke-dashoffset: 0; }
+@keyframes aura-reveal {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
 }
-@keyframes aura-halo {
-  0% { opacity: 0; transform: scale(0.96); }
-  100% { opacity: 0.4; transform: scale(1); }
-}
-@keyframes aura-glow {
-  0% { opacity: 0; transform: scale(0.96); }
-  100% { opacity: 1; transform: scale(1); }
+@keyframes aura-ring {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @media (prefers-reduced-motion: reduce) {
   .aura-ridge,
-  .aura-halo,
-  .aura-glow {
+  .aura-ring {
     animation: none;
-    stroke-dashoffset: 0;
-    transform: none;
+    clip-path: none;
+    opacity: 1;
   }
-  .aura-ridge { opacity: 1; }
-  .aura-halo { opacity: 0.4; }
-  .aura-glow { opacity: 1; }
 }
 
 ::selection {
@@ -709,21 +684,18 @@ body[data-living-nav] .nav-cta:focus-visible {
   height: auto;
   overflow: visible;
 }
-.sigil-horizon,
-.sigil-ridge {
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: butt;
-  stroke-linejoin: round;
+.sigil-ridge,
+.sigil-ridge path {
+  fill: currentColor;
+  stroke: none;
 }
-.sigil-horizon { stroke-width: 1; }
-.sigil-ridge { stroke-width: 1.35; }
-.sigil-halo { fill: none; stroke: #305375; stroke-width: 1.05; opacity: 0.4; }
-.sigil-glow { fill: #305375; stroke: none; opacity: 0.12; }
-body.nav-on-film .sigil-halo,
-body[data-living-nav] .sigil-halo { stroke: #c4a07a; }
-body.nav-on-film .sigil-glow,
-body[data-living-nav] .sigil-glow { fill: #c4a07a; }
+.sigil-ring {
+  fill: none;
+  stroke: #3b5f85;
+  stroke-width: 2;
+}
+body.nav-on-film .sigil-ring,
+body[data-living-nav] .sigil-ring { stroke: #c4a07a; }
 .sigil-mark {
   opacity: 1;
   transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
@@ -854,67 +826,36 @@ body.menu-open .site-nav { z-index: 80; }
   transition: opacity 1.6s cubic-bezier(0.65, 0, 0.35, 1);
 }
 .nav-panel.is-open:not(.is-gsap) .menu-ridge { opacity: 1; }
-.menu-ridge path {
-  fill: none;
-  stroke: rgba(244, 243, 239, 0.46);
-  stroke-width: 1.65;
-  stroke-linecap: butt;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
+.menu-ridge .aura-ridge,
+.menu-ridge .aura-ridge path {
+  fill: rgba(244, 243, 239, 0.62);
+  stroke: none;
 }
 .nav-panel.is-horizon .menu-ridge,
 .nav-panel.is-horizon .menu-ridge path {
   shape-rendering: geometricPrecision;
 }
-.nav-panel.is-horizon .menu-ridge path {
-  stroke: rgba(244, 243, 239, 0.92);
-  stroke-width: 1px;
+.nav-panel.is-horizon .menu-ridge .aura-ridge,
+.nav-panel.is-horizon .menu-ridge .aura-ridge path {
+  fill: rgba(244, 243, 239, 0.92);
+  stroke: none;
 }
-@media (min-width: 1024px) {
-  .nav-panel.is-horizon .menu-ridge path { stroke-width: 1.35px; }
-}
-.nav-panel.is-horizon .menu-halo {
-  box-shadow: 0 0 14px rgba(196, 160, 122, 0.35);
-}
-.nav-panel.is-horizon .menu-horizon { height: 1px; }
-.menu-halo-anchor {
+.menu-ring {
   position: absolute;
-  left: 50%;
-  top: 25.532%;
-  width: 0;
-  height: 0;
-}
-.menu-halo,
-.menu-glow {
-  position: absolute;
-  left: 0;
-  top: 0;
-  border-radius: 50%;
+  inset: 0;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  opacity: 0;
   pointer-events: none;
 }
-.menu-halo {
-  width: 22px;
-  height: 22px;
-  margin: -11px 0 0 -11px;
-  background: transparent;
-  border: 1px solid #c4a07a;
-  opacity: 0;
-  transform: translateY(-4px);
-  transition:
-    opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+.menu-ring .aura-ring {
+  fill: none;
+  stroke: #c4a07a;
+  stroke-width: 2;
 }
-.nav-panel.is-open:not(.is-gsap) .menu-halo {
-  opacity: 0.4;
-  transform: translateY(-22px);
-}
-.menu-glow {
-  width: 78px;
-  height: 78px;
-  margin: -39px 0 0 -39px;
-  background: radial-gradient(circle, rgba(196, 160, 122, 0.12) 0%, rgba(196, 160, 122, 0) 70%);
-  opacity: 0;
-}
+.nav-panel.is-open:not(.is-gsap) .menu-ring { opacity: 1; }
+.nav-panel.is-horizon .menu-horizon { height: 1px; }
 .nav-copy {
   position: relative;
   z-index: 2;
@@ -964,33 +905,21 @@ body.menu-open .site-nav { z-index: 80; }
 .nav-panel.is-gsap,
 .nav-panel.is-gsap .menu-horizon,
 .nav-panel.is-gsap .menu-ridge,
-.nav-panel.is-gsap .menu-halo,
-.nav-panel.is-gsap .menu-glow {
+.nav-panel.is-gsap .menu-ring {
   transition: none;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .nav-panel.is-open:not(.is-gsap) .menu-glow {
-    animation: menu-glow-once 2.2s cubic-bezier(0.22, 1, 0.36, 1) 0.7s both;
-  }
-}
-@keyframes menu-glow-once {
-  0% { opacity: 0; transform: translateY(-4px) scale(0.96); }
-  100% { opacity: 1; transform: translateY(-22px) scale(1); }
 }
 @media (prefers-reduced-motion: reduce) {
   .sigil-mark,
   .nav-panel,
   .menu-horizon,
   .menu-ridge,
-  .menu-halo,
-  .menu-glow {
+  .menu-ring {
     transition: none;
     animation: none;
   }
   .nav-panel.is-open .menu-horizon { transform: scaleX(1); }
   .nav-panel.is-open .menu-ridge { opacity: 1; }
-  .nav-panel.is-open .menu-halo { opacity: 0.4; transform: translateY(-22px); }
-  .nav-panel.is-open .menu-glow { opacity: 1; transform: translateY(-22px); }
+  .nav-panel.is-open .menu-ring { opacity: 1; }
 }
 @media (max-width: 1100px) {
   .nav-groups { grid-template-columns: max-content; gap: 1.05rem; }
@@ -1047,15 +976,10 @@ body.nav-on-film .site-nav.topbar.is-frost .topbar-frost,
 body[data-living-nav] .site-nav.topbar.is-frost .topbar-frost {
   background: rgba(12, 13, 14, 0.78);
 }
-.site-nav.topbar.is-frost .aura-halo,
-body.nav-on-film .site-nav.topbar .aura-halo,
-body[data-living-nav] .site-nav.topbar .aura-halo {
+.site-nav.topbar.is-frost .aura-ring,
+body.nav-on-film .site-nav.topbar .aura-ring,
+body[data-living-nav] .site-nav.topbar .aura-ring {
   stroke: #c4a07a;
-}
-.site-nav.topbar.is-frost .aura-glow,
-body.nav-on-film .site-nav.topbar .aura-glow,
-body[data-living-nav] .site-nav.topbar .aura-glow {
-  fill: url(#aura-soft);
 }
 .site-nav.topbar .nav-brand { gap: 0.7rem; min-height: 44px; }
 .site-nav.topbar .aura-logo { width: 1.55rem; }
@@ -2746,32 +2670,31 @@ html.ridge-seen .ridge-load {
   height: auto;
   overflow: visible;
 }
-.ridge-load-ridge path {
-  fill: none;
-  stroke: #f4f3ef;
-  stroke-width: 3.2;
-  stroke-linecap: butt;
-  stroke-linejoin: round;
+.ridge-load-ridge .aura-ridge,
+.ridge-load-ridge .aura-ridge path {
+  fill: #f4f3ef;
+  stroke: none;
 }
-.ridge-load-halo {
+.ridge-load-ring {
   position: absolute;
-  left: 50%;
-  top: 8%;
-  width: 0.85rem;
-  height: 0.85rem;
-  margin-left: -0.425rem;
-  border: 1px solid #c4a07a;
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(196, 160, 122, 0.3);
+  inset: 0;
+  width: 100%;
+  height: auto;
+  overflow: visible;
   opacity: 0;
   pointer-events: none;
+}
+.ridge-load-ring .aura-ring {
+  fill: none;
+  stroke: #c4a07a;
+  stroke-width: 2;
 }
 @media (prefers-reduced-motion: no-preference) {
   .ridge-load-clip {
     animation: ridge-draw 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
   }
-  .ridge-load-halo {
-    animation: ridge-halo 0.32s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
+  .ridge-load-ring {
+    animation: ridge-ring 0.32s cubic-bezier(0.22, 1, 0.36, 1) 0.4s both;
   }
   .ridge-load {
     animation: ridge-leave 0.24s cubic-bezier(0.22, 1, 0.36, 1) 0.7s forwards;
@@ -2780,8 +2703,8 @@ html.ridge-seen .ridge-load {
 @keyframes ridge-draw {
   to { transform: scaleX(1); }
 }
-@keyframes ridge-halo {
-  to { opacity: 0.4; }
+@keyframes ridge-ring {
+  to { opacity: 1; }
 }
 @keyframes ridge-leave {
   to { opacity: 0; }
@@ -2791,8 +2714,8 @@ html.ridge-seen .ridge-load {
     transform: none;
     animation: none;
   }
-  .ridge-load-halo {
-    opacity: 0.4;
+  .ridge-load-ring {
+    opacity: 1;
     animation: none;
   }
   .ridge-load {
