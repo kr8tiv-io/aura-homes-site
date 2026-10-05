@@ -1,4 +1,5 @@
 // @ts-check
+import { fileURLToPath } from 'node:url';
 import { defineConfig, fontProviders } from 'astro/config';
 import node from '@astrojs/node';
 import react from '@astrojs/react';
@@ -42,6 +43,11 @@ export default defineConfig({
     },
   ],
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+      },
+    },
   }
 });

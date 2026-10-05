@@ -1,13 +1,22 @@
-"use client";
+import { useEffect, useRef, useState } from 'react';
+import StillScene from './StillScene';
+import { onQuality, qualityProfile } from '../three/quality';
+import { FLYOVER_SPLINE, mountMeadowWorld, type MeadowHandle, type MeadowShot, type TimeOfDay } from '../three/meadow-v1/world';
 
-import { Suspense, useEffect, useState } from "react";
-import * as THREE from "three";
-import { Canvas } from "@react-three/fiber";
-import Scene from "./Scene";
-import StillScene from "./StillScene";
+const SHOTS: Record<string, MeadowShot> = {
+  'use:A room': { p: [6.8, 2.8, 12.4], t: [0.2, 2.0, 1.4], fov: 38 },
+  'use:Glass on piles': { p: [4.2, 2.2, 9.6], t: [2.2, 1.2, 4.6], fov: 36 },
+  'use:A farm wall': { p: [-8.2, 2.6, 8.4], t: [-0.4, 2.2, 0.6], fov: 40 },
+  'use:Water from the air': { p: [3.4, 7.2, 12.8], t: [0.6, 3.4, 0.2], fov: 34 },
+  'glass:Clear': { p: [0.4, 2.1, 11.2], t: [0, 2.2, 0], fov: 36 },
+  'glass:Mirror': { p: [7.6, 2.4, 8.8], t: [0.2, 2.0, 1.2], fov: 38 },
+  'glass:Tinted': { p: [2.8, 1.7, 9.4], t: [0, 2.0, 0.4], fov: 40 },
+  'length:20 ft': { p: [4.2, 2.2, 8.6], t: [0, 1.8, 0.8], fov: 42 },
+  'length:28 ft': { p: [7.2, 3.2, 12.6], t: [0, 1.9, 1.0], fov: 38 },
+  'length:36 ft': { p: [10.4, 4.6, 16.8], t: [0, 2.0, 1.0], fov: 34 },
+};
 
-/** Fixed full-viewport canvas behind the copy. Detects WebGL up front and
- *  falls back to the still illustration so the page never renders blank. */
+/** The builder fly-over. One host element, drawn by the shared stage. */
 export default function StoryCanvas({
   progressRef,
   reduced,
@@ -19,89 +28,43 @@ export default function StoryCanvas({
   night?: boolean;
   shotKey?: string | null;
 }) {
-  const [webgl, setWebgl] = useState<boolean | null>(null);
-  const [present, setPresent] = useState(true);
+  const host = useRef<HTMLDivElement>(null);
+  const handle = useRef<MeadowHandle | null>(null);
+  const [off, setOff] = useState(() => qualityProfile().tier === 'off');
+
+  useEffect(() => onQuality((profile) => setOff(profile.tier === 'off')), []);
 
   useEffect(() => {
-    try {
-      const c = document.createElement("canvas");
-      const gl = c.getContext("webgl2") || c.getContext("webgl");
-      const ok = !!gl;
-      /* Drop the probe immediately. The page then keeps a single renderer,
-         the one Canvas creates below. */
-      gl?.getExtension("WEBGL_lose_context")?.loseContext();
-      setWebgl(ok);
-    } catch {
-      setWebgl(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (webgl !== true) return;
-    const el = document.querySelector(".b-root canvas");
-    if (!el) return;
-    let seen = true;
-    let tab = document.visibilityState === "visible";
-    const apply = () => {
-      const box = el.getBoundingClientRect();
-      const sized = box.width > 2 && box.height > 2;
-      const run = tab && (!sized || seen);
-      setPresent((prev) => (prev === run ? prev : run));
-    };
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        seen = entry.isIntersecting;
-        apply();
-      },
-      { threshold: 0 }
-    );
-    io.observe(el);
-    const onVis = () => {
-      tab = document.visibilityState === "visible";
-      apply();
-    };
-    document.addEventListener("visibilitychange", onVis);
-    apply();
+    const el = host.current;
+    if (!el || off) return;
+    const world = mountMeadowWorld(el, {
+      spline: FLYOVER_SPLINE,
+      timeOfDay: night ? 'night' : 'scroll',
+      density: 1,
+      intro: !reduced,
+      reducedShot: reduced,
+      readProgress: () => Math.min(1, Math.max(0, progressRef.current / 6)),
+    });
+    handle.current = world;
+    if (shotKey && SHOTS[shotKey]) world.setShot(SHOTS[shotKey]);
     return () => {
-      io.disconnect();
-      document.removeEventListener("visibilitychange", onVis);
+      world.destroy();
+      handle.current = null;
     };
-  }, [webgl]);
+    // Night and the option shots update the live world. Remounting would rebuild the meadow.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [off, reduced]);
 
-  if (webgl === null) return null;
-  if (webgl === false) return <StillScene />;
+  useEffect(() => {
+    const next: TimeOfDay = night ? 'night' : 'scroll';
+    handle.current?.setTimeOfDay(next);
+  }, [night]);
 
-  return (
-    <Canvas
-      shadows
-      /* Cap at 2. A 3x display stays at 2 so the clearing does not pay for
-         a full device buffer. */
-      dpr={[1, 2]}
-      frameloop={!present ? "never" : reduced ? "demand" : "always"}
-      /* far was 140 — the mountain range sits well beyond that and was being
-         clipped into a grey slab across the sky. 260 clears the range from
-         every camera beat while keeping the near/far ratio modest enough not
-         to cost depth precision (0.3/260 ≈ 870, vs 467 before) — which
-         matters, because coplanar glass on the deck is only just resolved. */
-      camera={{ fov: 38, near: 0.4, far: 260, position: [-4.5, 5.4, 17.5] }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      onCreated={({ gl }) => {
-        gl.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
-        gl.setClearColor(0x000000, 0);
-        /* ACES over AgX (both trialled, Aug 2026): AgX's gentler highlight
-           rolloff helped the dusk sun, but it desaturated the emerald
-           landscape and teal firs — and vivid, alive foliage is what sells
-           this eco brand. ACES keeps the greens punchy; the dusk clip AgX
-           fixed was never actually a problem here. */
-        gl.toneMapping = THREE.ACESFilmicToneMapping;
-        gl.toneMappingExposure = 1.12;
-      }}
-      style={{ position: "fixed", inset: 0, zIndex: 0 }}
-      aria-hidden
-    >
-      <Suspense fallback={null}>
-        <Scene progressRef={progressRef} reduced={reduced} night={night} shotKey={shotKey} />
-      </Suspense>
-    </Canvas>
-  );
+  useEffect(() => {
+    handle.current?.setShot(shotKey && SHOTS[shotKey] ? SHOTS[shotKey] : null);
+  }, [shotKey]);
+
+  if (off) return <StillScene />;
+
+  return <div ref={host} className="b-world" aria-hidden="true" />;
 }

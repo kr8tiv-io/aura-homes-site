@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { holdPageMotion } from './motion';
 import { hideStill, motionTime, onQuality, qualityProfile, showStill, type QualityProfile } from '../three/quality';
 import { registerView, type StageTone } from '../three/stage';
+import { FAR_SPLINE, GRASS_SPLINE, mountMeadowWorld } from '../three/meadow-v1/world';
 
 let activeProfile: QualityProfile | null = null;
 let treeAnchorZ = 0;
@@ -1183,6 +1184,27 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
   const key = sceneKey(canvas);
   canvas.dataset.sceneLive = key;
   const look = LOOK[key];
+  if (key === 'grass' || key === 'far') {
+    const world = mountMeadowWorld(canvas, {
+      spline: key === 'grass' ? GRASS_SPLINE : FAR_SPLINE,
+      timeOfDay: key === 'grass' ? 'day' : 'scroll',
+      density: 1,
+      exposure: look.exposure,
+      tone: look.tone,
+      hdri: look.hdri,
+      envIntensity: look.env,
+      ao: false,
+    });
+    world.setProgress(readProgress());
+    return {
+      setProgress(t: number) {
+        world.setProgress(t);
+      },
+      destroy() {
+        world.destroy();
+      },
+    };
+  }
   let dead = false;
   let built: BuiltScene | null = null;
 

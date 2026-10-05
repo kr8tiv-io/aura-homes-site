@@ -1,0 +1,241 @@
+{
+  "schema": "ProgressiveMeadowMappedAtlasV6",
+  "version": 1,
+  "license": "Aura-authored",
+  "alphaMode": "MASK",
+  "alphaCutoff": 0.42,
+  "draws": 1,
+  "dimensions": {
+    "width": 1024,
+    "height": 512,
+    "columns": 4,
+    "rows": 2
+  },
+  "cells": [
+    {
+      "id": "grass-arching",
+      "kind": "grass",
+      "column": 0,
+      "row": 0,
+      "fans": 2,
+      "heightMin": 0.25,
+      "heightMax": 0.55,
+      "spread": 0.32,
+      "widthMin": 2.5,
+      "widthMax": 4.6,
+      "seedHeads": 1,
+      "uv": [
+        0,
+        0,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "id": "grass-fine",
+      "kind": "grass",
+      "column": 1,
+      "row": 0,
+      "fans": 3,
+      "heightMin": 0.29,
+      "heightMax": 0.61,
+      "spread": 0.24,
+      "widthMin": 1.9,
+      "widthMax": 3.3,
+      "seedHeads": 1,
+      "uv": [
+        0.25,
+        0,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "id": "grass-seed",
+      "kind": "grass",
+      "column": 2,
+      "row": 0,
+      "fans": 2,
+      "heightMin": 0.25,
+      "heightMax": 0.52,
+      "spread": 0.3,
+      "widthMin": 2.5,
+      "widthMax": 4.4,
+      "seedHeads": 2,
+      "uv": [
+        0.5,
+        0,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "id": "grass-tuft",
+      "kind": "grass",
+      "column": 3,
+      "row": 0,
+      "fans": 3,
+      "heightMin": 0.24,
+      "heightMax": 0.5,
+      "spread": 0.34,
+      "widthMin": 2.7,
+      "widthMax": 4.8,
+      "seedHeads": 1,
+      "uv": [
+        0.75,
+        0,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "id": "grass-sedge",
+      "kind": "grass",
+      "column": 0,
+      "row": 1,
+      "fans": 2,
+      "heightMin": 0.28,
+      "heightMax": 0.56,
+      "spread": 0.27,
+      "widthMin": 2.2,
+      "widthMax": 3.9,
+      "seedHeads": 1,
+      "uv": [
+        0,
+        0.5,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "id": "grass-wild",
+      "kind": "grass",
+      "column": 1,
+      "row": 1,
+      "fans": 3,
+      "heightMin": 0.25,
+      "heightMax": 0.58,
+      "spread": 0.31,
+      "widthMin": 2.2,
+      "widthMax": 4.3,
+      "seedHeads": 2,
+      "uv": [
+        0.25,
+        0.5,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "id": "flower-yarrow",
+      "kind": "flower",
+      "column": 2,
+      "row": 1,
+      "fans": 2,
+      "heightMin": 0.28,
+      "heightMax": 0.64,
+      "spread": 0.2,
+      "widthMin": 1.7,
+      "widthMax": 3.4,
+      "seedHeads": 0,
+      "uv": [
+        0.5,
+        0.5,
+        0.25,
+        0.5
+      ]
+    },
+    {
+      "id": "flower-aster",
+      "kind": "flower",
+      "column": 3,
+      "row": 1,
+      "fans": 2,
+      "heightMin": 0.28,
+      "heightMax": 0.65,
+      "spread": 0.22,
+      "widthMin": 1.7,
+      "widthMax": 3.5,
+      "seedHeads": 0,
+      "uv": [
+        0.75,
+        0.5,
+        0.25,
+        0.5
+      ]
+    }
+  ],
+  "instanceFormat": {
+    "magic": "AURAMDW1",
+    "endian": "little",
+    "headerBytes": 24,
+    "strideBytes": 48,
+    "fields": [
+      "x",
+      "y",
+      "z",
+      "width",
+      "height",
+      "yaw",
+      "cellX",
+      "cellY",
+      "cellW",
+      "cellH",
+      "kind",
+      "seed"
+    ]
+  },
+  "instances": {
+    "total": 3600,
+    "grass": 2800,
+    "flowers": 800,
+    "nearFlowers": 500,
+    "midFlowers": 300,
+    "bounds": {
+      "minX": -39.58315026757191,
+      "maxX": 39.640210182988085,
+      "minZ": -13.373513056663796,
+      "maxZ": 43.36162357509602
+    }
+  },
+  "renderedInstances": {
+    "total": 3600,
+    "grass": 3600,
+    "flowers": 0
+  },
+  "generation": {
+    "seed": 10557349,
+    "supersample": 2,
+    "angularLeafFacets": true,
+    "angularLeafWidthScale": 1.24,
+    "synchronizedBands": false,
+    "polygonSegments": [
+      9,
+      12
+    ],
+    "grassProfile": "asymmetric-fan-v1",
+    "fanGrassCells": 6,
+    "maxSeedHeadsPerGrassCell": 2,
+    "longitudinalMidribs": true,
+    "midribsPreserveAlpha": true,
+    "runtimeRasterization": false
+  },
+  "files": {
+    "source": {
+      "path": "scripts/generate-meadow-atlas.mjs",
+      "bytes": 26211,
+      "sha256": "6ac76791eeaa8a6e8e1ebfc70714d028bfb4f6eccf14c73d0c12d8fba8cf9d7a"
+    },
+    "image": {
+      "path": "public/textures/meadow-atlas.png",
+      "bytes": 213422,
+      "sha256": "29544b58f9bc9bd8599ce6b60eec2ec091f0b9ff6824e08a125c5917e37d60ec",
+      "alphaOccupancy": 0.13332176
+    },
+    "instances": {
+      "path": "public/textures/meadow-atlas.bin",
+      "bytes": 172824,
+      "sha256": "0913e10585871853e184545a79a49426e1ffd9c680dbd297d28b931deff9b849"
+    }
+  }
+}
