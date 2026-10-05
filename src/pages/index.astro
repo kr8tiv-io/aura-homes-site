@@ -318,7 +318,16 @@ import Journeys from '../components/Journeys.astro';
       return scenesTask;
     };
 
-    await ensureScenes();
+    // The splash and its scroll film bind right away, exactly as before the
+    // quality gate. The meadow scenes mount whenever their chunks arrive.
+    void ensureScenes()
+      .then(() => {
+        if (!reduce) return;
+        meadows.forEach((meadow) => meadow.setProgress(0.45));
+        washes.forEach((wash) => wash.setProgress(0.25));
+        fieldFx?.setProgress(0.35);
+      })
+      .catch(() => {});
     const stopQuality = onQuality(() => {
       void ensureScenes();
     });
