@@ -60,6 +60,10 @@ export type MeadowWorldOptions = {
   bloom?: { threshold: number; intensity: number };
   godrays?: boolean;
   flare?: boolean;
+  /** Daylight product shot. One warm sun, no intro pull, no pointer drift. */
+  product?: boolean;
+  /** Fill the empty AuraUnitSlot. Grass and far leave the slot empty. */
+  occupyUnit?: (slot: THREE.Group) => (() => void) | void;
 };
 
 export type MeadowHandle = {
@@ -710,6 +714,7 @@ type Built = {
   birds: THREE.InstancedMesh | null;
   snow: THREE.Group | null;
   generation: number;
+  release: (() => void) | null;
 };
 
 function emptyBuilt(): Built {
@@ -731,10 +736,13 @@ function emptyBuilt(): Built {
     birds: null,
     snow: null,
     generation: 0,
+    release: null,
   };
 }
 
 function disposeBuilt(built: Built, scene: THREE.Scene) {
+  built.release?.();
+  built.release = null;
   const environment = scene.environment;
   const environmentIntensity = scene.environmentIntensity;
   scene.clear();
@@ -803,12 +811,13 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     sun.castShadow = map > 0;
     if (map <= 0) return;
     sun.shadow.mapSize.set(map, map);
-    sun.shadow.bias = -0.00025;
-    sun.shadow.normalBias = 0.012;
+    sun.shadow.bias = options.product ? -0.00045 : -0.00025;
+    sun.shadow.normalBias = options.product ? 0.025 : 0.012;
+    if (options.product) sun.shadow.radius = 2.5;
     const cam = sun.shadow.camera;
-    cam.near = 1;
-    cam.far = golden ? 70 : 90;
-    const span = golden ? 12 : 24;
+    cam.near = options.product ? 0.6 : 1;
+    cam.far = options.product ? 48 : golden ? 70 : 90;
+    const span = options.product ? 9 : golden ? 12 : 24;
     cam.left = -span;
     cam.right = span;
     cam.top = span;
@@ -841,6 +850,11 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     } else {
       sun.position.copy(coolPos);
     }
+    if (options.product) {
+      fill.intensity = 0;
+      sun.target.position.set(0, 1.15, 0);
+      scene.add(sun.target);
+    }
     scene.add(hemi, ambient, sun, fill);
     const segments = qualityProfile().tier === 'ultra' || qualityProfile().tier === 'high' ? 160 : 96;
     const terrain = golden ? makeGoldenTerrain(segments, built.textures, built.materials) : makeTerrain(segments);
@@ -848,6 +862,13 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     if (!golden) built.materials.push(terrain.material as THREE.Material);
     scene.add(terrain);
     addSlots(scene);
+    if (options.occupyUnit) {
+      const slot = scene.getObjectByName('AuraUnitSlot');
+      if (slot instanceof THREE.Group) {
+        const release = options.occupyUnit(slot);
+        if (typeof release === 'function') built.release = release;
+      }
+    }
   };
 
   const placePines = (generation: number) => {
@@ -992,7 +1013,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     scene.add(birds);
     built.birds = birds;
     const shaftTier = qualityProfile().tier;
-    const shaftsOn = golden ? shaftTier === 'medium' : shaftTier !== 'low';
+    const shaftsOn = options.product ? false : golden ? shaftTier === 'medium' : shaftTier !== 'low';
     const shaftTex = shaftTexture();
     if (shaftTex && shaftsOn) {
       built.textures.push(shaftTex);
@@ -1155,8 +1176,8 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       const clock = grassClock(reduced, elapsed || FROZEN_T);
       const u = clamp01(rig.smooth);
       const scrollDusk = spline.length >= 13 ? smoothstep(4 / 6, 1, u) : smoothstep(0.45, 1, u);
-      const duskTarget = timeOfDay === 'day' ? 0 : timeOfDay === 'dusk' || timeOfDay === 'night' ? 1 : scrollDusk;
-      const nightTarget = timeOfDay === 'night' ? 1 : 0;
+      const duskTarget = options.product || timeOfDay === 'day' ? 0 : timeOfDay === 'dusk' || timeOfDay === 'night' ? 1 : scrollDusk;
+      const nightTarget = options.product ? 0 : timeOfDay === 'night' ? 1 : 0;
       rig.dusk = reduced ? duskTarget : THREE.MathUtils.damp(rig.dusk, Math.max(duskTarget, nightTarget), 5, step);
       rig.night = reduced ? nightTarget : THREE.MathUtils.damp(rig.night, nightTarget, 2.2, step);
 
@@ -1190,16 +1211,18 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
           camP.y += tall * 0.8;
           fov *= 1 + tall * 0.32;
         }
-        const opening = 1 - intro;
-        camP.z += opening * 4.2;
-        camP.y += opening * 0.5;
-        fov += opening * 6;
-        if (!reduced) {
-          const par = 1 - clamp01((u * 6) / 1.6) * 0.5;
-          camP.x += rig.mx * 0.5 * par;
-          camP.y += rig.my * 0.28 * par;
-          camT.x -= rig.mx * 0.16 * par;
-          camT.y -= rig.my * 0.09 * par;
+        if (!options.product) {
+          const opening = 1 - intro;
+          camP.z += opening * 4.2;
+          camP.y += opening * 0.5;
+          fov += opening * 6;
+          if (!reduced) {
+            const par = 1 - clamp01((u * 6) / 1.6) * 0.5;
+            camP.x += rig.mx * 0.5 * par;
+            camP.y += rig.my * 0.28 * par;
+            camT.x -= rig.mx * 0.16 * par;
+            camT.y -= rig.my * 0.09 * par;
+          }
         }
         const minY = sampleTerrainHeight(camP.x, camP.z) + 0.7;
         if (camP.y < minY) camP.y = minY;
@@ -1235,6 +1258,17 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         hemi.intensity = (0.5 - duskAmt * 0.18) * (1 - nightAmt * 0.72);
         scratch.copy(coolFog).lerp(warmFog, duskAmt).lerp(nightFog, nightAmt);
         fog.color.copy(scratch);
+      }
+      if (options.product) {
+        sun.color.set('#fff3dd');
+        sun.intensity = 2.35;
+        sun.position.copy(KEY).multiplyScalar(22);
+        sun.target.position.set(0, 1.15, 0);
+        sun.target.updateMatrixWorld();
+        hemi.intensity = 0.32;
+        ambient.intensity = 0.08;
+        fog.color.set('#e7eeea');
+        if (scene.background instanceof THREE.Color) scene.background.copy(fog.color);
       }
 
       if (built.snow) paintSnow(built.snow, duskAmt, nightAmt);
