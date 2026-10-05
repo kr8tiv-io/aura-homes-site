@@ -20,6 +20,10 @@ import {
   trimGrass,
   type GrassTile,
 } from './grass';
+import { EVENING_SUN, applyHeightFog, heightFog } from './height-fog';
+import { addGoldenSky } from './golden-sky';
+import { makeGoldenTerrain } from './golden-ground';
+import { mountGoldenGrove, placeGoldenProps } from './grove';
 
 export type SplinePoint = {
   p: [number, number, number];
@@ -49,6 +53,13 @@ export type MeadowWorldOptions = {
   hdri?: string;
   envIntensity?: number;
   ao?: boolean;
+  /** Homepage grass and far only. The builder keeps the day fly-over. */
+  grade?: 'golden';
+  hdriPinned?: boolean;
+  shadow?: 'soft';
+  bloom?: { threshold: number; intensity: number };
+  godrays?: boolean;
+  flare?: boolean;
 };
 
 export type MeadowHandle = {
@@ -83,10 +94,26 @@ export const FLYOVER_SPLINE: SplinePoint[] = [
   { p: [9.4, 4.3, 13.4], t: [0.2, 2.2, 1.2], fov: 37 },
 ];
 
-/** Opening of the fly-over: trailhead, crest, and the descent toward the skid. */
-export const GRASS_SPLINE: SplinePoint[] = FLYOVER_SPLINE.slice(0, 7);
-/** Later settle, from the elevated three-quarter through the dusk hold. */
-export const FAR_SPLINE: SplinePoint[] = FLYOVER_SPLINE.slice(6);
+/**
+ * Low over the crest, then a slow arc onto the evening-sun azimuth so the
+ * disc and the unit share the settle. ground adds ridge height. Look targets
+ * are world space. Far begins on the last grass point.
+ */
+export const GRASS_SPLINE: SplinePoint[] = [
+  { p: [-1.2, 2.5, 27.5], t: [0.4, 1.6, 2.0], fov: 38, ground: 1 },
+  { p: [-4.5, 2.3, 18.0], t: [1.2, 2.2, 4.0], fov: 38, ground: 1 },
+  { p: [-8.5, 2.2, 8.0], t: [2.0, 3.4, 8.0], fov: 37, ground: 1 },
+  { p: [-12.4, 2.15, -2.0], t: [6.8, 5.9, 11.9], fov: 36, ground: 1 },
+  { p: [-14.2, 2.05, -8.4], t: [5.05, 5.39, 5.53], fov: 36, ground: 1 },
+  { p: [-13.4, 1.95, -9.6], t: [5.85, 5.29, 4.33], fov: 35, ground: 1 },
+];
+/** Same settle, eased a little closer. No jump from the grass passage. */
+export const FAR_SPLINE: SplinePoint[] = [
+  { p: [-13.4, 1.95, -9.6], t: [5.85, 5.29, 4.33], fov: 35, ground: 1 },
+  { p: [-12.64, 1.85, -9.14], t: [5.03, 4.72, 3.64], fov: 35, ground: 1 },
+  { p: [-11.67, 1.85, -8.44], t: [6.0, 4.72, 4.34], fov: 34, ground: 1 },
+  { p: [-11.2, 1.8, -8.1], t: [6.3, 4.6, 4.6], fov: 34, ground: 1 },
+];
 
 export const REDUCED_SHOT: MeadowShot = {
   p: [9.4, 4.3, 13.4],
@@ -724,12 +751,13 @@ function disposeBuilt(built: Built, scene: THREE.Scene) {
 }
 
 export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions = {}): MeadowHandle {
+  const golden = options.grade === 'golden';
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.4, 260);
+  const camera = new THREE.PerspectiveCamera(38, 1, 0.4, golden ? 1100 : 260);
   camera.position.set(-4.5, 5.4, 17.5);
-  const fog = new THREE.Fog('#e3ede7', 30, 88);
+  const fog = new THREE.Fog(golden ? '#e4c9a4' : '#e3ede7', golden ? 28 : 30, golden ? 140 : 88);
   scene.fog = fog;
-  scene.background = fog.color;
+  scene.background = golden ? null : fog.color;
 
   let spline = options.spline?.length ? options.spline : FLYOVER_SPLINE;
   let timeOfDay: TimeOfDay = options.timeOfDay ?? 'scroll';
@@ -768,6 +796,8 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   const camT = new THREE.Vector3();
   const camD = new THREE.Vector3();
 
+  let claim: ((renderer: THREE.WebGLRenderer) => void) | null = null;
+
   const applyShadow = () => {
     const map = qualityProfile().shadowMapSize;
     sun.castShadow = map > 0;
@@ -777,11 +807,13 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     sun.shadow.normalBias = 0.012;
     const cam = sun.shadow.camera;
     cam.near = 1;
-    cam.far = 90;
-    cam.left = -24;
-    cam.right = 24;
-    cam.top = 24;
-    cam.bottom = -24;
+    cam.far = golden ? 70 : 90;
+    const span = golden ? 12 : 24;
+    cam.left = -span;
+    cam.right = span;
+    cam.top = span;
+    cam.bottom = -span;
+    cam.updateProjectionMatrix();
   };
 
   const paintGrass = (mat: THREE.ShaderMaterial | null, duskAmt: number, nightAmt: number) => {
@@ -797,25 +829,82 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
 
   const buildCore = () => {
     applyShadow();
-    sun.position.copy(coolPos);
+    if (golden) {
+      sun.color.set('#ffb56a');
+      sun.intensity = 2.35;
+      sun.position.copy(EVENING_SUN).multiplyScalar(48);
+      sun.target.position.set(0, 1.2, 0);
+      scene.add(sun.target);
+      hemi.color.set('#f3d7b0');
+      hemi.groundColor.set('#6a7348');
+      hemi.intensity = 0.38;
+    } else {
+      sun.position.copy(coolPos);
+    }
     scene.add(hemi, ambient, sun, fill);
     const segments = qualityProfile().tier === 'ultra' || qualityProfile().tier === 'high' ? 160 : 96;
-    const terrain = makeTerrain(segments);
+    const terrain = golden ? makeGoldenTerrain(segments, built.textures, built.materials) : makeTerrain(segments);
     built.geometries.push(terrain.geometry);
-    built.materials.push(terrain.material as THREE.Material);
+    if (!golden) built.materials.push(terrain.material as THREE.Material);
     scene.add(terrain);
     addSlots(scene);
+  };
+
+  const placePines = (generation: number) => {
+    void loadModel(asset('models/pines.glb')).then((pines) => {
+      if (dead || suspended || generation !== built.generation) return;
+      pines.scene.traverse((node) => {
+        const mesh = node as THREE.Mesh;
+        if (!mesh.isMesh) return;
+        const mat = mesh.material as THREE.MeshStandardMaterial;
+        if (!mat?.isMeshStandardMaterial) return;
+        mat.roughness = 1;
+        mat.metalness = 0;
+      });
+      const count = Math.max(1, Math.ceil(PATCHES.length * Math.min(1, Math.max(0.35, qualityProfile().grassScale * density))));
+      const pinesGroup = placeNormalized(pines.scene, 5.2, PATCHES.slice(0, count), built.sway);
+      pinesGroup.name = 'Forest';
+      scene.add(pinesGroup);
+      pinesGroup.traverse((node) => {
+        const mesh = node as THREE.Mesh;
+        if (!mesh.isMesh) return;
+        const material = mesh.material;
+        const list = Array.isArray(material) ? material : [material];
+        for (const item of list) {
+          if (!item) continue;
+          if (golden) applyHeightFog(item);
+          built.materials.push(item);
+        }
+      });
+    }).catch(() => {
+      if (!dead && !suspended && generation === built.generation) {
+        addLiteForest(scene, built.geometries, built.materials, Math.max(0.35, qualityProfile().grassScale * density));
+      }
+    });
   };
 
   const buildForest = () => {
     const profile = qualityProfile();
     const scale = Math.max(0.35, profile.grassScale * density);
+    const generation = built.generation;
+    if (golden) {
+      const alive = () => !dead && !suspended && generation === built.generation;
+      if (profile.tier === 'low') {
+        placePines(generation);
+        placeGoldenProps(scene, built.geometries, built.materials, alive);
+        return;
+      }
+      const grove = mountGoldenGrove(scene, built.geometries, built.materials, built.textures, alive, () => {
+        if (alive()) placePines(generation);
+      });
+      claim = grove.claimRenderer;
+      return;
+    }
     if (profile.tier === 'low') {
       addLiteForest(scene, built.geometries, built.materials, scale);
       return;
     }
     const count = (list: typeof PATCHES) => list.slice(0, Math.max(1, Math.ceil(list.length * Math.min(1, scale))));
-    const generation = built.generation;
     void Promise.all([
       loadModel(asset('models/pines.glb')),
       loadModel(asset('models/pine-teal.glb')),
@@ -859,6 +948,10 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   };
 
   const buildAtmosphere = () => {
+    const generation = built.generation;
+    if (golden) {
+      addGoldenSky(scene, built.geometries, built.materials, built.textures, () => !dead && !suspended && generation === built.generation);
+    }
     const mountains = new THREE.Group();
     addMountainRange(mountains, built.geometries, built.materials);
     scene.add(mountains);
@@ -898,10 +991,12 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     birds.name = 'Birds';
     scene.add(birds);
     built.birds = birds;
+    const shaftTier = qualityProfile().tier;
+    const shaftsOn = golden ? shaftTier === 'medium' : shaftTier !== 'low';
     const shaftTex = shaftTexture();
-    if (shaftTex && qualityProfile().tier !== 'low') {
+    if (shaftTex && shaftsOn) {
       built.textures.push(shaftTex);
-      const aim = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), KEY);
+      const aim = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), golden ? EVENING_SUN : KEY);
       for (const spec of SHAFTS) {
         const mat = new THREE.MeshBasicMaterial({
           map: shaftTex,
@@ -950,11 +1045,16 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     };
     addTiles(built.hero, built.heroMat);
     addTiles(built.fill, built.fillMat);
-    const flowers = buildFlowerField(Math.round(160 * scale), profile.tier === 'high' || profile.tier === 'ultra', {
-      ground: sampleTerrainHeight,
-      density: sampleMeadowDensity,
-      clearance: (x, z) => sampleMeadowClearance(x, z),
-    });
+    const flowers = buildFlowerField(
+      Math.round(160 * scale),
+      profile.tier === 'high' || profile.tier === 'ultra',
+      {
+        ground: sampleTerrainHeight,
+        density: sampleMeadowDensity,
+        clearance: (x, z) => sampleMeadowClearance(x, z),
+      },
+      golden,
+    );
     if (flowers) {
       built.flowerMat = makeFlowerMaterial();
       built.geometries.push(flowers.geo);
@@ -990,8 +1090,9 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     ticket += 1;
     built = emptyBuilt();
     built.generation = ticket;
+    claim = null;
     scene.fog = fog;
-    scene.background = fog.color;
+    scene.background = golden ? null : fog.color;
     curves = makeCurves(spline);
     buildCore();
     window.setTimeout(() => {
@@ -1022,7 +1123,15 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     exposure: options.exposure ?? 1.02,
     tone: options.tone ?? 'agx',
     hdri: options.hdri,
+    hdriPinned: options.hdriPinned,
     envIntensity: options.envIntensity,
+    shadow: options.shadow,
+    bloom: options.bloom,
+    godrays: options.godrays ? sun : undefined,
+    flare: options.flare,
+    claimRenderer(renderer) {
+      claim?.(renderer);
+    },
     update(progress, dt) {
       if (dead || suspended) return;
       const reduced = prefersReducedMotion();
@@ -1102,22 +1211,53 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         }
       }
 
-      const duskAmt = rig.dusk;
-      const nightAmt = rig.night;
-      scratchV.lerpVectors(coolPos, warmPos, duskAmt).lerp(nightPos, nightAmt);
-      sun.position.copy(scratchV);
-      scratch.copy(coolCol).lerp(warmCol, duskAmt).lerp(nightCol, nightAmt);
-      sun.color.copy(scratch);
-      sun.intensity = (2.6 - duskAmt * 0.9) * (1 - nightAmt * 0.82);
-      hemi.intensity = (0.5 - duskAmt * 0.18) * (1 - nightAmt * 0.72);
-      scratch.copy(coolFog).lerp(warmFog, duskAmt).lerp(nightFog, nightAmt);
-      fog.color.copy(scratch);
+      const duskAmt = golden ? 0.68 : rig.dusk;
+      const nightAmt = golden ? 0 : rig.night;
+      if (golden) {
+        sun.position.copy(camera.position).addScaledVector(EVENING_SUN, 46);
+        sun.target.position.copy(camera.position);
+        sun.target.updateMatrixWorld();
+        sun.color.set('#ffb56a');
+        sun.intensity = 2.35;
+        hemi.color.set('#f3d7b0');
+        hemi.groundColor.set('#6a7348');
+        hemi.intensity = 0.38;
+        fog.color.copy(heightFog.color.value);
+        heightFog.sun.value.copy(EVENING_SUN);
+        heightFog.near.value = fog.near;
+        heightFog.far.value = fog.far;
+      } else {
+        scratchV.lerpVectors(coolPos, warmPos, duskAmt).lerp(nightPos, nightAmt);
+        sun.position.copy(scratchV);
+        scratch.copy(coolCol).lerp(warmCol, duskAmt).lerp(nightCol, nightAmt);
+        sun.color.copy(scratch);
+        sun.intensity = (2.6 - duskAmt * 0.9) * (1 - nightAmt * 0.82);
+        hemi.intensity = (0.5 - duskAmt * 0.18) * (1 - nightAmt * 0.72);
+        scratch.copy(coolFog).lerp(warmFog, duskAmt).lerp(nightFog, nightAmt);
+        fog.color.copy(scratch);
+      }
 
       if (built.snow) paintSnow(built.snow, duskAmt, nightAmt);
       if (built.stars) built.stars.opacity = nightAmt * 0.95;
       paintGrass(built.heroMat, duskAmt, nightAmt);
       paintGrass(built.fillMat, duskAmt, nightAmt);
       paintGrass(built.flowerMat, duskAmt, nightAmt);
+      if (golden) {
+        for (const mat of [built.heroMat, built.fillMat, built.flowerMat]) {
+          if (!mat) continue;
+          (mat.uniforms.uSunDir.value as THREE.Vector3).copy(EVENING_SUN);
+          (mat.uniforms.uSunCol.value as THREE.Color).set('#ffb56a');
+          mat.uniforms.uSunI.value = 1.35;
+          if (mat.uniforms.uHeightFog) mat.uniforms.uHeightFog.value = 1;
+          if (mat.uniforms.uHeightFogSun) (mat.uniforms.uHeightFogSun.value as THREE.Vector3).copy(EVENING_SUN);
+          if (mat.uniforms.uHeightFogColor) (mat.uniforms.uHeightFogColor.value as THREE.Color).copy(heightFog.color.value);
+          if (mat.uniforms.uHeightFogFalloff) mat.uniforms.uHeightFogFalloff.value = heightFog.falloff.value;
+          mat.uniforms.uFogNear.value = 28;
+          mat.uniforms.uFogFar.value = 140;
+          (mat.uniforms.uHemiSky.value as THREE.Color).set('#f3d7b0');
+          (mat.uniforms.uHemiGround.value as THREE.Color).set('#6a7348');
+        }
+      }
       const gust = gustEnvelope(clock);
       for (const wind of built.winds) {
         wind.uTime.value = clock;

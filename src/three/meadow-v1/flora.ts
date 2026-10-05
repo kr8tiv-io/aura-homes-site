@@ -229,7 +229,7 @@ export type FloraSample = {
  * predominantly one colour — the same clumping trick the grass species
  * use, and the thing that stops the field reading as noise.
  */
-export function buildFlowerField(count: number, rich: boolean, sample: FloraSample) {
+export function buildFlowerField(count: number, rich: boolean, sample: FloraSample, drifts = false) {
   const base = flowerGeometry(rich);
   const X0 = -30;
   const X1 = 30;
@@ -249,7 +249,11 @@ export function buildFlowerField(count: number, rich: boolean, sample: FloraSamp
   for (let i = 0; i < MAX_TRIES && placed < count; i++) {
     const x = X0 + rand(i, 211) * (X1 - X0);
     const z = Z0 + rand(i, 212) * (Z1 - Z0);
-    const patch = smooth01(0.52, 0.72, vnoise(x * 0.13 + 7.7, z * 0.13 + 3.9));
+    const along = x * 0.045 + z * 0.012;
+    const across = z * 0.07 - x * 0.018;
+    const patch = drifts
+      ? smooth01(0.6, 0.8, vnoise(along + 2.1, across + 4.4))
+      : smooth01(0.52, 0.72, vnoise(x * 0.13 + 7.7, z * 0.13 + 3.9));
     if (patch <= 0.01) continue;
     const yard = 1 - smooth01(8, 24, Math.hypot(x, z - 4));
     const dens = sample.density(x, z) * patch * (0.25 + 0.75 * yard);
@@ -364,7 +368,7 @@ void main(){
   vec2 wd = normalize(uWindDir);
   float stiff = 1.15 + 0.55 * h21(aPos.xz * 4.3 + 5.1);
   float ph = aInst.w * 6.2831853;
-  float travelling = sin(uTime * 0.62 - dot(aPos.xz, wd) * 0.135);
+  float travelling = sin(uTime * 0.62 - dot(aPos.xz, wd) * 0.22);
   float crossWave = sin(uTime * 0.41 + aPos.x * 0.082 - aPos.z * 0.057 + ph);
   float ripple = sin(uTime * 1.85 + aPos.x * 0.31 + aPos.z * 0.23 + ph * 0.5);
   float front = 0.5 + 0.5 * travelling;
@@ -425,6 +429,10 @@ uniform float uFogNear;
 uniform float uFogFar;
 uniform vec3  uCamPos;
 uniform float uNight;
+uniform float uHeightFog;
+uniform vec3  uHeightFogSun;
+uniform vec3  uHeightFogColor;
+uniform float uHeightFogFalloff;
 
 varying vec3  vColor;
 varying vec3  vNormal;
@@ -450,7 +458,18 @@ void main(){
   col = min(col, vec3(2.2));
 
   float fd = distance(uCamPos, vWorld);
-  col = mix(col, uFogColor, smoothstep(uFogNear, uFogFar, fd));
+  if (uHeightFog > 0.5) {
+    float band = smoothstep(uFogNear, uFogFar, fd);
+    float valley = exp(-max(vWorld.y - 0.35, 0.0) * uHeightFogFalloff);
+    float amt = clamp(band * mix(0.32, 1.08, valley), 0.0, 0.9);
+    vec3 toward = normalize(vWorld - uCamPos);
+    float sunw = pow(max(dot(toward, normalize(uHeightFogSun)), 0.0), 6.0);
+    vec3 warm = uHeightFogColor * vec3(1.14, 0.97, 0.76);
+    vec3 cool = uHeightFogColor * vec3(0.78, 0.88, 1.03);
+    col = mix(col, mix(cool, warm, sunw), amt);
+  } else {
+    col = mix(col, uFogColor, smoothstep(uFogNear, uFogFar, fd));
+  }
 
   gl_FragColor = vec4(col, 1.0);
   #include <tonemapping_fragment>
@@ -481,6 +500,10 @@ export function makeFlowerMaterial() {
       uFogNear: { value: 30 },
       uFogFar: { value: 88 },
       uNight: { value: 0 },
+      uHeightFog: { value: 0 },
+      uHeightFogSun: { value: new THREE.Vector3(0.756, 0.36, 0.547).normalize() },
+      uHeightFogColor: { value: new THREE.Color("#e4c9a4") },
+      uHeightFogFalloff: { value: 0.38 },
     },
   });
 }

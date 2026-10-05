@@ -82,12 +82,15 @@ varying vec3 vGround;
 varying float vSpecies;
 float h21(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
 vec3 groundColor(vec2 p){
-  vec3 cA = vec3(0.2661, 0.4451, 0.2307);
-  vec3 cB = vec3(0.3711, 0.5395, 0.3005);
-  vec3 cC = vec3(0.4734, 0.5520, 0.2502);
+  vec3 cA = vec3(0.22, 0.40, 0.18);
+  vec3 cB = vec3(0.34, 0.50, 0.24);
+  vec3 cC = vec3(0.46, 0.52, 0.22);
+  float pick = h21(floor(p * 0.18));
+  vec3 clump = cA;
+  clump = mix(clump, cB, smoothstep(0.30, 0.42, pick));
+  clump = mix(clump, cC, smoothstep(0.64, 0.76, pick));
   float n1 = 0.5 + 0.5 * sin(p.x * 0.23 + p.y * 0.17 + 1.2);
-  float n2 = 0.5 + 0.5 * sin(p.x * 0.61 - p.y * 0.43 + 4.0);
-  return mix(mix(cA, cB, n1), cC, n2 * 0.25);
+  return mix(clump, mix(cA, cB, n1), 0.16);
 }
 float meadowD(vec2 p){
   float r = length(p);
@@ -120,11 +123,11 @@ void main(){
   vec2 wd = normalize(uWindDir);
   float stiff = 0.74 + 0.52 * h21(base.xz * 4.3 + 5.1);
   float ph = aRand.w * 6.2831853;
-  float travelling = sin(uTime * 0.62 - dot(base.xz, wd) * 0.135);
+  float travelling = sin(uTime * 0.62 - dot(base.xz, wd) * 0.22);
   float crossWave = sin(uTime * 0.41 + base.x * 0.082 - base.z * 0.057 + ph);
   float ripple = sin(uTime * 1.85 + base.x * 0.31 + base.z * 0.23 + ph * 0.5);
   float front = 0.5 + 0.5 * travelling;
-  float amp = (0.34 + 0.66 * front * uGust) / stiff;
+  float amp = (0.38 + 0.74 * front * uGust) / stiff;
   float lean;
   vec2 dir;
   if (uRichWind > 0.5) {
@@ -182,6 +185,10 @@ uniform float uFogFar;
 uniform vec3 uCamPos;
 uniform float uNight;
 uniform float uSunI;
+uniform float uHeightFog;
+uniform vec3 uHeightFogSun;
+uniform vec3 uHeightFogColor;
+uniform float uHeightFogFalloff;
 varying float vT;
 varying vec3 vNormal;
 varying vec3 vWorld;
@@ -192,6 +199,8 @@ void main(){
   vec3 tip = uColTip;
   tip = mix(tip, tip * vec3(1.10, 1.05, 0.88), smoothstep(0.78, 0.86, vSpecies));
   vec3 col = mix(vGround, tip, pow(vT, 1.35));
+  vec3 straw = vec3(0.72, 0.58, 0.32);
+  col = mix(col, straw, smoothstep(0.72, 0.96, vT) * smoothstep(0.58, 0.86, vSpecies) * 0.62);
   col *= (0.88 + vHue * 0.26) * vec3(1.0 + vHue * 0.04 - 0.02, 1.0, 1.0 - vHue * 0.04 + 0.02);
   vec3 N = normalize(vNormal);
   if (!gl_FrontFacing) N = -N;
@@ -199,16 +208,28 @@ void main(){
   vec3 light = uSunCol * uSunI * ndl * ndl;
   light += mix(uHemiGround, uHemiSky, N.y * 0.5 + 0.5) * 0.55;
   vec3 V = normalize(uCamPos - vWorld);
-  float back = pow(max(dot(-V, uSunDir), 0.0), 3.0);
-  light += uSunCol * back * 0.24 * vT;
+  float back = pow(max(dot(-V, uSunDir), 0.0), 2.2);
+  light += uSunCol * back * 0.62 * pow(vT, 1.4);
   float ao = mix(0.68, 1.04, smoothstep(0.0, 0.6, vT));
   col *= light * ao;
   vec3 H = normalize(V + uSunDir);
-  col += uSunCol * pow(max(dot(N, H), 0.0), 26.0) * 0.06 * vT;
+  float glint = pow(max(dot(N, H), 0.0), 64.0) * smoothstep(0.72, 0.98, vT);
+  col += uSunCol * glint * 0.55;
   col = mix(col, col * vec3(0.34, 0.40, 0.54), uNight);
   col = min(col, vec3(2.2));
   float fd = distance(uCamPos, vWorld);
-  col = mix(col, uFogColor, smoothstep(uFogNear, uFogFar, fd));
+  if (uHeightFog > 0.5) {
+    float band = smoothstep(uFogNear, uFogFar, fd);
+    float valley = exp(-max(vWorld.y - 0.35, 0.0) * uHeightFogFalloff);
+    float amt = clamp(band * mix(0.32, 1.08, valley), 0.0, 0.9);
+    vec3 toward = normalize(vWorld - uCamPos);
+    float sunw = pow(max(dot(toward, normalize(uHeightFogSun)), 0.0), 6.0);
+    vec3 warm = uHeightFogColor * vec3(1.14, 0.97, 0.76);
+    vec3 cool = uHeightFogColor * vec3(0.78, 0.88, 1.03);
+    col = mix(col, mix(cool, warm, sunw), amt);
+  } else {
+    col = mix(col, uFogColor, smoothstep(uFogNear, uFogFar, fd));
+  }
   gl_FragColor = vec4(col, 1.0);
 }
 `;
@@ -236,6 +257,10 @@ export function makeGrassMaterial(cfg: GrassLayerCfg) {
       uFogNear: { value: 30 },
       uFogFar: { value: 88 },
       uNight: { value: 0 },
+      uHeightFog: { value: 0 },
+      uHeightFogSun: { value: new THREE.Vector3(0.756, 0.36, 0.547).normalize() },
+      uHeightFogColor: { value: new THREE.Color('#e4c9a4') },
+      uHeightFogFalloff: { value: 0.38 },
     },
   });
 }
