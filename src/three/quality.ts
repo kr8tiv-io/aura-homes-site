@@ -117,6 +117,7 @@ let debugFps = 0;
 let debugCalls = 0;
 let debugTris = 0;
 let debugTex = 0;
+let debugBytes = 0;
 
 function rank(value: QualityTier): number {
   return ORDER.indexOf(value);
@@ -215,7 +216,8 @@ function paintDebug() {
   if (!debugNode) return;
   const fps = debugFps > 0 ? String(Math.round(debugFps)) : '0';
   const tris = debugTris >= 1000 ? `${(debugTris / 1000).toFixed(1)}k` : String(debugTris);
-  debugNode.textContent = `tier ${tier}\n${fps} fps\n${debugCalls} calls\n${tris} tris\n${debugTex} tex`;
+  const mb = debugBytes > 0 ? `\n${(debugBytes / (1024 * 1024)).toFixed(1)} MB est` : '';
+  debugNode.textContent = `tier ${tier}\n${fps} fps\n${debugCalls} calls\n${tris} tris\n${debugTex} tex${mb}`;
 }
 
 function ensureDebug() {
@@ -414,10 +416,11 @@ export function displayDpr(): number {
   return sampleDpr(performance.now());
 }
 
-export function setDebugStats(stats: { calls: number; tris: number; textures: number }) {
+export function setDebugStats(stats: { calls: number; tris: number; textures: number; bytes?: number }) {
   debugCalls = stats.calls;
   debugTris = stats.tris;
   debugTex = stats.textures;
+  debugBytes = stats.bytes ?? 0;
   if (avgMs > 0) debugFps = 1000 / avgMs;
   paintDebug();
 }

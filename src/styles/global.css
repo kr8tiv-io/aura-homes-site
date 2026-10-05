@@ -2225,6 +2225,18 @@ canvas[data-stage-host='on'] {
   background: transparent;
   color: #14120e;
 }
+.page-lead::before,
+.article::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("/textures/paper-grain.webp");
+  background-repeat: repeat;
+  background-size: 280px 280px;
+}
 .article {
   position: relative;
   z-index: 1;

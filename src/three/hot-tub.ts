@@ -10,6 +10,7 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { ktx2Loader, loadModel, whenKtx2 } from './loaders';
 import { motionTime, qualityProfile } from './quality';
+import { anisotropyForTier, applyMacro } from './surfaces';
 import { HOT_TUB_SLOT } from './meadow-v1/meadow/geometry';
 import { sampleTerrainHeight } from './meadow-v1/meadow/field';
 import { createPolycarbonateMaterial } from './aura-unit';
@@ -80,7 +81,7 @@ function tune(tex: THREE.Texture, rx: number, ry: number) {
   tex.wrapS = THREE.RepeatWrapping;
   tex.wrapT = THREE.RepeatWrapping;
   tex.repeat.set(rx, ry);
-  tex.anisotropy = 8;
+  tex.anisotropy = anisotropyForTier();
   return tex;
 }
 
@@ -398,6 +399,10 @@ export function createHotTub(): HotTub {
   stepMat.vertexColors = false;
   woods.push(stepMat);
   mats.push(stepMat);
+  applyMacro(wood);
+  applyMacro(wet);
+  applyMacro(band);
+  applyMacro(stepMat);
   addMesh('Step', beveled(0.46, 0.1, 0.28, 0.012), stepMat, 0.05, 0.05, 1.08);
   addMesh('Step', beveled(0.42, 0.1, 0.24, 0.012), stepMat, 0.02, 0.16, 0.9);
 
@@ -742,7 +747,11 @@ export function createTubPlace(): TubPlace {
   mats.push(deckMat, steel);
 
   const deckGeo = new THREE.CylinderGeometry(1.38, 1.38, DECK_TOP, 48);
+  const deckUv = deckGeo.getAttribute('uv');
+  if (deckUv) deckGeo.setAttribute('uv2', deckUv);
   geos.push(deckGeo);
+  applyMacro(deckMat);
+  applyMacro(steel);
   const deck = new THREE.Mesh(deckGeo, deckMat);
   deck.name = 'Deck';
   deck.position.y = DECK_TOP / 2;
@@ -828,12 +837,13 @@ export function createTubPlace(): TubPlace {
 
   void whenKtx2().then(() =>
     Promise.all([
-      ktx2Loader.loadAsync(asset('textures/fine_grained_wood/diff.ktx2')),
-      ktx2Loader.loadAsync(asset('textures/fine_grained_wood/nor_gl.ktx2')),
-      ktx2Loader.loadAsync(asset('textures/fine_grained_wood/rough.ktx2')),
+      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/diff.ktx2')),
+      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/nor_gl.ktx2')),
+      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/rough.ktx2')),
+      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/ao.ktx2')),
     ]),
   ).then((maps) => {
-    const [diff, nor, rough] = maps;
+    const [diff, nor, rough, ao] = maps;
     if (!deck.parent) {
       maps.forEach((tex) => tex.dispose());
       return;
@@ -841,12 +851,16 @@ export function createTubPlace(): TubPlace {
     diff.colorSpace = THREE.SRGBColorSpace;
     nor.colorSpace = THREE.NoColorSpace;
     rough.colorSpace = THREE.NoColorSpace;
-    tune(diff, 2.2, 2.2);
-    tune(nor, 2.2, 2.2);
-    tune(rough, 2.2, 2.2);
+    ao.colorSpace = THREE.NoColorSpace;
+    tune(diff, 1.4, 1.4);
+    tune(nor, 1.4, 1.4);
+    tune(rough, 1.4, 1.4);
+    tune(ao, 1.4, 1.4);
     deckMat.map = diff;
     deckMat.normalMap = nor;
     deckMat.roughnessMap = rough;
+    deckMat.aoMap = ao;
+    deckMat.aoMapIntensity = 0.35;
     deckMat.needsUpdate = true;
   }).catch(() => undefined);
 
@@ -885,6 +899,7 @@ export function createTubPlace(): TubPlace {
       deckMat.map?.dispose();
       deckMat.normalMap?.dispose();
       deckMat.roughnessMap?.dispose();
+      deckMat.aoMap?.dispose();
       steel.map?.dispose();
       steel.normalMap?.dispose();
       steel.roughnessMap?.dispose();

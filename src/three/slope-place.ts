@@ -4,6 +4,7 @@
 */
 import * as THREE from 'three';
 import { ktx2Loader, whenKtx2 } from './loaders';
+import { anisotropyForTier, applyMacro } from './surfaces';
 import { createAuraUnit, type AuraUnit } from './aura-unit';
 import { sampleTerrainHeight } from './meadow-v1/meadow/field';
 
@@ -42,7 +43,7 @@ function tune(tex: THREE.Texture) {
   tex.wrapS = THREE.RepeatWrapping;
   tex.wrapT = THREE.RepeatWrapping;
   tex.repeat.set(1.4, 2.2);
-  tex.anisotropy = 8;
+  tex.anisotropy = anisotropyForTier();
   return tex;
 }
 
@@ -67,6 +68,8 @@ export function createSlopePlace(): SlopePlace {
     envMapIntensity: 0.25,
   });
   mats.push(metal, wood);
+  applyMacro(metal);
+  applyMacro(wood);
 
   const pile = (length: number) => {
     const group = new THREE.Group();
@@ -113,6 +116,8 @@ export function createSlopePlace(): SlopePlace {
   }
 
   const deckGeo = new THREE.BoxGeometry(4.5, 0.16, 6.7);
+  const deckUv = deckGeo.getAttribute('uv');
+  if (deckUv) deckGeo.setAttribute('uv2', deckUv);
   geos.push(deckGeo);
   const deck = new THREE.Mesh(deckGeo, wood);
   deck.name = 'CedarDeck';
@@ -159,7 +164,7 @@ export function createSlopePlace(): SlopePlace {
     metal.needsUpdate = true;
   }).catch(() => undefined);
 
-  void loadSet('fine_grained_wood').then((maps) => {
+  void loadSet('weathered_brown_planks').then((maps) => {
     if (!alive) {
       drop(maps);
       return;
@@ -167,7 +172,7 @@ export function createSlopePlace(): SlopePlace {
     const [diff, nor, rough, ao] = maps;
     for (const tex of maps) {
       tune(tex);
-      tex.repeat.set(2.2, 3.4);
+      tex.repeat.set(2.25, 3.35);
     }
     diff.colorSpace = THREE.SRGBColorSpace;
     nor.colorSpace = THREE.NoColorSpace;

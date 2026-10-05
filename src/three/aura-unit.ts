@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { loadCustomModel, placeCustomModel } from './custom-models';
 import { ktx2Loader, whenKtx2 } from './loaders';
+import { anisotropyForTier, applyMacro } from './surfaces';
 import { UNIT_LENGTH, UNIT_WIDTH } from './meadow-v1/meadow/geometry';
 
 export type GlazeFinish = 'clear' | 'mirror' | 'tinted';
@@ -184,7 +185,7 @@ function tune(tex: THREE.Texture, rx: number, ry: number) {
   tex.wrapS = THREE.RepeatWrapping;
   tex.wrapT = THREE.RepeatWrapping;
   tex.repeat.set(rx, ry);
-  tex.anisotropy = 8;
+  tex.anisotropy = anisotropyForTier();
   return tex;
 }
 
@@ -300,6 +301,22 @@ export function createAuraUnit(options: AuraUnitOptions = {}): AuraUnit {
     roughness: 0.92,
     metalness: 0,
   });
+  applyMacro(steel);
+  applyMacro(cedar);
+  applyMacro(oak);
+  applyMacro(oakFloor);
+  applyMacro(linen);
+  const linenWeave = new THREE.TextureLoader().load(asset('textures/paper-linen.webp'), (tex) => {
+    if (!alive) return;
+    tex.colorSpace = THREE.SRGBColorSpace;
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(5, 3);
+    tex.anisotropy = anisotropyForTier();
+    linen.map = tex;
+    linen.needsUpdate = true;
+  });
+  texs.push(linenWeave);
   const shadeMat = new THREE.MeshStandardMaterial({
     color: '#f3e2c4',
     roughness: 0.7,

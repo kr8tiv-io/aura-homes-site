@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { registerView, type StageTone } from '../stage';
 import { hdrLoader, ktx2Loader, loadEnvironment, loadModel, whenKtx2 } from '../loaders';
 import { motionTime, onQuality, qualityProfile } from '../quality';
+import { anisotropyForTier, applyMacro } from '../surfaces';
 import { prefersReducedMotion } from '../../scripts/motion';
 import { AURA_UNIT_SLOT, HOT_TUB_SLOT } from './meadow/geometry';
 import { meadowShade, sampleMeadowClearance, sampleMeadowDensity, sampleTerrainHeight } from './meadow/field';
@@ -344,6 +345,7 @@ function makeTexturedGround(segments: number, heightAt: (x: number, z: number) =
   geo.computeVertexNormals();
   if (geo.getAttribute('uv')) geo.setAttribute('uv2', geo.getAttribute('uv'));
   const mat = new THREE.MeshStandardMaterial({ color, roughness: 0.94, metalness: 0 });
+  applyMacro(mat);
   const mesh = new THREE.Mesh(geo, mat);
   mesh.receiveShadow = true;
   mesh.name = 'Terrain';
@@ -380,13 +382,16 @@ function addMountainRange(parent: THREE.Group, geometries: THREE.BufferGeometry[
     const geo = ridgeGeometry(band.seed, band.w, band.h, band.jag);
     geometries.push(geo);
     const rock = new THREE.MeshBasicMaterial({
+      name: 'RidgeRock',
       color: band.color,
       transparent: true,
       opacity: band.op,
       fog: false,
       side: THREE.DoubleSide,
     });
+    rock.userData.span = [band.w, band.h];
     const snow = new THREE.MeshBasicMaterial({
+      name: 'RidgeSnow',
       color: '#f4f8fa',
       transparent: true,
       opacity: 0.72,
@@ -459,8 +464,8 @@ function addSnowRange(parent: THREE.Group, geometries: THREE.BufferGeometry[], m
   const far = snowRangeGeometry(37.4, 1150, 130, 120, 12, 1.45, 0.5);
   const mid = snowRangeGeometry(0, 900, 110, 180, 16, 1, 0.3);
   geometries.push(far, mid);
-  const farMat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false });
-  const midMat = new THREE.MeshBasicMaterial({ vertexColors: true, fog: false });
+  const farMat = new THREE.MeshBasicMaterial({ name: 'SnowRange', vertexColors: true, fog: false });
+  const midMat = new THREE.MeshBasicMaterial({ name: 'SnowRange', vertexColors: true, fog: false });
   materials.push(farMat, midMat);
   const farMesh = new THREE.Mesh(far, farMat);
   farMesh.position.set(70, -13, -232);
@@ -579,6 +584,24 @@ function addStars(parent: THREE.Group) {
   return { geo, mat, points };
 }
 
+function moonDisc() {
+  const canvas = document.createElement('canvas');
+  canvas.width = 128;
+  canvas.height = 128;
+  const g = canvas.getContext('2d');
+  if (!g) return null;
+  const grad = g.createRadialGradient(64, 64, 6, 64, 64, 58);
+  grad.addColorStop(0, 'rgba(255, 250, 236, 1)');
+  grad.addColorStop(0.42, 'rgba(244, 236, 214, 0.95)');
+  grad.addColorStop(0.72, 'rgba(232, 224, 204, 0.35)');
+  grad.addColorStop(1, 'rgba(232, 224, 204, 0)');
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  return tex;
+}
+
 function softDisc() {
   const canvas = document.createElement('canvas');
   canvas.width = 128;
@@ -668,14 +691,53 @@ function placeNormalized(
   return group;
 }
 
-function addLiteForest(parent: THREE.Group, geometries: THREE.BufferGeometry[], materials: THREE.Material[], scale: number) {
+function addLiteForest(
+  parent: THREE.Group,
+  geometries: THREE.BufferGeometry[],
+  materials: THREE.Material[],
+  textures: THREE.Texture[],
+  scale: number,
+  alive: () => boolean,
+) {
   const placements = [...PATCHES.slice(0, Math.max(4, Math.round(12 * scale))), ...TEAL_PINES.slice(0, Math.max(3, Math.round(9 * scale)))];
   const crownGeo = new THREE.ConeGeometry(1, 1, 6);
   const trunkGeo = new THREE.CylinderGeometry(1, 1.18, 1, 6);
   geometries.push(crownGeo, trunkGeo);
   const crownMat = new THREE.MeshStandardMaterial({ color: '#356247', roughness: 1, flatShading: true });
   const trunkMat = new THREE.MeshStandardMaterial({ color: '#5d4030', roughness: 1, flatShading: true });
+  applyMacro(crownMat);
+  applyMacro(trunkMat);
   materials.push(crownMat, trunkMat);
+  void whenKtx2()
+    .then(() =>
+      Promise.all([
+        ktx2Loader.loadAsync(asset('textures/bark_brown_02/diff.ktx2')),
+        ktx2Loader.loadAsync(asset('textures/bark_brown_02/nor_gl.ktx2')),
+        ktx2Loader.loadAsync(asset('textures/bark_brown_02/rough.ktx2')),
+      ]),
+    )
+    .then((maps) => {
+      if (!alive()) {
+        for (const tex of maps) tex.dispose();
+        return;
+      }
+      const [diff, nor, rough] = maps;
+      for (const tex of maps) {
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(2, 3);
+        tex.anisotropy = anisotropyForTier();
+      }
+      diff.colorSpace = THREE.SRGBColorSpace;
+      nor.colorSpace = THREE.NoColorSpace;
+      rough.colorSpace = THREE.NoColorSpace;
+      trunkMat.map = diff;
+      trunkMat.normalMap = nor;
+      trunkMat.roughnessMap = rough;
+      trunkMat.needsUpdate = true;
+      textures.push(...maps);
+    })
+    .catch(() => undefined);
   const crowns = new THREE.InstancedMesh(crownGeo, crownMat, placements.length);
   const trunks = new THREE.InstancedMesh(trunkGeo, trunkMat, placements.length);
   crowns.receiveShadow = true;
@@ -789,6 +851,55 @@ function emptyBuilt(): Built {
   };
 }
 
+const VEIL_WHITE = new THREE.DataTexture(new Uint8Array([255, 255, 255, 255]), 1, 1);
+VEIL_WHITE.wrapS = THREE.RepeatWrapping;
+VEIL_WHITE.wrapT = THREE.RepeatWrapping;
+VEIL_WHITE.colorSpace = THREE.NoColorSpace;
+VEIL_WHITE.needsUpdate = true;
+
+function distanceVeil(material: THREE.Material, haze: { value: THREE.Color }, kind: 'ridge' | 'range') {
+  const previous = material.onBeforeCompile;
+  const previousKey = material.customProgramCacheKey.bind(material);
+  material.onBeforeCompile = (shader, renderer) => {
+    previous.call(material, shader, renderer);
+    shader.uniforms.uVeilHaze = haze;
+    shader.uniforms.tVeilSnow = { value: (material.userData.veilSnow as THREE.Texture | undefined) ?? VEIL_WHITE };
+    shader.uniforms.uVeilOn = { value: material.userData.veilSnow ? 1 : 0 };
+    material.userData.veilUniforms = shader.uniforms;
+    if (!shader.vertexShader.includes('vVeilWorld')) {
+      shader.vertexShader = shader.vertexShader
+        .replace('#include <common>', '#include <common>\nvarying vec3 vVeilWorld;')
+        .replace(
+          '#include <begin_vertex>',
+          '#include <begin_vertex>\nvVeilWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;',
+        );
+    }
+    const extra = kind === 'range'
+      ? `
+if (uVeilOn > 0.5) {
+  vec3 snow = texture2D(tVeilSnow, vVeilWorld.xz * 0.5).rgb;
+  snow = pow(max(snow, vec3(0.0)), vec3(2.2));
+  diffuseColor.rgb *= mix(vec3(1.0), snow, 0.22);
+}`
+      : `
+{
+  float luma = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+  vec3 crushed = mix(vec3(luma), diffuseColor.rgb, 0.4);
+  float aerial = smoothstep(40.0, 220.0, length(vVeilWorld - cameraPosition));
+  diffuseColor.rgb = mix(crushed, uVeilHaze, aerial * 0.62);
+}`;
+    if (!shader.fragmentShader.includes('vVeilWorld')) {
+      shader.fragmentShader = shader.fragmentShader
+        .replace(
+          '#include <common>',
+          '#include <common>\nvarying vec3 vVeilWorld;\nuniform vec3 uVeilHaze;\nuniform sampler2D tVeilSnow;\nuniform float uVeilOn;',
+        )
+        .replace('#include <color_fragment>', `#include <color_fragment>\n${extra}`);
+    }
+  };
+  material.customProgramCacheKey = () => `veil-${kind}-${previousKey()}`;
+}
+
 function disposeBuilt(built: Built, scene: THREE.Scene) {
   built.release?.();
   built.release = null;
@@ -817,7 +928,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   const vistaFog = options.ground === 'snow' ? '#d5e3ee' : options.ground === 'rock' ? '#c9d3da' : '#d2c2ae';
   const fog = new THREE.Fog(golden ? '#e4c9a4' : vista ? vistaFog : '#e3ede7', golden || vista ? 24 : 30, golden || vista ? 140 : 88);
   scene.fog = fog;
-  scene.background = golden || options.hdriNight ? null : fog.color;
+  scene.background = golden || options.hdri ? null : fog.color;
 
   let spline = options.spline?.length ? options.spline : FLYOVER_SPLINE;
   let timeOfDay: TimeOfDay = options.timeOfDay ?? 'scroll';
@@ -859,6 +970,9 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   let claim: ((renderer: THREE.WebGLRenderer) => void) | null = null;
   let frameRenderer: THREE.WebGLRenderer | null = null;
   let skyNight: { value: number } | null = null;
+  let skyHaze: { value: THREE.Color } | null = null;
+  let ridgeHaze: { value: THREE.Color } | null = null;
+  let moonMat: THREE.SpriteMaterial | null = null;
   let duskEnv: THREE.Texture | null = null;
   let nightEnv: THREE.Texture | null = null;
   let envsAsked = false;
@@ -884,7 +998,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
 
   const dressGround = (mesh: THREE.Mesh, kind: 'rock' | 'snow', generation: number) => {
     const mat = mesh.material as THREE.MeshStandardMaterial;
-    const repeat = kind === 'snow' ? 26 : 18;
+    const repeat = 85;
     const apply = (maps: THREE.Texture[]) => {
       if (dead || generation !== built.generation) {
         for (const tex of maps) tex.dispose();
@@ -895,7 +1009,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         tex.wrapS = THREE.RepeatWrapping;
         tex.wrapT = THREE.RepeatWrapping;
         tex.repeat.set(repeat, repeat);
-        tex.anisotropy = 8;
+        tex.anisotropy = anisotropyForTier();
       }
       diff.colorSpace = THREE.SRGBColorSpace;
       nor.colorSpace = THREE.NoColorSpace;
@@ -922,6 +1036,26 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         )
         .then(apply)
         .catch(() => undefined);
+      void new THREE.TextureLoader().loadAsync(asset('textures/ground037/diff.jpg')).then((tex) => {
+        if (dead || generation !== built.generation) {
+          tex.dispose();
+          return;
+        }
+        tex.colorSpace = THREE.NoColorSpace;
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.anisotropy = anisotropyForTier();
+        built.textures.push(tex);
+        mat.userData.macroSoil = tex;
+        mat.userData.macroSoilAmt = 0.55;
+        const uniforms = mat.userData.macroUniforms as
+          | { tMacroSoil?: { value: THREE.Texture }; uMacroSoil?: { value: number } }
+          | undefined;
+        if (uniforms?.tMacroSoil && uniforms.uMacroSoil) {
+          uniforms.tMacroSoil.value = tex;
+          uniforms.uMacroSoil.value = 0.55;
+        }
+      }).catch(() => undefined);
       return;
     }
     const loader = new THREE.TextureLoader();
@@ -964,13 +1098,12 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     }
     scene.add(hemi, ambient, sun, fill);
     const segments = qualityProfile().tier === 'ultra' || qualityProfile().tier === 'high' ? 160 : 96;
-    const terrain = options.ground === 'rock' || options.ground === 'snow'
+    const textured = options.ground === 'rock' || options.ground === 'snow';
+    const terrain = textured
       ? makeTexturedGround(segments, heightAt, options.ground === 'snow' ? '#e7eef2' : '#8d8680')
-      : golden
-        ? makeGoldenTerrain(segments, built.textures, built.materials)
-        : makeTerrain(segments, heightAt);
+      : makeGoldenTerrain(segments, built.textures, built.materials, golden || vista);
     built.geometries.push(terrain.geometry);
-    if (!golden) {
+    if (textured) {
       const material = terrain.material as THREE.Material;
       if (vista) applyHeightFog(material);
       built.materials.push(material);
@@ -1023,7 +1156,14 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       });
     }).catch(() => {
       if (!dead && !suspended && generation === built.generation) {
-        addLiteForest(scene, built.geometries, built.materials, Math.max(0.35, qualityProfile().grassScale * density));
+        addLiteForest(
+          scene,
+          built.geometries,
+          built.materials,
+          built.textures,
+          Math.max(0.35, qualityProfile().grassScale * density),
+          () => !dead && !suspended && generation === built.generation,
+        );
       }
     });
   };
@@ -1062,7 +1202,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       return;
     }
     if (profile.tier === 'low') {
-      addLiteForest(scene, built.geometries, built.materials, scale);
+      addLiteForest(scene, built.geometries, built.materials, built.textures, scale, () => !dead && !suspended && generation === built.generation);
       return;
     }
     const kept = (list: typeof PATCHES) => {
@@ -1123,8 +1263,158 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         });
       }
     }).catch(() => {
-      if (!vista && !dead && !suspended && generation === built.generation) addLiteForest(scene, built.geometries, built.materials, scale);
+      if (!vista && !dead && !suspended && generation === built.generation) {
+        addLiteForest(scene, built.geometries, built.materials, built.textures, scale, () => !dead && !suspended && generation === built.generation);
+      }
     });
+  };
+
+  const addHdriDome = (generation: number) => {
+    if (!options.hdri || golden || options.hdriNight) return;
+    const haze = { value: fog.color.clone() };
+    skyHaze = haze;
+    const hold = new THREE.DataTexture(
+      new Uint8Array([
+        Math.round(fog.color.r * 255),
+        Math.round(fog.color.g * 255),
+        Math.round(fog.color.b * 255),
+        255,
+      ]),
+      1,
+      1,
+    );
+    hold.colorSpace = THREE.LinearSRGBColorSpace;
+    hold.magFilter = THREE.LinearFilter;
+    hold.minFilter = THREE.LinearFilter;
+    hold.generateMipmaps = false;
+    hold.needsUpdate = true;
+    built.textures.push(hold);
+    const mat = new THREE.ShaderMaterial({
+      uniforms: {
+        uHdr: { value: hold as THREE.Texture },
+        uHaze: haze,
+      },
+      vertexShader: /* glsl */ `
+        varying vec3 vDir;
+        void main() {
+          vec4 world = modelMatrix * vec4(position, 1.0);
+          vDir = world.xyz - cameraPosition;
+          gl_Position = projectionMatrix * viewMatrix * world;
+        }
+      `,
+      fragmentShader: /* glsl */ `
+        uniform sampler2D uHdr;
+        uniform vec3 uHaze;
+        varying vec3 vDir;
+        void main() {
+          vec3 dir = normalize(vDir);
+          vec2 uv = vec2(atan(dir.z, dir.x) * 0.15915494 + 0.5, asin(clamp(dir.y, -1.0, 1.0)) * 0.31830989 + 0.5);
+          vec3 sky = texture2D(uHdr, uv).rgb;
+          float elev = dir.y;
+          float hazeAmt = 1.0 - smoothstep(0.02, 0.28, elev);
+          sky = mix(sky, uHaze, hazeAmt * 0.78);
+          gl_FragColor = vec4(sky, 1.0);
+        }
+      `,
+      side: THREE.BackSide,
+      depthWrite: false,
+      fog: false,
+    });
+    const radius = 420;
+    if (camera.far < radius * 1.25) {
+      camera.far = radius * 1.35;
+      camera.updateProjectionMatrix();
+    }
+    const geo = new THREE.SphereGeometry(radius, 32, 18);
+    built.geometries.push(geo);
+    built.materials.push(mat);
+    const dome = new THREE.Mesh(geo, mat);
+    dome.name = 'HdriSky';
+    dome.frustumCulled = false;
+    dome.renderOrder = -22;
+    scene.add(dome);
+    hdrLoader.load(asset(options.hdri), (tex) => {
+      if (dead || generation !== built.generation) {
+        tex.dispose();
+        return;
+      }
+      tex.colorSpace = THREE.LinearSRGBColorSpace;
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.magFilter = THREE.LinearFilter;
+      tex.minFilter = THREE.LinearFilter;
+      tex.generateMipmaps = false;
+      mat.uniforms.uHdr.value = tex;
+      built.textures.push(tex);
+      scene.background = null;
+    });
+  };
+
+  const dressBackdrop = (generation: number) => {
+    const alive = () => !dead && !suspended && generation === built.generation;
+    const haze = { value: fog.color.clone() };
+    ridgeHaze = haze;
+    for (const mat of built.materials) {
+      if (mat.name === 'RidgeRock' || mat.name === 'RidgeSnow') distanceVeil(mat, haze, 'ridge');
+      if (mat.name === 'SnowRange') distanceVeil(mat, haze, 'range');
+    }
+    void whenKtx2()
+      .then(() => ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/diff.ktx2')))
+      .then((tex) => {
+        if (!alive()) {
+          tex.dispose();
+          return;
+        }
+        tex.colorSpace = THREE.SRGBColorSpace;
+        tex.wrapS = THREE.RepeatWrapping;
+        tex.wrapT = THREE.RepeatWrapping;
+        tex.anisotropy = anisotropyForTier();
+        built.textures.push(tex);
+        for (const mat of built.materials) {
+          if (mat.name !== 'RidgeRock' || !(mat instanceof THREE.MeshBasicMaterial)) continue;
+          const span = mat.userData.span as [number, number] | undefined;
+          const clone = tex.clone();
+          clone.repeat.set(span ? span[0] / 16 : 24, span ? Math.max(2, span[1] / 8) : 6);
+          clone.needsUpdate = true;
+          built.textures.push(clone);
+          mat.map = clone;
+          mat.needsUpdate = true;
+        }
+      })
+      .catch(() => undefined);
+    void new THREE.TextureLoader().loadAsync(asset('textures/snow_02/diff.jpg')).then((tex) => {
+      if (!alive()) {
+        tex.dispose();
+        return;
+      }
+      tex.colorSpace = THREE.NoColorSpace;
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      tex.anisotropy = anisotropyForTier();
+      built.textures.push(tex);
+      for (const mat of built.materials) {
+        if (mat.name === 'SnowRange') {
+          mat.userData.veilSnow = tex;
+          const uniforms = mat.userData.veilUniforms as
+            | { tVeilSnow?: { value: THREE.Texture }; uVeilOn?: { value: number } }
+            | undefined;
+          if (uniforms?.tVeilSnow && uniforms.uVeilOn) {
+            uniforms.tVeilSnow.value = tex;
+            uniforms.uVeilOn.value = 1;
+          }
+        }
+        if (mat.name === 'RidgeSnow' && mat instanceof THREE.MeshBasicMaterial) {
+          const clone = tex.clone();
+          clone.colorSpace = THREE.SRGBColorSpace;
+          clone.wrapS = THREE.RepeatWrapping;
+          clone.wrapT = THREE.RepeatWrapping;
+          clone.repeat.set(6, 2.4);
+          clone.needsUpdate = true;
+          built.textures.push(clone);
+          mat.map = clone;
+          mat.needsUpdate = true;
+        }
+      }
+    }).catch(() => undefined);
   };
 
   const addNightSky = (generation: number) => {
@@ -1207,7 +1497,31 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     const stars = addStars(scene);
     built.geometries.push(stars.geo);
     built.stars = stars.mat;
+    if (options.hdri && !golden && !options.hdriNight) addHdriDome(generation);
     if (options.hdriNight && options.hdri) addNightSky(generation);
+    dressBackdrop(generation);
+    if (options.nightScroll) {
+      const moonTex = moonDisc();
+      if (moonTex) {
+        built.textures.push(moonTex);
+        moonMat = new THREE.SpriteMaterial({
+          map: moonTex,
+          color: '#f4efe4',
+          transparent: true,
+          depthWrite: false,
+          fog: false,
+          opacity: 0,
+        });
+        built.materials.push(moonMat);
+        const moon = new THREE.Sprite(moonMat);
+        moon.name = 'Moon';
+        moon.position.set(-70, 36, -150);
+        moon.scale.set(16, 16, 1);
+        moon.renderOrder = -12;
+        moon.frustumCulled = false;
+        scene.add(moon);
+      }
+    }
     const mistTex = softDisc();
     if (mistTex) {
       built.textures.push(mistTex);
@@ -1336,13 +1650,17 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   };
 
   const rebuild = () => {
+    skyNight = null;
+    skyHaze = null;
+    ridgeHaze = null;
+    moonMat = null;
     disposeBuilt(built, scene);
     ticket += 1;
     built = emptyBuilt();
     built.generation = ticket;
     claim = null;
     scene.fog = fog;
-    scene.background = golden || options.hdriNight ? null : fog.color;
+    scene.background = golden || options.hdri ? null : fog.color;
     curves = makeCurves(spline);
     buildCore();
     window.setTimeout(() => {
@@ -1524,6 +1842,9 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
 
       if (built.snow) paintSnow(built.snow, duskAmt, nightAmt);
       if (built.stars) built.stars.opacity = nightAmt * 0.95;
+      if (moonMat) moonMat.opacity = nightAmt * 0.9;
+      if (skyHaze) skyHaze.value.copy(fog.color);
+      if (ridgeHaze) ridgeHaze.value.copy(fog.color);
       if (skyNight) skyNight.value = nightAmt;
       if (duskEnv && nightEnv) {
         scene.environment = nightAmt < 0.5 ? duskEnv : nightEnv;
