@@ -103,6 +103,32 @@
   line-height: 1.05;
 }
 
+.order-group {
+  margin: 1.7rem 0 0.35rem;
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #866243;
+}
+
+.order-pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  height: 52vh;
+  min-height: 16rem;
+  background: rgba(244, 243, 239, 0.72);
+}
+
+.order-pair img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #0c0d0e;
+}
+
 .order-note {
   max-width: 34rem;
   margin: 0.8rem 0 1.4rem;
@@ -249,7 +275,8 @@
   }
 
   .order-still,
-  .order-stage {
+  .order-stage,
+  .order-pair {
     height: min(72vh, 760px);
   }
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useReducer, useRef, useState, type KeyboardEvent } from 'react';
+import { collectionStandalone, standaloneBySlug } from '../data/collection';
 import { roomConcepts } from '../lib/rooms';
 import { onQuality, qualityProfile, type QualityTier } from '../three/quality';
 import { validateBuilderDocument } from './core/document';
@@ -11,22 +12,28 @@ import {
   ORDER_ADDONS,
   ORDER_SIZES,
   TUB_MODELS,
+  WOOD_FINISHES,
   buildOrderDocument,
+  isStandalone,
   roomForSlug,
   selectionFromDocument,
+  standaloneAddons,
+  standaloneShowsTub,
   startingDocument,
   type OrderGlaze,
   type OrderSize,
+  type WoodFinish,
 } from './models';
 import '../styles/builder-order.css';
 
-const STEPS = ['model', 'size', 'glass', 'addons', 'review'] as const;
-type Step = (typeof STEPS)[number];
+const ROOM_STEPS = ['model', 'size', 'glass', 'addons', 'review'] as const;
+const PIECE_STEPS = ['model', 'finish', 'addons', 'review'] as const;
+type Step = (typeof ROOM_STEPS)[number] | (typeof PIECE_STEPS)[number];
 
 const STEP_COPY: Record<Step, { title: string; note: string }> = {
   model: {
     title: 'Model',
-    note: 'Twelve rooms. Start with the one that feels like the hour.',
+    note: 'Twelve rooms. Below them, the hot tub and the cold plunge, on their own.',
   },
   size: {
     title: 'Size',
@@ -35,6 +42,10 @@ const STEP_COPY: Record<Step, { title: string; note: string }> = {
   glass: {
     title: 'Glass',
     note: 'Clear, tinted, or mirror. The same polycarbonate, three moods.',
+  },
+  finish: {
+    title: 'Finish',
+    note: 'Western red cedar or thermowood.',
   },
   addons: {
     title: 'Add-ons',
@@ -87,29 +98,46 @@ export default function OrderForm() {
   docRef.current = state.doc;
 
   const selection = selectionFromDocument(state.doc);
+  const piece = isStandalone(selection.slug);
+  const product = standaloneBySlug(selection.slug);
   const room = roomForSlug(selection.slug) ?? roomConcepts[0];
+  const displayName = product?.name ?? room.name;
+  const displayAlt = product?.alt ?? room.alt;
+  const displayImage = product?.image ?? room.image ?? '';
+  const steps: Step[] = piece ? [...PIECE_STEPS] : [...ROOM_STEPS];
+  const showLive = live && (!piece || standaloneShowsTub(selection.slug));
   glazeRef.current = selection.glaze;
-  const copy = STEP_COPY[step];
+  const copy = piece && step === 'addons'
+    ? { title: 'Add-ons', note: 'What comes with this piece.' }
+    : piece && step === 'review'
+      ? { title: 'Review', note: 'This is the piece, as it stands.' }
+      : STEP_COPY[step];
   const sizeLabel = ORDER_SIZES.find((item) => item.id === selection.size)?.label ?? 'Room';
   const glazeLabel = GLAZE.find((item) => item.id === selection.glaze)?.label ?? 'Clear';
-  const chosenAddons = ORDER_ADDONS.filter(
+  const woodLabel = WOOD_FINISHES.find((item) => item.id === selection.wood)?.label ?? 'Western red cedar';
+  const addonCatalog = piece ? standaloneAddons(selection.slug) : ORDER_ADDONS;
+  const chosenAddons = addonCatalog.filter(
     (item) => (item.kind && selection.kinds.includes(item.kind)) || selection.plain.includes(item.id),
   );
 
   const quoteHref = useMemo(() => {
     const params = new URLSearchParams();
     params.set('model', selection.slug);
-    params.set('size', sizeLabel);
-    params.set('finish', selection.glaze);
+    if (piece) params.set('finish', selection.wood);
+    else {
+      params.set('size', sizeLabel);
+      params.set('finish', selection.glaze);
+    }
     if (chosenAddons.length) params.set('add-ons', chosenAddons.map((item) => item.name).join(', '));
     if (token) params.set('share', token);
     return `/pre-order?${params.toString()}`;
-  }, [selection.slug, selection.glaze, sizeLabel, chosenAddons, token]);
+  }, [piece, selection.slug, selection.glaze, selection.wood, sizeLabel, chosenAddons, token]);
 
   const apply = (next: {
     slug: string;
     size: OrderSize;
     glaze: OrderGlaze;
+    wood: WoodFinish;
     plain: string[];
     kinds: FixtureKindId[];
     label: string;
@@ -200,7 +228,12 @@ export default function OrderForm() {
   }, []);
 
   useEffect(() => {
-    if (!live) {
+    const allowed: readonly Step[] = isStandalone(selection.slug) ? PIECE_STEPS : ROOM_STEPS;
+    if (!allowed.includes(step)) setStep('model');
+  }, [selection.slug, step]);
+
+  useEffect(() => {
+    if (!showLive) {
       sceneRef.current?.destroy();
       sceneRef.current = null;
       return;
@@ -230,7 +263,7 @@ export default function OrderForm() {
       sceneRef.current?.destroy();
       sceneRef.current = null;
     };
-  }, [live]);
+  }, [showLive]);
 
   useEffect(() => {
     sceneRef.current?.paint();
@@ -252,27 +285,41 @@ export default function OrderForm() {
   }, [state.doc, step]);
 
   const onTabs = (event: KeyboardEvent<HTMLDivElement>) => {
-    const index = STEPS.indexOf(step);
-    let next = index;
-    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % STEPS.length;
-    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + STEPS.length) % STEPS.length;
+    const index = steps.indexOf(step);
+    let next = index < 0 ? 0 : index;
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (next + 1) % steps.length;
+    else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (next - 1 + steps.length) % steps.length;
     else if (event.key === 'Home') next = 0;
-    else if (event.key === 'End') next = STEPS.length - 1;
+    else if (event.key === 'End') next = steps.length - 1;
     else return;
     event.preventDefault();
-    const id = STEPS[next];
+    const id = steps[next];
     setStep(id);
     document.getElementById(`order-tab-${id}`)?.focus();
   };
 
   const chooseModel = (slug: string) => {
-    const kinds = [...selection.kinds];
+    if (isStandalone(slug)) {
+      apply({
+        slug,
+        size: 'room',
+        glaze: 'clear',
+        wood: selection.wood,
+        plain: [],
+        kinds: [],
+        label: 'Choose a model',
+      });
+      return;
+    }
+    const leavingPiece = isStandalone(selection.slug);
+    const kinds = leavingPiece ? [] : [...selection.kinds];
     if (TUB_MODELS.has(slug) && !kinds.includes('hot-tub')) kinds.push('hot-tub');
-    apply({ ...selection, slug, kinds, label: 'Choose a model' });
+    const plain = leavingPiece ? [] : selection.plain;
+    apply({ ...selection, slug, kinds, plain, label: 'Choose a model' });
   };
 
   const toggleAddon = (id: string) => {
-    const addon = ORDER_ADDONS.find((item) => item.id === id);
+    const addon = addonCatalog.find((item) => item.id === id);
     if (!addon) return;
     if (addon.kind) {
       const kinds = selection.kinds.includes(addon.kind)
@@ -300,19 +347,28 @@ export default function OrderForm() {
     history.replaceState(null, '', `${url.pathname}${url.hash}`);
   };
 
-  const stepIndex = STEPS.indexOf(step);
+  const stepIndex = Math.max(0, steps.indexOf(step));
 
   return (
     <div className="order">
       <div className="order-view">
-        {live ? (
+        {showLive ? (
           <div ref={stageRef} className="order-stage" />
-        ) : room.image ? (
-          <img className="order-still" src={room.image} alt={room.alt} />
+        ) : product?.imageRight && product.altRight ? (
+          <div className="order-pair">
+            <img src={product.image} alt={product.alt} />
+            <img src={product.imageRight} alt={product.altRight} />
+          </div>
+        ) : displayImage ? (
+          <img className="order-still" src={displayImage} alt={displayAlt} />
         ) : (
-          <div className="order-still" role="img" aria-label={room.alt} />
+          <div className="order-still" role="img" aria-label={displayAlt} />
         )}
-        {live ? <p className="order-view-caption">A live view of the room in the meadow.</p> : null}
+        {showLive ? (
+          <p className="order-view-caption">
+            {piece ? 'A live view of the tub in the meadow.' : 'A live view of the room in the meadow.'}
+          </p>
+        ) : null}
       </div>
 
       <form
@@ -331,7 +387,7 @@ export default function OrderForm() {
         </div>
 
         <div className="order-tabs" role="tablist" aria-label="Design steps" onKeyDown={onTabs}>
-          {STEPS.map((id) => (
+          {steps.map((id) => (
             <button
               key={id}
               id={`order-tab-${id}`}
@@ -354,6 +410,7 @@ export default function OrderForm() {
           <p className="order-note">{copy.note}</p>
 
           {step === 'model' ? (
+            <>
             <div className="order-choices" role="radiogroup" aria-label="Model">
               {roomConcepts.map((item) => (
                 <button
@@ -370,6 +427,24 @@ export default function OrderForm() {
                 </button>
               ))}
             </div>
+            <p className="order-group" id="order-standalone">Standalone</p>
+            <div className="order-choices" role="radiogroup" aria-labelledby="order-standalone">
+              {collectionStandalone.items.map((item) => (
+                <button
+                  key={item.slug}
+                  type="button"
+                  className="order-choice"
+                  role="radio"
+                  aria-checked={item.slug === selection.slug}
+                  onClick={() => chooseModel(item.slug)}
+                >
+                  <i aria-hidden="true" />
+                  <strong>{item.name}</strong>
+                  <span>{item.line}</span>
+                </button>
+              ))}
+            </div>
+            </>
           ) : null}
 
           {step === 'size' ? (
@@ -382,6 +457,25 @@ export default function OrderForm() {
                   role="radio"
                   aria-checked={item.id === selection.size}
                   onClick={() => apply({ ...selection, size: item.id, label: 'Choose a size' })}
+                >
+                  <i aria-hidden="true" />
+                  <strong>{item.label}</strong>
+                  <span>{item.note}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+
+          {step === 'finish' ? (
+            <div className="order-choices" role="radiogroup" aria-label="Finish">
+              {WOOD_FINISHES.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className="order-choice"
+                  role="radio"
+                  aria-checked={item.id === selection.wood}
+                  onClick={() => apply({ ...selection, wood: item.id, label: 'Choose a finish' })}
                 >
                   <i aria-hidden="true" />
                   <strong>{item.label}</strong>
@@ -412,7 +506,7 @@ export default function OrderForm() {
 
           {step === 'addons' ? (
             <div className="order-choices">
-              {ORDER_ADDONS.map((item) => {
+              {addonCatalog.map((item) => {
                 const on = item.kind ? selection.kinds.includes(item.kind) : selection.plain.includes(item.id);
                 return (
                   <button
@@ -438,22 +532,31 @@ export default function OrderForm() {
               <dl className="order-review">
                 <div>
                   <dt>Model</dt>
-                  <dd>{room.name}</dd>
+                  <dd>{displayName}</dd>
                 </div>
-                <div>
-                  <dt>Size</dt>
-                  <dd>{sizeLabel}</dd>
-                </div>
-                <div>
-                  <dt>Glass</dt>
-                  <dd>{glazeLabel}</dd>
-                </div>
+                {piece ? (
+                  <div>
+                    <dt>Finish</dt>
+                    <dd>{woodLabel}</dd>
+                  </div>
+                ) : (
+                  <>
+                    <div>
+                      <dt>Size</dt>
+                      <dd>{sizeLabel}</dd>
+                    </div>
+                    <div>
+                      <dt>Glass</dt>
+                      <dd>{glazeLabel}</dd>
+                    </div>
+                  </>
+                )}
                 <div>
                   <dt>Add-ons</dt>
                   <dd>{chosenAddons.length ? chosenAddons.map((item) => item.name).join(', ') : 'None yet'}</dd>
                 </div>
               </dl>
-              <LiveReadout document={state.doc} />
+              {piece ? null : <LiveReadout document={state.doc} />}
               <div className="order-actions">
                 <a className="is-slide order-quote" href={quoteHref}>
                   <span className="slide-face">
@@ -478,7 +581,7 @@ export default function OrderForm() {
           <button
             type="button"
             className="order-next"
-            onClick={() => setStep(STEPS[Math.max(0, stepIndex - 1)])}
+            onClick={() => setStep(steps[Math.max(0, stepIndex - 1)])}
             disabled={stepIndex === 0}
           >
             Back
@@ -486,8 +589,8 @@ export default function OrderForm() {
           <button
             type="button"
             className="order-next"
-            onClick={() => setStep(STEPS[Math.min(STEPS.length - 1, stepIndex + 1)])}
-            disabled={stepIndex === STEPS.length - 1}
+            onClick={() => setStep(steps[Math.min(steps.length - 1, stepIndex + 1)])}
+            disabled={stepIndex === steps.length - 1}
           >
             Continue
           </button>

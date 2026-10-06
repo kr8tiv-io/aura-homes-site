@@ -3,10 +3,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Collection from '../components/Collection.astro';
 import LivingHero from '../components/LivingHero.astro';
 import Materials from '../components/Materials.astro';
+import PairFrame from '../components/PairFrame.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import ShotHold from '../components/ShotHold.astro';
 import Still from '../components/Still.astro';
 import WindowFrame from '../components/WindowFrame.astro';
+import { collectionStandalone } from '../data/collection';
 import { roomConcepts } from '../lib/rooms';
 
 const uses = [
@@ -83,6 +85,49 @@ const uses = [
       ))}
     </ul>
 
+    <section class="standalone-rooms" aria-labelledby="standalone-rooms-title">
+      <h2 class="standalone-label" id="standalone-rooms-title">Standalone</h2>
+      <ul class="room-grid is-standalone" data-window-grid>
+        {collectionStandalone.items.map((product) => (
+          <li>
+            <article class="room-card" data-rise data-room-card data-cursor="drag">
+              <div class="room-tilt" data-room-tilt>
+                <div class="room-face">
+                  {product.imageRight && product.altRight ? (
+                    <PairFrame
+                      left={product.image}
+                      leftAlt={product.alt}
+                      right={product.imageRight}
+                      rightAlt={product.altRight}
+                    />
+                  ) : (
+                    <figure data-window>
+                      <WindowFrame>
+                        <Still
+                          src={product.image}
+                          alt={product.alt}
+                          sizes="(max-width: 800px) 92vw, 42vw"
+                        />
+                      </WindowFrame>
+                    </figure>
+                  )}
+                  <RevealHeading as="h2">{product.name}</RevealHeading>
+                  <p>{product.line}</p>
+                  <a class="is-slide" href={product.film ? `/rooms/${product.slug}` : `/pre-order?model=${product.slug}`}>
+                    <span class="slide-face">
+                      <span class="slide-line">{product.film ? 'See the piece' : 'Get a quote'}</span>
+                      <span class="slide-line" aria-hidden="true">{product.film ? 'See the piece' : 'Get a quote'}</span>
+                    </span>
+                  </a>
+                  <span class="room-sheen" aria-hidden="true"><span></span></span>
+                </div>
+              </div>
+            </article>
+          </li>
+        ))}
+      </ul>
+    </section>
+
     <Collection />
 
     <Materials />
@@ -129,6 +174,17 @@ const uses = [
     letter-spacing: -0.02em;
     line-height: 1.25;
   }
+  .standalone-label {
+    position: relative;
+    z-index: 1;
+    margin: 1.5rem 8vw 0;
+    font-family: var(--font-inter), sans-serif;
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #866243;
+  }
   .room-grid {
     position: relative;
     z-index: 1;
@@ -138,6 +194,9 @@ const uses = [
     margin: 0;
     padding: 8vh 8vw 4vh;
     list-style: none;
+  }
+  .room-grid.is-standalone {
+    padding-top: 1.6rem;
   }
   .room-card {
     color: #14120e;
@@ -265,9 +324,16 @@ const uses = [
       flex: 0 0 68%;
       scroll-snap-align: start;
     }
+    .standalone-label {
+      margin-right: 1.5rem;
+      margin-left: 1.5rem;
+    }
     .room-grid {
       grid-template-columns: 1fr;
       padding: 6vh 1.5rem 2vh;
+    }
+    .room-grid.is-standalone {
+      padding-top: 1.2rem;
     }
   }
   @media (prefers-reduced-motion: reduce) {
