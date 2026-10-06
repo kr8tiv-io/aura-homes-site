@@ -1,127 +1,49 @@
 ---
-import Still from '../components/Still.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
   title="Build Your Own | Aura Homes"
-  description="Return to Aura. One beautiful room at a time."
+  description="Return to Aura. One beautiful room at a time. Choose a model, a size, the glass, and the add-ons, then ask for a quote."
   descriptor="Build Your Own"
 >
   <main id="top" class="byo-page">
-    <section class="byo-fallback" id="byo-fallback" data-byo="pending">
-      <Still
-        src="/film/story-meadow-side.webp"
-        alt="A meadow beside an Aura room, in soft evening light."
-        loading="eager"
-        fetchpriority="high"
-      />
-      <div class="byo-fallback-copy">
-        <p class="story-kicker">Build Your Own</p>
-        <RevealHeading as="h1">Build Your Own.</RevealHeading>
-        <p class="byo-note" data-byo-note>
-          Build Your Own is a desktop experience. Open this on your computer, or get a quote now.
-        </p>
-        <a class="byo-quote is-slide" data-byo-quote href="/pre-order"><span class="slide-face"><span class="slide-line">Get a quote</span><span class="slide-line" aria-hidden="true">Get a quote</span></span></a>
-      </div>
-    </section>
-    <div id="byo-root" hidden></div>
-    <script is:inline>
-      (function () {
-        var narrow = window.matchMedia('(max-width: 1023px)').matches;
-        var touchOnly = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-        var el = document.getElementById('byo-fallback');
-        if (!el) return;
-        el.dataset.byo = !narrow && !touchOnly ? 'desktop' : 'small';
-      })();
-    </script>
+    <header class="byo-head">
+      <p class="story-kicker">Build your own</p>
+      <RevealHeading as="h1">Build your own.</RevealHeading>
+      <p class="story-lede">One beautiful room at a time. The meadow stays with the room while you choose.</p>
+    </header>
+    <div id="byo-root"></div>
   </main>
 </BaseLayout>
 
 <style>
-  .byo-fallback {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-    color: #f4f3ef;
-    background: #0c0d0e;
-  }
-  .byo-fallback img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .byo-fallback-copy {
+  .byo-page {
     position: relative;
     z-index: 1;
-    max-width: 40rem;
-    padding: 28vh 8vw 14vh;
+    color: #14120e;
+    background: #f4f3ef;
   }
-  .byo-fallback-copy::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(12, 13, 14, 0.78), rgba(12, 13, 14, 0.28) 78%, transparent);
+  .byo-head {
+    max-width: 46rem;
+    padding: 8.5rem 8vw 2.5rem;
   }
-  .byo-fallback .story-kicker {
-    color: #c4a07a;
-  }
-  :global(.byo-fallback h1) {
+  .byo-head :global(h1) {
     margin: 0;
-    max-width: 10em;
     font-family: var(--font-cinzel);
     font-weight: 300;
-    font-size: clamp(3rem, 7vw, 5.6rem);
+    font-size: clamp(3rem, 7vw, 5.4rem);
     letter-spacing: -0.04em;
     line-height: 0.95;
   }
-  .byo-note {
+  .byo-head .story-lede {
     max-width: 32rem;
-    margin: 1.5rem 0 0;
-    font-weight: 300;
-    font-size: 1.125rem;
-    line-height: 1.6;
-    color: rgba(244, 243, 239, 0.88);
-  }
-  .byo-fallback[data-byo="desktop"] .byo-note,
-  .byo-fallback[data-byo="desktop"] .byo-quote,
-  .byo-fallback[data-byo="pending"] .byo-note,
-  .byo-fallback[data-byo="pending"] .byo-quote {
-    display: none;
-  }
-  .byo-quote {
-    display: inline-flex;
-    align-items: center;
-    min-height: 44px;
-    margin-top: 1.7rem;
-    padding: 0.75rem 1.05rem;
-    border: 1px solid #f4f3ef;
-    color: #f4f3ef;
-    font-size: 0.72rem;
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    text-decoration: none;
-  }
-  .byo-quote:focus-visible {
-    outline: 1px solid #c4a07a;
-    outline-offset: 4px;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    .byo-quote {
-      transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    .byo-quote:hover {
-      opacity: 0.55;
-    }
+    margin-top: 1.2rem;
   }
   @media (max-width: 800px) {
-    .byo-fallback-copy {
-      padding: 22vh 1.5rem 10vh;
+    .byo-head {
+      padding: 7rem 1.5rem 2rem;
     }
   }
 </style>
@@ -130,26 +52,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   import { onPageLoad, holdPageMotion } from '../scripts/motion';
 
   onPageLoad(() => {
-    const fallback = document.getElementById('byo-fallback');
     const root = document.getElementById('byo-root');
-    if (!(fallback instanceof HTMLElement) || !(root instanceof HTMLElement)) return;
+    if (!(root instanceof HTMLElement)) return;
 
     let booted = false;
     let gone = false;
     const host = root as HTMLElement & { __byo?: { unmount: () => void } };
 
-    const desktopNow = () =>
-      window.matchMedia('(min-width: 1024px)').matches &&
-      !window.matchMedia('(hover: none) and (pointer: coarse)').matches;
-
-    const showHold = () => {
-      fallback.dataset.byo = 'small';
-      fallback.hidden = false;
-      root.hidden = true;
-    };
-
-    // Dev-only. A plain script that lazy-imports JSX otherwise fails Vite's
-    // refresh check, because this page is not a React island.
     const ensureReactPreamble = async () => {
       if (!import.meta.env.DEV) return;
       const win = window as Window & {
@@ -165,71 +74,26 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       win.$RefreshSig$ = () => (type) => type;
     };
 
-    const onVisible = () => {
-      if (document.visibilityState === 'visible') load();
-    };
-
     const load = () => {
       if (gone || booted) return;
-      if (!desktopNow()) {
-        showHold();
-        return;
-      }
-      if (document.visibilityState !== 'visible') {
-        document.addEventListener('visibilitychange', onVisible);
-        return;
-      }
       booted = true;
       ensureReactPreamble()
         .then(() => import('../builder/mount'))
         .then(({ mountBuilder }) => {
-          if (gone || !desktopNow()) {
-            booted = false;
-            if (!gone) showHold();
-            return;
-          }
-          fallback.hidden = true;
+          if (gone) return;
           mountBuilder(root);
         })
         .catch(() => {
           booted = false;
-          if (!gone) showHold();
         });
     };
 
-    const decide = () => {
-      if (gone) return;
-      if (desktopNow()) {
-        fallback.dataset.byo = 'desktop';
-        load();
-      } else {
-        showHold();
-      }
-    };
-
-    if (document.readyState === 'complete') decide();
-    else window.addEventListener('load', decide, { once: true });
-
-    const media = window.matchMedia('(min-width: 1024px)');
-    const onMedia = () => {
-      if (!desktopNow()) {
-        showHold();
-        return;
-      }
-      if (booted) {
-        fallback.hidden = true;
-        root.hidden = false;
-        return;
-      }
-      load();
-    };
-    media.addEventListener('change', onMedia);
+    if (document.readyState === 'complete') load();
+    else window.addEventListener('load', load, { once: true });
 
     holdPageMotion(() => {
       gone = true;
-      media.removeEventListener('change', onMedia);
-      document.removeEventListener('visibilitychange', onVisible);
-      window.removeEventListener('load', decide);
+      window.removeEventListener('load', load);
       const dropping = host.__byo;
       delete host.__byo;
       if (dropping) {

@@ -162,6 +162,22 @@ export function createPolycarbonateMaterial(): THREE.MeshPhysicalMaterial {
   return mat;
 }
 
+/** Paint one polycarbonate material with a locked finish. The splash unit uses the same table. */
+export function applyGlazeFinish(mat: THREE.MeshPhysicalMaterial, finish: GlazeFinish): void {
+  const glaze = FINISH[finish];
+  mat.transmission = glaze.transmission;
+  mat.metalness = glaze.metalness;
+  mat.roughness = glaze.roughness;
+  mat.thickness = glaze.thickness;
+  mat.ior = glaze.ior;
+  mat.specularIntensity = glaze.specularIntensity;
+  mat.clearcoat = glaze.clearcoat;
+  mat.envMapIntensity = glaze.envMapIntensity;
+  mat.attenuationDistance = glaze.attenuationDistance;
+  mat.color.copy(glaze.color);
+  mat.attenuationColor.copy(glaze.attenuation);
+}
+
 function contactMap() {
   const canvas = document.createElement('canvas');
   canvas.width = 512;
