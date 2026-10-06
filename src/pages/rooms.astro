@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Collection from '../components/Collection.astro';
 import LivingHero from '../components/LivingHero.astro';
 import Materials from '../components/Materials.astro';
 import RevealHeading from '../components/RevealHeading.astro';
@@ -81,6 +82,8 @@ const uses = [
         </li>
       ))}
     </ul>
+
+    <Collection />
 
     <Materials />
   </main>
