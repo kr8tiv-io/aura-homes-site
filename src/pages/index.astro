@@ -299,6 +299,9 @@ import Journeys from '../components/Journeys.astro';
     const washes: SceneHandle[] = [];
     let fieldFx: SceneHandle | null = null;
     let scenesTask: Promise<void> | null = null;
+    const passageAt: number[] = [];
+    const washAt: number[] = [];
+    let fieldAt = 0;
 
     const ensureScenes = () => {
       if (qualityProfile().tier === 'off') return Promise.resolve();
@@ -314,6 +317,13 @@ import Journeys from '../components/Journeys.astro';
         washes.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => washMod.mountWash(canvas)));
         const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
         fieldFx = fieldCanvas ? fieldMod.mountField(fieldCanvas) : null;
+        meadows.forEach((meadow, index) => {
+          if (passageAt[index] != null) meadow.setProgress(passageAt[index]);
+        });
+        washes.forEach((wash, index) => {
+          if (washAt[index] != null) wash.setProgress(washAt[index]);
+        });
+        fieldFx?.setProgress(fieldAt);
       })();
       return scenesTask;
     };
@@ -322,10 +332,17 @@ import Journeys from '../components/Journeys.astro';
     // quality gate. The meadow scenes mount whenever their chunks arrive.
     void ensureScenes()
       .then(() => {
-        if (!reduce) return;
-        meadows.forEach((meadow) => meadow.setProgress(0.45));
-        washes.forEach((wash) => wash.setProgress(0.25));
-        fieldFx?.setProgress(0.35);
+        if (reduce) {
+          meadows.forEach((meadow) => meadow.setProgress(0.45));
+          washes.forEach((wash) => wash.setProgress(0.25));
+          fieldFx?.setProgress(0.35);
+          return;
+        }
+        ScrollTrigger.refresh();
+        ScrollTrigger.getAll().forEach((st) => {
+          const anim = st.animation;
+          if (anim && st.progress >= 0.98) anim.progress(1);
+        });
       })
       .catch(() => {});
     const stopQuality = onQuality(() => {
@@ -337,7 +354,8 @@ import Journeys from '../components/Journeys.astro';
       const stopShots = bindShots();
       const stopReels = bindReels();
       if (reduce) {
-        gsap.set('.line', { yPercent: 0 });
+        gsap.set('.line, .line .word, .splash-word', { yPercent: 0, y: 0, rotate: 0, opacity: 1 });
+        gsap.set('.passage-copy .story-kicker, .passage-copy p', { y: 0, opacity: 1 });
         scrub?.setProgress(0);
         layoutScrubs.forEach((item) => item.setProgress(0));
         meadows.forEach((meadow) => meadow.setProgress(0.45));
@@ -371,10 +389,7 @@ import Journeys from '../components/Journeys.astro';
 
       gsap.utils.toArray<HTMLElement>('.line').forEach((el) => {
         splitWords(el);
-        if (el.closest('[data-passage]')) {
-          gsap.set(el.querySelectorAll('.word'), { y: 0, yPercent: 130, opacity: 0 });
-          return;
-        }
+        if (el.closest('[data-passage]')) return;
         const words = el.querySelectorAll('.word');
         gsap.from(words, {
           yPercent: 140,
@@ -407,8 +422,27 @@ import Journeys from '../components/Journeys.astro';
         scrollTrigger: { trigger: '.ways ol', start: 'top 80%' },
       });
 
+      const reelClips = new Set(['rise', 'wipe', 'steam']);
       gsap.utils.toArray<HTMLElement>('.story-figure img, .story-figure video').forEach((img) => {
-        if (img.hasAttribute('data-play')) return;
+        if (img.hasAttribute('data-play')) {
+          const mode = img.getAttribute('data-play') || '';
+          if (reelClips.has(mode)) return;
+          gsap.fromTo(
+            img,
+            { clipPath: 'inset(14% 6% 14% 6%)' },
+            {
+              clipPath: 'inset(0% 0% 0% 0%)',
+              ease: 'none',
+              scrollTrigger: {
+                trigger: img,
+                start: 'top 96%',
+                end: 'top 38%',
+                scrub: 0.85,
+              },
+            },
+          );
+          return;
+        }
         gsap.fromTo(
           img,
           { clipPath: 'inset(22% 6% 22% 6%)', scale: 1.14 },
@@ -495,7 +529,31 @@ import Journeys from '../components/Journeys.astro';
             : null;
           const sceneName = section.querySelector('[data-scene]')?.getAttribute('data-scene');
           const passageScrub = sceneName === 'grass' || sceneName === 'far' ? 0.8 : 1;
-          ScrollTrigger.create({
+          const paintPassage = (p: number) => {
+            passageAt[index] = p;
+            meadows[index]?.setProgress(p);
+            if (ghost) {
+              gsap.set(ghost, {
+                y: -190 * p,
+                x: 110 * p,
+                rotate: -8 + p * 12,
+                scale: 0.82 + p * 0.34,
+                opacity: 0.05 + p * 0.42,
+              });
+            }
+            if (!copy) return;
+            const words = copy.querySelectorAll<HTMLElement>('.word');
+            words.forEach((word, i) => {
+              const local = Math.min(1, Math.max(0, (p - i * 0.05) / 0.24));
+              const eased = 1 - (1 - local) ** 3;
+              gsap.set(word, { y: 0, yPercent: (1 - eased) * 130, opacity: eased });
+            });
+            const kicker = copy.querySelector('.story-kicker');
+            const body = copy.querySelector('p:last-child');
+            if (kicker) gsap.set(kicker, { y: (1 - Math.min(1, p / 0.3)) * 22, opacity: Math.min(1, 0.2 + p * 1.6) });
+            if (body) gsap.set(body, { y: (1 - Math.min(1, p / 0.62)) * 36, opacity: Math.min(1, Math.max(0, (p - 0.12) / 0.45)) });
+          };
+          const passagePin = ScrollTrigger.create({
             trigger: section,
             start: 'top top',
             end: () => `+=${spacer?.offsetHeight || Math.round(window.innerHeight * (mobile ? 1.2 : 1.6))}`,
@@ -503,50 +561,38 @@ import Journeys from '../components/Journeys.astro';
             pinSpacing: false,
             scrub: passageScrub,
             anticipatePin: 1,
-            onUpdate: (self) => {
-              const p = self.progress;
-              meadows[index]?.setProgress(p);
-              if (ghost) {
-                gsap.set(ghost, {
-                  y: -190 * p,
-                  x: 110 * p,
-                  rotate: -8 + p * 12,
-                  scale: 0.82 + p * 0.34,
-                  opacity: 0.05 + p * 0.42,
-                });
-              }
-              if (!copy) return;
-              const words = copy.querySelectorAll<HTMLElement>('.word');
-              words.forEach((word, i) => {
-                const local = Math.min(1, Math.max(0, (p - i * 0.05) / 0.24));
-                const eased = 1 - (1 - local) ** 3;
-                gsap.set(word, { y: 0, yPercent: (1 - eased) * 130, opacity: eased });
-              });
-              const kicker = copy.querySelector('.story-kicker');
-              const body = copy.querySelector('p:last-child');
-              if (kicker) gsap.set(kicker, { y: (1 - Math.min(1, p / 0.3)) * 22, opacity: Math.min(1, 0.2 + p * 1.6) });
-              if (body) gsap.set(body, { y: (1 - Math.min(1, p / 0.62)) * 36, opacity: Math.min(1, Math.max(0, (p - 0.12) / 0.45)) });
-            },
+            onUpdate: (self) => paintPassage(self.progress),
           });
+          paintPassage(passagePin.progress);
         });
 
         gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').forEach((canvas, index) => {
-          ScrollTrigger.create({
+          const washPin = ScrollTrigger.create({
             trigger: canvas.parentElement,
             start: 'top bottom',
             end: 'bottom top',
             scrub: 0.6,
-            onUpdate: (self) => washes[index]?.setProgress(self.progress),
+            onUpdate: (self) => {
+              washAt[index] = self.progress;
+              washes[index]?.setProgress(self.progress);
+            },
           });
+          washAt[index] = washPin.progress;
+          washes[index]?.setProgress(washPin.progress);
         });
 
-        ScrollTrigger.create({
+        const fieldPin = ScrollTrigger.create({
           trigger: 'main',
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.4,
-          onUpdate: (self) => fieldFx?.setProgress(self.progress),
+          onUpdate: (self) => {
+            fieldAt = self.progress;
+            fieldFx?.setProgress(self.progress);
+          },
         });
+        fieldAt = fieldPin.progress;
+        fieldFx?.setProgress(fieldAt);
       });
       return () => {
         stopShots();

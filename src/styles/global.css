@@ -2160,6 +2160,14 @@ canvas[data-stage-host='on'] {
   .passage-spacer {
     height: 0;
   }
+  .line,
+  .line .word,
+  .splash-word,
+  .passage-copy .story-kicker,
+  .passage-copy p {
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
 
 .journeys {

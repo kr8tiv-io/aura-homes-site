@@ -454,7 +454,8 @@ void main(){
   // green, held well under the grass's bloom clamp
   col *= 1.0 + 0.10 * step(0.5, vPart);
 
-  col = mix(col, col * vec3(0.34, 0.40, 0.54), uNight);
+  col *= mix(1.0, 0.38, uNight);
+  col = mix(col, col * vec3(0.45, 0.55, 0.85), uNight);
   col = min(col, vec3(2.2));
 
   float fd = distance(uCamPos, vWorld);

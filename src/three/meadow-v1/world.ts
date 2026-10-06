@@ -371,9 +371,9 @@ function ridgeGeometry(seed: number, width: number, height: number, jag: number)
 
 function addMountainRange(parent: THREE.Group, geometries: THREE.BufferGeometry[], materials: THREE.Material[]) {
   const bands = [
-    { seed: 1.7, z: -168, w: 700, h: 132, jag: 1, color: '#a8bcc9', op: 0.85, y: 2 },
-    { seed: 4.2, z: -134, w: 600, h: 104, jag: 0.94, color: '#8ea7b8', op: 0.92, y: 1 },
-    { seed: 8.9, z: -106, w: 500, h: 78, jag: 0.88, color: '#748ea3', op: 0.97, y: 0 },
+    { seed: 1.7, z: -250, w: 900, h: 46, jag: 0.85, color: '#d7e3ee', op: 0.42, y: 4 },
+    { seed: 4.2, z: -175, w: 680, h: 38, jag: 0.9, color: '#c3d0dc', op: 0.8, y: 1 },
+    { seed: 8.9, z: -128, w: 480, h: 28, jag: 0.82, color: '#f4f7f8', op: 1, y: 0 },
   ];
   const group = new THREE.Group();
   group.name = 'MountainRange';
@@ -390,6 +390,7 @@ function addMountainRange(parent: THREE.Group, geometries: THREE.BufferGeometry[
       side: THREE.DoubleSide,
     });
     rock.userData.span = [band.w, band.h];
+    rock.userData.ridgeBase = rock.color.clone();
     const snow = new THREE.MeshBasicMaterial({
       name: 'RidgeSnow',
       color: '#f4f8fa',
@@ -398,6 +399,7 @@ function addMountainRange(parent: THREE.Group, geometries: THREE.BufferGeometry[
       fog: false,
       side: THREE.DoubleSide,
     });
+    snow.userData.ridgeBase = snow.color.clone();
     materials.push(rock, snow);
     const mesh = new THREE.Mesh(geo, rock);
     mesh.position.set(0, band.y, band.z);
@@ -461,18 +463,18 @@ function snowRangeGeometry(seed: number, width: number, depth: number, sx: numbe
 function addSnowRange(parent: THREE.Group, geometries: THREE.BufferGeometry[], materials: THREE.Material[]) {
   const group = new THREE.Group();
   group.name = 'SnowRange';
-  const far = snowRangeGeometry(37.4, 1150, 130, 120, 12, 1.45, 0.5);
-  const mid = snowRangeGeometry(0, 900, 110, 180, 16, 1, 0.3);
+  const far = snowRangeGeometry(37.4, 1150, 130, 120, 40, 0.72, 0.22);
+  const mid = snowRangeGeometry(0, 900, 110, 180, 36, 0.55, 0.12);
   geometries.push(far, mid);
   const farMat = new THREE.MeshBasicMaterial({ name: 'SnowRange', vertexColors: true, fog: false });
   const midMat = new THREE.MeshBasicMaterial({ name: 'SnowRange', vertexColors: true, fog: false });
   materials.push(farMat, midMat);
   const farMesh = new THREE.Mesh(far, farMat);
-  farMesh.position.set(70, -13, -232);
+  farMesh.position.set(70, -22, -250);
   farMesh.frustumCulled = false;
   farMesh.renderOrder = -11;
   const midMesh = new THREE.Mesh(mid, midMat);
-  midMesh.position.set(0, -9, -172);
+  midMesh.position.set(0, -16, -190);
   midMesh.frustumCulled = false;
   midMesh.renderOrder = -10;
   group.add(farMesh, midMesh);
@@ -484,10 +486,22 @@ function addSnowRange(parent: THREE.Group, geometries: THREE.BufferGeometry[], m
 function paintSnow(group: THREE.Group, dusk: number, night: number) {
   const mats = group.userData.mats as THREE.MeshBasicMaterial[] | undefined;
   if (!mats) return;
-  const r = (1 + dusk * 0.1) * (1 - night * 0.56);
-  const g = (1 - dusk * 0.03) * (1 - night * 0.5);
-  const b = (1 - dusk * 0.14) * (1 - night * 0.34);
+  const r = (1 + dusk * 0.1) * (1 - night * 0.82);
+  const g = (1 - dusk * 0.03) * (1 - night * 0.78);
+  const b = (1 - dusk * 0.14) * (1 - night * 0.62);
   for (const mat of mats) mat.color.setRGB(r, g, b);
+}
+
+function paintRidges(materials: THREE.Material[], night: number) {
+  const shade = 1 - night * 0.84;
+  for (const mat of materials) {
+    if (!(mat instanceof THREE.MeshBasicMaterial)) continue;
+    if (mat.name !== 'RidgeRock' && mat.name !== 'RidgeSnow') continue;
+    const base = mat.userData.ridgeBase as THREE.Color | undefined;
+    if (!base) continue;
+    const lift = mat.name === 'RidgeSnow' ? 0.78 : 1;
+    mat.color.copy(base).multiplyScalar(Math.max(0.08, shade * lift));
+  }
 }
 
 function addClouds(parent: THREE.Group, geometries: THREE.BufferGeometry[], materials: THREE.Material[]) {
@@ -569,11 +583,12 @@ function addStars(parent: THREE.Group) {
   const geo = new THREE.BufferGeometry();
   geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
   const mat = new THREE.PointsMaterial({
-    size: 2,
-    sizeAttenuation: true,
-    color: '#dfe9f5',
+    size: 2.4,
+    sizeAttenuation: false,
+    color: '#f4f7ff',
     transparent: true,
     opacity: 0,
+    depthWrite: false,
     fog: false,
   });
   const points = new THREE.Points(geo, mat);
@@ -885,8 +900,8 @@ if (uVeilOn > 0.5) {
 {
   float luma = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
   vec3 crushed = mix(vec3(luma), diffuseColor.rgb, 0.4);
-  float aerial = smoothstep(40.0, 220.0, length(vVeilWorld - cameraPosition));
-  diffuseColor.rgb = mix(crushed, uVeilHaze, aerial * 0.62);
+  float aerial = smoothstep(90.0, 320.0, length(vVeilWorld - cameraPosition));
+  diffuseColor.rgb = mix(crushed, uVeilHaze, aerial * 0.45);
 }`;
     if (!shader.fragmentShader.includes('vVeilWorld')) {
       shader.fragmentShader = shader.fragmentShader
@@ -897,7 +912,7 @@ if (uVeilOn > 0.5) {
         .replace('#include <color_fragment>', `#include <color_fragment>\n${extra}`);
     }
   };
-  material.customProgramCacheKey = () => `veil-${kind}-${previousKey()}`;
+  material.customProgramCacheKey = () => `veil-v2-${kind}-${previousKey()}`;
 }
 
 function disposeBuilt(built: Built, scene: THREE.Scene) {
@@ -926,7 +941,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   const camera = new THREE.PerspectiveCamera(38, 1, 0.4, golden || vista ? 1100 : 260);
   camera.position.set(-4.5, 5.4, 17.5);
   const vistaFog = options.ground === 'snow' ? '#d5e3ee' : options.ground === 'rock' ? '#c9d3da' : '#d2c2ae';
-  const fog = new THREE.Fog(golden ? '#e4c9a4' : vista ? vistaFog : '#e3ede7', golden || vista ? 24 : 30, golden || vista ? 140 : 88);
+  const fog = new THREE.Fog(golden ? '#e4c9a4' : vista ? vistaFog : '#e3ede7', golden || vista ? 48 : 36, golden || vista ? 220 : 120);
   scene.fog = fog;
   scene.background = golden || options.hdri ? null : fog.color;
 
@@ -1047,13 +1062,13 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         tex.anisotropy = anisotropyForTier();
         built.textures.push(tex);
         mat.userData.macroSoil = tex;
-        mat.userData.macroSoilAmt = 0.55;
+        mat.userData.macroSoilAmt = 0.28;
         const uniforms = mat.userData.macroUniforms as
           | { tMacroSoil?: { value: THREE.Texture }; uMacroSoil?: { value: number } }
           | undefined;
         if (uniforms?.tMacroSoil && uniforms.uMacroSoil) {
           uniforms.tMacroSoil.value = tex;
-          uniforms.uMacroSoil.value = 0.55;
+          uniforms.uMacroSoil.value = 0.28;
         }
       }).catch(() => undefined);
       return;
@@ -1312,7 +1327,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
           vec3 sky = texture2D(uHdr, uv).rgb;
           float elev = dir.y;
           float hazeAmt = 1.0 - smoothstep(0.02, 0.28, elev);
-          sky = mix(sky, uHaze, hazeAmt * 0.78);
+          sky = mix(sky, uHaze, hazeAmt * 0.42);
           gl_FragColor = vec4(sky, 1.0);
         }
       `,
@@ -1372,6 +1387,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         for (const mat of built.materials) {
           if (mat.name !== 'RidgeRock' || !(mat instanceof THREE.MeshBasicMaterial)) continue;
           const span = mat.userData.span as [number, number] | undefined;
+          if (span && span[0] > 520) continue;
           const clone = tex.clone();
           clone.repeat.set(span ? span[0] / 16 : 24, span ? Math.max(2, span[1] / 8) : 6);
           clone.needsUpdate = true;
@@ -1420,7 +1436,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   const addNightSky = (generation: number) => {
     const nightMix = { value: 0 };
     skyNight = nightMix;
-    const hold = new THREE.DataTexture(new Uint8Array([18, 22, 28, 255]), 1, 1);
+    const hold = new THREE.DataTexture(new Uint8Array([4, 8, 16, 255]), 1, 1);
     hold.colorSpace = THREE.LinearSRGBColorSpace;
     hold.needsUpdate = true;
     built.textures.push(hold);
@@ -1448,14 +1464,30 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
           vec2 uv = vec2(atan(dir.z, dir.x) * 0.15915494 + 0.5, asin(clamp(dir.y, -1.0, 1.0)) * 0.31830989 + 0.5);
           vec3 day = texture2D(uFrom, uv).rgb;
           vec3 night = texture2D(uTo, uv).rgb;
-          gl_FragColor = vec4(mix(day, night, clamp(uNight, 0.0, 1.0)), 1.0);
+          float nightAmt = clamp(uNight, 0.0, 1.0);
+          vec3 sky = mix(day, night, nightAmt);
+          float luma = dot(sky, vec3(0.2126, 0.7152, 0.0722));
+          float toe = smoothstep(0.004, 0.16, luma);
+          vec3 graded = sky * mix(0.2, 0.62, toe);
+          sky = mix(sky, graded, nightAmt);
+          if (nightAmt > 0.35 && dir.y > -0.08) {
+            vec2 cell = floor(vec2(atan(dir.z, dir.x), asin(clamp(dir.y, -1.0, 1.0))) * 110.0);
+            float n = fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);
+            vec2 f = fract(vec2(atan(dir.z, dir.x), asin(clamp(dir.y, -1.0, 1.0))) * 110.0) - 0.5;
+            float spark = smoothstep(0.968, 0.992, n) * smoothstep(0.11, 0.0, length(f));
+            sky += vec3(1.35, 1.4, 1.5) * spark * nightAmt;
+            vec3 moonDir = normalize(vec3(-0.27, -0.08, -0.96));
+            float moon = pow(max(dot(dir, moonDir), 0.0), 1400.0);
+            sky += vec3(0.96, 0.93, 0.84) * moon * nightAmt;
+          }
+          gl_FragColor = vec4(sky, 1.0);
         }
       `,
       side: THREE.BackSide,
       depthWrite: false,
       fog: false,
     });
-    const geo = new THREE.SphereGeometry(480, 28, 16);
+    const geo = new THREE.SphereGeometry(480, 64, 36);
     built.geometries.push(geo);
     built.materials.push(mat);
     const dome = new THREE.Mesh(geo, mat);
@@ -1515,9 +1547,9 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         built.materials.push(moonMat);
         const moon = new THREE.Sprite(moonMat);
         moon.name = 'Moon';
-        moon.position.set(-70, 36, -150);
-        moon.scale.set(16, 16, 1);
-        moon.renderOrder = -12;
+        moon.position.set(-24, 20, -88);
+        moon.scale.set(11, 11, 1);
+        moon.renderOrder = -9;
         moon.frustumCulled = false;
         scene.add(moon);
       }
@@ -1823,8 +1855,8 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         if (vista) {
           heightFog.color.value.copy(fog.color);
           heightFog.falloff.value = options.ground === 'rock' ? 0.16 : 0.28;
-          heightFog.near.value = 16;
-          heightFog.far.value = options.ground === 'snow' ? 96 : 130;
+          heightFog.near.value = options.ground === 'rock' ? 32 : options.ground === 'snow' ? 36 : 42;
+          heightFog.far.value = options.ground === 'rock' ? 180 : options.ground === 'snow' ? 160 : 220;
           heightFog.sun.value.copy(sun.position).normalize();
         }
       }
@@ -1841,6 +1873,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       }
 
       if (built.snow) paintSnow(built.snow, duskAmt, nightAmt);
+      paintRidges(built.materials, nightAmt);
       if (built.stars) built.stars.opacity = nightAmt * 0.95;
       if (moonMat) moonMat.opacity = nightAmt * 0.9;
       if (skyHaze) skyHaze.value.copy(fog.color);
@@ -1849,7 +1882,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       if (duskEnv && nightEnv) {
         scene.environment = nightAmt < 0.5 ? duskEnv : nightEnv;
         const edge = nightAmt < 0.5 ? 1 - nightAmt * 2 : (nightAmt - 0.5) * 2;
-        scene.environmentIntensity = (options.envIntensity ?? 0.45) * (0.28 + 0.72 * edge);
+        scene.environmentIntensity = (options.envIntensity ?? 0.45) * (0.28 + 0.72 * edge) * (1 - nightAmt * 0.62);
       }
       paintGrass(built.heroMat, duskAmt, nightAmt);
       paintGrass(built.fillMat, duskAmt, nightAmt);
@@ -1864,8 +1897,8 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
           if (mat.uniforms.uHeightFogSun) (mat.uniforms.uHeightFogSun.value as THREE.Vector3).copy(EVENING_SUN);
           if (mat.uniforms.uHeightFogColor) (mat.uniforms.uHeightFogColor.value as THREE.Color).copy(heightFog.color.value);
           if (mat.uniforms.uHeightFogFalloff) mat.uniforms.uHeightFogFalloff.value = heightFog.falloff.value;
-          mat.uniforms.uFogNear.value = 28;
-          mat.uniforms.uFogFar.value = 140;
+          mat.uniforms.uFogNear.value = 52;
+          mat.uniforms.uFogFar.value = 210;
           (mat.uniforms.uHemiSky.value as THREE.Color).set('#f3d7b0');
           (mat.uniforms.uHemiGround.value as THREE.Color).set('#6a7348');
         }

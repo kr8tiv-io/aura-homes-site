@@ -215,7 +215,8 @@ void main(){
   vec3 H = normalize(V + uSunDir);
   float glint = pow(max(dot(N, H), 0.0), 64.0) * smoothstep(0.72, 0.98, vT);
   col += uSunCol * glint * 0.55;
-  col = mix(col, col * vec3(0.34, 0.40, 0.54), uNight);
+  col *= mix(1.0, 0.38, uNight);
+  col = mix(col, col * vec3(0.45, 0.55, 0.85), uNight);
   col = min(col, vec3(2.2));
   float fd = distance(uCamPos, vWorld);
   if (uHeightFog > 0.5) {

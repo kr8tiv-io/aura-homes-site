@@ -37,12 +37,12 @@ void main() {
   color = color / (vec3(1.0) + color * 0.45);
   // Sphere v 0.5 is the horizon. A short band, then the Preetham dome.
   float elev = vUv.y - 0.50;
-  float ridge = smoothstep(0.0, 0.028, elev) * (1.0 - smoothstep(0.04, 0.09, elev));
+  float ridge = smoothstep(0.0, 0.02, elev) * (1.0 - smoothstep(0.08, 0.16, elev));
   vec3 toward = normalize(vWorld - cameraPosition);
   float sun = pow(max(dot(toward, normalize(uSunDir)), 0.0), 4.0);
   vec3 warm = uFogColor * vec3(1.12, 0.96, 0.78);
   vec3 cool = uFogColor * vec3(0.8, 0.9, 1.02);
-  color = mix(color, mix(cool, warm, sun), (1.0 - ridge) * 0.72 + 0.18);
+  color = mix(color, mix(cool, warm, sun), (1.0 - ridge) * 0.42 + 0.08);
   float alpha = ridge;
   if (alpha < 0.02) discard;
   gl_FragColor = vec4(color, alpha);
@@ -73,13 +73,13 @@ export function addGoldenSky(
   sky.frustumCulled = false;
   sky.renderOrder = -20;
   const uniforms = sky.material.uniforms;
-  uniforms.turbidity.value = 6;
-  uniforms.rayleigh.value = 1.6;
+  uniforms.turbidity.value = 3.2;
+  uniforms.rayleigh.value = 2.1;
   uniforms.mieCoefficient.value = 0.004;
   uniforms.mieDirectionalG.value = 0.82;
   uniforms.sunPosition.value.copy(EVENING_SUN).multiplyScalar(400);
-  uniforms.cloudCoverage.value = 0.18;
-  uniforms.cloudDensity.value = 0.22;
+  uniforms.cloudCoverage.value = 0.28;
+  uniforms.cloudDensity.value = 0.32;
   const skyMaterial = sky.material as THREE.ShaderMaterial;
   skyMaterial.depthWrite = false;
   skyMaterial.fog = false;
@@ -97,15 +97,19 @@ export function addGoldenSky(
         'gl_FragColor = vec4( texColor, 1.0 );',
         `vec3 skyBody = max(texColor - sundiscColor, vec3(0.0));
         float skyLuma = max(dot(skyBody, vec3(0.2126, 0.7152, 0.0722)), 0.0001);
-        float skyMapped = log2(1.0 + skyLuma * 1.6) / log2(29.0);
+        float skyMapped = log2(1.0 + skyLuma * 0.72) / log2(10.0);
         skyBody *= skyMapped / skyLuma;
+        float zenith = smoothstep(0.05, 0.72, direction.y);
+        skyBody = mix(skyBody, skyBody * vec3(0.62, 0.78, 1.08), zenith * 0.55);
+        float horizon = 1.0 - smoothstep(0.0, 0.18, direction.y);
+        skyBody = mix(skyBody, skyBody * vec3(1.18, 0.92, 0.72), horizon * 0.35);
         float sunGlow = pow(max(dot(direction, vSunDirection), 0.0), 6.0);
         skyBody += vec3(0.55, 0.22, 0.05) * sunGlow;
         gl_FragColor = vec4(skyBody + vec3(sundisc) * vec3(8.0, 5.2, 2.0), 1.0);`,
       );
   };
   const previousKey = skyMaterial.customProgramCacheKey?.bind(skyMaterial);
-  skyMaterial.customProgramCacheKey = () => `golden-sky-${previousKey ? previousKey() : ''}`;
+  skyMaterial.customProgramCacheKey = () => `golden-sky-v2-${previousKey ? previousKey() : ''}`;
   materials.push(skyMaterial);
   geometries.push(sky.geometry);
   scene.add(sky);
@@ -139,6 +143,7 @@ export function addGoldenSky(
       fragmentShader: BACKDROP_FRAG,
       transparent: true,
       depthWrite: false,
+      toneMapped: false,
       side: THREE.BackSide,
     });
     const replaced = shell.material;
