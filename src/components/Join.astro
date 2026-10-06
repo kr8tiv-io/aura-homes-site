@@ -15,8 +15,8 @@ const shells = [
 ---
 
 <div class="join">
-  <form class="join-card join-form" id="preorder" action="/api/join" method="post">
-    <p class="story-kicker">Pre-order</p>
+  <form class="join-card join-form" id="preorder" action="/api/join" method="post" data-tracer="edge">
+    <p class="story-kicker" data-tracer="rule">Pre-order</p>
     <h3>Hold your place.</h3>
     <p class="join-model" data-model-line hidden></p>
     <p data-join-intro>Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
@@ -50,12 +50,12 @@ const shells = [
       <input type="checkbox" name="list" value="yes" />
       <span>Also put me first in line for the latest YouTube films, product releases, announcements, and the offers and perks kept for this list.</span>
     </label>
-    <button type="submit" class="is-slide"><span class="slide-face"><span class="slide-line">Hold my place</span><span class="slide-line" aria-hidden="true">Hold my place</span></span></button>
+    <button type="submit" class="is-slide" data-tracer="outline"><span class="slide-face"><span class="slide-line">Hold my place</span><span class="slide-line" aria-hidden="true">Hold my place</span></span></button>
     <p class="join-status" data-join-status data-sent-host role="status"><span data-status-line></span></p>
     <p class="join-fine">Aura writes to the address you give. You can leave the list whenever a note arrives. We do not sell it.</p>
   </form>
 
-  <form class="join-card join-form" id="list" action="/api/join" method="post">
+  <form class="join-card join-form" id="list" action="/api/join" method="post" data-tracer="edge">
     <p class="story-kicker">The list</p>
     <h3>First to hear it.</h3>
     <p>Join, and you are first in line for the latest YouTube films, product releases, announcements, and the offers and perks we keep for the people who were here early.</p>
@@ -75,7 +75,7 @@ const shells = [
       <input type="checkbox" name="consent" value="yes" required />
       <span>Yes. Send me the films, the releases, the announcements, and the exclusive offers and perks.</span>
     </label>
-    <button type="submit" class="is-slide"><span class="slide-face"><span class="slide-line">Count me in</span><span class="slide-line" aria-hidden="true">Count me in</span></span></button>
+    <button type="submit" class="is-slide" data-tracer="outline"><span class="slide-face"><span class="slide-line">Count me in</span><span class="slide-line" aria-hidden="true">Count me in</span></span></button>
     <p class="join-status" data-join-status data-sent-host role="status"><span data-status-line></span></p>
     <p class="join-fine">Your name is held. The first notes are the films, the releases, the announcements, and the offers kept for this list.</p>
   </form>

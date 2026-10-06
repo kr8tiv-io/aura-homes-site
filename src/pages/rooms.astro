@@ -43,7 +43,7 @@ const uses = [
 
     <p class="room-note">Every unit is built one at a time. Concepts shown; details evolve as we build.</p>
 
-    <ul class="room-uses" data-rise>
+    <ul class="room-uses" data-rise data-tracer="rule">
       {uses.map(([index, label]) => (
         <li>
           <span>{index}</span>
@@ -76,7 +76,7 @@ const uses = [
                 )}
                 <RevealHeading as="h2">{room.name}</RevealHeading>
                 <p>{room.description}</p>
-                <a class="is-slide" href={`/pre-order?model=${room.slug}`}><span class="slide-face"><span class="slide-line">Pre-order inquiry</span><span class="slide-line" aria-hidden="true">Pre-order inquiry</span></span></a>
+                <a class="is-slide" href={`/pre-order?model=${room.slug}`} data-tracer="outline"><span class="slide-face"><span class="slide-line">Pre-order inquiry</span><span class="slide-line" aria-hidden="true">Pre-order inquiry</span></span></a>
                 <span class="room-sheen" aria-hidden="true"><span></span></span>
               </div>
             </div>
@@ -113,7 +113,7 @@ const uses = [
                   )}
                   <RevealHeading as="h2">{product.name}</RevealHeading>
                   <p>{product.line}</p>
-                  <a class="is-slide" href={product.film ? `/rooms/${product.slug}` : `/pre-order?model=${product.slug}`}>
+                  <a class="is-slide" href={product.film ? `/rooms/${product.slug}` : `/pre-order?model=${product.slug}`} data-tracer="outline">
                     <span class="slide-face">
                       <span class="slide-line">{product.film ? 'See the piece' : 'Get a quote'}</span>
                       <span class="slide-line" aria-hidden="true">{product.film ? 'See the piece' : 'Get a quote'}</span>
