@@ -1,0 +1,66 @@
+/*
+Old splash header, retired when the inner top bar became the only site menu.
+The sigil button, the Pre-order pill, and the "On your land" descriptor lived here.
+Kept so the rules are not thrown away. Nothing on the site imports this file.
+*/
+
+.nav-sigil .sigil-ring {
+  stroke-width: 6;
+}
+
+.nav-sigil {
+  width: 46px;
+  height: auto;
+  overflow: visible;
+}
+.sigil-ridge,
+.sigil-ridge path {
+  fill: currentColor;
+  stroke: none;
+}
+.sigil-ring {
+  fill: none;
+  stroke: #3b5f85;
+  stroke-width: 2;
+}
+body.nav-on-film .sigil-ring,
+body[data-living-nav] .sigil-ring { stroke: #c4a07a; }
+.sigil-mark {
+  opacity: 1;
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-menu[aria-expanded='true'] .sigil-mark { opacity: 0; }
+
+.nav-descriptor {
+  font-size: 0.625rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.62;
+}
+
+.nav-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.55rem 1.4rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.nav-cta:hover {
+  background: #f4f3ef;
+  color: #0c0d0e;
+}
+.nav-cta:active {
+  transform: scale(0.96);
+}
+html.has-cursor .nav-cta {
+  transition-property: background-color, color;
+}

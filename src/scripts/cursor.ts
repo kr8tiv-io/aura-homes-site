@@ -4,9 +4,9 @@ const WORDS = ['View', 'Quote', 'Drag'] as const;
 type CursorWord = (typeof WORDS)[number];
 
 const MAGNET =
-  '.nav-cta, .customs-quote, .byo-quote, .b-quote, .room-card a, .quote-form button, .join-card button, .contact-form button';
+  '.nav-quote, .customs-quote, .byo-quote, .b-quote, .room-card a, .quote-form button, .join-card button, .contact-form button';
 const QUOTE =
-  '.nav-cta, .customs-quote, .byo-quote, .b-quote, .quote-form button, a[href*="/pre-order"]';
+  '.nav-quote, .customs-quote, .byo-quote, .b-quote, .quote-form button, a[href*="/pre-order"]';
 const FIELD = 'input, textarea, select';
 const PULL = 8;
 
