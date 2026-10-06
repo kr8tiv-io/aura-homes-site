@@ -88,7 +88,8 @@ const PROFILES: Record<QualityTier, QualityProfile> = {
     transmissionScale: 1,
     steamParticles: 140,
     impostorDistance: 120,
-    hdri: '2k',
+    // Lighting stays at 1k. A 2k map is only an explicit backdrop, such as the Alps band.
+    hdri: '1k',
   },
 };
 

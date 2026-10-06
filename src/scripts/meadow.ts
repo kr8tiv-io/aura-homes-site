@@ -150,6 +150,8 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
         stopGlaze();
         const unit = createAuraUnit();
         slot.add(unit.object);
+        const asked = new URLSearchParams(window.location.search).get('glaze');
+        if (asked === 'clear' || asked === 'mirror' || asked === 'tinted') unit.setFinish(asked, 0);
         stopGlaze = bindGlaze(canvas, unit);
         return () => {
           stopGlaze();

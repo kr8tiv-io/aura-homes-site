@@ -1,5 +1,5 @@
 /**
- * Warn when a file in public/models, public/hdri, or public/textures
+ * Warn when a file in public/models, public/hdri, public/textures, or public/decoders
  * is not named by a credits entry `files` array. Warnings do not fail the build.
  *
  *   node scripts/check-credits.mjs
@@ -11,7 +11,7 @@ import { customModelCredits } from './custom-credits.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const creditsPath = path.join(root, 'src', 'data', 'credits.ts');
-const watched = ['models', 'hdri', 'textures'];
+const watched = ['models', 'hdri', 'textures', 'decoders'];
 
 const source = await readFile(creditsPath, 'utf8');
 const mentioned = [];

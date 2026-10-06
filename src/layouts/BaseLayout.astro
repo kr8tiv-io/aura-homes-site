@@ -36,7 +36,7 @@ const organization = organizationJson(origin);
 const ogAlt = 'An Aura room at dusk, set in a meadow.';
 const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
-const showFoot = !isHome && !isBuilder;
+const showFoot = !isHome;
 const here = (href: string) => (href === '/journal' ? path.startsWith('/journal') : path === href);
 const bar = [
   { href: '/story', label: 'Story' },
