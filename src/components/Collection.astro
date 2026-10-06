@@ -1,0 +1,539 @@
+---
+import RevealHeading from './RevealHeading.astro';
+import Still from './Still.astro';
+import WindowFrame from './WindowFrame.astro';
+import {
+  collectionAddons,
+  collectionClose,
+  collectionIntro,
+  collectionShowpieces,
+  collectionTiers,
+  type CollectionModel,
+} from '../data/collection';
+import { roomBySlug, roomConcepts, type RoomConcept } from '../lib/rooms';
+
+type Placed = {
+  model: CollectionModel;
+  room: RoomConcept & { image: string };
+};
+
+const seen = new Set<string>();
+const placedTiers = collectionTiers.map((tier) => {
+  const models: Placed[] = tier.models.map((model) => {
+    if (seen.has(model.slug)) throw new Error(`Collection lists ${model.slug} twice`);
+    seen.add(model.slug);
+    const room = roomBySlug(model.slug);
+    if (!room) throw new Error(`Collection slug ${model.slug} is not in rooms.ts`);
+    if (!room.image) throw new Error(`Collection model ${model.slug} needs a still in rooms.ts`);
+    return { model, room: { ...room, image: room.image } };
+  });
+  return { ...tier, models };
+});
+
+const listed = new Set(placedTiers.flatMap((tier) => tier.models.map((entry) => entry.room.slug)));
+for (const room of roomConcepts) {
+  if (!listed.has(room.slug)) throw new Error(`Room ${room.slug} is missing from the collection`);
+}
+if (listed.size !== 12) {
+  throw new Error(`The collection lists ${listed.size} models. The headline says twelve.`);
+}
+
+for (const piece of collectionShowpieces.items) {
+  if (piece.image && !piece.alt) throw new Error(`Showpiece ${piece.name} needs alt text`);
+}
+---
+
+<section class="collection" aria-labelledby="collection-title">
+  <header class="collection-intro" data-rise>
+    <p class="story-kicker">{collectionIntro.kicker}</p>
+    <RevealHeading as="h2" id="collection-title" class="collection-title">{collectionIntro.title}</RevealHeading>
+    <p class="story-lede collection-lede">{collectionIntro.lede}</p>
+  </header>
+
+  {
+    placedTiers.map((tier) => (
+      <section class="tier" aria-labelledby={`tier-${tier.id}`}>
+        <header class="tier-head" data-rise>
+          <p class="tier-index" id={`tier-${tier.id}`}>
+            <span>{tier.index}</span>
+            {tier.name}
+          </p>
+          <p class="tier-line">{tier.line}</p>
+        </header>
+        <ul class="models" data-window-grid>
+          {tier.models.map(({ model, room }) => (
+            <li>
+              <article class="model" data-rise data-room-card data-cursor="drag">
+                <div class="room-tilt" data-room-tilt>
+                  <div class="model-face">
+                    <figure data-window>
+                      <WindowFrame>
+                        <Still
+                          src={room.image}
+                          alt={room.alt}
+                          position={room.focus}
+                          sizes="(max-width: 800px) 92vw, 42vw"
+                        />
+                      </WindowFrame>
+                    </figure>
+                    <div class="model-copy">
+                      <RevealHeading as="h3" class="model-name">{room.name}</RevealHeading>
+                      <p class="model-story">{model.story}</p>
+                      <ul class="features">
+                        {model.features.map((feature) => (
+                          <li>{feature}</li>
+                        ))}
+                      </ul>
+                      <a class="model-link is-slide" href={`/pre-order?model=${room.slug}`}>
+                        <span class="slide-face">
+                          <span class="slide-line">Start with this room</span>
+                          <span class="slide-line" aria-hidden="true">Start with this room</span>
+                        </span>
+                      </a>
+                    </div>
+                    <span class="room-sheen" aria-hidden="true"><span></span></span>
+                  </div>
+                </div>
+              </article>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))
+  }
+
+  <section class="coming" aria-labelledby="addons-title">
+    <header data-rise>
+      <p class="story-kicker">{collectionAddons.kicker}</p>
+      <RevealHeading as="h3" id="addons-title" class="collection-subhead">{collectionAddons.title}</RevealHeading>
+      <p class="block-line">{collectionAddons.line}</p>
+    </header>
+    <ul class="addons" data-rise>
+      {collectionAddons.items.map((item) => (
+        <li>
+          <p class="addon-name">{item.name}</p>
+          {item.detail && <p class="addon-detail">{item.detail}</p>}
+        </li>
+      ))}
+    </ul>
+    <div class="fun" data-rise>
+      <p class="fun-label">{collectionAddons.funLabel}</p>
+      <ul class="fun-list">
+        {collectionAddons.fun.map((name) => (
+          <li>{name}</li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="showpieces" aria-labelledby="showpieces-title">
+    <header data-rise>
+      <p class="story-kicker">{collectionShowpieces.kicker}</p>
+      <RevealHeading as="h3" id="showpieces-title" class="collection-subhead">{collectionShowpieces.title}</RevealHeading>
+      <p class="block-line">{collectionShowpieces.line}</p>
+    </header>
+    <ul class="pieces">
+      {collectionShowpieces.items.map((piece) => (
+        <li class:list={['piece', { 'has-still': Boolean(piece.image) }]} data-rise>
+          {piece.image && piece.alt && (
+            <figure data-window>
+              <WindowFrame>
+                <Still
+                  src={piece.image}
+                  alt={piece.alt}
+                  position={piece.focus ?? 'center'}
+                  sizes="(max-width: 800px) 92vw, 46vw"
+                />
+              </WindowFrame>
+            </figure>
+          )}
+          <div class="piece-copy">
+            <p class="piece-name">{piece.name}</p>
+            <p class="piece-line">{piece.line}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <div class="collection-close" data-rise>
+    <p class="close-title">{collectionClose.title}</p>
+    <p class="close-line">{collectionClose.line}</p>
+    <a class="collection-quote is-slide" href={collectionClose.href}>
+      <span class="slide-face">
+        <span class="slide-line">{collectionClose.cta}</span>
+        <span class="slide-line" aria-hidden="true">{collectionClose.cta}</span>
+      </span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .collection {
+    position: relative;
+    z-index: 1;
+    padding: 7vh 8vw 2vh;
+    color: #14120e;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .collection-intro {
+    max-width: 46rem;
+    padding-bottom: 1.5rem;
+  }
+  .collection :global(.collection-title) {
+    margin: 0;
+    max-width: 12em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.6rem, 5.4vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+  }
+  .collection-lede {
+    max-width: 38rem;
+  }
+  .tier {
+    padding-top: 4.5rem;
+  }
+  .tier-head {
+    max-width: 36rem;
+    padding-bottom: 0.5rem;
+  }
+  .tier-index {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.45rem, 2.2vw, 2rem);
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+  }
+  .tier-index span {
+    display: inline-block;
+    margin-right: 0.9rem;
+    font-family: var(--font-inter), sans-serif;
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    color: #866243;
+    vertical-align: 0.28em;
+  }
+  .tier-line,
+  .block-line {
+    max-width: 34rem;
+    margin: 0.85rem 0 0;
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    color: rgba(20, 18, 14, 0.72);
+  }
+  .models {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .model {
+    perspective: 1100px;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .models li:last-child .model {
+    border-bottom: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .room-tilt {
+    transform-origin: center center;
+  }
+  .model-face {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: clamp(1.5rem, 4vw, 4.5rem);
+    align-items: center;
+    padding: clamp(2.2rem, 4vh, 3.4rem) 0;
+  }
+  .model figure,
+  .piece figure {
+    margin: 0;
+    overflow: hidden;
+    background: #0c0d0e;
+    aspect-ratio: 3 / 2;
+  }
+  .collection :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .model-copy {
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+  }
+  .collection :global(.model-name) {
+    margin: 0 0 0.7rem;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 2.4vw, 2.15rem);
+    letter-spacing: -0.03em;
+    line-height: 1.12;
+  }
+  .model-story {
+    max-width: 28rem;
+    margin: 0 0 1.15rem;
+    font-weight: 300;
+    font-size: 1.05rem;
+    line-height: 1.55;
+    color: rgba(20, 18, 14, 0.74);
+  }
+  .features {
+    margin: 0 0 1.45rem;
+    padding: 0;
+    list-style: none;
+  }
+  .features li {
+    margin: 0;
+    padding: 0.38rem 0;
+    border-top: 1px solid rgba(20, 18, 14, 0.1);
+    font-weight: 300;
+    font-size: 0.92rem;
+    line-height: 1.4;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  .features li:last-child {
+    border-bottom: 1px solid rgba(20, 18, 14, 0.1);
+  }
+  .model-link,
+  .collection-quote {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.7rem 1.05rem;
+    border: 1px solid #14120e;
+    color: #14120e;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .model-link:focus-visible,
+  .collection-quote:focus-visible {
+    outline: 1px solid #866243;
+    outline-offset: 4px;
+  }
+  .room-sheen {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .room-sheen span {
+    position: absolute;
+    top: -40%;
+    bottom: -40%;
+    left: 0;
+    width: 38%;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(244, 243, 239, 0.04) 28%,
+      rgba(255, 255, 255, 0.62) 47%,
+      rgba(206, 220, 214, 0.22) 55%,
+      rgba(255, 255, 255, 0.05) 68%,
+      transparent 100%
+    );
+    transform: translate3d(-160%, 0, 0) skewX(-16deg);
+    opacity: 0;
+  }
+  .coming,
+  .showpieces {
+    padding-top: 6.5rem;
+  }
+  .collection :global(.collection-subhead) {
+    margin: 0;
+    max-width: 14em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2rem, 3.6vw, 3.1rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .addons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    margin: 2.4rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .addons li {
+    padding: 1.2rem 2rem 1.2rem 0;
+    border-bottom: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .addons li:nth-child(odd) {
+    border-right: 1px solid rgba(20, 18, 14, 0.14);
+    padding-right: 2rem;
+  }
+  .addons li:nth-child(even) {
+    padding-left: 2rem;
+  }
+  .addon-name,
+  .piece-name {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .addon-detail {
+    margin: 0.35rem 0 0;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  .fun {
+    margin-top: 2.6rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid rgba(20, 18, 14, 0.1);
+  }
+  .fun-label {
+    margin: 0;
+    font-weight: 300;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(134, 98, 67, 0.85);
+  }
+  .fun-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.8rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .fun-list li {
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: 1.02rem;
+    letter-spacing: -0.02em;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  .pieces {
+    margin: 2.2rem 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .piece {
+    padding: 1.35rem 0;
+    border-bottom: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .piece:not(.has-still) {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.85fr) minmax(0, 1.15fr);
+    gap: 0.75rem 3rem;
+    align-items: baseline;
+  }
+  .piece:not(.has-still) .piece-copy {
+    display: contents;
+  }
+  .piece.has-still {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.85fr);
+    gap: clamp(1.25rem, 3vw, 2.75rem);
+    align-items: end;
+    padding: 2.2rem 0 2.4rem;
+  }
+  .piece-line {
+    margin: 0;
+    font-weight: 300;
+    font-size: 1.02rem;
+    line-height: 1.5;
+    color: rgba(20, 18, 14, 0.68);
+  }
+  .piece.has-still .piece-line {
+    margin-top: 0.55rem;
+  }
+  .collection-close {
+    max-width: 36rem;
+    padding: 6.5rem 0 8vh;
+  }
+  .close-title {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2.2rem, 4vw, 3.4rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+  }
+  .close-line {
+    margin: 0.9rem 0 1.7rem;
+    font-weight: 300;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: rgba(20, 18, 14, 0.72);
+  }
+  @keyframes collection-sheen {
+    0% {
+      transform: translate3d(-160%, 0, 0) skewX(-16deg);
+      opacity: 0;
+    }
+    18% {
+      opacity: 0.72;
+    }
+    72% {
+      opacity: 0.72;
+    }
+    100% {
+      transform: translate3d(340%, 0, 0) skewX(-16deg);
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .model:hover .room-sheen span,
+    .model:focus-within .room-sheen span {
+      animation: collection-sheen 3.4s cubic-bezier(0.77, 0, 0.175, 1);
+    }
+    .model img,
+    .piece img {
+      transition: transform 1.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .model:hover img,
+    .model:focus-within img,
+    .piece.has-still:hover img,
+    .piece.has-still:focus-within img {
+      transform: scale(1.035);
+    }
+    .model-link,
+    .collection-quote {
+      transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .model-link:hover,
+    .collection-quote:hover {
+      opacity: 0.55;
+    }
+  }
+  @media (max-width: 800px) {
+    .collection {
+      padding: 5vh 1.5rem 1vh;
+    }
+    .model-face,
+    .piece.has-still,
+    .piece:not(.has-still),
+    .addons {
+      grid-template-columns: 1fr;
+    }
+    .addons li,
+    .addons li:nth-child(odd),
+    .addons li:nth-child(even) {
+      padding: 1.1rem 0;
+      border-right: 0;
+    }
+    .collection-close {
+      padding-top: 4.5rem;
+    }
+  }
+</style>

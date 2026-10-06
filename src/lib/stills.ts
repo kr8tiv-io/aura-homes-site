@@ -5,6 +5,8 @@ import storyRoom from '../assets/media/story-room.webp';
 import storyNest from '../assets/media/story-nest.webp';
 import lounge from '../assets/media/layout-lounge-wind.webp';
 import forest from '../assets/media/layout-forest.webp';
+import gazebo from '../assets/media/layout-gazebo.webp';
+import shell from '../assets/media/layout-shell.webp';
 import sky from '../assets/media/layout-sky.webp';
 import night from '../assets/media/layout-night.webp';
 import resortDeck from '../assets/media/resort-deck.webp';
@@ -29,6 +31,8 @@ const stills: Record<string, ImageMetadata> = {
   '/film/story-nest.webp': storyNest,
   '/film/layout-lounge-wind.webp': lounge,
   '/film/layout-forest.webp': forest,
+  '/film/layout-gazebo.webp': gazebo,
+  '/film/layout-shell.webp': shell,
   '/film/layout-sky.webp': sky,
   '/film/layout-night.webp': night,
   '/film/resort-deck.webp': resortDeck,
