@@ -251,6 +251,15 @@ export const credits: Credit[] = [
     category: 'Code and libraries',
   },
   {
+    name: 'Aura Homes builder',
+    author: 'Matt Aurora Ventures / KR8TIV AI',
+    license: 'MIT',
+    link: 'https://github.com/kr8tiv-ai/aura-homes',
+    licenseLink: mit,
+    usedFor: 'The room builder: the home spec, the geometry, the fixtures, and the share link on Build Your Own.',
+    category: 'Code and libraries',
+  },
+  {
     name: 'Meadow atlas',
     author: 'Aura Homes',
     license: 'Aura Homes, original',

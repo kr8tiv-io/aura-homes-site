@@ -135,7 +135,7 @@ const foot = innerMenu.flatMap((group) => group.links);
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogAlt} />
   </head>
-  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder, 'nav-on-film': isHome || isBuilder || path.startsWith('/back-to-nature') }]}>
+  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder, 'nav-on-film': isHome || path.startsWith('/back-to-nature') }]}>
     {isHome ? (
       <>
         <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>

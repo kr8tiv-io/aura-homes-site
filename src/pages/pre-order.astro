@@ -98,6 +98,21 @@ const offgrid = [
             <span class="field-glow" aria-hidden="true"></span>
           </div>
           <div class="field">
+            <input id="quote-size" name="size" type="text" maxlength="40" placeholder=" " />
+            <label for="quote-size">Size (optional)</label>
+            <span class="field-glow" aria-hidden="true"></span>
+          </div>
+          <div class="field is-wide">
+            <input id="quote-addons" name="addons" type="text" maxlength="500" placeholder=" " />
+            <label for="quote-addons">Add-ons (optional)</label>
+            <span class="field-glow" aria-hidden="true"></span>
+          </div>
+          <div class="field is-wide">
+            <input id="quote-share" name="share" type="text" maxlength="8000" placeholder=" " />
+            <label for="quote-share">Share link (optional)</label>
+            <span class="field-glow" aria-hidden="true"></span>
+          </div>
+          <div class="field">
             <select id="quote-offgrid" name="offgrid" required>
               <option value="" selected disabled>Choose one</option>
               {offgrid.map(([value, label]) => (
@@ -243,17 +258,28 @@ const offgrid = [
   ) {
     finishEl.value = finishParam;
   }
+  const sizeParam = params.get('size') || '';
+  const addonsParam = params.get('add-ons') || '';
+  const shareParam = params.get('share') || '';
+  const sizeEl = document.getElementById('quote-size');
+  const addonsEl = document.getElementById('quote-addons');
+  const shareEl = document.getElementById('quote-share');
+  if (sizeEl instanceof HTMLInputElement && sizeParam) sizeEl.value = sizeParam;
+  if (addonsEl instanceof HTMLInputElement && addonsParam) addonsEl.value = addonsParam;
+  if (shareEl instanceof HTMLInputElement && shareParam) shareEl.value = shareParam;
   const message = document.getElementById('quote-message');
-  if (
-    lengthLabel &&
-    designLabel &&
-    message instanceof HTMLTextAreaElement &&
-    message.value.trim() === ''
-  ) {
-    const finishName = finishEl instanceof HTMLSelectElement
-      ? finishEl.selectedOptions[0]?.textContent?.trim()
-      : '';
-    message.value = `Design: ${lengthLabel}. ${finishName} finish. ${designLabel}.`;
+  if (message instanceof HTMLTextAreaElement && message.value.trim() === '') {
+    if (lengthLabel && designLabel) {
+      const finishName = finishEl instanceof HTMLSelectElement
+        ? finishEl.selectedOptions[0]?.textContent?.trim()
+        : '';
+      message.value = `Design: ${lengthLabel}. ${finishName} finish. ${designLabel}.`;
+    } else if (sizeParam || addonsParam) {
+      const lines = [];
+      if (sizeParam) lines.push(`Size: ${sizeParam}.`);
+      if (addonsParam) lines.push(`Add-ons: ${addonsParam}.`);
+      message.value = lines.join(' ');
+    }
   }
 
   const designAsk = () => {
@@ -349,6 +375,9 @@ const offgrid = [
             ['Model', fieldText('model')],
             ['Intended use', fieldText('use')],
             ['Polycarbonate finish', fieldText('finish')],
+            ['Size', fieldText('size')],
+            ['Add-ons', fieldText('addons')],
+            ['Share link', fieldText('share')],
             ['Off-grid interest', fieldText('offgrid')],
             ['Timeline', fieldText('timeline')],
             ['Message', fieldText('message')],
