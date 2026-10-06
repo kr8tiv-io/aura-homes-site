@@ -71,6 +71,16 @@ export function applyMacro(material: THREE.Material) {
         .replace(
           '#include <begin_vertex>',
           '#include <begin_vertex>\nvMacroWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;',
+        )
+        .replace(
+          '#include <uv_vertex>',
+          `#include <uv_vertex>
+#ifdef USE_MAP
+  vec2 seamP = position.xz * 0.11;
+  float seamA = sin(dot(seamP, vec2(1.7, 2.3)));
+  float seamB = sin(dot(seamP, vec2(2.9, 1.1)) + 1.7);
+  vMapUv += vec2(seamA, seamB) * 0.28;
+#endif`,
         );
     }
     shader.uniforms.tMacroSoil = { value: (material.userData.macroSoil as THREE.Texture | undefined) ?? WHITE };
@@ -85,6 +95,6 @@ export function applyMacro(material: THREE.Material) {
         .replace('#include <color_fragment>', `#include <color_fragment>\n${MACRO_APPLY}`);
     }
   };
-  material.customProgramCacheKey = () => `macro-${previousKey()}`;
+  material.customProgramCacheKey = () => `macro-v2-${previousKey()}`;
   return material;
 }
