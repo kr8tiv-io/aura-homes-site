@@ -205,14 +205,13 @@ p {
   stroke-width: 2;
 }
 /* At the locked nav width a 2-unit stroke falls under a pixel, so the ring disappears. */
-.aura-logo .aura-ring,
-.nav-sigil .sigil-ring {
+.aura-logo .aura-ring {
   stroke-width: 6;
 }
 /* The nav blends with difference. Inverse bronze paints back as #c4a07a on alabaster. */
 .site-nav .aura-ring { stroke: #3b5f85; }
-body.nav-on-film .site-nav .aura-ring,
-body[data-living-nav] .site-nav .aura-ring {
+body[data-living-nav] .site-nav .aura-ring,
+body.film-bar .site-nav.topbar.is-clear .aura-ring {
   stroke: #c4a07a;
 }
 .nav-name,
@@ -579,14 +578,12 @@ body[data-living-nav] .site-nav .aura-ring {
 .site-nav > * {
   pointer-events: auto;
 }
-/* Ivory over footage. Difference blend cannot hold a stable white on the hero. */
-body.nav-on-film .site-nav,
+/* Light type while a living hero still covers an inner page. */
 body[data-living-nav] .site-nav {
   mix-blend-mode: normal;
   color: #f4f3ef;
   text-shadow: 0 1px 2px rgba(8, 12, 16, 0.65), 0 8px 22px rgba(8, 12, 16, 0.35);
 }
-body.nav-on-film .site-nav::before,
 body[data-living-nav] .site-nav::before {
   content: "";
   position: absolute;
@@ -598,27 +595,15 @@ body[data-living-nav] .site-nav::before {
   background: linear-gradient(to bottom, rgba(8, 12, 16, 0.5) 0%, rgba(8, 12, 16, 0.18) 58%, rgba(8, 12, 16, 0) 100%);
   pointer-events: none;
 }
-body.nav-on-film .nav-words a,
-body.nav-on-film .nav-descriptor,
-body[data-living-nav] .nav-words a,
-body[data-living-nav] .nav-descriptor {
+body[data-living-nav] .nav-words a {
   opacity: 1;
 }
-body.nav-on-film .nav-words a:hover,
-body.nav-on-film .nav-words a:focus-visible,
 body[data-living-nav] .nav-words a:hover,
 body[data-living-nav] .nav-words a:focus-visible {
   opacity: 0.78;
 }
-body.nav-on-film .nav-words a[aria-current='page'],
 body[data-living-nav] .nav-words a[aria-current='page'] {
   opacity: 1;
-}
-body.nav-on-film .nav-cta:hover,
-body.nav-on-film .nav-cta:focus-visible,
-body[data-living-nav] .nav-cta:hover,
-body[data-living-nav] .nav-cta:focus-visible {
-  text-shadow: none;
 }
 @media (min-width: 768px) {
   .site-nav {
@@ -675,32 +660,17 @@ body[data-living-nav] .nav-cta:focus-visible {
   display: grid;
   place-items: center;
 }
-.nav-menu:focus-visible {
+.nav-menu:focus-visible,
+.site-nav.topbar a:focus-visible,
+.site-nav.topbar button:focus-visible {
   outline: 1px solid currentColor;
-  outline-offset: 4px;
+  outline-offset: 3px;
 }
-.nav-sigil {
-  width: 46px;
-  height: auto;
-  overflow: visible;
+body.film-bar .site-nav.topbar.is-clear a:focus-visible,
+body.film-bar .site-nav.topbar.is-clear button:focus-visible {
+  outline-color: #f4f3ef;
+  box-shadow: 0 0 0 1px rgba(12, 13, 14, 0.55);
 }
-.sigil-ridge,
-.sigil-ridge path {
-  fill: currentColor;
-  stroke: none;
-}
-.sigil-ring {
-  fill: none;
-  stroke: #3b5f85;
-  stroke-width: 2;
-}
-body.nav-on-film .sigil-ring,
-body[data-living-nav] .sigil-ring { stroke: #c4a07a; }
-.sigil-mark {
-  opacity: 1;
-  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.nav-menu[aria-expanded='true'] .sigil-mark { opacity: 0; }
 .warmth-canvas {
   position: fixed;
   inset: 0;
@@ -975,7 +945,6 @@ body.menu-open .site-nav { z-index: 80; }
   transition: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  .sigil-mark,
   .nav-panel,
   .menu-horizon,
   .menu-ridge,
@@ -1004,8 +973,17 @@ body.menu-open .site-nav { z-index: 80; }
   height: 56px;
   padding: 0 1.15rem;
   gap: 0.75rem;
+  box-sizing: border-box;
+  border-bottom: 1px solid transparent;
   transform: translate3d(0, 0, 0);
   transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+body.film-bar .site-nav.topbar {
+  transition:
+    transform 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.6s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .site-nav.topbar.is-away {
   transform: translate3d(0, -100%, 0);
@@ -1024,26 +1002,48 @@ body.menu-open .site-nav.topbar.is-away {
   transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .site-nav.topbar.is-frost .topbar-frost { opacity: 1; }
-body.nav-on-film .site-nav.topbar::before,
+body.film-bar .topbar-frost {
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
 body[data-living-nav] .site-nav.topbar::before,
-.site-nav.topbar.is-frost::before {
+.site-nav.topbar.is-frost::before,
+body.film-bar .site-nav.topbar.is-clear::before {
   opacity: 0;
 }
 .site-nav.topbar.is-frost {
   mix-blend-mode: normal;
   color: #0c0d0e;
   text-shadow: none;
+  border-bottom-color: rgba(12, 13, 14, 0.14);
 }
-body.nav-on-film .site-nav.topbar.is-frost,
 body[data-living-nav] .site-nav.topbar.is-frost {
   color: #f4f3ef;
+  border-bottom-color: transparent;
 }
-body.nav-on-film .site-nav.topbar.is-frost .topbar-frost,
 body[data-living-nav] .site-nav.topbar.is-frost .topbar-frost {
   background: rgba(12, 13, 14, 0.78);
 }
+/* Splash and Back to nature: clear over the film, then the same ivory bar. */
+body.film-bar .site-nav.topbar.is-clear {
+  mix-blend-mode: normal;
+  background-color: transparent;
+  color: #f4f3ef;
+  text-shadow: 0 1px 2px rgba(8, 12, 16, 0.65), 0 8px 22px rgba(8, 12, 16, 0.35);
+  border-bottom-color: transparent;
+}
+body.film-bar .site-nav.topbar.is-clear .topbar-frost {
+  opacity: 0;
+}
+body.film-bar .site-nav.topbar:not(.is-clear).is-frost {
+  color: #0c0d0e;
+  text-shadow: none;
+  border-bottom-color: rgba(12, 13, 14, 0.14);
+}
+body.film-bar .site-nav.topbar:not(.is-clear).is-frost .topbar-frost {
+  background: rgba(244, 243, 239, 0.86);
+  opacity: 1;
+}
 .site-nav.topbar.is-frost .aura-ring,
-body.nav-on-film .site-nav.topbar .aura-ring,
 body[data-living-nav] .site-nav.topbar .aura-ring {
   stroke: #c4a07a;
 }
@@ -1136,12 +1136,26 @@ body[data-living-nav] .site-nav.topbar .aura-ring {
     height: 56px;
     padding: 0 0.85rem 0 1rem;
   }
-  .site-nav.topbar .nav-words,
-  .site-nav.topbar .nav-quote { display: none; }
+  .site-nav.topbar .nav-words { display: none; }
+}
+@media (max-width: 420px) {
+  .site-nav.topbar { gap: 0.35rem; }
+  .site-nav.topbar .nav-name { letter-spacing: 0.14em; }
+  .site-nav.topbar .nav-quote {
+    padding: 0 0.55rem;
+    letter-spacing: 0.08em;
+  }
+  .site-nav.topbar .nav-menu {
+    padding: 0 0.15rem 0 0.3rem;
+    letter-spacing: 0.1em;
+    gap: 0.35rem;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .site-nav.topbar,
+  body.film-bar .site-nav.topbar,
   .topbar-frost,
+  body.film-bar .topbar-frost,
   .menu-line { transition: none; }
 }
 .later-hero {
@@ -1279,29 +1293,6 @@ body[data-living-nav] .site-nav.topbar .aura-ring {
 .nav-link:hover {
   opacity: 1;
 }
-.nav-cta {
-  display: inline-flex;
-  align-items: center;
-  min-height: 44px;
-  padding: 0.55rem 1.4rem;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  transition:
-    background-color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    color 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.nav-cta:hover {
-  background: #f4f3ef;
-  color: #0c0d0e;
-}
-.nav-cta:active {
-  transform: scale(0.96);
-}
 
 .site-cursor {
   position: fixed;
@@ -1341,9 +1332,6 @@ html.has-cursor select {
 }
 html.has-cursor button:disabled {
   cursor: wait !important;
-}
-html.has-cursor .nav-cta {
-  transition-property: background-color, color;
 }
 
 .sanctuary-section {
@@ -1538,12 +1526,6 @@ html.has-cursor .nav-cta {
   text-transform: uppercase;
   font-size: 0.625rem;
   color: rgba(244, 243, 239, 0.7);
-}
-.nav-descriptor {
-  font-size: 0.625rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  opacity: 0.62;
 }
 
 .stat-num {

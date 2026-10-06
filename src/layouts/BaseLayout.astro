@@ -5,6 +5,7 @@ import { Font, getImage } from 'astro:assets';
 import Ambient from '../components/Ambient.astro';
 import RidgeLoad from '../components/RidgeLoad.astro';
 import AuraMark from '../components/AuraMark.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 import cabinPoster from '../../public/film/cabin-poster-hi.webp';
 import { organizationJson } from '../lib/organization';
 
@@ -18,7 +19,7 @@ interface Props {
 const tagline = 'Return to Aura.';
 const taglineMore = 'One beautiful room at a time.';
 const about = 'Return to Aura. One beautiful room at a time.';
-const { title: rawTitle, description = about, descriptor = 'On your land', noindex = false } = Astro.props;
+const { title: rawTitle, description = about, noindex = false } = Astro.props;
 const brandTitle = (raw: string) => {
   if (raw === 'Aura Homes' || raw.endsWith('| Aura Homes')) return raw;
   if (raw.startsWith('Aura Homes | ')) return `${raw.slice('Aura Homes | '.length)} | Aura Homes`;
@@ -36,14 +37,9 @@ const organization = organizationJson(origin);
 const ogAlt = 'An Aura room at dusk, set in a meadow.';
 const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
+const filmBar = isHome || path.startsWith('/back-to-nature');
 const showFoot = !isHome;
 const here = (href: string) => (href === '/journal' ? path.startsWith('/journal') : path === href);
-const bar = [
-  { href: '/story', label: 'Story' },
-  { href: '/rooms', label: 'Rooms' },
-  { href: '/customs', label: 'Customs' },
-  { href: '/journal', label: 'Journal' },
-];
 const menu = [
   {
     label: 'The room',
@@ -135,7 +131,7 @@ const foot = innerMenu.flatMap((group) => group.links);
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={ogAlt} />
   </head>
-  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder, 'nav-on-film': isHome || path.startsWith('/back-to-nature') }]}>
+  <body class:list={['bg-alabaster text-obsidian font-inter antialiased', { 'is-builder': isBuilder, 'film-bar': filmBar }]}>
     {isHome ? (
       <>
         <canvas id="tracers-canvas" class="tracers-canvas" aria-hidden="true"></canvas>
@@ -163,131 +159,7 @@ const foot = innerMenu.flatMap((group) => group.links);
       </>
     )}
 
-    {isHome ? (
-      <header class="site-nav">
-        <a href="/" class="nav-brand">
-          <AuraMark play />
-          <span class="font-cinzel text-xl tracking-widest uppercase">Aura</span>
-          <span class="nav-descriptor hidden lg:inline pl-4 border-l border-current/30">{descriptor}</span>
-        </a>
-        <nav class="nav-words" aria-label="Pages">
-          {bar.map((item) => (
-            <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-          ))}
-        </nav>
-        <div class="nav-tools">
-          <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
-            <svg class="nav-sigil" viewBox="0 0 200 188" aria-hidden="true">
-              <g class="sigil-mark">
-                <ellipse class="sigil-ring" cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" fill="none" stroke="#c4a07a" stroke-width="2" />
-                <g class="sigil-ridge">
-                  <path d="M6.000,172.810 L41.915,140.885 L60.831,159.801 L100.000,54.046 L139.169,159.801 L158.085,140.885 L194.000,172.810 L194.000,167.190 L157.915,135.115 L140.831,152.199 L100.000,41.954 L59.169,152.199 L42.085,135.115 L6.000,167.190 Z" />
-                  <path d="M6.000,167.790 L6.000,164.390 L6.900,164.390 Q6.900,166.390 13.000,160.968 L13.000,161.568 Z" />
-                  <path d="M6.000,172.210 L6.000,175.610 L6.900,175.610 Q6.900,172.010 13.000,166.587 L13.000,165.987 Z" />
-                  <path d="M194.000,167.790 L194.000,164.390 L193.100,164.390 Q193.100,166.390 187.000,160.968 L187.000,161.568 Z" />
-                  <path d="M194.000,172.210 L194.000,175.610 L193.100,175.610 Q193.100,172.010 187.000,166.587 L187.000,165.987 Z" />
-                </g>
-              </g>
-            </svg>
-          </button>
-          <a href="/pre-order" class="nav-cta is-slide"><span class="slide-face"><span class="slide-line">Pre-order</span><span class="slide-line" aria-hidden="true">Pre-order</span></span></a>
-        </div>
-      </header>
-    ) : (
-      <header class="site-nav topbar" data-topbar transition:name="site-nav" transition:persist="site-nav" transition:animate="none">
-        <span class="topbar-frost" aria-hidden="true"></span>
-        <a href="/" class="nav-brand">
-          <AuraMark play />
-          <span class="nav-name">Aura</span>
-        </a>
-        <nav class="nav-words" aria-label="Pages">
-          {topLinks.map((item) => (
-            <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-          ))}
-        </nav>
-        <div class="nav-tools">
-          <a href="/pre-order" class="nav-quote" aria-current={path === '/pre-order' ? 'page' : undefined}>Get a quote</a>
-          <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
-            <span class="menu-word">Menu</span>
-            <span class="menu-icon" aria-hidden="true">
-              <span class="menu-line"></span>
-              <span class="menu-line is-short"></span>
-            </span>
-          </button>
-        </div>
-      </header>
-    )}
-    {isHome ? (
-      <div id="story-menu" class="nav-panel" role="dialog" aria-modal="true" aria-label="Menu" hidden>
-        <div class="menu-horizon" aria-hidden="true"></div>
-        <div class="menu-stage" aria-hidden="true">
-          <div class="menu-ridge-clip">
-            <div class="menu-ridge-shift">
-              <svg class="menu-ridge" viewBox="0 0 200 188" fill="none">
-                <g class="aura-ridge">
-                  <path d="M6.000,172.810 L41.915,140.885 L60.831,159.801 L100.000,54.046 L139.169,159.801 L158.085,140.885 L194.000,172.810 L194.000,167.190 L157.915,135.115 L140.831,152.199 L100.000,41.954 L59.169,152.199 L42.085,135.115 L6.000,167.190 Z" />
-                  <path d="M6.000,167.790 L6.000,164.390 L6.900,164.390 Q6.900,166.390 13.000,160.968 L13.000,161.568 Z" />
-                  <path d="M6.000,172.210 L6.000,175.610 L6.900,175.610 Q6.900,172.010 13.000,166.587 L13.000,165.987 Z" />
-                  <path d="M194.000,167.790 L194.000,164.390 L193.100,164.390 Q193.100,166.390 187.000,160.968 L187.000,161.568 Z" />
-                  <path d="M194.000,172.210 L194.000,175.610 L193.100,175.610 Q193.100,172.010 187.000,166.587 L187.000,165.987 Z" />
-                </g>
-              </svg>
-            </div>
-          </div>
-          <svg class="menu-ring" viewBox="0 0 200 188" fill="none" aria-hidden="true">
-            <ellipse class="aura-ring" cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" />
-          </svg>
-        </div>
-        <div class="nav-copy">
-          <p class="nav-thesis">{tagline} {taglineMore}</p>
-          <div class="nav-groups">
-            {menu.map((group) => (
-              <div>
-                <p>{group.label}</p>
-                {group.links.map((item) => (
-                  <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    ) : (
-      <div id="story-menu" class="nav-panel is-horizon" role="dialog" aria-modal="true" aria-label="Menu" hidden transition:name="story-menu" transition:persist="story-menu" transition:animate="none">
-        <div class="menu-horizon" aria-hidden="true"></div>
-        <div class="menu-stage" aria-hidden="true">
-          <div class="menu-ridge-clip">
-            <div class="menu-ridge-shift">
-              <svg class="menu-ridge" viewBox="0 0 200 188" fill="none" shape-rendering="geometricPrecision">
-                <g class="aura-ridge">
-                  <path d="M6.000,172.810 L41.915,140.885 L60.831,159.801 L100.000,54.046 L139.169,159.801 L158.085,140.885 L194.000,172.810 L194.000,167.190 L157.915,135.115 L140.831,152.199 L100.000,41.954 L59.169,152.199 L42.085,135.115 L6.000,167.190 Z" />
-                  <path d="M6.000,167.790 L6.000,164.390 L6.900,164.390 Q6.900,166.390 13.000,160.968 L13.000,161.568 Z" />
-                  <path d="M6.000,172.210 L6.000,175.610 L6.900,175.610 Q6.900,172.010 13.000,166.587 L13.000,165.987 Z" />
-                  <path d="M194.000,167.790 L194.000,164.390 L193.100,164.390 Q193.100,166.390 187.000,160.968 L187.000,161.568 Z" />
-                  <path d="M194.000,172.210 L194.000,175.610 L193.100,175.610 Q193.100,172.010 187.000,166.587 L187.000,165.987 Z" />
-                </g>
-              </svg>
-            </div>
-          </div>
-          <svg class="menu-ring" viewBox="0 0 200 188" fill="none" aria-hidden="true">
-            <ellipse class="aura-ring" cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" />
-          </svg>
-        </div>
-        <div class="nav-copy">
-          <p class="nav-thesis">{tagline} {taglineMore}</p>
-          <div class="nav-groups">
-            {innerMenu.map((group) => (
-              <div>
-                <p>{group.label}</p>
-                {group.links.map((item) => (
-                  <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    )}
+    <SiteHeader path={path} filmBar={filmBar} topLinks={topLinks} groups={innerMenu} tagline={tagline} taglineMore={taglineMore} />
 
     <Ambient persist={!isHome} />
     {!isHome && <RidgeLoad />}
@@ -350,10 +222,6 @@ const foot = innerMenu.flatMap((group) => group.links);
         if (!incoming) return;
         copyCurrent(document.querySelector('.site-nav'), incoming.querySelector('.site-nav'));
         copyCurrent(document.getElementById('story-menu'), incoming.getElementById('story-menu'));
-        const liveDesc = document.querySelector('.nav-descriptor');
-        const nextDesc = incoming.querySelector('.nav-descriptor');
-        if (liveDesc && nextDesc) liveDesc.textContent = nextDesc.textContent;
-        const liveTools = document.querySelector('.nav-tools');
         const liveQuote = document.querySelector<HTMLAnchorElement>('.site-nav .nav-quote');
         const nextQuote = incoming.querySelector<HTMLAnchorElement>('.site-nav .nav-quote');
         if (liveQuote && nextQuote) {
@@ -361,17 +229,9 @@ const foot = innerMenu.flatMap((group) => group.links);
           if (current) liveQuote.setAttribute('aria-current', current);
           else liveQuote.removeAttribute('aria-current');
         }
-        const liveCta = document.querySelector<HTMLAnchorElement>('.site-nav .nav-cta');
-        const nextCta = incoming.querySelector<HTMLAnchorElement>('.site-nav .nav-cta');
-        if (liveCta && nextCta) {
-          const current = nextCta.getAttribute('aria-current');
-          if (current) liveCta.setAttribute('aria-current', current);
-          else liveCta.removeAttribute('aria-current');
-        } else if (liveCta && !nextCta) {
-          liveCta.remove();
-        } else if (!liveCta && nextCta && liveTools) {
-          liveTools.append(nextCta.cloneNode(true));
-        }
+        const nextBar = incoming.querySelector('.topbar');
+        const liveBar = document.querySelector('.topbar');
+        if (liveBar && nextBar) liveBar.classList.toggle('is-clear', nextBar.classList.contains('is-clear'));
       }) as EventListener);
 
       document.addEventListener('astro:after-swap', () => {
@@ -502,7 +362,7 @@ const foot = innerMenu.flatMap((group) => group.links);
       const panel = document.getElementById('story-menu');
       const pageMain = document.querySelector('.page-main') as HTMLElement | null;
       const foot = document.querySelector('.site-foot') as HTMLElement | null;
-      const navLock = Array.from(document.querySelectorAll('.nav-brand, .nav-words, .nav-cta, .nav-quote, .ambient')) as HTMLElement[];
+      const navLock = Array.from(document.querySelectorAll('.nav-brand, .nav-words, .nav-quote, .ambient')) as HTMLElement[];
       const line = panel?.querySelector('.menu-horizon') as HTMLElement | null;
       const clip = panel?.querySelector('.menu-ridge-clip') as HTMLElement | null;
       const shift = panel?.querySelector('.menu-ridge-shift') as HTMLElement | null;
@@ -663,11 +523,39 @@ const foot = innerMenu.flatMap((group) => group.links);
       moveThumb();
 
       let topbarLast = 0;
+      let filmWatch: IntersectionObserver | null = null;
+      const syncFilmBar = () => {
+        const bar = document.querySelector<HTMLElement>('.topbar');
+        if (!bar) return;
+        if (!document.body.classList.contains('film-bar')) {
+          bar.classList.remove('is-clear');
+          return;
+        }
+        const hero = document.querySelector<HTMLElement>('.splash') ?? document.querySelector<HTMLElement>('[data-living-hero]');
+        if (!hero) {
+          bar.classList.remove('is-clear');
+          return;
+        }
+        const box = hero.getBoundingClientRect();
+        const over = box.bottom > 64 && box.top < window.innerHeight * 0.72;
+        bar.classList.toggle('is-clear', over);
+      };
+      const bindFilmBar = () => {
+        filmWatch?.disconnect();
+        filmWatch = null;
+        syncFilmBar();
+        if (!document.body.classList.contains('film-bar')) return;
+        const hero = document.querySelector<HTMLElement>('.splash') ?? document.querySelector<HTMLElement>('[data-living-hero]');
+        if (!hero) return;
+        filmWatch = new IntersectionObserver(() => syncFilmBar(), { threshold: [0, 0.02, 0.2, 0.5, 1] });
+        filmWatch.observe(hero);
+      };
       const applyTopbar = (y: number) => {
         const bar = document.querySelector<HTMLElement>('.topbar');
         if (!bar) return;
         const delta = y - topbarLast;
         bar.classList.toggle('is-frost', y > 80);
+        syncFilmBar();
         const open = document.body.classList.contains('menu-open');
         if (!open && y > 80 && delta > 2) bar.classList.add('is-away');
         else if (delta < -4 || y <= 8) bar.classList.remove('is-away');
@@ -676,6 +564,7 @@ const foot = innerMenu.flatMap((group) => group.links);
       const bindTopbarScroll = () => {
         const y = window.__lenis?.scroll ?? window.scrollY;
         topbarLast = y;
+        bindFilmBar();
         applyTopbar(y);
         window.__lenis?.on('scroll', (event: { scroll: number }) => applyTopbar(event.scroll));
       };

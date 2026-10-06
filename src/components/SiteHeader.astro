@@ -1,0 +1,106 @@
+---
+import AuraMark from './AuraMark.astro';
+
+interface Link {
+  href: string;
+  label: string;
+}
+
+interface Group {
+  label: string;
+  links: Link[];
+}
+
+interface Props {
+  path: string;
+  filmBar?: boolean;
+  topLinks: Link[];
+  groups: Group[];
+  tagline: string;
+  taglineMore: string;
+}
+
+const { path, filmBar = false, topLinks, groups, tagline, taglineMore } = Astro.props;
+const here = (href: string) => (href === '/journal' ? path.startsWith('/journal') : path === href);
+---
+
+<header
+  class:list={['site-nav', 'topbar', { 'is-clear': filmBar }]}
+  data-topbar
+  transition:name="site-nav"
+  transition:persist="site-nav"
+  transition:animate="none"
+>
+  <span class="topbar-frost" aria-hidden="true"></span>
+  <a href="/" class="nav-brand">
+    <AuraMark play />
+    <span class="nav-name">Aura</span>
+  </a>
+  <nav class="nav-words" aria-label="Pages">
+    {
+      topLinks.map((item) => (
+        <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))
+    }
+  </nav>
+  <div class="nav-tools">
+    <a href="/pre-order" class="nav-quote" aria-current={path === '/pre-order' ? 'page' : undefined}>Get a quote</a>
+    <button type="button" class="nav-menu" aria-expanded="false" aria-controls="story-menu" aria-haspopup="dialog" aria-label="Menu">
+      <span class="menu-word">Menu</span>
+      <span class="menu-icon" aria-hidden="true">
+        <span class="menu-line"></span>
+        <span class="menu-line is-short"></span>
+      </span>
+    </button>
+  </div>
+</header>
+<div
+  id="story-menu"
+  class="nav-panel is-horizon"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Menu"
+  hidden
+  transition:name="story-menu"
+  transition:persist="story-menu"
+  transition:animate="none"
+>
+  <div class="menu-horizon" aria-hidden="true"></div>
+  <div class="menu-stage" aria-hidden="true">
+    <div class="menu-ridge-clip">
+      <div class="menu-ridge-shift">
+        <svg class="menu-ridge" viewBox="0 0 200 188" fill="none" shape-rendering="geometricPrecision">
+          <g class="aura-ridge">
+            <path d="M6.000,172.810 L41.915,140.885 L60.831,159.801 L100.000,54.046 L139.169,159.801 L158.085,140.885 L194.000,172.810 L194.000,167.190 L157.915,135.115 L140.831,152.199 L100.000,41.954 L59.169,152.199 L42.085,135.115 L6.000,167.190 Z"></path>
+            <path d="M6.000,167.790 L6.000,164.390 L6.900,164.390 Q6.900,166.390 13.000,160.968 L13.000,161.568 Z"></path>
+            <path d="M6.000,172.210 L6.000,175.610 L6.900,175.610 Q6.900,172.010 13.000,166.587 L13.000,165.987 Z"></path>
+            <path d="M194.000,167.790 L194.000,164.390 L193.100,164.390 Q193.100,166.390 187.000,160.968 L187.000,161.568 Z"></path>
+            <path d="M194.000,172.210 L194.000,175.610 L193.100,175.610 Q193.100,172.010 187.000,166.587 L187.000,165.987 Z"></path>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <svg class="menu-ring" viewBox="0 0 200 188" fill="none" aria-hidden="true">
+      <ellipse class="aura-ring" cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)"></ellipse>
+    </svg>
+  </div>
+  <div class="nav-copy">
+    <p class="nav-thesis">{tagline} {taglineMore}</p>
+    <div class="nav-groups">
+      {
+        groups.map((group) => (
+          <div>
+            <p>{group.label}</p>
+            {group.links.map((item) => (
+              <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>
+                {item.label}
+              </a>
+            ))}
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</div>
