@@ -2,16 +2,33 @@
  * The twelve locked rooms, each started from a glass-catalog plan.
  * The old Nordic titles stay in the catalog. The form speaks the room names.
  */
-import { collectionAddons } from '../data/collection';
+import { collectionAddons, standaloneBySlug } from '../data/collection';
 import { roomConcepts, type RoomConcept } from '../lib/rooms';
 import { builderDocumentFromLegacySpec, type BuilderDocument } from './core/document';
 import { addFixture, emptyFixtureSet, type FixtureKindId, type FixtureSet } from './core/fixtures';
 import { GLASS_PLAN_TEMPLATES } from './core/planCatalog.glass';
 import { clamp, LIMITS, snap } from './ui/edits';
-import type { Deck, HomeSpec, Volume } from './core/spec';
+import { SPEC_VERSION, type Deck, type HomeSpec, type Volume } from './core/spec';
 
 export type OrderSize = 'snug' | 'room' | 'long';
 export type OrderGlaze = 'clear' | 'tinted' | 'mirror';
+export type WoodFinish = 'cedar' | 'thermowood';
+
+export const STANDALONE_SLUGS = ['hot-tub-time-machine', 'cool-runnings', 'fire-and-ice'] as const;
+
+export function isStandalone(slug: string): boolean {
+  return (STANDALONE_SLUGS as readonly string[]).includes(slug);
+}
+
+/** Hot Tub Time Machine and the Fire and Ice pair draw the site hot tub. */
+export function standaloneShowsTub(slug: string): boolean {
+  return slug === 'hot-tub-time-machine' || slug === 'fire-and-ice';
+}
+
+export const WOOD_FINISHES: { id: WoodFinish; label: string; note: string }[] = [
+  { id: 'cedar', label: 'Western red cedar', note: 'The grain, oiled and warm.' },
+  { id: 'thermowood', label: 'Thermowood', note: 'Heat-treated timber, quieter in colour.' },
+];
 
 export const ORDER_SIZES: { id: OrderSize; label: string; note: string; factor: number }[] = [
   { id: 'snug', label: 'Snug', note: 'A little closer to the glass.', factor: 0.82 },
@@ -133,6 +150,29 @@ export function roomForSlug(slug: string): RoomConcept | undefined {
   return roomConcepts.find((room) => room.slug === slug);
 }
 
+/** Finish is its own step. The rest are the piece's add-ons. */
+export function standaloneAddons(slug: string): OrderAddon[] {
+  const product = standaloneBySlug(slug);
+  if (!product) return [];
+  return product.addons
+    .filter((item) => item.id !== 'finish')
+    .map((item) => addon(`${slug}:${item.id}`, item.name, item.detail));
+}
+
+const PIECE_VOLUME: Volume = {
+  id: 'piece',
+  name: 'Piece',
+  widthFt: 8,
+  depthFt: 8,
+  x: 0,
+  z: 0,
+  rotationDeg: 0,
+  storeys: 1,
+  wallHeightFt: 8,
+  roof: { form: 'flat', pitchDeg: 1, overhangFt: 0.5 },
+  openings: [],
+};
+
 export function selectionFromDocument(doc: BuilderDocument): {
   slug: string;
   size: OrderSize;
@@ -148,17 +188,21 @@ export function selectionFromDocument(doc: BuilderDocument): {
   const size: OrderSize = sizeToken === 'snug' || sizeToken === 'long' ? sizeToken : 'room';
   const glaze: OrderGlaze = glazeToken === 'tinted' || glazeToken === 'mirror' ? glazeToken : 'clear';
   const plain = plainToken ? plainToken.split(',').filter(Boolean) : [];
+  const woodToken = token(notes, 'wood');
+  const wood: WoodFinish = woodToken === 'thermowood' ? 'thermowood' : 'cedar';
   const kinds = doc.fixtures.items.map((item) => item.kind);
-  return { slug, size, glaze, plain, kinds };
+  return { slug, size, glaze, wood, plain, kinds };
 }
 
 export function buildOrderDocument(input: {
   slug: string;
   size: OrderSize;
   glaze: OrderGlaze;
+  wood: WoodFinish;
   plain: readonly string[];
   kinds: readonly FixtureKindId[];
 }): BuilderDocument {
+  if (isStandalone(input.slug)) return buildStandaloneDocument(input);
   const room = roomForSlug(input.slug) ?? roomConcepts[0];
   const plan = planById.get(PLAN_BY_SLUG[room.slug] ?? 'ramme-pavilion') ?? GLASS_PLAN_TEMPLATES[0];
   const factor = ORDER_SIZES.find((item) => item.id === input.size)?.factor ?? 1;
@@ -200,11 +244,43 @@ export function buildOrderDocument(input: {
   return { ...document, fixtures };
 }
 
+function buildStandaloneDocument(input: {
+  slug: string;
+  size: OrderSize;
+  glaze: OrderGlaze;
+  wood: WoodFinish;
+  plain: readonly string[];
+  kinds: readonly FixtureKindId[];
+}): BuilderDocument {
+  const product = standaloneBySlug(input.slug);
+  const tub = standaloneShowsTub(input.slug);
+  const deck: Deck | null = tub ? { wall: 's', widthFt: 12, depthFt: 10, hotTub: true } : null;
+  let notes = '';
+  notes = writeToken(notes, 'model', input.slug);
+  notes = writeToken(notes, 'size', input.size);
+  notes = writeToken(notes, 'glaze', 'clear');
+  notes = writeToken(notes, 'wood', input.wood);
+  notes = writeToken(notes, 'plain', input.plain.join(','));
+  const spec: HomeSpec = {
+    version: SPEC_VERSION,
+    name: product?.name ?? input.slug,
+    material: 'sip',
+    climateZone: '7A',
+    volumes: [{ ...PIECE_VOLUME }],
+    deck,
+    siting: { frontFacesDeg: 180, slope: 'flat' },
+    notes,
+  };
+  const document = builderDocumentFromLegacySpec(spec);
+  return { ...document, fixtures: emptyFixtureSet() };
+}
+
 export function startingDocument(): BuilderDocument {
   return buildOrderDocument({
     slug: 'the-soak',
     size: 'room',
     glaze: 'clear',
+    wood: 'cedar',
     plain: [],
     kinds: ['hot-tub'],
   });

@@ -72,6 +72,14 @@ export function attachHome(parent: THREE.Object3D): PlacedHome {
   return {
     update(document, glaze) {
       clear();
+      const model = document.spec.notes.match(/\[aura-model:([^\]]+)\]/)?.[1] ?? '';
+      if (model === 'hot-tub-time-machine' || model === 'fire-and-ice') {
+        tub = createHotTub();
+        tub.object.position.set(0.2, 0, 0.2);
+        root.add(tub.object);
+        return;
+      }
+      if (model === 'cool-runnings') return;
       home = buildHome(document.spec);
       const shell = new THREE.Group();
       shell.name = 'HomeShell';

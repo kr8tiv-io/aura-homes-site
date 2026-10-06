@@ -1,0 +1,256 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import LivingHero from './LivingHero.astro';
+import RevealHeading from './RevealHeading.astro';
+import { collectionStandalone, standaloneBySlug, type StandaloneProduct } from '../data/collection';
+
+interface Props {
+  product: StandaloneProduct;
+}
+
+const { product } = Astro.props;
+const other = product.pairsWith ? standaloneBySlug(product.pairsWith) : undefined;
+const description = `${product.name}. ${product.line} Made in-house by Aura Homes.`;
+---
+
+<BaseLayout title={`${product.name} | Aura Homes`} description={description} descriptor="Standalone">
+  <main id="top" class="product-page">
+    <LivingHero
+      labelledby="product-title"
+      film={product.film ?? ''}
+      poster={product.image}
+      alt={product.alt}
+      width={1920}
+      height={1280}
+      eager
+    >
+      <div data-rise>
+        <p class="story-kicker">Standalone</p>
+        <RevealHeading as="h1" id="product-title">{product.name}</RevealHeading>
+        <p class="story-lede">{product.tagline}</p>
+      </div>
+    </LivingHero>
+
+    <article class="product-body">
+      <div class="product-story" data-rise>
+        {product.story.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+      </div>
+
+      <section class="product-block" data-rise aria-labelledby="product-features">
+        <p class="story-kicker" id="product-features">Included</p>
+        <ul class="product-features">
+          {product.features.map((feature) => (
+            <li>{feature}</li>
+          ))}
+        </ul>
+      </section>
+
+      <section class="product-block" data-rise aria-labelledby="product-addons">
+        <p class="story-kicker" id="product-addons">Add-ons</p>
+        <ul class="product-addons">
+          {product.addons.map((addon) => (
+            <li>
+              <p class="addon-name">{addon.name}</p>
+              <p class="addon-detail">{addon.detail}</p>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {other && (
+        <section class="product-pair" data-rise aria-labelledby="product-pair">
+          <p class="story-kicker">{collectionStandalone.pairKicker}</p>
+          <RevealHeading as="h2" id="product-pair">{collectionStandalone.pairTitle}</RevealHeading>
+          <p class="pair-line">{collectionStandalone.pairLine}</p>
+          <div class="product-actions">
+            <a class="product-link is-slide" href={`/rooms/${other.slug}`}>
+              <span class="slide-face">
+                <span class="slide-line">See {other.name}</span>
+                <span class="slide-line" aria-hidden="true">See {other.name}</span>
+              </span>
+            </a>
+            <a class="product-link is-slide" href="/pre-order?model=fire-and-ice">
+              <span class="slide-face">
+                <span class="slide-line">Get a quote for the pair</span>
+                <span class="slide-line" aria-hidden="true">Get a quote for the pair</span>
+              </span>
+            </a>
+          </div>
+        </section>
+      )}
+
+      <p class="product-quote" data-rise>
+        <a class="product-link is-slide" href={`/pre-order?model=${product.slug}`}>
+          <span class="slide-face">
+            <span class="slide-line">Get a quote</span>
+            <span class="slide-line" aria-hidden="true">Get a quote</span>
+          </span>
+        </a>
+      </p>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .product-body {
+    position: relative;
+    z-index: 1;
+    padding: 8vh 8vw 12vh;
+    color: #14120e;
+  }
+  .product-story {
+    max-width: 40rem;
+  }
+  .product-story p {
+    margin: 0 0 1.15rem;
+    font-weight: 300;
+    font-size: 1.12rem;
+    line-height: 1.65;
+    color: rgba(20, 18, 14, 0.78);
+  }
+  .product-block,
+  .product-pair {
+    max-width: 46rem;
+    padding-top: 3.5rem;
+  }
+  .product-features,
+  .product-addons {
+    margin: 1.1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .product-features li {
+    padding: 0.55rem 0;
+    border-top: 1px solid rgba(20, 18, 14, 0.12);
+    font-weight: 300;
+    font-size: 1.02rem;
+    line-height: 1.45;
+  }
+  .product-features li:last-child {
+    border-bottom: 1px solid rgba(20, 18, 14, 0.12);
+  }
+  .product-addons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .product-addons li {
+    padding: 1.05rem 1.5rem 1.05rem 0;
+    border-bottom: 1px solid rgba(20, 18, 14, 0.14);
+  }
+  .product-addons li:nth-child(odd) {
+    border-right: 1px solid rgba(20, 18, 14, 0.14);
+    padding-right: 1.5rem;
+  }
+  .product-addons li:nth-child(even) {
+    padding-left: 1.5rem;
+  }
+  .addon-name {
+    margin: 0;
+    font-family: var(--font-cinzel);
+    font-weight: 400;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+    line-height: 1.25;
+  }
+  .addon-detail {
+    margin: 0.3rem 0 0;
+    font-weight: 300;
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: rgba(20, 18, 14, 0.62);
+  }
+  .product-page :global(#product-pair) {
+    margin: 0.35rem 0 0;
+    max-width: 12em;
+    font-family: var(--font-cinzel);
+    font-weight: 300;
+    font-size: clamp(2rem, 3.4vw, 2.8rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+  }
+  .pair-line {
+    max-width: 36rem;
+    margin: 0.9rem 0 0;
+    font-weight: 300;
+    font-size: 1.08rem;
+    line-height: 1.6;
+    color: rgba(20, 18, 14, 0.74);
+  }
+  .product-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.4rem;
+  }
+  .product-quote {
+    margin: 3rem 0 0;
+  }
+  .product-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.7rem 1.05rem;
+    border: 1px solid #14120e;
+    color: #14120e;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .product-link:focus-visible {
+    outline: 1px solid #866243;
+    outline-offset: 4px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .product-link {
+      transition: opacity 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .product-link:hover {
+      opacity: 0.55;
+    }
+  }
+  @media (max-width: 800px) {
+    .product-body {
+      padding: 6vh 1.5rem 10vh;
+    }
+    .product-addons {
+      grid-template-columns: 1fr;
+    }
+    .product-addons li,
+    .product-addons li:nth-child(odd),
+    .product-addons li:nth-child(even) {
+      padding: 1rem 0;
+      border-right: 0;
+    }
+  }
+</style>
+
+<script>
+  import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
+
+  onPageLoad(() => {
+    const page = document.querySelector('.product-page');
+    if (!page || prefersReducedMotion()) return;
+    ScrollTrigger.getAll()
+      .filter((trigger) => trigger.vars.id === 'product-rise')
+      .forEach((trigger) => trigger.kill());
+    gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
+      gsap.from(el, {
+        y: 24,
+        opacity: 0,
+        duration: 1.7,
+        ease: 'power3.out',
+        scrollTrigger: {
+          id: 'product-rise',
+          trigger: el,
+          start: 'top 90%',
+          once: true,
+        },
+      });
+    });
+  });
+</script>

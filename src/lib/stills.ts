@@ -24,6 +24,8 @@ import towerNight from '../assets/media/tower-night-stars.webp';
 import towerAerial from '../assets/media/tower-aerial-sunrise.webp';
 import towerGlass from '../assets/media/tower-glass-detail-blue-hour.webp';
 import towerLake from '../assets/media/tower-lake-summer-dusk.webp';
+import hotTubTimeMachine from '../assets/media/hot-tub-time-machine.webp';
+import coolRunnings from '../assets/media/cool-runnings.webp';
 
 const stills: Record<string, ImageMetadata> = {
   '/film/story-meadow-side.webp': meadowSide,
@@ -50,6 +52,8 @@ const stills: Record<string, ImageMetadata> = {
   '/media/specialty/tower-aerial-sunrise.jpg': towerAerial,
   '/media/specialty/tower-glass-detail-blue-hour.jpg': towerGlass,
   '/media/specialty/tower-lake-summer-dusk.jpg': towerLake,
+  '/media/specialty/hot-tub-time-machine.jpg': hotTubTimeMachine,
+  '/media/specialty/cool-runnings.jpg': coolRunnings,
 };
 
 export function still(src: string): ImageMetadata {

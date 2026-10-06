@@ -1,8 +1,9 @@
 /**
  * The Aura catalog on /rooms.
- * Names and photographs live in src/lib/rooms.ts. Edit stories, features,
- * add-ons, and showpieces here. A slug must match a room, and every room
- * must appear once.
+ * Names and photographs for the twelve rooms live in src/lib/rooms.ts.
+ * Edit stories, features, add-ons, and showpieces here. A tier slug must
+ * match a room, and every room must appear once.
+ * Standalone pieces are not rooms. They live in collectionStandalone.
  */
 
 export type CollectionModel = {
@@ -188,7 +189,7 @@ export const collectionAddons = {
     { name: 'Second Breakfast Station', detail: 'Kitchenette' },
     { name: 'A Pizza Hope', detail: 'Wood-fired pizza oven' },
     { name: 'The Arrakis Sauna' },
-    { name: 'The Hoth Plunge' },
+    { name: 'The Hoth Plunge', detail: 'Cool Runnings, our cedar cold plunge' },
     { name: 'Thirst Contact', detail: 'Water from the air' },
     { name: 'Aura Farms', detail: 'A growing wall' },
   ] satisfies CollectionAddon[],
@@ -248,3 +249,131 @@ export const collectionClose = {
   cta: 'Get a quote',
   href: '/pre-order',
 };
+
+export type StandaloneAddon = {
+  id: string;
+  name: string;
+  detail: string;
+};
+
+/** A product sold on its own. Fire and Ice is the pair: a card and a quote, with no page. */
+export type StandaloneProduct = {
+  slug: string;
+  name: string;
+  image: string;
+  alt: string;
+  imageRight?: string;
+  altRight?: string;
+  film?: string;
+  line: string;
+  tagline: string;
+  story: string[];
+  features: string[];
+  addons: StandaloneAddon[];
+  pairsWith?: string;
+};
+
+export const collectionStandalone = {
+  kicker: 'Standalone',
+  title: 'Hot and cold.',
+  line: 'Made in our own shop, standard on many Aura rooms, and yours on their own.',
+  pairKicker: 'Fire and Ice',
+  pairTitle: 'Better as a pair.',
+  pairLine: 'Fire and Ice puts Hot Tub Time Machine and Cool Runnings side by side, matched in cedar.',
+  items: [
+    {
+      slug: 'hot-tub-time-machine',
+      name: 'Hot Tub Time Machine',
+      image: '/media/specialty/hot-tub-time-machine.jpg',
+      alt: 'A wood-fired cedar hot tub on a steel and timber skid inside a clear polycarbonate enclosure, steam rising and the stove glowing in a wildflower meadow at dusk, stars coming out.',
+      film: '/media/video/hot-tub-time-machine.mp4',
+      line: 'A wood-fired cedar tub on its own skid. Light the stove, and the evening forgets what time it is.',
+      tagline: 'Set the dial to dusk.',
+      story: [
+        'Wood smoke, a sky filling up with stars, and hot water that holds its warmth for hours. A round cedar tub with its own small stove, on a steel and timber skid that sets down level wherever the view is best.',
+        'A clear polycarbonate enclosure keeps the heat close and lets the night in. The steam gathers under the roof, the stove glows through its little window, and the stars stay in the picture.',
+        'It comes standard with many Aura rooms, and we make it in-house, in the same shop and by the same hands. Now it stands on its own.',
+        'The stove ticks, the water warms, the smoke drifts up past the roof. An hour in, nobody is checking the time.',
+      ],
+      features: [
+        'Wood-fired cedar tub',
+        'Chimney stove with a glowing window',
+        'Steel and timber skid',
+        'Clear polycarbonate enclosure',
+        'Made in-house by Aura',
+      ],
+      addons: [
+        { id: 'finish', name: 'Finish', detail: 'Western red cedar or thermowood.' },
+        { id: 'cover', name: 'Insulated cover', detail: 'Holds the heat overnight.' },
+        { id: 'steps', name: 'Cedar steps', detail: 'A way up to the rim.' },
+        { id: 'light', name: 'Warm LED light ring', detail: 'Dimmable, under the rim.' },
+        { id: 'privacy', name: 'Privacy screen', detail: 'Cedar slats on one side.' },
+        { id: 'tint', name: 'Tinted enclosure panels', detail: 'A softer night through the walls.' },
+        { id: 'firewood', name: 'Firewood rack', detail: 'A dry stack beside the stove.' },
+        { id: 'pair', name: 'Cool Runnings pairing', detail: 'Becomes Fire and Ice.' },
+      ],
+      pairsWith: 'cool-runnings',
+    },
+    {
+      slug: 'cool-runnings',
+      name: 'Cool Runnings',
+      image: '/media/specialty/cool-runnings.jpg',
+      alt: 'A long oval cedar cold-plunge bathtub with a sloped back on a low timber skid, ice water and a wooden stool with a towel, in a frosted forest clearing at dawn.',
+      film: '/media/video/cool-runnings.mp4',
+      line: 'A cedar cold-plunge bathtub. Ice water, a little mist, and a very awake morning.',
+      tagline: 'Feel the rhythm. Then the cold.',
+      story: [
+        'A single-person cedar bathtub made for cold water. Long and oval, with a sloped back to lean into, smooth oiled cedar and rounded rims, on a low timber skid.',
+        'Fill it, add ice, and sink in to the shoulders while the mist drifts off the water. Thirty seconds feels brave. Three minutes feels like a new morning.',
+        'About half the size of Hot Tub Time Machine and made in-house by Aura, at home on frosted grass, a deck or the end of a dock.',
+      ],
+      features: [
+        'Single-person cedar bathtub',
+        'Sloped backrest',
+        'Smooth oiled cedar, rounded rims',
+        'Low timber skid',
+        'Made in-house by Aura',
+      ],
+      addons: [
+        { id: 'finish', name: 'Finish', detail: 'Western red cedar or thermowood.' },
+        { id: 'lid', name: 'Insulated lid', detail: 'A cover for the cold.' },
+        { id: 'step', name: 'Cedar step and towel rail', detail: 'A step up, and a place for the towel.' },
+        { id: 'glow', name: 'Warm LED glow', detail: 'A quiet light in the mist.' },
+        { id: 'privacy', name: 'Privacy screen', detail: 'Cedar slats on one side.' },
+        { id: 'chiller', name: 'Chiller', detail: 'Cold on tap, ice optional.' },
+        { id: 'pair', name: 'Hot Tub Time Machine pairing', detail: 'Becomes Fire and Ice.' },
+      ],
+      pairsWith: 'hot-tub-time-machine',
+    },
+    {
+      slug: 'fire-and-ice',
+      name: 'Fire and Ice',
+      image: '/media/specialty/hot-tub-time-machine.jpg',
+      alt: 'A wood-fired cedar hot tub on a steel and timber skid inside a clear polycarbonate enclosure, steam rising and the stove glowing in a wildflower meadow at dusk, stars coming out.',
+      imageRight: '/media/specialty/cool-runnings.jpg',
+      altRight: 'A long oval cedar cold-plunge bathtub with a sloped back on a low timber skid, ice water and a wooden stool with a towel, in a frosted forest clearing at dawn.',
+      line: 'Hot Tub Time Machine and Cool Runnings, as a pair. Fire first, then ice, then fire again.',
+      tagline: 'Fire first, then ice, then fire again.',
+      story: [
+        'The oldest ritual on the hill. Warm through by the stove, step into the cedar cold, then climb back into the steam. Two pieces made together in our shop, set side by side.',
+      ],
+      features: ['Hot Tub Time Machine', 'Cool Runnings', 'Matched cedar finish', 'One quote, one delivery.'],
+      addons: [
+        { id: 'finish', name: 'Matched finish', detail: 'Western red cedar or thermowood.' },
+        { id: 'deck', name: 'Shared cedar deck joining the two', detail: 'One deck, both pieces.' },
+        { id: 'covers', name: 'Covers for both', detail: 'Heat held, and the cold kept.' },
+        { id: 'light', name: 'Warm LED for both', detail: 'Light for the tub and the plunge.' },
+        { id: 'privacy', name: 'Privacy screen', detail: 'Cedar slats on one side.' },
+        { id: 'firewood', name: 'Firewood rack', detail: 'A dry stack beside the stove.' },
+      ],
+    },
+  ] satisfies StandaloneProduct[],
+};
+
+export function standaloneBySlug(slug: string): StandaloneProduct | undefined {
+  return collectionStandalone.items.find((item) => item.slug === slug);
+}
+
+export function standalonePages(): StandaloneProduct[] {
+  return collectionStandalone.items.filter((item) => item.film);
+}

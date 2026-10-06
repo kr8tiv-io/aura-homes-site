@@ -81,6 +81,8 @@ const STILLS = [
   'public/media/specialty/tower-aerial-sunrise.jpg',
   'public/media/specialty/tower-glass-detail-blue-hour.jpg',
   'public/media/specialty/tower-lake-summer-dusk.jpg',
+  'public/media/specialty/hot-tub-time-machine.jpg',
+  'public/media/specialty/cool-runnings.jpg',
 ];
 
 /** name, source, target width. Hero loops aim at 2560. Others at 1920. */
@@ -95,6 +97,8 @@ const FILMS = [
   ['farm-room', 'public/film/scroll/farm-room.mp4', 1920],
   ['water-line', 'public/film/scroll/water-line.mp4', 1920],
   ['builder-enter', 'public/film/builder-enter.mp4', 1920],
+  ['hot-tub-time-machine', 'public/film/scroll/hot-tub-time-machine.mp4', 1920],
+  ['cool-runnings', 'public/film/scroll/cool-runnings.mp4', 1920],
 ];
 
 const report = [];

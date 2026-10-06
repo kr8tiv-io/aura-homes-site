@@ -1,0 +1,45 @@
+---
+import Still from './Still.astro';
+import WindowFrame from './WindowFrame.astro';
+
+interface Props {
+  left: string;
+  leftAlt: string;
+  right: string;
+  rightAlt: string;
+  sizes?: string;
+}
+
+const { left, leftAlt, right, rightAlt, sizes = '(max-width: 800px) 46vw, 21vw' } = Astro.props;
+---
+
+<figure data-window class="pair-frame">
+  <WindowFrame>
+    <div class="pair-split">
+      <Still src={left} alt={leftAlt} sizes={sizes} />
+      <Still src={right} alt={rightAlt} sizes={sizes} />
+    </div>
+  </WindowFrame>
+</figure>
+
+<style>
+  .pair-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    height: 100%;
+    background: rgba(244, 243, 239, 0.72);
+  }
+  .pair-split :global(picture) {
+    display: block;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+  }
+  .pair-split :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
