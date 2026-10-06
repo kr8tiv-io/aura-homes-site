@@ -59,6 +59,12 @@ vec3 groundTri(sampler2D tex, vec3 pos, vec3 normal, float scale, bool decode) {
   vec3 color = x * blend.x + y * blend.y + z * blend.z;
   return decode ? groundSrgb(color) : color;
 }
+vec3 groundTriBreak(sampler2D tex, vec3 pos, vec3 normal, bool decode) {
+  vec3 fine = groundTri(tex, pos, normal, 0.5, decode);
+  vec3 broad = groundTri(tex, pos + vec3(1.7, 0.0, 0.4), normal, 0.22, decode);
+  float mask = smoothstep(0.32, 0.78, macroNoise(pos.xz * 0.11 + 2.0));
+  return mix(fine, broad, mask * 0.55);
+}
 float groundDense(vec2 p) {
   float radius = length(p);
   float ring = 1.0 - smoothstep(16.0, 46.0, radius);
@@ -185,20 +191,20 @@ if (uGroundReady > 0.5) {
         '#include <color_fragment>',
         `#include <color_fragment>
 if (uGroundReady > 0.5) {
-  vec3 forest = groundTri(tForestC, vGroundWorld, vGroundNormal, 0.5, true);
-  vec3 mud = groundTri(tMudC, vGroundWorld, vGroundNormal, 0.5, true);
+  vec3 forest = groundTriBreak(tForestC, vGroundWorld, vGroundNormal, true);
+  vec3 mud = groundTriBreak(tMudC, vGroundWorld, vGroundNormal, true);
   float slope = 1.0 - clamp(vGroundNormal.y, 0.0, 1.0);
   float damp = groundTri(tMudA, vGroundWorld, vGroundNormal, 0.5, false).r;
   float mudAmt = clamp(slope * 1.35 + damp * 0.28, 0.0, 1.0);
   if (uSoilReady > 0.5) {
-    vec3 soil = groundTri(tSoilC, vGroundWorld, vGroundNormal, 0.5, true);
-    mud = mix(mud, soil, 0.48);
+    vec3 soil = groundTriBreak(tSoilC, vGroundWorld, vGroundNormal, true);
+    mud = mix(mud, soil, 0.28);
   }
   vec3 albedo = mix(forest, mud, mudAmt);
   float sward = groundDense(vGroundWorld.xz);
   if (uGrassReady > 0.5) {
-    vec3 grass = groundTri(tGrassC, vGroundWorld, vGroundNormal, 0.5, true);
-    albedo = mix(albedo, grass, sward * 0.62);
+    vec3 grass = groundTriBreak(tGrassC, vGroundWorld, vGroundNormal, true);
+    albedo = mix(albedo, grass, sward * 0.82);
   }
   float roughF = groundTri(tForestR, vGroundWorld, vGroundNormal, 0.5, false).r;
   float roughM = groundTri(tMudR, vGroundWorld, vGroundNormal, 0.5, false).r;
@@ -207,17 +213,17 @@ if (uGroundReady > 0.5) {
     groundTri(tMudA, vGroundWorld, vGroundNormal, 0.5, false).r,
     mudAmt
   );
-  albedo *= mix(1.0, 0.62, sward);
+  albedo *= mix(1.0, 0.84, sward);
   float macroFar = 1.0 - smoothstep(28.0, 90.0, length(vGroundWorld - cameraPosition));
   float macroA = macroNoise(vGroundWorld.xz * 0.045);
   float macroB = macroNoise(vGroundWorld.xz * 0.13 + 4.2);
   albedo *= 1.0 + ((macroA - 0.5) * 0.22 + (macroB - 0.5) * 0.08) * macroFar;
-  diffuseColor.rgb = albedo * mix(0.82, 1.0, ao);
+  diffuseColor.rgb = albedo * mix(0.9, 1.0, ao);
   gGroundRough = mix(roughF, roughM, mudAmt);
 }`
       );
   };
-  mat.customProgramCacheKey = () => `golden-ground-${previousKey()}`;
+  mat.customProgramCacheKey = () => `golden-ground-v2-${previousKey()}`;
 
   const mesh = new THREE.Mesh(geo, mat);
   mesh.receiveShadow = true;

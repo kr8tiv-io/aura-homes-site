@@ -44,6 +44,9 @@ export default function StoryCanvas({
       intro: !reduced,
       reducedShot: reduced,
       readProgress: () => Math.min(1, Math.max(0, progressRef.current / 6)),
+      hdri: '/hdri/kloofendal_48d_partly_cloudy_puresky_1k.hdr',
+      hdriPinned: true,
+      hdriNight: '/hdri/rogland_clear_night_1k.hdr',
     });
     handle.current = world;
     if (shotKey && SHOTS[shotKey]) world.setShot(SHOTS[shotKey]);
