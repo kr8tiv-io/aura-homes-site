@@ -196,6 +196,7 @@ const foot = innerMenu.flatMap((group) => group.links);
       import { bindFields } from '../scripts/forms';
       import { bindRidgeLoad } from '../scripts/ridge-load';
       import { bindHeadingGlow, disposeHeadingGlow } from '../scripts/heading-glow';
+      import { bindTracers, disposeTracers } from '../scripts/tracers';
 
       initSmoothScroll();
       bindDaylight();
@@ -213,6 +214,7 @@ const foot = innerMenu.flatMap((group) => group.links);
       };
 
       document.addEventListener('astro:before-swap', ((event: Event) => {
+        disposeTracers();
         resetPageMotion();
         stopSmoothScroll();
         document.querySelectorAll('.site-nav .aura-logo').forEach((logo) => {
@@ -240,87 +242,7 @@ const foot = innerMenu.flatMap((group) => group.links);
         window.__lenis?.resize();
       });
 
-      const canvas = document.getElementById('tracers-canvas') as HTMLCanvasElement | null;
-      let tracerRaf = 0;
-      const builderPage = document.body.classList.contains('is-builder');
-      if (canvas && !builderPage) {
-        const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false });
-        if (gl) {
-          const vert = `attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }`;
-          const frag = `precision mediump float;
-            uniform vec2 uRes;
-            uniform float uTime;
-            void main() {
-              vec2 uv = gl_FragCoord.xy / uRes;
-              vec3 col = vec3(0.0);
-              float alpha = 0.0;
-              for (int i = 0; i < 5; i++) {
-                float fi = float(i);
-                float speed = 0.018 + fi * 0.006;
-                float slide = fract(uTime * speed + fi * 0.17);
-                vec2 origin = vec2(slide * 1.6 - 0.3, 0.08 + fi * 0.16);
-                vec2 dir = normalize(vec2(0.84, 0.18 + fi * 0.06));
-                float d = abs(dot(uv - origin, vec2(-dir.y, dir.x)));
-                float band = exp(-d * d * (520.0 - fi * 40.0));
-                float head = smoothstep(0.0, 0.18, slide) * smoothstep(1.0, 0.72, slide);
-                vec3 warm = vec3(0.77, 0.58, 0.38);
-                vec3 cool = vec3(0.45, 0.62, 0.7);
-                col += mix(warm, cool, fi / 4.0) * band * head;
-                alpha += band * head * 0.22;
-              }
-              gl_FragColor = vec4(col, clamp(alpha, 0.0, 0.28));
-            }`;
-          const compile = (type: number, src: string) => {
-            const shader = gl.createShader(type);
-            if (!shader) return null;
-            gl.shaderSource(shader, src);
-            gl.compileShader(shader);
-            return shader;
-          };
-          const program = gl.createProgram();
-          const vs = compile(gl.VERTEX_SHADER, vert);
-          const fs = compile(gl.FRAGMENT_SHADER, frag);
-          if (program && vs && fs) {
-            gl.attachShader(program, vs);
-            gl.attachShader(program, fs);
-            gl.linkProgram(program);
-            gl.useProgram(program);
-            const buffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
-            const loc = gl.getAttribLocation(program, 'a');
-            gl.enableVertexAttribArray(loc);
-            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-            const uRes = gl.getUniformLocation(program, 'uRes');
-            const uTime = gl.getUniformLocation(program, 'uTime');
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-            const resize = () => {
-              const dpr = Math.min(window.devicePixelRatio || 1, 1.25);
-              canvas.width = Math.floor(window.innerWidth * dpr);
-              canvas.height = Math.floor(window.innerHeight * dpr);
-              gl.viewport(0, 0, canvas.width, canvas.height);
-            };
-            window.addEventListener('resize', resize, { passive: true });
-            resize();
-            const draw = (time: number) => {
-              gl.uniform2f(uRes, canvas.width, canvas.height);
-              gl.uniform1f(uTime, time * 0.001);
-              gl.drawArrays(gl.TRIANGLES, 0, 3);
-            };
-            const reducedTracers = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            if (reducedTracers) draw(0);
-            else {
-              const tick = (time: number) => {
-                tracerRaf = requestAnimationFrame(tick);
-                if (document.hidden) return;
-                draw(time);
-              };
-              tracerRaf = requestAnimationFrame(tick);
-            }
-          }
-        }
-      }
+      bindTracers();
 
       bindHeadingGlow();
 
@@ -575,6 +497,7 @@ const foot = innerMenu.flatMap((group) => group.links);
 
       document.addEventListener('astro:page-load', () => {
         initSmoothScroll();
+        bindTracers();
         bindRail();
         bindTopbarScroll();
         bindDaylight();
@@ -587,7 +510,7 @@ const foot = innerMenu.flatMap((group) => group.links);
 
       if (import.meta.hot) {
         import.meta.hot.dispose(() => {
-          cancelAnimationFrame(tracerRaf);
+          disposeTracers();
           disposeHeadingGlow();
           menuTl?.kill();
         });

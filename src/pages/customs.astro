@@ -19,7 +19,7 @@ const steps = [
 >
   <main id="top" class="customs-page">
     <section class="page-lead">
-      <p class="story-kicker">Customs</p>
+      <p class="story-kicker" data-tracer="rule">Customs</p>
       <RevealHeading as="h1">Second Breath Customs.</RevealHeading>
       <p class="story-lede">Bring your own trailer, and give it a second life. Or let us source one.</p>
       <p class="customs-note">One-off builds, from a small shop. Elegant, and quoted case by case.</p>
@@ -42,7 +42,7 @@ const steps = [
       <RevealHeading as="h2" id="customs-path">The path.</RevealHeading>
       <ol>
         {steps.map((step) => (
-          <li>
+          <li data-tracer="rule">
             <span>{step.n}</span>
             <div>
               <p>{step.title}</p>
@@ -54,7 +54,7 @@ const steps = [
     </section>
 
     <div class="customs-close" data-customs-rise>
-      <a class="customs-quote is-slide" href="/pre-order?type=custom"><span class="slide-face"><span class="slide-line">Get a quote</span><span class="slide-line" aria-hidden="true">Get a quote</span></span></a>
+      <a class="customs-quote is-slide" href="/pre-order?type=custom" data-tracer="outline"><span class="slide-face"><span class="slide-line">Get a quote</span><span class="slide-line" aria-hidden="true">Get a quote</span></span></a>
       <p>Rent-to-own and financing are on our roadmap.</p>
     </div>
 

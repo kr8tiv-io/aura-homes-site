@@ -31,7 +31,7 @@ const notes: JournalCard[] = [
 >
   <main class="journal-index" id="top">
     <section class="page-lead">
-      <p class="story-kicker">Journal</p>
+      <p class="story-kicker" data-tracer="rule">Journal</p>
       <RevealHeading as="h1">What we are building, and what we hope.</RevealHeading>
       <p class="story-lede">Notes from the shop. The first is the whole story. The others follow it out.</p>
     </section>
@@ -40,7 +40,7 @@ const notes: JournalCard[] = [
         notes.map((note) => (
           <li>
             <a class="journal-card" href={note.href} data-rise>
-              <figure>
+              <figure data-tracer="edge">
                 <Still src={note.cover} alt={note.coverAlt} sizes="(max-width: 800px) 92vw, 42vw" />
               </figure>
               <p class="journal-card-meta">

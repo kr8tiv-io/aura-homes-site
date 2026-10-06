@@ -84,14 +84,14 @@ const schema = {
   <main id="top">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
     <section class="page-lead">
-      <p class="story-kicker">FAQ</p>
+      <p class="story-kicker" data-tracer="rule">FAQ</p>
       <RevealHeading as="h1">A few honest answers.</RevealHeading>
       <p class="story-lede">If the question is about your land, the better page is <a href="/contact">Contact</a>.</p>
     </section>
     <div class="page-body">
       <div class="faq-list" data-faq>
         {faqs.map((item, index) => (
-          <div class="faq-item">
+          <div class="faq-item" data-tracer="rule">
             <RevealHeading as="h2">
               <button
                 type="button"

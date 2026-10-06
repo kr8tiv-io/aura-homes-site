@@ -7,7 +7,7 @@ const { reveal = false } = Astro.props;
 ---
 
 <section class="journeys" id="journeys">
-  <p class="story-kicker">The story</p>
+  <p class="story-kicker" data-tracer="rule">The story</p>
   {
     reveal ? (
       <h2 data-glow data-reveal-heading>
@@ -22,42 +22,42 @@ const { reveal = false } = Astro.props;
   }
   <ol>
     <li>
-      <a href="/#shell">
+      <a href="/#shell" data-tracer="edge">
         <span>01</span>
         <strong>The room</strong>
         <p>An extension, or a stay, on the land you already have.</p>
       </a>
     </li>
     <li>
-      <a href="/glass">
+      <a href="/glass" data-tracer="edge">
         <span>02</span>
         <strong>The glass</strong>
         <p>Helical piles, a lit floor, a deck, and balconies.</p>
       </a>
     </li>
     <li>
-      <a href="/resorts">
+      <a href="/resorts" data-tracer="edge">
         <span>03</span>
         <strong>The resorts</strong>
         <p>A few rooms, custom, in Canada and Costa Rica.</p>
       </a>
     </li>
     <li>
-      <a href="/farms">
+      <a href="/farms" data-tracer="edge">
         <span>04</span>
         <strong>Aura Farms</strong>
         <p>A vertical aeroponic wall. Buy it and grow, or ask Aura to place it.</p>
       </a>
     </li>
     <li>
-      <a href="/water">
+      <a href="/water" data-tracer="edge">
         <span>05</span>
         <strong>Thirst Contact</strong>
         <p>Comes later. The water unit still needs further research.</p>
       </a>
     </li>
     <li>
-      <a href="/builder">
+      <a href="/builder" data-tracer="edge">
         <span>06</span>
         <strong>The builder</strong>
         <p>The tool, on this page and on GitHub.</p>
