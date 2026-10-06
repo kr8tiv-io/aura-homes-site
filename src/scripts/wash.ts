@@ -25,6 +25,7 @@ function mountWashNow(canvas: HTMLCanvasElement) {
 
   const geometries: THREE.BufferGeometry[] = [];
   const materials: THREE.Material[] = [];
+  const textures: THREE.Texture[] = [];
 
   const groundMat = new THREE.MeshLambertMaterial({
     color: look.ground,
@@ -39,12 +40,35 @@ function mountWashNow(canvas: HTMLCanvasElement) {
   ground.position.set(0, 0, -2);
   scene.add(ground);
 
-  const treeMat = new THREE.MeshLambertMaterial({
+  const card = document.createElement('canvas');
+  card.width = 64;
+  card.height = 128;
+  const paint = card.getContext('2d');
+  if (paint) {
+    paint.clearRect(0, 0, 64, 128);
+    paint.fillStyle = '#ffffff';
+    paint.beginPath();
+    paint.moveTo(32, 6);
+    paint.quadraticCurveTo(60, 46, 48, 86);
+    paint.quadraticCurveTo(32, 74, 16, 86);
+    paint.quadraticCurveTo(4, 46, 32, 6);
+    paint.fill();
+    paint.fillRect(29, 82, 6, 40);
+  }
+  const cardTex = new THREE.CanvasTexture(card);
+  cardTex.colorSpace = THREE.SRGBColorSpace;
+  textures.push(cardTex);
+  const treeMat = new THREE.MeshBasicMaterial({
+    map: cardTex,
     color: look.tree,
     transparent: true,
     opacity: 0.72,
+    depthWrite: false,
+    side: THREE.DoubleSide,
   });
   materials.push(treeMat);
+  const treeGeo = new THREE.PlaneGeometry(1, 1);
+  geometries.push(treeGeo);
   const trees: THREE.Mesh[] = [];
   const spots: Array<[number, number, number, number]> = [
     [-7.4, -6.2, 2.3, 0.2],
@@ -57,9 +81,8 @@ function mountWashNow(canvas: HTMLCanvasElement) {
     [1.4, -12.2, 1.8, 1.9],
   ];
   for (const [x, z, h, phase] of spots) {
-    const geo = new THREE.ConeGeometry(h * look.radius, h, 6);
-    geometries.push(geo);
-    const tree = new THREE.Mesh(geo, treeMat);
+    const tree = new THREE.Mesh(treeGeo, treeMat);
+    tree.scale.set(h * look.radius * 2.2, h, 1);
     tree.position.set(x, h / 2, z);
     tree.userData.phase = phase;
     tree.userData.baseX = x;
@@ -97,6 +120,7 @@ function mountWashNow(canvas: HTMLCanvasElement) {
       view.destroy();
       geometries.forEach((geo) => geo.dispose());
       materials.forEach((mat) => mat.dispose());
+      textures.forEach((tex) => tex.dispose());
     },
   };
   return api;

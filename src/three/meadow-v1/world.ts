@@ -1202,7 +1202,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       return;
     }
     if (profile.tier === 'low') {
-      addLiteForest(scene, built.geometries, built.materials, built.textures, scale, () => !dead && !suspended && generation === built.generation);
+      placePines(generation);
       return;
     }
     const kept = (list: typeof PATCHES) => {
