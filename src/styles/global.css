@@ -2300,7 +2300,6 @@ canvas[data-stage-host='on'] {
   .story-figure video {
     width: 100%;
     height: auto;
-    aspect-ratio: auto;
     max-height: 78vh;
     max-height: 78svh;
     max-height: 78dvh;
