@@ -1,4 +1,6 @@
 // @ts-check
+import { rm } from 'node:fs/promises';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, fontProviders } from 'astro/config';
 import node from '@astrojs/node';
@@ -10,6 +12,25 @@ import { customModelManifest } from './scripts/custom-model-manifest.mjs';
 // SITE still overrides. A plain build uses the live origin.
 const site = process.env.SITE ?? 'https://aurahomes.fun';
 
+/** Studio route and the empty public archive stay out of the Pages upload. */
+function omitDevUpload() {
+  return {
+    name: 'omit-dev-upload',
+    hooks: {
+      'astro:build:done': async ({ dir }) => {
+        const root = fileURLToPath(dir);
+        const roots = [root, path.join(root, 'client')];
+        await Promise.all(
+          roots.flatMap((folder) => [
+            rm(path.join(folder, 'dev'), { recursive: true, force: true }),
+            rm(path.join(folder, '_archive'), { recursive: true, force: true }),
+          ]),
+        );
+      },
+    },
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site,
@@ -20,6 +41,7 @@ export default defineConfig({
     sitemap({
       filter: (page) => !/\/(?:builder|api|dev)(?:\/|$)/.test(new URL(page).pathname),
     }),
+    omitDevUpload(),
   ],
   fonts: [
     {
