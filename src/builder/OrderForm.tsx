@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useReducer, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useMemo, useReducer, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { collectionStandalone, standaloneBySlug } from '../data/collection';
 import { roomConcepts } from '../lib/rooms';
-import { onQuality, qualityProfile, type QualityTier } from '../three/quality';
+import { onQuality } from '../three/quality';
+import { liveCapable, liveOptInAvailable } from './liveCapable';
 import { validateBuilderDocument } from './core/document';
 import type { FixtureKindId } from './core/fixtures';
 import { decodeDocument, encodeDocument } from './core/share';
@@ -63,8 +64,6 @@ const GLAZE: { id: OrderGlaze; label: string; note: string }[] = [
   { id: 'mirror', label: 'Mirror', note: 'The glass holds the view.' },
 ];
 
-const LIVE_TIERS = new Set<QualityTier>(['medium', 'high', 'ultra']);
-
 function initialState(): EditorState {
   return {
     doc: startingDocument(),
@@ -75,13 +74,10 @@ function initialState(): EditorState {
   };
 }
 
-function liveNow(): boolean {
-  if (typeof window === 'undefined') return false;
-  const tier = qualityProfile().tier;
-  const wide = window.matchMedia('(min-width: 1024px)').matches;
-  const fine = window.matchMedia('(pointer: fine)').matches;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  return LIVE_TIERS.has(tier) && wide && fine && !reduced;
+function frameFocus(focus: string | undefined, standalone: boolean): string {
+  if (standalone) return 'center';
+  if (!focus || focus === 'center') return 'center 28%';
+  return focus;
 }
 
 export default function OrderForm() {
@@ -89,6 +85,8 @@ export default function OrderForm() {
   const [step, setStep] = useState<Step>('model');
   const [ready, setReady] = useState(false);
   const [live, setLive] = useState(false);
+  const [offer, setOffer] = useState(false);
+  const [optIn, setOptIn] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -105,7 +103,9 @@ export default function OrderForm() {
   const displayAlt = product?.alt ?? room.alt;
   const displayImage = product?.image ?? room.image ?? '';
   const steps: Step[] = piece ? [...PIECE_STEPS] : [...ROOM_STEPS];
-  const showLive = live && (!piece || standaloneShowsTub(selection.slug));
+  const showLive = (live || optIn) && (!piece || standaloneShowsTub(selection.slug));
+  const focus = frameFocus(room.focus, piece);
+  const frameStyle = { '--order-focus': focus } as CSSProperties;
   glazeRef.current = selection.glaze;
   const copy = piece && step === 'addons'
     ? { title: 'Add-ons', note: 'What comes with this piece.' }
@@ -119,6 +119,9 @@ export default function OrderForm() {
   const chosenAddons = addonCatalog.filter(
     (item) => (item.kind && selection.kinds.includes(item.kind)) || selection.plain.includes(item.id),
   );
+  const pickedDetail = [piece ? woodLabel : sizeLabel, piece ? '' : glazeLabel, chosenAddons.map((item) => item.name).join(', ')]
+    .filter((part) => part.length > 0)
+    .join(' · ');
 
   const quoteHref = useMemo(() => {
     const params = new URLSearchParams();
@@ -213,16 +216,27 @@ export default function OrderForm() {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const wide = window.matchMedia('(min-width: 1024px)');
     const fine = window.matchMedia('(pointer: fine)');
-    const decide = () => setLive(liveNow());
+    const coarse = window.matchMedia('(pointer: coarse)');
+    const anyFine = window.matchMedia('(any-pointer: fine)');
+    const decide = () => {
+      const capable = liveCapable();
+      setLive(capable);
+      setOffer(liveOptInAvailable());
+      if (capable) setOptIn(false);
+    };
     decide();
     const stop = onQuality(decide);
     wide.addEventListener('change', decide);
     fine.addEventListener('change', decide);
+    coarse.addEventListener('change', decide);
+    anyFine.addEventListener('change', decide);
     reduced.addEventListener('change', decide);
     return () => {
       stop();
       wide.removeEventListener('change', decide);
       fine.removeEventListener('change', decide);
+      coarse.removeEventListener('change', decide);
+      anyFine.removeEventListener('change', decide);
       reduced.removeEventListener('change', decide);
     };
   }, []);
@@ -350,17 +364,17 @@ export default function OrderForm() {
   const stepIndex = Math.max(0, steps.indexOf(step));
 
   return (
-    <div className="order">
+    <div className={showLive ? 'order is-live' : 'order'}>
       <div className="order-view">
         {showLive ? (
           <div ref={stageRef} className="order-stage" />
         ) : product?.imageRight && product.altRight ? (
-          <div className="order-pair">
-            <img src={product.image} alt={product.alt} />
-            <img src={product.imageRight} alt={product.altRight} />
+          <div className="order-pair" style={frameStyle}>
+            <img key={`${selection.slug}-a`} src={product.image} alt={product.alt} />
+            <img key={`${selection.slug}-b`} src={product.imageRight} alt={product.altRight} />
           </div>
         ) : displayImage ? (
-          <img className="order-still" src={displayImage} alt={displayAlt} />
+          <img key={selection.slug} className="order-still" src={displayImage} alt={displayAlt} style={frameStyle} />
         ) : (
           <div className="order-still" role="img" aria-label={displayAlt} />
         )}
@@ -368,6 +382,16 @@ export default function OrderForm() {
           <p className="order-view-caption">
             {piece ? 'A live view of the tub in the meadow.' : 'A live view of the room in the meadow.'}
           </p>
+        ) : (
+          <p className="order-picked">
+            <strong>{displayName}</strong>
+            <span>{pickedDetail}</span>
+          </p>
+        )}
+        {offer && !showLive ? (
+          <button type="button" className="order-live-open" onClick={() => setOptIn(true)}>
+            Open the 3D view
+          </button>
         ) : null}
       </div>
 
@@ -377,6 +401,11 @@ export default function OrderForm() {
           event.preventDefault();
         }}
       >
+        {showLive ? null : (
+          <p className="order-live-note">
+            The live 3D builder shines on a larger screen. Open it on desktop to turn the room in the meadow.
+          </p>
+        )}
         <div className="order-tools">
           <button type="button" onClick={() => dispatch({ type: 'undo' })} disabled={state.past.length === 0}>
             Undo

@@ -1,15 +1,22 @@
 ---
-import RevealHeading from '../components/RevealHeading.astro';
-import { organizationJson } from '../lib/organization';
-
-const organization = organizationJson(Astro.site ?? Astro.url.origin);
+const canonical = 'https://aurahomes.fun/build-your-own/';
+const target = '/build-your-own/';
 ---
-<title>Build Your Own | Aura Homes</title>
-<meta name="robots" content="noindex" />
-<link rel="canonical" href="/build-your-own" />
-<meta http-equiv="refresh" content="0;url=/build-your-own" />
-<script is:inline type="application/ld+json" set:html={JSON.stringify(organization)} />
-<RevealHeading as="h1"><a href="/build-your-own">Build Your Own</a></RevealHeading>
-<script is:inline>
-  location.replace('/build-your-own');
-</script>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Build Your Own | Aura Homes</title>
+    <meta name="robots" content="noindex" />
+    <link rel="canonical" href={canonical} />
+    <meta http-equiv="refresh" content={`0;url=${target}`} />
+  </head>
+  <body>
+    <p><a href={target}>Build Your Own</a></p>
+    <script is:inline>
+      location.replace('/build-your-own/');
+    </script>
+  </body>
+</html>
