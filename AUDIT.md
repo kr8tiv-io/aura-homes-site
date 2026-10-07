@@ -327,7 +327,7 @@ The sapling files (~112 MB combined) are dead weight in the upload. Recommend Ma
 - Real email, phone, and YouTube URL. Prompts must not invent them. (A-03)
 - Form provider for quote, hold-your-place, and the list (Formspree, mailto, or something else). Until then, no success copy. (A-01, A-02)
 - Cabin film weight. Recommendation above. Do not edit the file or the scrub in these prompts. (A-04)
-- Whether unused `pine_sapling_medium*.glb` should leave `public/models` for `/_archive`. (A-07)
+- Pine sapling meshes left `public/models` for `/_archive/models` in prompt 65. They are not fetched at runtime. Provenance stays in `assets-src/catalog.json` and `assets-src/SOURCES.md`. (A-07)
 - One water page, and how sure the farms and host-network lines should sound. (A-10)
 - The missing roof still for Thirst Contact. (A-09)
 - Whether "Second Breath" stays as the customs name. (A-17)
@@ -426,6 +426,8 @@ Prompt 70 rechecked the built site on 2026-10-07. `npm run build` passes with no
 
 Prompt 64 (2026-10-07, `8cce9d5`) adds lazy one-at-a-time meadow mounting and a branded per-passage loader. `ensureScenes` in `src/pages/index.astro` and `src/scripts/journey.ts` now waits for load and idle, then schedules each passage. The cabin film, `bindFilmScrub`, the splash pin, and the passage pin math were not edited. Phones stay on the still poster until prompt 65. A-08 stayed fixed: the 64 harness recorded no custom-model 404s.
 
+Prompt 65 (2026-10-07, `1b50021`, `6d4b521`, `8604723`) turns capable phones on. A small window or a coarse pointer starts at low. A published GPU tier of 3 or above can rise to medium, and the governor stops there. DPR is 1 on low and 1.25 on medium, with a 30 fps cap. Phones draw lod2 grove models, one 1k HDRI, and no stump, rock, dandelion, fern, 2k Alps sky, ground normal, bloom, godrays, flare, AO, or shadows. `ensureScenes` in `src/pages/index.astro` waits until a passage nears before importing the meadow chunks on a phone, so the first view stays on the cabin film. Desktop still imports after idle. The cabin film, `bindFilmScrub`, the splash pin, the passage pin math, and `src/three/scene-scheduler.ts` were not edited. The pine sapling meshes moved to `/_archive/models` and are not credited as shipped files.
+
 | ID | Status | Commit |
 | --- | --- | --- |
 | A-01 | Fixed earlier. Thanks heading sits clear of the sticky bar. | `741afda` (67) |
@@ -434,7 +436,7 @@ Prompt 64 (2026-10-07, `8cce9d5`) adds lazy one-at-a-time meadow mounting and a 
 | A-04 | Open. Cabin film weight. Do not edit the film. | Matt |
 | A-05 | Fixed. Glow stays on hover. `overflow-x: clip` on the heading. | `a97e3da` |
 | A-06 | Fixed earlier. Phone builder and order-choice dots. | `afa2327` (62) |
-| A-07 | Open. Phones stay on posters. 64 added the scheduler, branded loader, and `?quality` override. 65 turns phones on. | `8cce9d5` |
+| A-07 | Phones in low or medium now mount one passage (lod2, 1k HDRI, no post, DPR 1 or 1.25). `?quality=off` and reduced motion stay on posters. The pine sapling GLBs moved to `/_archive/models` and are not credited as shipped files. | `1b50021`, `6d4b521`, `8604723` |
 | A-08 | Fixed. Manifest lists real GLBs only. None exist, so no request is made. Rechecked during 64: still no request. | `2fe1dbf` |
 | A-09 | Shot card hidden. Roof collector still is in place. "Portrait to come" on `/story` is unchanged. | `86e963e`. Portrait: Matt |
 | A-10 | Open. Water pages still disagree. Left for Matt. | Matt |
