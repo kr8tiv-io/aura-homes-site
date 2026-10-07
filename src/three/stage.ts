@@ -454,12 +454,15 @@ function makeComposer(entry: Entry): EffectComposer | null {
   const vignette = new VignetteEffect({ offset: 0.2, darkness: 0.25 });
   const smaa = new SMAAEffect();
   const effects = [tone, smaa, vignette, noise];
-  if (profile.bloom) {
+  // Bloom is per view. A partial stage (the builder) does not ask for it.
+  // Turning it on from the tier alone leaves that scissored rect clear on
+  // SwiftShader, which is the headless stand-in for a desktop GPU.
+  if (profile.bloom && view.bloom) {
     effects.unshift(
       new BloomEffect({
         mipmapBlur: true,
-        luminanceThreshold: view.bloom?.threshold ?? 0.9,
-        intensity: view.bloom?.intensity ?? 0.35,
+        luminanceThreshold: view.bloom.threshold,
+        intensity: view.bloom.intensity,
       }),
     );
   }
