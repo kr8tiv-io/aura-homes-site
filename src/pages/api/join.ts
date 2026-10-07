@@ -1,3 +1,4 @@
+// Local Node only. Static pages do not post here. The inbox lives in src/data/site.ts.
 import type { APIRoute } from 'astro';
 import { acceptJoin, limited } from '../../lib/signups';
 

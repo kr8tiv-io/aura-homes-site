@@ -1,9 +1,12 @@
 ---
+import { formAction } from '../data/site';
+
 interface Props {
   shell?: 'room' | 'glass' | 'resort' | 'farm' | 'water' | 'unsure';
 }
 
 const { shell = 'room' } = Astro.props;
+const action = formAction();
 const shells = [
   ['room', 'A room, on your land'],
   ['glass', 'Glass, on helical piles'],
@@ -15,7 +18,7 @@ const shells = [
 ---
 
 <div class="join">
-  <form class="join-card join-form" id="preorder" action="/api/join" method="post" data-tracer="edge">
+  <form class="join-card join-form" id="preorder" action={action} method="post" data-tracer="edge">
     <p class="story-kicker" data-tracer="rule">Pre-order</p>
     <h3>Hold your place.</h3>
     <p class="join-model" data-model-line hidden></p>
@@ -55,7 +58,7 @@ const shells = [
     <p class="join-fine">Aura writes to the address you give. You can leave the list whenever a note arrives. We do not sell it.</p>
   </form>
 
-  <form class="join-card join-form" id="list" action="/api/join" method="post" data-tracer="edge">
+  <form class="join-card join-form" id="list" action={action} method="post" data-tracer="edge">
     <p class="story-kicker">The list</p>
     <h3>First to hear it.</h3>
     <p>Join, and you are first in line for the latest YouTube films, product releases, announcements, and the offers and perks we keep for the people who were here early.</p>
@@ -85,6 +88,8 @@ const shells = [
   import { roomBySlug } from '../lib/rooms';
   import { onPageLoad } from '../scripts/motion';
   import { clearSentMark, showSentMark } from '../scripts/forms';
+  import { draftLine, heldLine, honeypotFilled, readField, scrollClearOfHeader, submitNote } from '../scripts/submit-note';
+  import { formEndpoint } from '../data/site';
 
   onPageLoad(() => {
   const params = new URLSearchParams(location.search);
@@ -125,18 +130,29 @@ const shells = [
     }
   }
 
-  const joined = params.get('joined');
-  if (joined === 'list' || joined === 'preorder') {
-    const form = document.getElementById(joined);
-    const status = form?.querySelector('[data-join-status]');
-    const line = status?.querySelector('[data-status-line]');
-    if (status instanceof HTMLElement && line) {
-      line.textContent = joined === 'preorder'
-        ? 'Your place is held. No payment was taken.'
-        : 'You are first in line for the films, the releases, and the offers.';
-      showSentMark(status);
+  const joinSuccess = (form: HTMLFormElement) => (
+    readField(form, 'kind') === 'preorder'
+      ? 'Your place is held. No payment was taken.'
+      : 'You are first in line for the films, the releases, and the offers.'
+  );
+
+  const joinFields = (form: HTMLFormElement) => {
+    const kind = readField(form, 'kind');
+    if (kind === 'preorder') {
+      return [
+        ['Name', readField(form, 'name')],
+        ['Email', readField(form, 'email')],
+        ['Room', readField(form, 'shell')],
+        ['Note', readField(form, 'note')],
+        ['List', readField(form, 'list')],
+      ] as const;
     }
-  }
+    return [
+      ['Name', readField(form, 'name')],
+      ['Email', readField(form, 'email')],
+      ['Consent', readField(form, 'consent')],
+    ] as const;
+  };
 
   document.querySelectorAll('form.join-form').forEach((form) => {
     if (!(form instanceof HTMLFormElement) || form.dataset.joinBound === 'yes') return;
@@ -147,26 +163,37 @@ const shells = [
       const line = status?.querySelector('[data-status-line]');
       const button = form.querySelector('button[type="submit"]');
       if (!(status instanceof HTMLElement) || !(line instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
+      if (honeypotFilled(form)) return;
+      const fields = joinFields(form);
+      const subject = readField(form, 'kind') === 'preorder' ? 'Aura pre-order' : 'Aura list';
       button.disabled = true;
       clearSentMark(status);
-      line.textContent = 'Sending.';
-      try {
-        const res = await fetch('/api/join', {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' },
-        });
-        const data = await res.json();
-        line.textContent = data.message || 'Try again in a moment.';
-        if (res.ok) {
-          form.reset();
-          showSentMark(status);
-        }
-      } catch {
-        line.textContent = 'The line did not answer. Try again in a moment.';
-      } finally {
+      if (formEndpoint.trim().startsWith('https://')) line.textContent = 'Sending.';
+      const result = await submitNote({ form, subject, fields });
+      if (result.ok && result.via === 'https') {
+        const message = joinSuccess(form);
+        form.reset();
+        line.textContent = message;
+        showSentMark(status);
+        scrollClearOfHeader(line);
         button.disabled = false;
+        return;
       }
+      if (result.ok && result.via === 'mailto') {
+        line.textContent = draftLine;
+        scrollClearOfHeader(line);
+        button.disabled = false;
+        return;
+      }
+      if (result.via === 'honeypot') {
+        button.disabled = false;
+        return;
+      }
+      line.textContent = result.via === 'held'
+        ? heldLine
+        : 'The line did not answer. Try again in a moment.';
+      button.disabled = false;
+      scrollClearOfHeader(status);
     });
   });
   });

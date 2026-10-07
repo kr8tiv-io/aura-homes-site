@@ -1,9 +1,13 @@
 ---
 import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { contactEmail, contactPhone, formAction, httpsUrl, phoneTel, youtubeUrl } from '../data/site';
 
-// Paste a Formspree URL here, or a mailto: address. TODO until the inbox exists.
-const formAction = 'TODO';
+const action = formAction();
+const email = contactEmail.trim();
+const phone = contactPhone.trim();
+const tel = phoneTel(phone);
+const youtube = httpsUrl(youtubeUrl);
 
 const topics = [
   ['quote', 'Quote'],
@@ -28,7 +32,7 @@ const topics = [
     </section>
 
     <section class="enquire" id="write">
-      <form class="join-card contact-form" id="contact-form" action={formAction} method="post">
+      <form class="join-card contact-form" id="contact-form" action={action} method="post">
         <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <div class="contact-grid">
           <div class="field">
@@ -65,14 +69,18 @@ const topics = [
         <RevealHeading as="h2" tabindex="-1">We have your note.</RevealHeading>
         <p data-sent-host><span data-contact-thanks-line>We read everything.</span></p>
       </div>
+      <div class="join-card contact-thanks" id="contact-draft" hidden>
+        <RevealHeading as="h2" tabindex="-1">Your draft is ready.</RevealHeading>
+        <p>Your draft is ready to send.</p>
+      </div>
     </section>
 
     <div class="page-body contact-reach">
-      <p class="todo-line">Email: TODO</p>
-      <p class="todo-line">Phone: TODO</p>
+      {email && <p class="todo-line"><a href={`mailto:${email}`}>Email: {email}</a></p>}
+      {phone && tel && <p class="todo-line"><a href={tel}>Phone: {phone}</a></p>}
+      {phone && !tel && <p class="todo-line">Phone: {phone}</p>}
       <p>Edmonton, Alberta. Shipping across Canada.</p>
-      <p class="contact-yt">Follow the build on YouTube</p>
-      <p class="todo-line">Link: TODO</p>
+      {youtube && <p class="contact-yt"><a href={youtube}>Follow the build on YouTube</a></p>}
       <p>
         If you only want your name held, use <a href="/pre-order">Pre-order</a>. That form takes no payment.
         Shorter answers are on the <a href="/faq">FAQ</a>.
@@ -120,6 +128,7 @@ const topics = [
   :global(.contact-thanks h2) {
     margin: 0;
     max-width: 12em;
+    scroll-margin-top: 5.75rem;
     font-family: var(--font-cinzel);
     font-weight: 300;
     font-size: clamp(2.2rem, 4vw, 3.4rem);
@@ -175,11 +184,12 @@ const topics = [
 
 <script>
   import { gsap, prefersReducedMotion, onPageLoad } from '../scripts/motion';
-  import { clearSentMark, showSentMark } from '../scripts/forms';
+  import { showSentMark } from '../scripts/forms';
+  import { heldLine, honeypotFilled, readField, scrollClearOfHeader, submitNote } from '../scripts/submit-note';
+  import { formEndpoint } from '../data/site';
 
   onPageLoad(() => {
   const form = document.getElementById('contact-form');
-  const thanks = document.getElementById('contact-thanks');
   const topic = document.getElementById('contact-topic');
 
   if (topic instanceof HTMLSelectElement) {
@@ -189,77 +199,67 @@ const topics = [
     }
   }
 
-  const fieldText = (name: string) => {
-    if (!(form instanceof HTMLFormElement)) return '';
-    const el = form.elements.namedItem(name);
-    if (el instanceof HTMLSelectElement) return el.selectedOptions[0]?.textContent?.trim() || '';
-    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) return el.value.trim();
-    return '';
-  };
-
-  const showThanks = (sent: boolean) => {
-    if (!(form instanceof HTMLFormElement) || !(thanks instanceof HTMLElement)) return;
-    const line = thanks.querySelector('[data-contact-thanks-line]');
-    const host = thanks.querySelector('[data-sent-host]');
-    if (line) {
-      line.textContent = sent
-        ? 'We read everything.'
-        : 'The inbox is not open yet, so this note stayed here.';
-    }
-    if (host instanceof HTMLElement) {
-      clearSentMark(host);
-      if (sent) showSentMark(host);
+  const showCard = (id: string) => {
+    if (!(form instanceof HTMLFormElement)) return;
+    const card = document.getElementById(id);
+    if (!(card instanceof HTMLElement)) return;
+    for (const otherId of ['contact-thanks', 'contact-draft']) {
+      if (otherId === id) continue;
+      const other = document.getElementById(otherId);
+      if (other instanceof HTMLElement) other.hidden = true;
     }
     form.hidden = true;
-    thanks.hidden = false;
-    const title = thanks.querySelector('h2');
-    if (title instanceof HTMLElement) title.focus();
-    if (!prefersReducedMotion()) {
-      gsap.fromTo(thanks, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.6, ease: 'power3.out' });
+    card.hidden = false;
+    const host = card.querySelector('[data-sent-host]');
+    if (host instanceof HTMLElement) showSentMark(host);
+    const title = card.querySelector('h2');
+    if (title instanceof HTMLElement) {
+      title.focus({ preventScroll: true });
+      scrollClearOfHeader(title);
     }
-    window.__lenis?.scrollTo(thanks, { immediate: true });
+    if (!prefersReducedMotion()) {
+      gsap.fromTo(card, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.6, ease: 'power3.out' });
+    }
   };
 
-  if (form instanceof HTMLFormElement && thanks instanceof HTMLElement) {
+  if (form instanceof HTMLFormElement && form.dataset.submitBound !== 'yes') {
+    form.dataset.submitBound = 'yes';
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const status = form.querySelector('[data-contact-status]');
       const statusLine = status?.querySelector('[data-status-line]');
       const button = form.querySelector('button[type="submit"]');
       if (!(status instanceof HTMLElement) || !(statusLine instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
-      if (fieldText('company') !== '') {
-        showThanks(false);
+      if (honeypotFilled(form)) return;
+      button.disabled = true;
+      if (formEndpoint.trim().startsWith('https://')) statusLine.textContent = 'Sending.';
+      const result = await submitNote({
+        form,
+        subject: 'Aura note',
+        fields: [
+          ['Name', readField(form, 'name')],
+          ['Email', readField(form, 'email')],
+          ['Topic', readField(form, 'topic')],
+          ['Message', readField(form, 'message')],
+        ],
+      });
+      if (result.ok && result.via === 'https') {
+        showCard('contact-thanks');
         return;
       }
-      button.disabled = true;
-      const action = form.getAttribute('action') || '';
-      try {
-        if (action.startsWith('https://')) {
-          statusLine.textContent = 'Sending.';
-          const res = await fetch(action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { Accept: 'application/json' },
-          });
-          if (!res.ok) throw new Error('status');
-          showThanks(true);
-        } else if (action.startsWith('mailto:')) {
-          const lines = [
-            ['Name', fieldText('name')],
-            ['Email', fieldText('email')],
-            ['Topic', fieldText('topic')],
-            ['Message', fieldText('message')],
-          ].map(([label, value]) => `${label}: ${value || ''}`);
-          const joiner = action.includes('?') ? '&' : '?';
-          window.location.href = `${action}${joiner}subject=${encodeURIComponent('Aura note')}&body=${encodeURIComponent(lines.join('\n'))}`;
-          showThanks(true);
-        } else {
-          showThanks(false);
-        }
-      } catch {
-        statusLine.textContent = 'The line did not answer. Try again in a moment.';
-        button.disabled = false;
+      if (result.ok && result.via === 'mailto') {
+        showCard('contact-draft');
+        return;
       }
+      if (result.via === 'honeypot') {
+        button.disabled = false;
+        return;
+      }
+      statusLine.textContent = result.via === 'held'
+        ? heldLine
+        : 'The line did not answer. Try again in a moment.';
+      button.disabled = false;
+      scrollClearOfHeader(status);
     });
   }
 
