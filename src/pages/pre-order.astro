@@ -2,10 +2,10 @@
 import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { collectionStandalone } from '../data/collection';
+import { formAction } from '../data/site';
 import { roomConcepts } from '../lib/rooms';
 
-// Paste a Formspree URL here, or a mailto: address. TODO until the inbox exists.
-const formAction = 'TODO';
+const action = formAction();
 
 const uses = [
   ['home-extension', 'Home extension'],
@@ -47,7 +47,7 @@ const offgrid = [
     </section>
 
     <section class="enquire" id="enquire">
-      <form class="join-card quote-form" id="quote-form" action={formAction} method="post" data-tracer="edge">
+      <form class="join-card quote-form" id="quote-form" action={action} method="post" data-tracer="edge">
         <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
         <div class="quote-grid">
           <div class="field">
@@ -149,6 +149,10 @@ const offgrid = [
         <RevealHeading as="h2" tabindex="-1">We have your note.</RevealHeading>
         <p data-sent-host><span>We will reach out personally. Nothing was charged.</span></p>
       </div>
+      <div class="join-card quote-thanks" id="quote-draft" hidden>
+        <RevealHeading as="h2" tabindex="-1">Your draft is ready.</RevealHeading>
+        <p>Your draft is ready to send.</p>
+      </div>
     </section>
   </main>
 </BaseLayout>
@@ -199,6 +203,7 @@ const offgrid = [
   :global(.quote-thanks h2) {
     margin: 0;
     max-width: 12em;
+    scroll-margin-top: 5.75rem;
     font-family: var(--font-cinzel);
     font-weight: 300;
     font-size: clamp(2.2rem, 4vw, 3.4rem);
@@ -236,10 +241,11 @@ const offgrid = [
 <script>
   import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad } from '../scripts/motion';
   import { showSentMark } from '../scripts/forms';
+  import { heldLine, honeypotFilled, readField, scrollClearOfHeader, submitNote } from '../scripts/submit-note';
+  import { formEndpoint } from '../data/site';
 
   onPageLoad(() => {
   const form = document.getElementById('quote-form');
-  const thanks = document.getElementById('quote-thanks');
   const model = document.getElementById('quote-model');
   const ask = document.querySelector('[data-quote-ask]');
 
@@ -341,74 +347,76 @@ const offgrid = [
     syncAsk();
   }
 
-  const showThanks = () => {
-    if (!(form instanceof HTMLFormElement) || !(thanks instanceof HTMLElement)) return;
-    form.hidden = true;
-    thanks.hidden = false;
-    const host = thanks.querySelector('[data-sent-host]');
-    if (host instanceof HTMLElement) showSentMark(host);
-    const title = thanks.querySelector('h2');
-    if (title instanceof HTMLElement) title.focus();
-    if (!prefersReducedMotion()) {
-      gsap.fromTo(thanks, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.6, ease: 'power3.out' });
+  const showCard = (id: string) => {
+    if (!(form instanceof HTMLFormElement)) return;
+    const card = document.getElementById(id);
+    if (!(card instanceof HTMLElement)) return;
+    for (const otherId of ['quote-thanks', 'quote-draft']) {
+      if (otherId === id) continue;
+      const other = document.getElementById(otherId);
+      if (other instanceof HTMLElement) other.hidden = true;
     }
-    window.__lenis?.scrollTo(thanks, { immediate: true });
+    form.hidden = true;
+    card.hidden = false;
+    const host = card.querySelector('[data-sent-host]');
+    if (host instanceof HTMLElement) showSentMark(host);
+    const title = card.querySelector('h2');
+    if (title instanceof HTMLElement) {
+      title.focus({ preventScroll: true });
+      scrollClearOfHeader(title);
+    }
+    if (!prefersReducedMotion()) {
+      gsap.fromTo(card, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 1.6, ease: 'power3.out' });
+    }
   };
 
-  const fieldText = (name: string) => {
-    if (!(form instanceof HTMLFormElement)) return '';
-    const el = form.elements.namedItem(name);
-    if (el instanceof HTMLSelectElement) return el.selectedOptions[0]?.textContent?.trim() || '';
-    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) return el.value.trim();
-    return '';
-  };
-
-  if (form instanceof HTMLFormElement && thanks instanceof HTMLElement) {
+  if (form instanceof HTMLFormElement && form.dataset.submitBound !== 'yes') {
+    form.dataset.submitBound = 'yes';
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const status = form.querySelector('[data-quote-status]');
       const statusLine = status?.querySelector('[data-status-line]');
       const button = form.querySelector('button[type="submit"]');
       if (!(status instanceof HTMLElement) || !(statusLine instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
-      if (fieldText('company') !== '') {
-        showThanks();
+      if (honeypotFilled(form)) return;
+      button.disabled = true;
+      if (formEndpoint.trim().startsWith('https://')) statusLine.textContent = 'Sending.';
+      const result = await submitNote({
+        form,
+        subject: 'Aura quote',
+        fields: [
+          ['Name', readField(form, 'name')],
+          ['Email', readField(form, 'email')],
+          ['Phone', readField(form, 'phone')],
+          ['Location', readField(form, 'location')],
+          ['Model', readField(form, 'model')],
+          ['Intended use', readField(form, 'use')],
+          ['Polycarbonate finish', readField(form, 'finish')],
+          ['Size', readField(form, 'size')],
+          ['Add-ons', readField(form, 'addons')],
+          ['Share link', readField(form, 'share')],
+          ['Off-grid interest', readField(form, 'offgrid')],
+          ['Timeline', readField(form, 'timeline')],
+          ['Message', readField(form, 'message')],
+        ],
+      });
+      if (result.ok && result.via === 'https') {
+        showCard('quote-thanks');
         return;
       }
-      button.disabled = true;
-      const action = form.getAttribute('action') || '';
-      try {
-        if (action.startsWith('https://')) {
-          statusLine.textContent = 'Sending.';
-          const res = await fetch(action, {
-            method: 'POST',
-            body: new FormData(form),
-            headers: { Accept: 'application/json' },
-          });
-          if (!res.ok) throw new Error('status');
-        } else if (action.startsWith('mailto:')) {
-          const lines = [
-            ['Name', fieldText('name')],
-            ['Email', fieldText('email')],
-            ['Phone', fieldText('phone')],
-            ['Location', fieldText('location')],
-            ['Model', fieldText('model')],
-            ['Intended use', fieldText('use')],
-            ['Polycarbonate finish', fieldText('finish')],
-            ['Size', fieldText('size')],
-            ['Add-ons', fieldText('addons')],
-            ['Share link', fieldText('share')],
-            ['Off-grid interest', fieldText('offgrid')],
-            ['Timeline', fieldText('timeline')],
-            ['Message', fieldText('message')],
-          ].map(([label, value]) => `${label}: ${value || ''}`);
-          const joiner = action.includes('?') ? '&' : '?';
-          window.location.href = `${action}${joiner}subject=${encodeURIComponent('Aura quote')}&body=${encodeURIComponent(lines.join('\n'))}`;
-        }
-        showThanks();
-      } catch {
-        statusLine.textContent = 'The line did not answer. Try again in a moment.';
-        button.disabled = false;
+      if (result.ok && result.via === 'mailto') {
+        showCard('quote-draft');
+        return;
       }
+      if (result.via === 'honeypot') {
+        button.disabled = false;
+        return;
+      }
+      statusLine.textContent = result.via === 'held'
+        ? heldLine
+        : 'The line did not answer. Try again in a moment.';
+      button.disabled = false;
+      scrollClearOfHeader(status);
     });
   }
 
