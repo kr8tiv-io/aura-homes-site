@@ -273,7 +273,7 @@ import Journeys from '../components/Journeys.astro';
   <script>
     import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad, holdPageMotion } from '../scripts/motion';
     import { bindFilmScrub } from '../scripts/film-scrub';
-    import { onQuality, qualityProfile } from '../three/quality';
+    import { onQuality, qualityProfile, showStill } from '../three/quality';
     import { bindShots } from '../scripts/shots';
     import { bindReels } from '../scripts/reel';
 
@@ -304,9 +304,16 @@ import Journeys from '../components/Journeys.astro';
     let fieldAt = 0;
 
     const ensureScenes = () => {
+      if (prefersReducedMotion()) {
+        document.querySelectorAll<HTMLCanvasElement>('[data-meadow]').forEach((canvas) => showStill(canvas));
+        return Promise.resolve();
+      }
       if (qualityProfile().tier === 'off') return Promise.resolve();
       if (scenesTask) return scenesTask;
       scenesTask = (async () => {
+        const { whenPageSettled } = await import('../three/scene-scheduler');
+        await whenPageSettled();
+        if (prefersReducedMotion() || qualityProfile().tier === 'off') return;
         const [meadowMod, washMod, fieldMod] = await Promise.all([
           import('../scripts/meadow'),
           import('../scripts/wash'),
@@ -328,8 +335,9 @@ import Journeys from '../components/Journeys.astro';
       return scenesTask;
     };
 
-    // The splash and its scroll film bind right away, exactly as before the
-    // quality gate. The meadow scenes mount whenever their chunks arrive.
+    // The splash and its scroll film bind right away. Meadow chunks wait until
+    // the page has loaded and the browser is idle, then each passage mounts
+    // only as it approaches. Film scrub and passage pin math are unchanged.
     void ensureScenes()
       .then(() => {
         if (reduce) {

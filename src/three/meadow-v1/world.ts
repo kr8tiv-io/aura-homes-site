@@ -7,6 +7,7 @@ import * as THREE from 'three';
 import { registerView, type StageTone } from '../stage';
 import { hdrLoader, ktx2Loader, loadEnvironment, loadModel, whenKtx2 } from '../loaders';
 import { motionTime, onQuality, qualityProfile } from '../quality';
+import { tierAssets } from '../tier-assets';
 import { anisotropyForTier, applyMacro } from '../surfaces';
 import { prefersReducedMotion } from '../../scripts/motion';
 import { AURA_UNIT_SLOT, HOT_TUB_SLOT } from './meadow/geometry';
@@ -1185,13 +1186,14 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
 
   const buildForest = () => {
     const profile = qualityProfile();
+    const assets = tierAssets(profile.tier);
     const scale = Math.max(0.35, profile.grassScale * density);
     const generation = built.generation;
     if (golden) {
       const alive = () => !dead && !suspended && generation === built.generation;
-      if (profile.tier === 'low') {
+      if (assets.trees === 'pines') {
         placePines(generation);
-        placeGoldenProps(scene, built.geometries, built.materials, alive);
+        if (assets.props) placeGoldenProps(scene, built.geometries, built.materials, alive);
         return;
       }
       const grove = mountGoldenGrove(scene, built.geometries, built.materials, built.textures, alive, () => {
@@ -1202,6 +1204,10 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     }
     if (vista) {
       const alive = () => !dead && !suspended && generation === built.generation;
+      if (assets.vista === 'pines') {
+        placePines(generation);
+        return;
+      }
       const grove = mountGoldenGrove(
         scene,
         built.geometries,
@@ -1211,12 +1217,12 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         undefined,
         heightAt,
         options.clear,
-        !options.ground,
+        !options.ground && assets.props,
       );
       claim = grove.claimRenderer;
       return;
     }
-    if (profile.tier === 'low') {
+    if (assets.trees === 'pines') {
       placePines(generation);
       return;
     }

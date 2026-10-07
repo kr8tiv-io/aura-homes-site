@@ -1,8 +1,12 @@
 /*
   One full-viewport canvas. Faint star heads walk the edges of a few rules
   and outlines, then rest. The same WebGL context used to draw full-screen
-  bands. No second context, and no three.js.
+  bands. No three.js here.
+
+  Low and medium tiers leave that context to the meadow stage and draw the
+  SVG fallback instead, so a phone keeps a single live WebGL context.
 */
+import { qualityProfile } from '../three/quality';
 
 type Kind = 'edge' | 'rule' | 'outline' | 'underline';
 type Side = 'top' | 'bottom' | 'text' | 'mid' | 'box';
@@ -884,6 +888,13 @@ export function bindTracers() {
   if (!(canvas instanceof HTMLCanvasElement)) return;
   clearFallback();
   canvasEl = canvas;
+  const tier = qualityProfile().tier;
+  if (tier === 'low' || tier === 'medium') {
+    mode = 'css';
+    collect();
+    mountFallback();
+    return;
+  }
   if (!ensureGl(canvas)) {
     mode = 'css';
     collect();

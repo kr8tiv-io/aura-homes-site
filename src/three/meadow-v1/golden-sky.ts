@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { Sky } from 'three/addons/objects/Sky.js';
 import { GroundedSkybox } from 'three/addons/objects/GroundedSkybox.js';
 import { hdrLoader } from '../loaders';
+import { tierAssets } from '../tier-assets';
 import { EVENING_SUN, heightFog } from './height-fog';
 
 function asset(path: string) {
@@ -114,7 +115,10 @@ export function addGoldenSky(
   geometries.push(sky.geometry);
   scene.add(sky);
 
-  void hdrLoader.loadAsync(asset('hdri/alps_field_2k.hdr')).then((hdr) => {
+  const skyPlan = tierAssets().goldenSky;
+  if (skyPlan !== 'off') {
+  const skyFile = skyPlan === '1k' ? 'hdri/alps_field_1k.hdr' : 'hdri/alps_field_2k.hdr';
+  void hdrLoader.loadAsync(asset(skyFile)).then((hdr) => {
     if (!alive()) {
       hdr.dispose();
       return;
@@ -152,6 +156,7 @@ export function addGoldenSky(
     materials.push(material);
     scene.add(shell);
   }).catch(() => undefined);
+  }
 
   return sky;
 }

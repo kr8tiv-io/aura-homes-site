@@ -1,5 +1,6 @@
 import { holdPageMotion, prefersReducedMotion } from './motion';
-import { hideStill, onQuality, qualityProfile, showStill } from '../three/quality';
+import { watchPassage } from '../three/scene-scheduler';
+import { onQuality, qualityProfile, showStill } from '../three/quality';
 import type { StageTone } from '../three/stage';
 import { FAR_SPLINE, GRASS_SPLINE, mountMeadowWorld } from '../three/meadow-v1/world';
 import { createAuraUnit, glassOrbit, type AuraUnit, type GlazeFinish } from '../three/aura-unit';
@@ -287,15 +288,28 @@ export function mountMeadow(canvas: HTMLCanvasElement) {
   let inner: ReturnType<typeof mountMeadowNow> | null = null;
   let progress = 0;
 
-  const boot = () => {
-    if (dead || inner) return;
-    if (qualityProfile().tier === 'off') {
+  const stopWatch = watchPassage(canvas, () => {
+    if (dead || inner) return null;
+    if (qualityProfile().tier === 'off' || prefersReducedMotion()) {
       showStill(canvas);
-      return;
+      return null;
     }
-    hideStill(canvas);
-    inner = mountMeadowNow(canvas, () => progress);
-  };
+    try {
+      inner = mountMeadowNow(canvas, () => progress);
+      inner.setProgress(progress);
+    } catch (error) {
+      inner = null;
+      showStill(canvas);
+      console.warn('meadow mount failed', error);
+      return null;
+    }
+    return {
+      destroy() {
+        inner?.destroy();
+        inner = null;
+      },
+    };
+  });
 
   const stop = onQuality((next) => {
     if (dead) return;
@@ -303,12 +317,8 @@ export function mountMeadow(canvas: HTMLCanvasElement) {
       inner?.destroy();
       inner = null;
       showStill(canvas);
-      return;
     }
-    if (!inner) boot();
   });
-
-  boot();
 
   const api = {
     setProgress(t: number) {
@@ -319,6 +329,7 @@ export function mountMeadow(canvas: HTMLCanvasElement) {
       if (dead) return;
       dead = true;
       stop();
+      stopWatch();
       inner?.destroy();
       inner = null;
     },

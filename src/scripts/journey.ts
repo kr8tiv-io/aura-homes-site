@@ -1,5 +1,5 @@
 import { gsap, ScrollTrigger, prefersReducedMotion, holdPageMotion } from './motion';
-import { onQuality, qualityProfile } from '../three/quality';
+import { onQuality, qualityProfile, showStill } from '../three/quality';
 import { bindShots } from './shots';
 import { bindReels } from './reel';
 
@@ -20,11 +20,21 @@ async function startJourney() {
   const washes: SceneHandle[] = [];
   let fieldFx: SceneHandle | null = null;
   let scenesTask: Promise<void> | null = null;
+  const passageAt: number[] = [];
+  const washAt: number[] = [];
+  let fieldAt = 0;
 
   const ensureScenes = () => {
+    if (prefersReducedMotion()) {
+      document.querySelectorAll<HTMLCanvasElement>('[data-meadow]').forEach((canvas) => showStill(canvas));
+      return Promise.resolve();
+    }
     if (qualityProfile().tier === 'off') return Promise.resolve();
     if (scenesTask) return scenesTask;
     scenesTask = (async () => {
+      const { whenPageSettled } = await import('../three/scene-scheduler');
+      await whenPageSettled();
+      if (prefersReducedMotion() || qualityProfile().tier === 'off') return;
       const [meadowMod, washMod, fieldMod] = await Promise.all([
         import('./meadow'),
         import('./wash'),
@@ -35,11 +45,18 @@ async function startJourney() {
       washes.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => washMod.mountWash(canvas)));
       const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
       fieldFx = fieldCanvas ? fieldMod.mountField(fieldCanvas) : null;
+      meadows.forEach((meadow, index) => {
+        if (passageAt[index] != null) meadow.setProgress(passageAt[index]);
+      });
+      washes.forEach((wash, index) => {
+        if (washAt[index] != null) wash.setProgress(washAt[index]);
+      });
+      fieldFx?.setProgress(fieldAt);
     })();
     return scenesTask;
   };
 
-  await ensureScenes();
+  void ensureScenes();
   const stopQuality = onQuality(() => {
     void ensureScenes();
   });
@@ -134,6 +151,7 @@ async function startJourney() {
           anticipatePin: 1,
           onUpdate: (self) => {
             const p = self.progress;
+            passageAt[index] = p;
             meadows[index]?.setProgress(p);
             if (ghost) {
               gsap.set(ghost, {
@@ -164,7 +182,10 @@ async function startJourney() {
           start: 'top bottom',
           end: 'bottom top',
           scrub: 0.6,
-          onUpdate: (self) => washes[index]?.setProgress(self.progress),
+          onUpdate: (self) => {
+            washAt[index] = self.progress;
+            washes[index]?.setProgress(self.progress);
+          },
         });
       });
 
@@ -173,7 +194,10 @@ async function startJourney() {
         start: 'top top',
         end: 'bottom bottom',
         scrub: 0.4,
-        onUpdate: (self) => fieldFx?.setProgress(self.progress),
+        onUpdate: (self) => {
+          fieldAt = self.progress;
+          fieldFx?.setProgress(self.progress);
+        },
       });
     });
 

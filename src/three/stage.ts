@@ -20,7 +20,7 @@ import {
 } from 'postprocessing';
 import { N8AOPostPass } from 'n8ao';
 import { configureRenderer, loadEnvironment, releaseEnvironment } from './loaders';
-import { displayDpr, ensureQuality, hdriFor, noteFrame, onQuality, qualityProfile, setDebugStats } from './quality';
+import { displayDpr, ensureQuality, hdriFor, noteFrame, onQuality, qualityProfile, setDebugStats, showStill } from './quality';
 import { prefersReducedMotion } from '../scripts/motion';
 import { TinySunFlareEffect } from './meadow-v1/flare';
 
@@ -97,6 +97,7 @@ let raf = 0;
 let looping = false;
 let drawScheduled = false;
 let lastTime = 0;
+let scenePaints = 0;
 let booted = false;
 let bootFailed = false;
 let listening = false;
@@ -208,6 +209,8 @@ function syncLoop() {
 }
 
 function onFrame(time: number) {
+  const host = window as Window & { __auraFrames?: number };
+  host.__auraFrames = (host.__auraFrames ?? 0) + 1;
   if (!shouldRun()) {
     renderer?.setAnimationLoop(null);
     looping = false;
@@ -291,6 +294,7 @@ function maybeBoot() {
     canvas?.remove();
     canvas = null;
     renderer = null;
+    document.dispatchEvent(new CustomEvent('aura-stage-failed'));
   }
 }
 
@@ -320,6 +324,22 @@ function boot() {
   gl.info.autoReset = false;
   gl.setClearColor(0x000000, 0);
   configureRenderer(gl);
+
+  node.addEventListener('webglcontextlost', (event) => {
+    event.preventDefault();
+    looping = false;
+    gl.setAnimationLoop(null);
+    bootFailed = true;
+    document.querySelectorAll<HTMLCanvasElement>('[data-meadow]').forEach((meadow) => {
+      showStill(meadow);
+      const passage = meadow.closest('.passage');
+      if (!(passage instanceof HTMLElement)) return;
+      passage.classList.remove('is-stage');
+      delete passage.dataset.stage;
+      passage.querySelector('[data-passage-loader]')?.remove();
+    });
+    document.dispatchEvent(new CustomEvent('aura-stage-failed'));
+  });
 
   canvas = node;
   renderer = gl;
@@ -594,7 +614,17 @@ function paintScene(entry: Entry, rect: DOMRect, dt: number) {
   ensureGodrays(entry);
   entry.view.claimRenderer?.(renderer);
   composer.render(dt);
-  entry.view.element.closest('.passage')?.classList.add('is-stage');
+  const passage = entry.view.element.closest('.passage');
+  if (passage instanceof HTMLElement) {
+    passage.classList.add('is-stage');
+    scenePaints += 1;
+    (passage as HTMLElement & { __auraPaints?: number }).__auraPaints = ((passage as HTMLElement & { __auraPaints?: number }).__auraPaints ?? 0) + 1;
+    (window as Window & { __auraScenePaints?: number }).__auraScenePaints = scenePaints;
+    if (passage.dataset.stage !== 'live') {
+      passage.dataset.stage = 'live';
+      passage.dispatchEvent(new CustomEvent('aura-stage-live'));
+    }
+  }
 }
 
 function draw(time: number) {
@@ -617,6 +647,8 @@ function draw(time: number) {
       if (entry.dead || entry.dormant || (entry.view.layer ?? 'scene') !== layer) continue;
       const rect = entry.view.element.getBoundingClientRect();
       const visible = onScreen(rect);
+      const layerName = entry.view.layer ?? 'scene';
+      if (layerName === 'scene' && !visible) continue;
       const camera = entry.view.camera;
       if (camera instanceof THREE.PerspectiveCamera && rect.width >= 2 && rect.height >= 2) {
         const aspect = rect.width / rect.height;
@@ -639,8 +671,9 @@ function draw(time: number) {
         if (layer === 'wash') paintWash(entry);
         else if (layer === 'field') paintField(entry, rect);
         else paintScene(entry, rect, dt);
-      } catch {
-        /* One view can fail without stopping the others. */
+      } catch (error) {
+        const host = window as Window & { __auraPaintError?: string };
+        if (!host.__auraPaintError) host.__auraPaintError = String(error).slice(0, 240);
       }
     }
   }
