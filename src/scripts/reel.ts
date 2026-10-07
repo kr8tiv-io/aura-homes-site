@@ -116,51 +116,63 @@ export function bindReels(root: ParentNode = document) {
     const spec = MODES[mode];
     const scrub = bindFilmScrub(video);
     const figure = video.closest('.story-figure') || video;
+    const phone = window.matchMedia('(max-width: 800px)').matches;
+
+    const usePoster = () => {
+      const src = video.dataset.poster;
+      if (src && video.getAttribute('poster') !== src) video.poster = src;
+    };
 
     const near = new IntersectionObserver(
       (entries) => {
         if (!entries.some((entry) => entry.isIntersecting)) return;
+        usePoster();
         attach();
         near.disconnect();
       },
-      { rootMargin: '25% 0px' },
+      { rootMargin: '40% 0px' },
     );
     near.observe(figure);
     stops.push(() => near.disconnect());
 
     if (reduce) {
+      usePoster();
       scrub.setProgress(0.2);
       gsap.set(video, { scale: 1, clipPath: 'inset(0% 0% 0% 0%)' });
       return;
     }
 
-    const from: gsap.TweenVars = { scale: spec.scale };
-    const to: gsap.TweenVars = { scale: spec.endScale, ease: 'none' };
-    if (spec.xPercent) {
-      from.xPercent = spec.xPercent;
-      to.xPercent = 0;
+    if (phone) {
+      gsap.set(video, { scale: 1, xPercent: 0, yPercent: 0, rotate: 0, clipPath: 'inset(0% 0% 0% 0%)' });
+    } else {
+      const from: gsap.TweenVars = { scale: spec.scale };
+      const to: gsap.TweenVars = { scale: spec.endScale, ease: 'none' };
+      if (spec.xPercent) {
+        from.xPercent = spec.xPercent;
+        to.xPercent = 0;
+      }
+      if (spec.yPercent) {
+        from.yPercent = spec.yPercent;
+        to.yPercent = 0;
+      }
+      if (spec.rotate) {
+        from.rotate = spec.rotate;
+        to.rotate = 0;
+      }
+      if (spec.clip) {
+        from.clipPath = spec.clip;
+        to.clipPath = 'inset(0% 0% 0% 0%)';
+      }
+      gsap.fromTo(video, from, {
+        ...to,
+        scrollTrigger: {
+          trigger: figure,
+          start: 'top 96%',
+          end: 'top 42%',
+          scrub: spec.scrub,
+        },
+      });
     }
-    if (spec.yPercent) {
-      from.yPercent = spec.yPercent;
-      to.yPercent = 0;
-    }
-    if (spec.rotate) {
-      from.rotate = spec.rotate;
-      to.rotate = 0;
-    }
-    if (spec.clip) {
-      from.clipPath = spec.clip;
-      to.clipPath = 'inset(0% 0% 0% 0%)';
-    }
-    gsap.fromTo(video, from, {
-      ...to,
-      scrollTrigger: {
-        trigger: figure,
-        start: 'top 96%',
-        end: 'top 42%',
-        scrub: spec.scrub,
-      },
-    });
 
     const trigger = ScrollTrigger.create({
       trigger: figure,

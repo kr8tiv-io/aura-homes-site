@@ -162,6 +162,14 @@ body {
   color: var(--color-obsidian);
   overflow-x: hidden;
 }
+/* Phone: grain, mist, and the window-reveal scale sit outside the
+   viewport. Clip the document so they do not open a sideways scroll.
+   Desktop master-plan still moves its rail inside its own frame. */
+@media (max-width: 800px) {
+  html {
+    overflow-x: clip;
+  }
+}
 
 :focus-visible {
   outline: 2px solid #866243;
@@ -2204,9 +2212,19 @@ canvas[data-stage-host='on'] {
   .story-still.is-flip .story-figure {
     order: 0;
   }
+  .story-figure .shot-move {
+    height: auto;
+  }
   .story-figure img,
   .story-figure video {
-    height: 58vh;
+    width: 100%;
+    height: auto;
+    aspect-ratio: auto;
+    max-height: 78vh;
+    max-height: 78svh;
+    max-height: 78dvh;
+    object-fit: contain;
+    object-position: center;
   }
   .angle-set {
     padding: 4vh 1.5rem 10vh;
@@ -2216,7 +2234,44 @@ canvas[data-stage-host='on'] {
   }
   .angle-grid picture.still-frame,
   .angle-grid picture.still-frame img {
-    height: 58vh;
+    width: 100%;
+    height: auto;
+    max-height: 78vh;
+    max-height: 78svh;
+    max-height: 78dvh;
+    object-fit: contain;
+    object-position: center;
+  }
+  .passage.is-still {
+    background-position: center 42%;
+  }
+  .passage.is-still:has(canvas[data-poster="/film/story-meadow-side.webp"]) {
+    background-position: 34% center;
+  }
+  .passage.is-still:has(canvas[data-poster="/film/story-room.webp"]) {
+    background-position: 36% center;
+  }
+  .passage.is-still:has(canvas[data-poster="/film/layout-gazebo.webp"]) {
+    background-position: center 48%;
+  }
+  .passage.is-still:has(canvas[data-poster="/media/video/deck-poster.webp"]) {
+    background-position: center 40%;
+  }
+  .passage.is-still:has(canvas[data-poster="/media/video/tower-poster.webp"]) {
+    background-position: center 34%;
+  }
+  .later-hero {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .later-hero img {
+    width: 100%;
+    height: auto;
+    max-height: 78vh;
+    max-height: 78svh;
+    max-height: 78dvh;
+    object-fit: contain;
+    object-position: center;
   }
   .ways,
   .enquire,

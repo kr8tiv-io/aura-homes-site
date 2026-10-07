@@ -53,7 +53,7 @@ const hasStill = Astro.slots.has('still');
     }
     <video
       class="living-hero-film"
-      poster={posterUrl}
+      data-poster={posterUrl}
       data-living-src={film}
       data-living-webm={webm}
       muted
@@ -264,6 +264,7 @@ const hasStill = Astro.slots.has('still');
       const attach = () => {
         if (attached) return;
         attached = true;
+        if (video.dataset.poster) video.poster = video.dataset.poster;
         video.muted = true;
         video.defaultMuted = true;
         video.loop = true;

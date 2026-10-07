@@ -41,7 +41,21 @@ function travelFor(frame: HTMLElement, speed: number, zoom: number, originY: num
   return { extra: ideal, half: ideal / 2 };
 }
 
+function narrow() {
+  return window.matchMedia('(max-width: 800px)').matches;
+}
+
+/**
+ * Phone story bleeds keep a short drift. The desktop travel is deep enough
+ * to slide the room out and leave only the grass.
+ */
 function place(mover: HTMLElement, frame: HTMLElement, speed: number, zoom: number, originY: number) {
+  if (narrow() && frame.classList.contains('story-bleed')) {
+    // The phone frame matches the still. Any travel would open a gap.
+    mover.style.height = '100%';
+    mover.style.top = '0px';
+    return 0;
+  }
   const { extra, half } = travelFor(frame, speed, zoom, originY);
   mover.style.height = extra > 0 ? `${frame.clientHeight + extra}px` : '100%';
   mover.style.top = extra > 0 ? `${-extra / 2}px` : '0px';
@@ -83,9 +97,10 @@ export function bindDepthImages() {
       }
 
       const half = () => place(mover, frame, speed, zoom, originY);
+      const startScale = () => (narrow() && frame.classList.contains('story-bleed') ? zoom : zoom * 1.15);
       gsap.fromTo(
         mover,
-        { y: () => half(), scale: zoom * 1.15 },
+        { y: () => half(), scale: startScale },
         {
           y: () => -half(),
           scale: zoom,

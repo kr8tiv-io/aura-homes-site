@@ -9,6 +9,8 @@ interface Props {
   fetchpriority?: 'high' | 'low' | 'auto';
   sizes?: string;
   position?: string;
+  /** Phone-only object-position. Desktop keeps `position`. */
+  phonePosition?: string;
   rise?: boolean;
   natural?: boolean;
 }
@@ -20,17 +22,24 @@ const {
   fetchpriority,
   sizes = '100vw',
   position,
+  phonePosition,
   rise = false,
   natural = false,
 } = Astro.props;
 
 const image = still(src);
-const widths = [1280, 1920, 2560].filter((width) => width <= image.width);
+const ladder = [480, 640, 960, 1280, 1920, 2560].filter((width) => width <= image.width);
+const widths = ladder.length ? ladder : [image.width];
+const imgStyle = [
+  position ? `--still-pos:${position}` : '',
+  phonePosition ? `--still-pos-phone:${phonePosition}` : '',
+]
+  .filter(Boolean)
+  .join(';');
 const pictureAttributes: Record<string, string> = {
   class: natural ? 'still-frame is-natural' : 'still-frame',
 };
 if (rise) pictureAttributes['data-rise'] = '';
-const imgStyle = position ? `object-position: ${position}` : undefined;
 ---
 
 <Picture
@@ -44,7 +53,7 @@ const imgStyle = position ? `object-position: ${position}` : undefined;
   loading={loading}
   decoding="async"
   fetchpriority={fetchpriority}
-  style={imgStyle}
+  style={imgStyle || undefined}
   pictureAttributes={pictureAttributes}
 />
 
@@ -59,6 +68,7 @@ const imgStyle = position ? `object-position: ${position}` : undefined;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: var(--still-pos, center);
   }
   :global(picture.still-frame.is-natural),
   :global(picture.still-frame.is-natural img) {
@@ -75,6 +85,15 @@ const imgStyle = position ? `object-position: ${position}` : undefined;
   }
   :global(.story-bleed) :global(picture.still-frame img) {
     height: 100%;
+  }
+  @media (max-width: 800px) {
+    :global(picture.still-frame img) {
+      object-position: var(--still-pos-phone, var(--still-pos, center));
+    }
+    :global(.story-bleed) :global(picture.still-frame),
+    :global(.story-bleed) :global(picture.still-frame img) {
+      height: 100%;
+    }
   }
   @media (prefers-reduced-motion: reduce) {
     :global(.story-bleed) :global(picture.still-frame) {

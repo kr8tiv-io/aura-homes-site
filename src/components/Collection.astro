@@ -74,7 +74,7 @@ for (const piece of collectionShowpieces.items) {
                           src={room.image}
                           alt={room.alt}
                           position={room.focus}
-                          sizes="(max-width: 800px) 92vw, 42vw"
+                          sizes="(max-width: 800px) calc(100vw - 3rem), 42vw"
                         />
                       </WindowFrame>
                     </figure>
@@ -122,7 +122,7 @@ for (const piece of collectionShowpieces.items) {
                     leftAlt={product.alt}
                     right={product.imageRight}
                     rightAlt={product.altRight}
-                    sizes="(max-width: 800px) 46vw, 21vw"
+                    sizes="(max-width: 800px) calc((100vw - 3rem) / 2), 21vw"
                   />
                 ) : (
                   <figure data-window>
@@ -130,7 +130,7 @@ for (const piece of collectionShowpieces.items) {
                       <Still
                         src={product.image}
                         alt={product.alt}
-                        sizes="(max-width: 800px) 92vw, 42vw"
+                        sizes="(max-width: 800px) calc(100vw - 3rem), 42vw"
                       />
                     </WindowFrame>
                   </figure>
@@ -209,7 +209,7 @@ for (const piece of collectionShowpieces.items) {
                   src={piece.image}
                   alt={piece.alt}
                   position={piece.focus ?? 'center'}
-                  sizes="(max-width: 800px) 92vw, 46vw"
+                  sizes="(max-width: 800px) calc(100vw - 3rem), 46vw"
                 />
               </WindowFrame>
             </figure>
