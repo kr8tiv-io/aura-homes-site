@@ -20,7 +20,7 @@ import {
 } from 'postprocessing';
 import { N8AOPostPass } from 'n8ao';
 import { configureRenderer, loadEnvironment, releaseEnvironment } from './loaders';
-import { displayDpr, ensureQuality, hdriFor, noteFrame, onQuality, qualityProfile, setDebugStats, showStill } from './quality';
+import { displayDpr, ensureQuality, frameIntervalMs, hdriFor, noteFrame, onQuality, qualityProfile, setDebugStats, showStill } from './quality';
 import { prefersReducedMotion } from '../scripts/motion';
 import { TinySunFlareEffect } from './meadow-v1/flare';
 
@@ -330,6 +330,7 @@ function boot() {
     looping = false;
     gl.setAnimationLoop(null);
     bootFailed = true;
+    node.style.visibility = 'hidden';
     document.querySelectorAll<HTMLCanvasElement>('[data-meadow]').forEach((meadow) => {
       showStill(meadow);
       const passage = meadow.closest('.passage');
@@ -624,15 +625,23 @@ function paintScene(entry: Entry, rect: DOMRect, dt: number) {
       passage.dataset.stage = 'live';
       passage.dispatchEvent(new CustomEvent('aura-stage-live'));
     }
+  } else if (entry.view.element.dataset.stage !== 'live') {
+    entry.view.element.dataset.stage = 'live';
+    entry.view.element.dispatchEvent(new CustomEvent('aura-stage-live'));
   }
 }
 
 function draw(time: number) {
   if (!renderer || !booted) return;
+  const interval = frameIntervalMs();
+  if (interval > 0 && lastTime && time - lastTime < interval - 1) return;
   const raw = lastTime ? time - lastTime : 16.7;
   const dt = Math.min(0.05, Math.max(0, raw) / 1000) || 1 / 60;
   lastTime = time;
-  noteFrame(raw);
+  // Desktop keeps the wall-clock sample. A phone cap would otherwise look
+  // like a steady 33ms frame and drop a strong device out of medium.
+  if (interval <= 0) noteFrame(raw);
+  const drawStarted = interval > 0 ? performance.now() : 0;
   resizeRenderer();
   renderer.info.reset();
 
@@ -687,6 +696,7 @@ function draw(time: number) {
     textures: renderer.info.memory.textures,
     bytes,
   });
+  if (interval > 0) noteFrame(performance.now() - drawStarted);
 }
 
 const debugTextures = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug3d');

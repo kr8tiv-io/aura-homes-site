@@ -141,12 +141,69 @@ function connectionSaveData(): boolean {
   return !!nav.connection?.saveData;
 }
 
-function forcedOff(): boolean {
-  if (typeof window === 'undefined') return true;
+/**
+ * A small window, or a finger with no mouse or trackpad.
+ * A touch laptop that also has a fine pointer stays on the desktop path.
+ */
+export function isPhoneClass(): boolean {
+  if (typeof window === 'undefined') return false;
   if (window.innerWidth < 1024) return true;
   const coarse = window.matchMedia('(pointer: coarse)').matches;
   const fine = window.matchMedia('(any-pointer: fine)').matches;
-  if (coarse && !fine) return true;
+  return coarse && !fine;
+}
+
+let builderDprLocked = false;
+let seenGpu: { tier: number; type: string; gpu: string } | null = null;
+
+/** The builder's phone stage asks for a 1x buffer even when the tier allows 1.25. */
+export function lockPhoneBuilderDpr(on: boolean) {
+  builderDprLocked = on;
+}
+
+/**
+ * Phone profiles keep the same tier names and tighten the budget.
+ * Desktop profiles are the rows above, unchanged.
+ */
+function activeProfile(next: QualityTier = tier): QualityProfile {
+  const base = PROFILES[next];
+  if (!isPhoneClass() || next === 'off' || next === 'high' || next === 'ultra') return base;
+  if (next === 'low') {
+    return {
+      ...base,
+      maxDpr: 1,
+      shadowMapSize: 0,
+      grassScale: 0.28,
+      ao: false,
+      bloom: false,
+      steamParticles: 24,
+    };
+  }
+  return {
+    ...base,
+    maxDpr: 1.25,
+    shadowMapSize: 0,
+    grassScale: 0.45,
+    ao: false,
+    bloom: false,
+    steamParticles: 36,
+  };
+}
+
+/** Forest fill. Desktop keeps the 0.35 floor. Phones may sit lower. */
+export function foliageScale(density = 1): number {
+  const scale = qualityProfile().grassScale * density;
+  const floor = isPhoneClass() ? 0.2 : 0.35;
+  return Math.max(floor, scale);
+}
+
+/** Phones draw at 30 fps. Desktop is uncapped. */
+export function frameIntervalMs(): number {
+  return isPhoneClass() ? 1000 / 30 : 0;
+}
+
+function forcedOff(): boolean {
+  if (typeof window === 'undefined') return true;
   if (connectionSaveData()) return true;
   if (window.matchMedia('(prefers-reduced-data: reduce)').matches) return true;
   if (!webgl2ok) return true;
@@ -198,6 +255,31 @@ function tierFromGpu(gpuTier: number, type: string): QualityTier {
   return 'high';
 }
 
+/**
+ * Phones start low. A published GPU tier of 3 or above is the medium path.
+ * SwiftShader is blocklisted by detect-gpu, but it is the headless stand-in
+ * and it can draw the phone diet. Other blocklisted GPUs stay on the poster.
+ */
+function phoneTierFromGpu(gpuTier: number, type: string, gpu = ''): QualityTier {
+  if (type === 'WEBGL_UNSUPPORTED') return 'off';
+  if (type === 'BLOCKLISTED') return gpu.toLowerCase().includes('swiftshader') ? 'low' : 'off';
+  if (type === 'BENCHMARK_FETCH_FAILED' || type === 'FALLBACK' || type === 'SSR') return 'low';
+  if (gpuTier >= 3) return 'medium';
+  return 'low';
+}
+
+function resolvedTier(): QualityTier {
+  if (!webgl2ok) return 'off';
+  if (queryLocked) return readQuery() ?? tier;
+  if (forcedOff()) return 'off';
+  if (isPhoneClass()) {
+    const next = seenGpu ? phoneTierFromGpu(seenGpu.tier, seenGpu.type, seenGpu.gpu) : 'low';
+    return next === 'off' ? 'off' : capByHardware(next);
+  }
+  if (seenGpu) return capByHardware(tierFromGpu(seenGpu.tier, seenGpu.type));
+  return capByHardware(syncGuess());
+}
+
 function sampleDpr(now: number): number {
   const span = now - dprAt;
   if (span >= 600) return dprTo;
@@ -240,7 +322,7 @@ function ensureDebug() {
 function applyTier(next: QualityTier, fade: boolean) {
   const changed = next !== tier;
   tier = next;
-  retargetDpr(PROFILES[next].maxDpr, fade && changed);
+  retargetDpr(activeProfile(next).maxDpr, fade && changed);
   document.documentElement.dataset.quality = next;
   if (changed) {
     frames.length = 0;
@@ -249,7 +331,7 @@ function applyTier(next: QualityTier, fade: boolean) {
     fastSince = 0;
     quietUntil = performance.now() + 2000;
     syncStills();
-    const profile = PROFILES[next];
+    const profile = activeProfile(next);
     for (const listener of listeners) listener(profile);
   }
   ensureDebug();
@@ -285,13 +367,12 @@ function pickInitial(): QualityTier {
   // No WebGL2 stays off even when the query asks for a tier.
   if (!webgl2ok) return 'off';
   const query = readQuery();
-  // An explicit ?quality= wins over width, pointer, and save-data.
+  // An explicit ?quality= wins over save-data. ?quality=off stays off.
   if (query) {
     queryLocked = true;
     return query;
   }
-  if (forcedOff()) return 'off';
-  return capByHardware(syncGuess());
+  return resolvedTier();
 }
 
 async function refineWithGpu() {
@@ -314,9 +395,9 @@ async function refineWithGpu() {
       glContext: gl,
       benchmarksURL: '/gpu-benchmarks',
     });
-    const detected = capByHardware(tierFromGpu(gpu.tier, gpu.type));
-    const next = forcedOff() ? 'off' : detected;
-    startTier = next === 'off' ? 'off' : detected;
+    seenGpu = { tier: gpu.tier, type: gpu.type, gpu: gpu.gpu ?? '' };
+    const next = resolvedTier();
+    startTier = next === 'off' ? 'off' : next;
     startLocked = true;
     applyTier(next, true);
   } catch {
@@ -329,18 +410,16 @@ async function refineWithGpu() {
 
 function onResize() {
   if (queryLocked || !webgl2ok) return;
-  const blocked = forcedOff();
-  if (blocked && tier !== 'off') {
+  const next = resolvedTier();
+  if (next === tier) return;
+  if (next === 'off') {
     heldTier = startLocked && startTier !== 'off' ? startTier : tier;
     applyTier('off', false);
     return;
   }
-  if (!blocked && tier === 'off') {
-    const restore = startLocked && startTier !== 'off' ? startTier : heldTier;
-    if (!restore || restore === 'off') return;
-    heldTier = null;
-    applyTier(restore, true);
-  }
+  heldTier = null;
+  startTier = next;
+  applyTier(next, true);
 }
 
 export function ensureQuality(): void {
@@ -357,7 +436,7 @@ export function ensureQuality(): void {
 
 export function qualityProfile(): QualityProfile {
   ensureQuality();
-  return PROFILES[tier];
+  return activeProfile(tier);
 }
 
 export function onQuality(listener: (profile: QualityProfile) => void): () => void {
@@ -370,7 +449,11 @@ export function hdriFor(url: string): string {
   return url.replace(/_(1|2)k\.hdr$/, `_${qualityProfile().hdri}.hdr`);
 }
 
-/** Scroll progress still moves the camera. Wind, steam, and drift do not. */
+/**
+ * Scroll progress still moves the camera. Wind, steam, and drift do not.
+ * Reduced motion on a phone stays on the passage poster (the scheduler
+ * refuses to mount). Desktop keeps this freeze when a view is already up.
+ */
 export function motionTime(ms: number): number {
   return prefersReducedMotion() ? 0 : ms * 0.001;
 }
@@ -405,7 +488,12 @@ export function noteFrame(ms: number): void {
   }
   slowSince = 0;
 
-  const ceiling = clampTier(ORDER[rank(startTier) + 1] ?? startTier, 'low', 'ultra');
+  let ceiling = clampTier(ORDER[rank(startTier) + 1] ?? startTier, 'low', 'ultra');
+  // A phone never climbs into high on its own. An explicit ?quality= above medium stays put.
+  if (isPhoneClass()) {
+    const cap: QualityTier = queryLocked && rank(startTier) > rank('medium') ? startTier : 'medium';
+    if (rank(ceiling) > rank(cap)) ceiling = cap;
+  }
   if (avgMs < 11 && rank(tier) < rank(ceiling)) {
     if (!fastSince) fastSince = now;
     if (now - fastSince >= 6000) {
@@ -419,8 +507,12 @@ export function noteFrame(ms: number): void {
 
 export function displayDpr(): number {
   ensureQuality();
-  if (tier === 'off') return 1;
-  return sampleDpr(performance.now());
+  if (tier === 'off' || builderDprLocked) return 1;
+  const dpr = sampleDpr(performance.now());
+  if (!isPhoneClass()) return dpr;
+  if (tier === 'low') return Math.min(dpr, 1);
+  if (tier === 'medium') return Math.min(dpr, 1.25);
+  return dpr;
 }
 
 export function setDebugStats(stats: { calls: number; tris: number; textures: number; bytes?: number }) {

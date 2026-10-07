@@ -4,6 +4,7 @@
 */
 import * as THREE from 'three';
 import { ktx2Loader, whenKtx2 } from './loaders';
+import { surfaceFiles } from './surface-diet';
 import { anisotropyForTier, applyMacro } from './surfaces';
 import { createAuraUnit, type AuraUnit } from './aura-unit';
 import { sampleTerrainHeight } from './meadow-v1/meadow/field';
@@ -134,15 +135,13 @@ export function createSlopePlace(): SlopePlace {
   const drop = (textures: THREE.Texture[]) => {
     for (const tex of textures) tex.dispose();
   };
-  const loadSet = (name: string) =>
-    whenKtx2().then(() =>
-      Promise.all([
-        ktx2Loader.loadAsync(asset(`textures/${name}/diff.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/nor_gl.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/rough.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/ao.ktx2`)),
-      ]),
+  const loadSet = (name: string) => {
+    const names = surfaceFiles(['diff', 'nor_gl', 'rough', 'ao']);
+    if (!names.length) return Promise.resolve([] as THREE.Texture[]);
+    return whenKtx2().then(() =>
+      Promise.all(names.map((file) => ktx2Loader.loadAsync(asset(`textures/${name}/${file}.ktx2`)))),
     );
+  };
 
   void loadSet('metal_plate').then((maps) => {
     if (!alive) {
@@ -151,16 +150,18 @@ export function createSlopePlace(): SlopePlace {
     }
     const [diff, nor, rough, ao] = maps;
     for (const tex of maps) tune(tex);
-    diff.colorSpace = THREE.SRGBColorSpace;
-    nor.colorSpace = THREE.NoColorSpace;
-    rough.colorSpace = THREE.NoColorSpace;
-    ao.colorSpace = THREE.NoColorSpace;
+    if (diff) diff.colorSpace = THREE.SRGBColorSpace;
+    if (nor) nor.colorSpace = THREE.NoColorSpace;
+    if (rough) rough.colorSpace = THREE.NoColorSpace;
+    if (ao) ao.colorSpace = THREE.NoColorSpace;
     texs.push(...maps);
-    metal.map = diff;
-    metal.normalMap = nor;
-    metal.roughnessMap = rough;
-    metal.aoMap = ao;
-    metal.aoMapIntensity = 0.55;
+    if (diff) metal.map = diff;
+    if (nor) metal.normalMap = nor;
+    if (rough) metal.roughnessMap = rough;
+    if (ao) {
+      metal.aoMap = ao;
+      metal.aoMapIntensity = 0.55;
+    }
     metal.needsUpdate = true;
   }).catch(() => undefined);
 
@@ -174,16 +175,18 @@ export function createSlopePlace(): SlopePlace {
       tune(tex);
       tex.repeat.set(2.25, 3.35);
     }
-    diff.colorSpace = THREE.SRGBColorSpace;
-    nor.colorSpace = THREE.NoColorSpace;
-    rough.colorSpace = THREE.NoColorSpace;
-    ao.colorSpace = THREE.NoColorSpace;
+    if (diff) diff.colorSpace = THREE.SRGBColorSpace;
+    if (nor) nor.colorSpace = THREE.NoColorSpace;
+    if (rough) rough.colorSpace = THREE.NoColorSpace;
+    if (ao) ao.colorSpace = THREE.NoColorSpace;
     texs.push(...maps);
-    wood.map = diff;
-    wood.normalMap = nor;
-    wood.roughnessMap = rough;
-    wood.aoMap = ao;
-    wood.aoMapIntensity = 0.28;
+    if (diff) wood.map = diff;
+    if (nor) wood.normalMap = nor;
+    if (rough) wood.roughnessMap = rough;
+    if (ao) {
+      wood.aoMap = ao;
+      wood.aoMapIntensity = 0.28;
+    }
     wood.color.setRGB(1.45, 1.02, 0.68);
     wood.needsUpdate = true;
   }).catch(() => undefined);
