@@ -316,6 +316,14 @@ body.film-bar .site-nav.topbar.is-clear .aura-ring {
 .foot-nav + .foot-reach {
   margin-top: 1.6rem;
 }
+.foot-reach a {
+  color: inherit;
+  text-decoration: none;
+}
+.foot-reach a:hover,
+.foot-reach a:focus-visible {
+  color: #f4f3ef;
+}
 .foot-credit {
   display: inline-flex;
   align-items: center;

@@ -7,6 +7,7 @@ import RidgeLoad from '../components/RidgeLoad.astro';
 import AuraMark from '../components/AuraMark.astro';
 import SiteHeader from '../components/SiteHeader.astro';
 import cabinPoster from '../../public/film/cabin-poster-hi.webp';
+import { contactEmail, contactPhone, phoneTel } from '../data/site';
 import { organizationJson } from '../lib/organization';
 
 interface Props {
@@ -39,6 +40,9 @@ const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
 const filmBar = isHome || path.startsWith('/back-to-nature');
 const showFoot = !isHome;
+const reachEmail = contactEmail.trim();
+const reachPhone = contactPhone.trim();
+const reachTel = phoneTel(reachPhone);
 const here = (href: string) => (href === '/journal' ? path.startsWith('/journal') : path === href);
 const menu = [
   {
@@ -181,8 +185,10 @@ const foot = innerMenu.flatMap((group) => group.links);
             <a href={item.href} aria-current={here(item.href) ? 'page' : undefined}>{item.label}</a>
           ))}
         </nav>
-        <p class="foot-reach">Email: TODO</p>
-        <p class="foot-reach">Phone: TODO</p>
+        {reachEmail && <p class="foot-reach"><a href={`mailto:${reachEmail}`}>Email: {reachEmail}</a></p>}
+        {reachPhone && reachTel && <p class="foot-reach"><a href={reachTel}>Phone: {reachPhone}</a></p>}
+        {reachPhone && !reachTel && <p class="foot-reach">Phone: {reachPhone}</p>}
+        {!reachEmail && !reachPhone && <p class="foot-reach"><a href="/contact">Write to us</a></p>}
         <a class="foot-credit" href="/credits" aria-current={path === '/credits' ? 'page' : undefined}>Credits</a>
       </footer>
     )}
