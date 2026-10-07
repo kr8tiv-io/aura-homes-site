@@ -438,16 +438,6 @@ export const credits: Credit[] = [
     files: ['models/tree_stump_01.glb', 'models/tree_stump_01.lod1.glb', 'models/tree_stump_01.lod2.glb'],
   },
   {
-    name: 'Pine Sapling Medium',
-    author: 'Rob Tuytel and Rico Cilliers',
-    license: 'CC0',
-    link: 'https://polyhaven.com/a/pine_sapling_medium',
-    licenseLink: cc0,
-    usedFor: 'A young pine.',
-    category: '3D models',
-    files: ['models/pine_sapling_medium.glb', 'models/pine_sapling_medium.lod1.glb', 'models/pine_sapling_medium.lod2.glb'],
-  },
-  {
     name: 'Dandelion 01',
     author: 'Rob Tuytel and Rico Cilliers',
     license: 'CC0',

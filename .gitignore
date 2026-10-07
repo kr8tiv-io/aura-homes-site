@@ -15,6 +15,10 @@ assets-src/.tmp/
 # Raw pine mesh is 251 MB. URL is in assets-src/SOURCES.md.
 assets-src/models/pine_sapling_medium/pine_sapling_medium.bin
 
-# Optimized pine meshes still over 25 MB. LOD2 is small enough to commit.
+# Optimized pine meshes still over 25 MB. They are archived, not shipped.
+# The lod2 copy is tracked under /_archive/models.
 public/models/pine_sapling_medium.glb
 public/models/pine_sapling_medium.lod1.glb
+public/models/pine_sapling_medium.lod2.glb
+_archive/models/pine_sapling_medium.glb
+_archive/models/pine_sapling_medium.lod1.glb
