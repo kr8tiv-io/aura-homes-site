@@ -80,7 +80,7 @@ export function bindShots(root: ParentNode = document) {
       figure.removeEventListener('mouseleave', onLeave);
     });
 
-    if (kind === 'skid') {
+    if (kind === 'skid' && !window.matchMedia('(max-width: 800px)').matches) {
       const float = gsap.to(media, {
         yPercent: -2.5,
         duration: 5.5,

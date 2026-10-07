@@ -41,7 +41,7 @@ const notes: JournalCard[] = [
           <li>
             <a class="journal-card" href={note.href} data-rise>
               <figure data-tracer="edge">
-                <Still src={note.cover} alt={note.coverAlt} sizes="(max-width: 800px) 92vw, 42vw" />
+                <Still src={note.cover} alt={note.coverAlt} sizes="(max-width: 800px) calc(100vw - 3rem), 42vw" />
               </figure>
               <p class="journal-card-meta">
                 <time datetime={note.date}>{formatJournalDate(note.date)}</time>

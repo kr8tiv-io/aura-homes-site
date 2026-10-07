@@ -10,7 +10,7 @@ interface Props {
   sizes?: string;
 }
 
-const { left, leftAlt, right, rightAlt, sizes = '(max-width: 800px) 46vw, 21vw' } = Astro.props;
+const { left, leftAlt, right, rightAlt, sizes = '(max-width: 800px) calc((100vw - 3rem) / 2), 21vw' } = Astro.props;
 ---
 
 <figure data-window class="pair-frame">

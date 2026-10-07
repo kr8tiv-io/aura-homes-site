@@ -48,6 +48,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <DepthImage
           src="/film/story-meadow-side.webp"
           alt="A low glass room in tall grass, with pines and a pale mountain behind it."
+          phonePosition="34% center"
         />
       </WindowFrame>
       <HeroMist />
@@ -71,6 +72,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <DepthImage
           src="/film/layout-forest.webp"
           alt="A glass room at the edge of a pine forest, open toward a dusk meadow."
+          phonePosition="42% center"
         />
       </WindowFrame>
     </figure>
@@ -95,6 +97,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <DepthImage
           src="/film/story-room.webp"
           alt="An open room of oak and linen, facing a green field at dusk."
+          phonePosition="36% center"
         />
       </WindowFrame>
     </figure>
@@ -115,6 +118,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <DepthImage
           src="/film/layout-sky.webp"
           alt="A bed under a skylight, with the meadow and a dark treeline beyond the glass."
+          phonePosition="center 42%"
         />
       </WindowFrame>
     </figure>
@@ -254,7 +258,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       padding-top: 8vh;
     }
     .story-bleed {
-      height: 72vh;
+      /* The photograph's own ratio, so the room stays in the frame
+         instead of a tall cover that scrolls down to grass. */
+      height: auto;
+      aspect-ratio: 1280 / 922;
     }
     .story-founder {
       grid-template-columns: 1fr;

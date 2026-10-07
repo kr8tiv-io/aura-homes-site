@@ -11,15 +11,24 @@ interface Props {
    * each sliding at its own speed.
    */
   field?: boolean;
+  position?: string;
+  phonePosition?: string;
 }
 
-const { src, alt, loading = 'lazy', fetchpriority, field = false } = Astro.props;
+const { src, alt, loading = 'lazy', fetchpriority, field = false, position, phonePosition } = Astro.props;
 ---
 
 <div class="depth-image" data-depth-root data-depth-field={field ? 'yes' : undefined}>
   <div class="depth-layer depth-mid" data-depth-speed="0.8">
     <div class="depth-mover">
-      <Still src={src} alt={alt} loading={loading} fetchpriority={fetchpriority} />
+      <Still
+        src={src}
+        alt={alt}
+        loading={loading}
+        fetchpriority={fetchpriority}
+        position={position}
+        phonePosition={phonePosition}
+      />
     </div>
   </div>
   {

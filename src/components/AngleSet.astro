@@ -30,7 +30,7 @@ const headingId = title
       angles.map((angle) => (
         <li>
           <figure>
-            <Still src={angle.src} alt={angle.alt} sizes="(max-width: 800px) 92vw, 46vw" />
+            <Still src={angle.src} alt={angle.alt} sizes="(max-width: 800px) calc(100vw - 3rem), 46vw" />
             <figcaption>{angle.caption}</figcaption>
           </figure>
         </li>
