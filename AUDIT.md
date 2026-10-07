@@ -424,6 +424,8 @@ The nine custom-model HEAD 404s on desktop home (A-08) did not appear in this ha
 
 Prompt 70 rechecked the built site on 2026-10-07. `npm run build` passes with no `SITE` set. `dist/client` canonicals, sitemap, robots, and JSON-LD use `https://aurahomes.fun`. Sitemap has 28 urls, no `/dev`, and no 404. `dist/client/dev` and `dist/client/_archive` are absent. Harness `qa-out/70/summary.json`: 29 routes × 3 viewports = 87 pages, `hOverflow` 0 on every page, console errors 0, `brokenLinks` 0 (45 internal links). Desktop home made no failed requests. Other failed requests are `net::ERR_ABORTED` on hero and passage videos while the page scrolls. The cabin film, `ensureScenes`, and `src/pages/index.astro` were not edited.
 
+Prompt 64 (2026-10-07, `8cce9d5`) adds lazy one-at-a-time meadow mounting and a branded per-passage loader. `ensureScenes` in `src/pages/index.astro` and `src/scripts/journey.ts` now waits for load and idle, then schedules each passage. The cabin film, `bindFilmScrub`, the splash pin, and the passage pin math were not edited. Phones stay on the still poster until prompt 65. A-08 stayed fixed: the 64 harness recorded no custom-model 404s.
+
 | ID | Status | Commit |
 | --- | --- | --- |
 | A-01 | Fixed earlier. Thanks heading sits clear of the sticky bar. | `741afda` (67) |
@@ -432,8 +434,8 @@ Prompt 70 rechecked the built site on 2026-10-07. `npm run build` passes with no
 | A-04 | Open. Cabin film weight. Do not edit the film. | Matt |
 | A-05 | Fixed. Glow stays on hover. `overflow-x: clip` on the heading. | `a97e3da` |
 | A-06 | Fixed earlier. Phone builder and order-choice dots. | `afa2327` (62) |
-| A-07 | Open. Mobile meadow scenes. Prompts 64 and 65 have not run. | 64, 65 |
-| A-08 | Fixed. Manifest lists real GLBs only. None exist, so no request is made. | `2fe1dbf` |
+| A-07 | Open. Phones stay on posters. 64 added the scheduler, branded loader, and `?quality` override. 65 turns phones on. | `8cce9d5` |
+| A-08 | Fixed. Manifest lists real GLBs only. None exist, so no request is made. Rechecked during 64: still no request. | `2fe1dbf` |
 | A-09 | Shot card hidden. Roof collector still is in place. "Portrait to come" on `/story` is unchanged. | `86e963e`. Portrait: Matt |
 | A-10 | Open. Water pages still disagree. Left for Matt. | Matt |
 | A-11 | Fixed earlier for the phone crops that lost a subject. | `3f888ae` (63) |
