@@ -1,10 +1,11 @@
 /*
   Drop-in GLB slots. Matt adds a file under public/models/custom and the
-  next load uses it. A missing file stays on the procedural model.
-  Prompt 58 can call loadCustomModel and placeCustomModel. Nothing here
-  mounts the A-frame. That slot is only prepared.
+  next build uses it. The manifest lists only files that are on disk.
+  A missing name makes no request and stays on the procedural model.
+  Nothing here mounts the A-frame. That slot is only prepared.
 */
 import * as THREE from 'three';
+import { CUSTOM_FILES } from 'virtual:aura-custom-models';
 import { ktx2Loader, loadModel, whenKtx2 } from './loaders';
 import { qualityProfile, type QualityTier } from './quality';
 
@@ -79,35 +80,23 @@ function fileFor(name: CustomName, level: Level) {
   return asset(`models/custom/${name}${level}.glb`);
 }
 
-type HeadHit = { ok: boolean; bytes: number | null };
-
-const heads = new Map<string, Promise<HeadHit>>();
-
-function head(url: string): Promise<HeadHit> {
-  const cached = heads.get(url);
-  if (cached) return cached;
-  const pending = fetch(url, { method: 'HEAD', cache: 'no-store' })
-    .then((res) => {
-      const length = Number(res.headers.get('content-length'));
-      return { ok: res.ok, bytes: Number.isFinite(length) && length >= 0 ? length : null };
-    })
-    .catch(() => ({ ok: false, bytes: null }));
-  heads.set(url, pending);
-  return pending;
-}
+const known = new Map(CUSTOM_FILES.map((entry) => [entry.file, entry.bytes]));
 
 /**
- * One cached HEAD per URL for this page. A reload sees a file dropped since.
- * `full` prefers the optimized source, then lod1, then lod2.
+ * Picks a file from the build manifest. Nothing is fetched for a name that
+ * is not on disk. `full` prefers the optimized source, then lod1, then lod2.
  * `quality` follows the current tier and falls back the other way.
  */
 export async function resolveCustom(name: CustomName, prefer: 'quality' | 'full' = 'quality'): Promise<ResolvedCustom | null> {
   const order = prefer === 'full' ? (['', '.lod1', '.lod2'] as Level[]) : BY_TIER[qualityProfile().tier];
   for (const level of order) {
-    const url = fileFor(name, level);
-    const hit = await head(url);
-    if (!hit.ok) continue;
-    return { url, bytes: hit.bytes, level: level === '' ? 'full' : level.slice(1) };
+    const file = `${name}${level}.glb`;
+    if (!known.has(file)) continue;
+    return {
+      url: fileFor(name, level),
+      bytes: known.get(file) ?? null,
+      level: level === '' ? 'full' : level.slice(1),
+    };
   }
   return null;
 }

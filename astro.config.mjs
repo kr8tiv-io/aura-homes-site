@@ -5,6 +5,7 @@ import node from '@astrojs/node';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { customModelManifest } from './scripts/custom-model-manifest.mjs';
 
 // Override with SITE when a public domain exists. This build is not deployed.
 const site = process.env.SITE ?? 'https://aurahomes.local';
@@ -43,7 +44,7 @@ export default defineConfig({
     },
   ],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), customModelManifest()],
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
