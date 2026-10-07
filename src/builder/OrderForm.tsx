@@ -401,7 +401,7 @@ export default function OrderForm() {
           event.preventDefault();
         }}
       >
-        {showLive ? null : (
+        {live ? null : (
           <p className="order-live-note">
             The live 3D builder shines on a larger screen. Open it on desktop to turn the room in the meadow.
           </p>
