@@ -41,6 +41,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     max-width: 32rem;
     margin-top: 1.2rem;
   }
+  /* The configurator mounts after load. Hold the footer below the first screen. */
+  #byo-root {
+    min-height: 100svh;
+  }
   @media (max-width: 800px) {
     .byo-head {
       padding: 7rem 1.5rem 2rem;
