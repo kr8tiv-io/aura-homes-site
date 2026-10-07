@@ -1,5 +1,6 @@
 ---
-const canonical = 'https://aurahomes.fun/build-your-own/';
+const origin = Astro.site ?? new URL('https://aurahomes.fun');
+const canonical = new URL('build-your-own/', origin).href;
 const target = '/build-your-own/';
 ---
 
