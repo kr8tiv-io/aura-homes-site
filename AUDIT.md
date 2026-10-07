@@ -419,3 +419,30 @@ Cancelled requests (`net::ERR_ABORTED`), files present:
 `nav` textContent is `Aura` on every real page. h1 text matches the visible title except the four split headings in A-14. `/rooms/the-soak` and `/api/join` have a null nav and an empty h1 because they are the bare 404 document.
 
 The nine custom-model HEAD 404s on desktop home (A-08) did not appear in this harness log. Lighthouse desktop and the overflow probe did record them. Do not drop A-08.
+
+## Status after fixes
+
+Prompt 70 rechecked the built site on 2026-10-07. `npm run build` passes with no `SITE` set. `dist/client` canonicals, sitemap, robots, and JSON-LD use `https://aurahomes.fun`. Sitemap has 28 urls, no `/dev`, and no 404. `dist/client/dev` and `dist/client/_archive` are absent. Harness `qa-out/70/summary.json`: 29 routes × 3 viewports = 87 pages, `hOverflow` 0 on every page, console errors 0, `brokenLinks` 0 (45 internal links). Desktop home made no failed requests. Other failed requests are `net::ERR_ABORTED` on hero and passage videos while the page scrolls. The cabin film, `ensureScenes`, and `src/pages/index.astro` were not edited.
+
+| ID | Status | Commit |
+| --- | --- | --- |
+| A-01 | Fixed earlier. Thanks heading sits clear of the sticky bar. | `741afda` (67) |
+| A-02 | Fixed earlier. Empty endpoint keeps the note on the page. | `741afda` (67) |
+| A-03 | Fixed earlier. No TODO lines in the new harness. | `d971690` (68) |
+| A-04 | Open. Cabin film weight. Do not edit the film. | Matt |
+| A-05 | Fixed. Glow stays on hover. `overflow-x: clip` on the heading. | `a97e3da` |
+| A-06 | Fixed earlier. Phone builder and order-choice dots. | `afa2327` (62) |
+| A-07 | Open. Mobile meadow scenes. Prompts 64 and 65 have not run. | 64, 65 |
+| A-08 | Fixed. Manifest lists real GLBs only. None exist, so no request is made. | `2fe1dbf` |
+| A-09 | Shot card hidden. Roof collector still is in place. "Portrait to come" on `/story` is unchanged. | `86e963e`. Portrait: Matt |
+| A-10 | Open. Water pages still disagree. Left for Matt. | Matt |
+| A-11 | Fixed earlier for the phone crops that lost a subject. | `3f888ae` (63) |
+| A-12 | No broken hrefs. Menu map (Glass, Resorts, Thirst Contact) is still Matt's. | Matt |
+| A-13 | Fixed. Default origin is `https://aurahomes.fun`. `SITE` still overrides. | `a3022d3` |
+| A-14 | Fixed. Footnote hit area 45×45. Guide link taller than 44. Split headings keep their lines and read with a space. Thanks clearance is `741afda`. | `58f7a12`, `bd3176c`, `86e963e` |
+| A-15 | Open. Skylight sentence under the tub item. | Matt |
+| A-16 | Fixed earlier. Source wordmark is AURA. | `ed1a6db` (66) |
+| A-17 | Three named disclaimer lines removed (`1b6d03b`, and the water lines in `86e963e`). FAQ, story lede, and "Second Breath" are unchanged. | Matt for the rest |
+| A-18 | Fixed. Studio stays in source for `astro dev`. Production upload drops `/dev` and empty `_archive`. Unknown paths use the branded 404. | `5f64448`, `a3022d3` |
+
+Copy left for Matt, still true after this pass: story lede and the retired outside line, `/story` "Portrait to come", the water-page conflict (A-10), "The machine is not ready to place", FAQ deposit, refund, and permit lines, "Second Breath", and whether Glass, Resorts, and `/water` belong in the menu. Home journeys lines are announced as "One room. Several lives." The word-by-word reveal still drops the space character inside a line and uses margin, so a copy of those animated words can run together. That splitter sits in `src/pages/index.astro` and was left alone.
