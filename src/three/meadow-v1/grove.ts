@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { InstancedMesh2 } from '@three.ez/instanced-mesh';
 import { loadModel } from '../loaders';
+import { tierAssets } from '../tier-assets';
 import { applyHeightFog } from './height-fog';
 import { sampleMeadowClearance, sampleTerrainHeight } from './meadow/field';
 import { bakeHemiImpostor } from './impostor';
@@ -175,11 +176,33 @@ export function mountGoldenGrove(
     });
   });
 
+  const lod = tierAssets().lod;
   void Promise.all(
     VARIANTS.map(async (name, index) => {
       const spots = groups[index];
       if (!spots.length || !alive()) return;
       try {
+      if (lod === 'far') {
+        const farOnly = await loadVariant(name, '.lod2').catch(() => null);
+        if (!alive() || !farOnly) return;
+        geometries.push(farOnly);
+        const farMaterial = treeMaterial();
+        materials.push(farMaterial);
+        const farMesh = new InstancedMesh2(farOnly, farMaterial, { capacity: spots.length });
+        farMesh.castShadow = true;
+        farMesh.receiveShadow = true;
+        farMesh.name = name;
+        const farUp = new THREE.Vector3(0, 1, 0);
+        farMesh.addInstances(spots.length, (obj, spotIndex) => {
+          const spot = spots[spotIndex];
+          obj.position.set(spot.x, spot.y, spot.z);
+          obj.quaternion.setFromAxisAngle(farUp, spot.rot);
+          obj.scale.setScalar(spot.scale);
+        });
+        scene.add(farMesh);
+        pending.push({ mesh: farMesh, source: new THREE.Mesh(farOnly, farMaterial) });
+        return;
+      }
       const [full, mid, far] = await Promise.all([
         loadVariant(name, '').catch(() => null),
         loadVariant(name, '.lod1').catch(() => null),
@@ -221,7 +244,7 @@ export function mountGoldenGrove(
     if (alive()) onEmpty?.();
   });
 
-  if (props) placeGoldenProps(scene, geometries, materials, alive);
+  if (props && tierAssets().props) placeGoldenProps(scene, geometries, materials, alive);
 
   return {
     claimRenderer(renderer) {

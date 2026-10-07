@@ -2008,6 +2008,76 @@ canvas[data-stage-host='on'] {
   line-height: 1.55;
   color: rgba(244, 243, 239, 0.78);
 }
+.passage-loader {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background: rgba(12, 13, 14, 0.28);
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+.passage-loader.is-leaving {
+  opacity: 0;
+  transform: translate3d(0, -0.75rem, 0);
+  transition: opacity 1.2s cubic-bezier(0.22, 1, 0.36, 1), transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.passage-loader-cluster {
+  display: grid;
+  justify-items: center;
+  gap: 0.85rem;
+}
+.passage-loader-mark {
+  position: relative;
+  width: 4.75rem;
+  color: #f4f3ef;
+}
+.passage-loader-mark svg.aura-mark {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.passage-loader-mark .aura-ridge,
+.passage-loader-mark .aura-ridge path {
+  fill: #f4f3ef;
+}
+.passage-loader-mark .aura-ring {
+  fill: none;
+  stroke: #c4a07a;
+  stroke-width: 2.4;
+}
+.passage-loader-progress {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 7.5rem;
+  height: 7.5rem;
+  transform: translate(-50%, -50%);
+}
+.passage-loader-name {
+  margin: 0.35rem 0 0;
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  font-size: 0.78rem;
+  letter-spacing: 0.42em;
+  color: #f4f3ef;
+}
+.passage-loader-line {
+  margin: 0;
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 300;
+  font-size: 0.92rem;
+  letter-spacing: 0.02em;
+  color: rgba(244, 243, 239, 0.82);
+}
+@media (prefers-reduced-motion: reduce) {
+  .passage-loader {
+    display: none;
+  }
+}
 
 .ways {
   background: transparent;

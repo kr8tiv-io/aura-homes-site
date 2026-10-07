@@ -241,13 +241,13 @@ function applyTier(next: QualityTier, fade: boolean) {
   const changed = next !== tier;
   tier = next;
   retargetDpr(PROFILES[next].maxDpr, fade && changed);
+  document.documentElement.dataset.quality = next;
   if (changed) {
     frames.length = 0;
     avgMs = 0;
     slowSince = 0;
     fastSince = 0;
     quietUntil = performance.now() + 2000;
-    document.documentElement.dataset.quality = next;
     syncStills();
     const profile = PROFILES[next];
     for (const listener of listeners) listener(profile);
@@ -258,7 +258,9 @@ function applyTier(next: QualityTier, fade: boolean) {
 
 function syncStills() {
   document.querySelectorAll<HTMLCanvasElement>('[data-meadow]').forEach((canvas) => {
-    if (tier === 'off') showStill(canvas);
+    const passage = canvas.closest('.passage');
+    const live = passage instanceof HTMLElement && passage.dataset.stage === 'live';
+    if (tier === 'off' || !live) showStill(canvas);
     else hideStill(canvas);
   });
 }
@@ -280,17 +282,20 @@ export function hideStill(canvas: HTMLElement) {
 }
 
 function pickInitial(): QualityTier {
-  if (forcedOff()) return 'off';
+  // No WebGL2 stays off even when the query asks for a tier.
+  if (!webgl2ok) return 'off';
   const query = readQuery();
+  // An explicit ?quality= wins over width, pointer, and save-data.
   if (query) {
     queryLocked = true;
     return query;
   }
+  if (forcedOff()) return 'off';
   return capByHardware(syncGuess());
 }
 
 async function refineWithGpu() {
-  if (queryLocked || forcedOff()) {
+  if (queryLocked || !webgl2ok || forcedOff()) {
     startTier = tier;
     startLocked = true;
     return;
@@ -323,6 +328,7 @@ async function refineWithGpu() {
 }
 
 function onResize() {
+  if (queryLocked || !webgl2ok) return;
   const blocked = forcedOff();
   if (blocked && tier !== 'off') {
     heldTier = startLocked && startTier !== 'off' ? startTier : tier;

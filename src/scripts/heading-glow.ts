@@ -406,7 +406,8 @@ function resolveMode(): Mode {
   if (window.innerWidth < 1024) return 'css';
   if (touchOnly()) return 'css';
   if (document.body.classList.contains('is-builder')) return 'css';
-  if (qualityProfile().tier === 'off') return 'css';
+  const tier = qualityProfile().tier;
+  if (tier === 'off' || tier === 'low' || tier === 'medium') return 'css';
   if (!canvasEl()) return 'css';
   return 'webgl';
 }
