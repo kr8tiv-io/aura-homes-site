@@ -3,7 +3,6 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
 import RevealHeading from '../components/RevealHeading.astro';
-import ShotHold from '../components/ShotHold.astro';
 ---
 
 <BaseLayout
@@ -18,7 +17,7 @@ import ShotHold from '../components/ShotHold.astro';
     <section class="page-lead">
       <p class="story-kicker">Thirst Contact</p>
       <RevealHeading as="h1" glow>
-        Water<br />from the air.
+        Water <br />from the air.
       </RevealHeading>
       <p class="story-lede">
         Thirst Contact comes later. The generator on the roof and the bottling line inside still need further research and development. Homes are the room you can ask for now. Farms are the growing units. This page is the plan for the water unit: moisture from the air, into plain plastic jugs, once that work is done.
@@ -27,9 +26,13 @@ import ShotHold from '../components/ShotHold.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <div class="shot-frame">
-          <ShotHold caption="Dusk, black glass room in tall grass, a low collector flat on the roof, firs and a pale mountain." />
-        </div>
+        <img
+          src="/film/water-roof.webp"
+          alt="Dusk, black glass room in tall grass, a low collector flat on the roof, firs and a pale mountain."
+          width="1248"
+          height="832"
+          decoding="async"
+        />
       </figure>
       <div>
         <p class="story-kicker">The roof</p>
@@ -63,10 +66,10 @@ import ShotHold from '../components/ShotHold.astro';
     <section class="story-open">
       <p class="story-kicker">Later</p>
       <RevealHeading as="h2" glow>
-        Not yet.<br />Still in research.
+        Still in <br />research.
       </RevealHeading>
       <p class="story-lede">
-        When the work is done, the same room can make water. You would bottle for yourself. A labelled jug is a later idea, and that network is not live. Thirst Contact is not ready to build or to place.
+        When the work is done, the same room can make water. You would bottle for yourself. A labelled jug is a later idea, and that network is not live.
       </p>
       <p class="story-lede"><a href="/journal/water-from-the-air">Read the water note</a>, and <a href="/journal/free-food-and-water">the network</a>.</p>
     </section>
@@ -80,16 +83,6 @@ import ShotHold from '../components/ShotHold.astro';
       <Join shell="water" />
     </section>
   </main>
-  <style>
-    .shot-frame {
-      height: min(70vh, 740px);
-    }
-    @media (max-width: 800px) {
-      .shot-frame {
-        height: 58vh;
-      }
-    }
-  </style>
   <script>
     import { bindJourneyMotion } from '../scripts/journey';
     import { onPageLoad } from '../scripts/motion';
