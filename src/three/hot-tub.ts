@@ -9,6 +9,7 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { ktx2Loader, loadModel, whenKtx2 } from './loaders';
+import { surfaceFiles } from './surface-diet';
 import { motionTime, qualityProfile } from './quality';
 import { anisotropyForTier, applyMacro } from './surfaces';
 import { HOT_TUB_SLOT } from './meadow-v1/meadow/geometry';
@@ -599,15 +600,13 @@ export function createHotTub(): HotTub {
   const drop = (textures: THREE.Texture[]) => {
     for (const tex of textures) tex.dispose();
   };
-  const loadSet = (name: string) =>
-    whenKtx2().then(() =>
-      Promise.all([
-        ktx2Loader.loadAsync(asset(`textures/${name}/diff.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/nor_gl.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/rough.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/ao.ktx2`)),
-      ]),
+  const loadSet = (name: string) => {
+    const names = surfaceFiles(['diff', 'nor_gl', 'rough', 'ao']);
+    if (!names.length) return Promise.resolve([] as THREE.Texture[]);
+    return whenKtx2().then(() =>
+      Promise.all(names.map((file) => ktx2Loader.loadAsync(asset(`textures/${name}/${file}.ktx2`)))),
     );
+  };
 
   void loadSet('fine_grained_wood').then((maps) => {
     if (!alive) {
@@ -615,22 +614,26 @@ export function createHotTub(): HotTub {
       return;
     }
     const [diff, nor, rough, ao] = maps;
-    diff.colorSpace = THREE.SRGBColorSpace;
-    nor.colorSpace = THREE.NoColorSpace;
-    rough.colorSpace = THREE.NoColorSpace;
-    ao.colorSpace = THREE.NoColorSpace;
-    tune(diff, 2.4, 1.2);
-    tune(nor, 2.4, 1.2);
-    tune(rough, 2.4, 1.2);
-    tune(ao, 2.4, 1.2);
-    texs.push(diff, nor, rough, ao);
+    if (diff) diff.colorSpace = THREE.SRGBColorSpace;
+    if (nor) nor.colorSpace = THREE.NoColorSpace;
+    if (rough) rough.colorSpace = THREE.NoColorSpace;
+    if (ao) ao.colorSpace = THREE.NoColorSpace;
+    if (diff) tune(diff, 2.4, 1.2);
+    if (nor) tune(nor, 2.4, 1.2);
+    if (rough) tune(rough, 2.4, 1.2);
+    if (ao) tune(ao, 2.4, 1.2);
+    for (const map of maps) texs.push(map);
     for (const mat of woods) {
-      mat.map = diff;
-      mat.normalMap = nor;
-      mat.roughnessMap = rough;
-      mat.aoMap = ao;
-      mat.aoMapIntensity = 0.18;
-      mat.normalScale.set(0.45, 0.45);
+      if (diff) mat.map = diff;
+      if (nor) {
+        mat.normalMap = nor;
+        mat.normalScale.set(0.45, 0.45);
+      }
+      if (rough) mat.roughnessMap = rough;
+      if (ao) {
+        mat.aoMap = ao;
+        mat.aoMapIntensity = 0.18;
+      }
       mat.needsUpdate = true;
     }
   }).catch(() => undefined);
@@ -641,17 +644,19 @@ export function createHotTub(): HotTub {
       return;
     }
     const [diff, nor, rough, ao] = maps;
-    tune(diff, 3, 0.4);
-    tune(nor, 3, 0.4);
-    tune(rough, 3, 0.4);
-    tune(ao, 3, 0.4);
-    texs.push(diff, nor, rough, ao);
+    if (diff) tune(diff, 3, 0.4);
+    if (nor) tune(nor, 3, 0.4);
+    if (rough) tune(rough, 3, 0.4);
+    if (ao) tune(ao, 3, 0.4);
+    for (const map of maps) texs.push(map);
     for (const mat of metals) {
-      mat.map = diff;
-      mat.normalMap = nor;
-      mat.roughnessMap = rough;
-      mat.aoMap = ao;
-      mat.aoMapIntensity = 0.7;
+      if (diff) mat.map = diff;
+      if (nor) mat.normalMap = nor;
+      if (rough) mat.roughnessMap = rough;
+      if (ao) {
+        mat.aoMap = ao;
+        mat.aoMapIntensity = 0.7;
+      }
       mat.needsUpdate = true;
     }
   }).catch(() => undefined);
@@ -835,53 +840,60 @@ export function createTubPlace(): TubPlace {
     releaseGazebo = placed.release;
   });
 
-  void whenKtx2().then(() =>
-    Promise.all([
-      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/diff.ktx2')),
-      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/nor_gl.ktx2')),
-      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/rough.ktx2')),
-      ktx2Loader.loadAsync(asset('textures/weathered_brown_planks/ao.ktx2')),
-    ]),
+  const deckWood = surfaceFiles(['diff', 'nor_gl', 'rough', 'ao']);
+  if (deckWood.length) void whenKtx2().then(() =>
+    Promise.all(deckWood.map((name) => ktx2Loader.loadAsync(asset(`textures/weathered_brown_planks/${name}.ktx2`)))),
   ).then((maps) => {
     const [diff, nor, rough, ao] = maps;
     if (!deck.parent) {
       maps.forEach((tex) => tex.dispose());
       return;
     }
-    diff.colorSpace = THREE.SRGBColorSpace;
-    nor.colorSpace = THREE.NoColorSpace;
-    rough.colorSpace = THREE.NoColorSpace;
-    ao.colorSpace = THREE.NoColorSpace;
-    tune(diff, 1.4, 1.4);
-    tune(nor, 1.4, 1.4);
-    tune(rough, 1.4, 1.4);
-    tune(ao, 1.4, 1.4);
-    deckMat.map = diff;
-    deckMat.normalMap = nor;
-    deckMat.roughnessMap = rough;
-    deckMat.aoMap = ao;
-    deckMat.aoMapIntensity = 0.35;
+    if (diff) {
+      diff.colorSpace = THREE.SRGBColorSpace;
+      tune(diff, 1.4, 1.4);
+      deckMat.map = diff;
+    }
+    if (nor) {
+      nor.colorSpace = THREE.NoColorSpace;
+      tune(nor, 1.4, 1.4);
+      deckMat.normalMap = nor;
+    }
+    if (rough) {
+      rough.colorSpace = THREE.NoColorSpace;
+      tune(rough, 1.4, 1.4);
+      deckMat.roughnessMap = rough;
+    }
+    if (ao) {
+      ao.colorSpace = THREE.NoColorSpace;
+      tune(ao, 1.4, 1.4);
+      deckMat.aoMap = ao;
+      deckMat.aoMapIntensity = 0.35;
+    }
     deckMat.needsUpdate = true;
   }).catch(() => undefined);
 
-  void whenKtx2().then(() =>
-    Promise.all([
-      ktx2Loader.loadAsync(asset('textures/metal_plate/diff.ktx2')),
-      ktx2Loader.loadAsync(asset('textures/metal_plate/nor_gl.ktx2')),
-      ktx2Loader.loadAsync(asset('textures/metal_plate/rough.ktx2')),
-    ]),
+  const deckMetal = surfaceFiles(['diff', 'nor_gl', 'rough']);
+  if (deckMetal.length) void whenKtx2().then(() =>
+    Promise.all(deckMetal.map((name) => ktx2Loader.loadAsync(asset(`textures/metal_plate/${name}.ktx2`)))),
   ).then((maps) => {
     if (!deck.parent) {
       maps.forEach((tex) => tex.dispose());
       return;
     }
     const [diff, nor, rough] = maps;
-    tune(diff, 1.5, 2);
-    tune(nor, 1.5, 2);
-    tune(rough, 1.5, 2);
-    steel.map = diff;
-    steel.normalMap = nor;
-    steel.roughnessMap = rough;
+    if (diff) {
+      tune(diff, 1.5, 2);
+      steel.map = diff;
+    }
+    if (nor) {
+      tune(nor, 1.5, 2);
+      steel.normalMap = nor;
+    }
+    if (rough) {
+      tune(rough, 1.5, 2);
+      steel.roughnessMap = rough;
+    }
     steel.needsUpdate = true;
   }).catch(() => undefined);
 

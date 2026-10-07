@@ -6,8 +6,9 @@
 import * as THREE from 'three';
 import { registerView, type StageTone } from '../stage';
 import { hdrLoader, ktx2Loader, loadEnvironment, loadModel, whenKtx2 } from '../loaders';
-import { motionTime, onQuality, qualityProfile } from '../quality';
-import { tierAssets } from '../tier-assets';
+import { foliageScale, motionTime, onQuality, qualityProfile } from '../quality';
+import { surfaceFiles } from '../surface-diet';
+import { phoneAssetDiet, tierAssets } from '../tier-assets';
 import { anisotropyForTier, applyMacro } from '../surfaces';
 import { prefersReducedMotion } from '../../scripts/motion';
 import { AURA_UNIT_SLOT, HOT_TUB_SLOT } from './meadow/geometry';
@@ -724,14 +725,9 @@ function addLiteForest(
   applyMacro(crownMat);
   applyMacro(trunkMat);
   materials.push(crownMat, trunkMat);
-  void whenKtx2()
-    .then(() =>
-      Promise.all([
-        ktx2Loader.loadAsync(asset('textures/bark_brown_02/diff.ktx2')),
-        ktx2Loader.loadAsync(asset('textures/bark_brown_02/nor_gl.ktx2')),
-        ktx2Loader.loadAsync(asset('textures/bark_brown_02/rough.ktx2')),
-      ]),
-    )
+  const barkFiles = surfaceFiles(['diff', 'nor_gl', 'rough']);
+  if (barkFiles.length) void whenKtx2()
+    .then(() => Promise.all(barkFiles.map((name) => ktx2Loader.loadAsync(asset(`textures/bark_brown_02/${name}.ktx2`)))))
     .then((maps) => {
       if (!alive()) {
         for (const tex of maps) tex.dispose();
@@ -744,12 +740,18 @@ function addLiteForest(
         tex.repeat.set(2, 3);
         tex.anisotropy = anisotropyForTier();
       }
-      diff.colorSpace = THREE.SRGBColorSpace;
-      nor.colorSpace = THREE.NoColorSpace;
-      rough.colorSpace = THREE.NoColorSpace;
-      trunkMat.map = diff;
-      trunkMat.normalMap = nor;
-      trunkMat.roughnessMap = rough;
+      if (diff) {
+        diff.colorSpace = THREE.SRGBColorSpace;
+        trunkMat.map = diff;
+      }
+      if (nor) {
+        nor.colorSpace = THREE.NoColorSpace;
+        trunkMat.normalMap = nor;
+      }
+      if (rough) {
+        rough.colorSpace = THREE.NoColorSpace;
+        trunkMat.roughnessMap = rough;
+      }
       trunkMat.needsUpdate = true;
       textures.push(...maps);
     })
@@ -1027,28 +1029,33 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         tex.repeat.set(repeat, repeat);
         tex.anisotropy = anisotropyForTier();
       }
-      diff.colorSpace = THREE.SRGBColorSpace;
-      nor.colorSpace = THREE.NoColorSpace;
-      rough.colorSpace = THREE.NoColorSpace;
-      ao.colorSpace = THREE.NoColorSpace;
-      mat.map = diff;
-      mat.normalMap = nor;
-      mat.roughnessMap = rough;
-      mat.aoMap = ao;
-      mat.aoMapIntensity = kind === 'snow' ? 0.45 : 0.7;
+      if (diff) {
+        diff.colorSpace = THREE.SRGBColorSpace;
+        mat.map = diff;
+      }
+      if (nor) {
+        nor.colorSpace = THREE.NoColorSpace;
+        mat.normalMap = nor;
+      }
+      if (rough) {
+        rough.colorSpace = THREE.NoColorSpace;
+        mat.roughnessMap = rough;
+      }
+      if (ao) {
+        ao.colorSpace = THREE.NoColorSpace;
+        mat.aoMap = ao;
+        mat.aoMapIntensity = kind === 'snow' ? 0.45 : 0.7;
+      }
       mat.color.set('#ffffff');
       mat.needsUpdate = true;
       built.textures.push(...maps);
     };
     if (kind === 'rock') {
+      const rockFiles = surfaceFiles(['diff', 'nor_gl', 'rough', 'ao']);
+      if (!rockFiles.length) return;
       void whenKtx2()
         .then(() =>
-          Promise.all([
-            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/diff.ktx2')),
-            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/nor_gl.ktx2')),
-            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/rough.ktx2')),
-            ktx2Loader.loadAsync(asset('textures/rocky_terrain_02/ao.ktx2')),
-          ]),
+          Promise.all(rockFiles.map((name) => ktx2Loader.loadAsync(asset(`textures/rocky_terrain_02/${name}.ktx2`)))),
         )
         .then(apply)
         .catch(() => undefined);
@@ -1075,9 +1082,9 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       return;
     }
     const loader = new THREE.TextureLoader();
-    void Promise.all(
-      ['diff', 'nor_gl', 'rough', 'ao'].map((name) => loader.loadAsync(asset(`textures/snow_02/${name}.jpg`))),
-    )
+    const snowFiles = surfaceFiles(['diff', 'nor_gl', 'rough', 'ao']);
+    if (!snowFiles.length) return;
+    void Promise.all(snowFiles.map((name) => loader.loadAsync(asset(`textures/snow_02/${name}.jpg`))))
       .then(apply)
       .catch(() => undefined);
   };
@@ -1113,7 +1120,8 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       scene.add(sun.target);
     }
     scene.add(hemi, ambient, sun, fill);
-    const segments = qualityProfile().tier === 'ultra' || qualityProfile().tier === 'high' ? 160 : 96;
+    const tierName = qualityProfile().tier;
+    const segments = tierName === 'ultra' || tierName === 'high' ? 160 : phoneAssetDiet(tierName) ? 64 : 96;
     const textured = options.ground === 'rock' || options.ground === 'snow';
     const terrain = textured
       ? makeTexturedGround(segments, heightAt, options.ground === 'snow' ? '#e7eef2' : '#8d8680')
@@ -1155,7 +1163,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
         mat.roughness = 1;
         mat.metalness = 0;
       });
-      const count = Math.max(1, Math.ceil(PATCHES.length * Math.min(1, Math.max(0.35, qualityProfile().grassScale * density))));
+      const count = Math.max(1, Math.ceil(PATCHES.length * Math.min(1, foliageScale(density))));
       const pinesGroup = placeNormalized(pines.scene, 5.2, PATCHES.slice(0, count), built.sway);
       pinesGroup.name = 'Forest';
       scene.add(pinesGroup);
@@ -1177,7 +1185,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
           built.geometries,
           built.materials,
           built.textures,
-          Math.max(0.35, qualityProfile().grassScale * density),
+          foliageScale(density),
           () => !dead && !suspended && generation === built.generation,
         );
       }
@@ -1187,7 +1195,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   const buildForest = () => {
     const profile = qualityProfile();
     const assets = tierAssets(profile.tier);
-    const scale = Math.max(0.35, profile.grassScale * density);
+    const scale = foliageScale(density);
     const generation = built.generation;
     if (golden) {
       const alive = () => !dead && !suspended && generation === built.generation;
@@ -1593,7 +1601,9 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
     scene.add(birds);
     built.birds = birds;
     const shaftTier = qualityProfile().tier;
-    const shaftsOn = options.ground ? false : options.product ? false : golden ? shaftTier === 'medium' : shaftTier !== 'low';
+    const shaftsOn =
+      !phoneAssetDiet(shaftTier) &&
+      (options.ground ? false : options.product ? false : golden ? shaftTier === 'medium' : shaftTier !== 'low');
     const shaftTex = shaftTexture();
     if (shaftTex && shaftsOn) {
       built.textures.push(shaftTex);
@@ -1721,20 +1731,21 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   };
   window.addEventListener('pointermove', onPointer, { passive: true });
 
+  const diet = phoneAssetDiet();
   const registered = registerView({
     element: view,
     scene,
     camera,
-    ao: options.ao ?? false,
+    ao: diet ? false : (options.ao ?? false),
     exposure: options.exposure ?? 1.02,
     tone: options.tone ?? 'agx',
     hdri: options.hdri,
     hdriPinned: options.hdriPinned,
     envIntensity: options.envIntensity,
-    shadow: options.shadow,
-    bloom: options.bloom,
-    godrays: options.godrays ? sun : undefined,
-    flare: options.flare,
+    shadow: diet ? undefined : options.shadow,
+    bloom: diet ? undefined : options.bloom,
+    godrays: !diet && options.godrays ? sun : undefined,
+    flare: diet ? false : options.flare,
     claimRenderer(renderer) {
       frameRenderer = renderer;
       claim?.(renderer);

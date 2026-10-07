@@ -1,20 +1,17 @@
 /*
   Per-tier files for the meadow passages.
 
-  Prompt 65 edits this table (and the phone gate in quality.ts). The
-  scheduler does not choose URLs. Worlds read `tierAssets()` while they
-  build, so a row change is enough.
+  Desktop rows match the scenes that already ship. High and ultra stay on
+  those rows so a wide screen does not change.
 
-  Today's rows match the scenes that already ship:
-  - low golden meadows use the lighter pine stand, and still place props
-  - vista passages (slope, snow, far) keep the grove
-  - high and ultra load every grove LOD and the 2k Alps band
-
-  A phone diet belongs in the low row: `lod: 'far'`, `props: false`,
-  `goldenSky: 'off'` or `'1k'`. Leave high and ultra on these rows so a
-  wide screen stays as it is.
+  Phones (low and medium) share one diet: lod2 grove, no heavy props, no
+  Alps 2k, no multi-megabyte normal maps. Prop lod2 files are still
+  0.65 to 1.61 MB, so they are dropped rather than fetched.
 */
-import { qualityProfile, type QualityTier } from './quality';
+import { isPhoneClass, qualityProfile, type QualityTier } from './quality';
+
+export type SurfacePack = 'full' | 'color' | 'off';
+export type GroundPack = 'full' | 'color';
 
 export type TierAssetPlan = {
   /** Non-vista forest. `pines` is the lighter stand. `grove` is the full scatter. */
@@ -29,16 +26,63 @@ export type TierAssetPlan = {
   goldenSky: '2k' | '1k' | 'off';
   /** Size token for an unpinned HDRI. Pinned passage URLs stay as authored. */
   hdri: '1k' | '2k';
+  /** The 5 MB ground normals and the other KTX2 normal maps. */
+  normals: boolean;
+  /** Roughness and ambient-occlusion maps. */
+  detail: boolean;
+  /** Unit, tub, slope, and dressed-ground texture sets. */
+  surfaces: SurfacePack;
+  /** Golden ground. `color` is diffuse only. */
+  ground: GroundPack;
+};
+
+const FULL: Omit<TierAssetPlan, 'trees' | 'vista' | 'props' | 'lod' | 'goldenSky'> = {
+  hdri: '1k',
+  normals: true,
+  detail: true,
+  surfaces: 'full',
+  ground: 'full',
 };
 
 const PLANS: Record<QualityTier, TierAssetPlan> = {
-  off: { trees: 'pines', vista: 'pines', props: false, lod: 'far', goldenSky: 'off', hdri: '1k' },
-  low: { trees: 'pines', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', hdri: '1k' },
-  medium: { trees: 'grove', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', hdri: '1k' },
-  high: { trees: 'grove', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', hdri: '1k' },
-  ultra: { trees: 'grove', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', hdri: '1k' },
+  off: {
+    trees: 'pines',
+    vista: 'pines',
+    props: false,
+    lod: 'far',
+    goldenSky: 'off',
+    hdri: '1k',
+    normals: false,
+    detail: false,
+    surfaces: 'off',
+    ground: 'color',
+  },
+  low: { trees: 'pines', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', ...FULL },
+  medium: { trees: 'grove', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', ...FULL },
+  high: { trees: 'grove', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', ...FULL },
+  ultra: { trees: 'grove', vista: 'grove', props: true, lod: 'all', goldenSky: '2k', ...FULL },
 };
 
+const PHONE: TierAssetPlan = {
+  trees: 'grove',
+  vista: 'grove',
+  props: false,
+  lod: 'far',
+  goldenSky: 'off',
+  hdri: '1k',
+  normals: false,
+  detail: false,
+  surfaces: 'color',
+  ground: 'color',
+};
+
+/** Low and medium phones. An explicit high or ultra query keeps the desktop row. */
+export function phoneAssetDiet(tier: QualityTier = qualityProfile().tier): boolean {
+  if (!isPhoneClass()) return false;
+  return tier === 'low' || tier === 'medium';
+}
+
 export function tierAssets(tier: QualityTier = qualityProfile().tier): TierAssetPlan {
+  if (phoneAssetDiet(tier)) return PHONE;
   return PLANS[tier];
 }

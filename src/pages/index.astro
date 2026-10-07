@@ -273,7 +273,7 @@ import Journeys from '../components/Journeys.astro';
   <script>
     import { gsap, ScrollTrigger, prefersReducedMotion, onPageLoad, holdPageMotion } from '../scripts/motion';
     import { bindFilmScrub } from '../scripts/film-scrub';
-    import { onQuality, qualityProfile, showStill } from '../three/quality';
+    import { isPhoneClass, onQuality, qualityProfile, showStill } from '../three/quality';
     import { bindShots } from '../scripts/shots';
     import { bindReels } from '../scripts/reel';
 
@@ -303,6 +303,29 @@ import Journeys from '../components/Journeys.astro';
     const washAt: number[] = [];
     let fieldAt = 0;
 
+    // The grass passage sits below the cabin film and the 150vh spacer.
+    // Waiting for it keeps the meadow chunks out of the first view on a phone.
+    const whenPassageNears = () => {
+      const nodes = document.querySelectorAll('[data-passage]');
+      if (!nodes.length || typeof IntersectionObserver === 'undefined') return Promise.resolve();
+      return new Promise<void>((resolve) => {
+        let settled = false;
+        const done = () => {
+          if (settled) return;
+          settled = true;
+          observer.disconnect();
+          resolve();
+        };
+        const observer = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) done();
+          },
+          { root: null, rootMargin: '100% 0px 100% 0px', threshold: 0 },
+        );
+        nodes.forEach((node) => observer.observe(node));
+      });
+    };
+
     const ensureScenes = () => {
       if (prefersReducedMotion()) {
         document.querySelectorAll<HTMLCanvasElement>('[data-meadow]').forEach((canvas) => showStill(canvas));
@@ -310,7 +333,13 @@ import Journeys from '../components/Journeys.astro';
       }
       if (qualityProfile().tier === 'off') return Promise.resolve();
       if (scenesTask) return scenesTask;
+      // Desktop still imports after idle, and the splash refresh waits for that.
+      // A phone resolves this call immediately so the film pin is measured on
+      // the same turn as before, while the chunks wait until a passage nears.
+      const phone = isPhoneClass();
       scenesTask = (async () => {
+        if (phone) await whenPassageNears();
+        if (prefersReducedMotion() || qualityProfile().tier === 'off') return;
         const { whenPageSettled } = await import('../three/scene-scheduler');
         await whenPageSettled();
         if (prefersReducedMotion() || qualityProfile().tier === 'off') return;
@@ -332,12 +361,13 @@ import Journeys from '../components/Journeys.astro';
         });
         fieldFx?.setProgress(fieldAt);
       })();
-      return scenesTask;
+      return phone ? Promise.resolve() : scenesTask;
     };
 
-    // The splash and its scroll film bind right away. Meadow chunks wait until
-    // the page has loaded and the browser is idle, then each passage mounts
-    // only as it approaches. Film scrub and passage pin math are unchanged.
+    // The splash and its scroll film bind right away. On a wide screen the meadow
+    // chunks wait until the page is idle, then each passage mounts as it approaches.
+    // On a phone the chunks themselves wait for that approach. Film scrub and
+    // passage pin math are unchanged.
     void ensureScenes()
       .then(() => {
         if (reduce) {

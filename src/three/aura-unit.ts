@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/examples/jsm/geometries/RoundedBoxGeometry.js';
 import { loadCustomModel, placeCustomModel } from './custom-models';
 import { ktx2Loader, whenKtx2 } from './loaders';
+import { surfaceFiles } from './surface-diet';
 import { anisotropyForTier, applyMacro } from './surfaces';
 import { UNIT_LENGTH, UNIT_WIDTH } from './meadow-v1/meadow/geometry';
 
@@ -557,15 +558,13 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
 
   write(FINISH.clear);
 
-  const loadSet = (name: string) =>
-    whenKtx2().then(() =>
-      Promise.all([
-        ktx2Loader.loadAsync(asset(`textures/${name}/diff.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/nor_gl.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/rough.ktx2`)),
-        ktx2Loader.loadAsync(asset(`textures/${name}/ao.ktx2`)),
-      ]),
+  const loadSet = (name: string) => {
+    const names = surfaceFiles(['diff', 'nor_gl', 'rough', 'ao']);
+    if (!names.length) return Promise.resolve([] as THREE.Texture[]);
+    return whenKtx2().then(() =>
+      Promise.all(names.map((file) => ktx2Loader.loadAsync(asset(`textures/${name}/${file}.ktx2`)))),
     );
+  };
 
   const drop = (textures: THREE.Texture[]) => {
     for (const tex of textures) tex.dispose();
@@ -577,16 +576,27 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
       return;
     }
     const [diff, nor, rough, ao] = maps;
-    tune(diff, 2.4, 1.4);
-    tune(nor, 2.4, 1.4);
-    tune(rough, 2.4, 1.4);
-    tune(ao, 2.4, 1.4);
-    texs.push(diff, nor, rough, ao);
-    steel.map = diff;
-    steel.normalMap = nor;
-    steel.roughnessMap = rough;
-    steel.aoMap = ao;
-    steel.aoMapIntensity = 0.8;
+    if (diff) {
+      tune(diff, 2.4, 1.4);
+      texs.push(diff);
+      steel.map = diff;
+    }
+    if (nor) {
+      tune(nor, 2.4, 1.4);
+      texs.push(nor);
+      steel.normalMap = nor;
+    }
+    if (rough) {
+      tune(rough, 2.4, 1.4);
+      texs.push(rough);
+      steel.roughnessMap = rough;
+    }
+    if (ao) {
+      tune(ao, 2.4, 1.4);
+      texs.push(ao);
+      steel.aoMap = ao;
+      steel.aoMapIntensity = 0.8;
+    }
     steel.needsUpdate = true;
   }).catch(() => undefined);
 
@@ -596,15 +606,15 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
       return;
     }
     const [diff, nor, rough, ao] = maps;
-    diff.colorSpace = THREE.SRGBColorSpace;
-    nor.colorSpace = THREE.NoColorSpace;
-    rough.colorSpace = THREE.NoColorSpace;
-    ao.colorSpace = THREE.NoColorSpace;
-    tune(diff, 2.2, 1.6);
-    tune(nor, 2.2, 1.6);
-    tune(rough, 2.2, 1.6);
-    tune(ao, 2.2, 1.6);
-    const shared = [diff, nor, rough, ao];
+    const shared = [diff, nor, rough, ao].filter((map): map is THREE.Texture => !!map);
+    if (diff) diff.colorSpace = THREE.SRGBColorSpace;
+    if (nor) nor.colorSpace = THREE.NoColorSpace;
+    if (rough) rough.colorSpace = THREE.NoColorSpace;
+    if (ao) ao.colorSpace = THREE.NoColorSpace;
+    if (diff) tune(diff, 2.2, 1.6);
+    if (nor) tune(nor, 2.2, 1.6);
+    if (rough) tune(rough, 2.2, 1.6);
+    if (ao) tune(ao, 2.2, 1.6);
     const floorMaps = shared.map((map) => {
       const clone = map.clone();
       clone.repeat.set(2.4, 6.2);
@@ -619,12 +629,14 @@ gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(0.9, 0.94, 0.96), auraEdge * 0.62)
       aoIntensity: number,
     ) => {
       const [d, n, r, a] = pack;
-      mat.map = d;
-      mat.normalMap = n;
-      mat.roughnessMap = r;
-      mat.aoMap = a;
-      mat.aoMapIntensity = aoIntensity;
-      mat.normalScale.set(0.55, 0.55);
+      if (d) mat.map = d;
+      if (n) mat.normalMap = n;
+      if (r) mat.roughnessMap = r;
+      if (a) {
+        mat.aoMap = a;
+        mat.aoMapIntensity = aoIntensity;
+      }
+      if (n) mat.normalScale.set(0.55, 0.55);
       mat.color.setRGB(tint[0], tint[1], tint[2]);
       mat.needsUpdate = true;
     };

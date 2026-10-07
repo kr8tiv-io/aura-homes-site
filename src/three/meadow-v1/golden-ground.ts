@@ -5,6 +5,7 @@
 import * as THREE from 'three';
 import { ktx2Loader, whenKtx2 } from '../loaders';
 import { anisotropyForTier } from '../surfaces';
+import { tierAssets } from '../tier-assets';
 import { applyHeightFog } from './height-fog';
 import { sampleTerrainHeight } from './meadow/field';
 
@@ -27,6 +28,8 @@ uniform sampler2D tGrassC;
 uniform sampler2D tGrassN;
 uniform sampler2D tSoilC;
 uniform float uGroundReady;
+uniform float uGroundNormal;
+uniform float uGroundDetail;
 uniform float uGrassReady;
 uniform float uSoilReady;
 varying vec3 vGroundWorld;
@@ -89,6 +92,8 @@ type GroundMaps = {
   grassN: THREE.Texture;
   soilC: THREE.Texture;
   ready: number;
+  normal: number;
+  detail: number;
   grassReady: number;
   soilReady: number;
 };
@@ -126,6 +131,8 @@ export function makeGoldenTerrain(
     grassN: blank,
     soilC: blank,
     ready: 0,
+    normal: 0,
+    detail: 0,
     grassReady: 0,
     soilReady: 0,
   };
@@ -148,6 +155,8 @@ export function makeGoldenTerrain(
     shader.uniforms.tGrassN = { value: maps.grassN };
     shader.uniforms.tSoilC = { value: maps.soilC };
     shader.uniforms.uGroundReady = { value: maps.ready };
+    shader.uniforms.uGroundNormal = { value: maps.normal };
+    shader.uniforms.uGroundDetail = { value: maps.detail };
     shader.uniforms.uGrassReady = { value: maps.grassReady };
     shader.uniforms.uSoilReady = { value: maps.soilReady };
     mat.userData.groundUniforms = shader.uniforms;
@@ -169,12 +178,12 @@ vGroundNormal = normalize(mat3(modelMatrix) * objectNormal);`,
       .replace(
         '#include <roughnessmap_fragment>',
         `#include <roughnessmap_fragment>
-roughnessFactor = mix(roughnessFactor, gGroundRough, step(0.5, uGroundReady));`,
+if (uGroundDetail > 0.5) roughnessFactor = mix(roughnessFactor, gGroundRough, step(0.5, uGroundReady));`,
       )
       .replace(
         '#include <normal_fragment_maps>',
         `#include <normal_fragment_maps>
-if (uGroundReady > 0.5) {
+if (uGroundReady > 0.5 && uGroundNormal > 0.5) {
   vec3 nF = texture2D(tForestN, vGroundWorld.xz * 0.5).xyz * 2.0 - 1.0;
   vec3 nM = texture2D(tMudN, vGroundWorld.xz * 0.5).xyz * 2.0 - 1.0;
   float nSlope = clamp((1.0 - vGroundNormal.y) * 1.35, 0.0, 1.0);
@@ -206,24 +215,27 @@ if (uGroundReady > 0.5) {
     vec3 grass = groundTriBreak(tGrassC, vGroundWorld, vGroundNormal, true);
     albedo = mix(albedo, grass, sward * 0.82);
   }
-  float roughF = groundTri(tForestR, vGroundWorld, vGroundNormal, 0.5, false).r;
-  float roughM = groundTri(tMudR, vGroundWorld, vGroundNormal, 0.5, false).r;
-  float ao = mix(
-    groundTri(tForestA, vGroundWorld, vGroundNormal, 0.5, false).r,
-    groundTri(tMudA, vGroundWorld, vGroundNormal, 0.5, false).r,
-    mudAmt
-  );
+  float ao = 1.0;
+  if (uGroundDetail > 0.5) {
+    float roughF = groundTri(tForestR, vGroundWorld, vGroundNormal, 0.5, false).r;
+    float roughM = groundTri(tMudR, vGroundWorld, vGroundNormal, 0.5, false).r;
+    ao = mix(
+      groundTri(tForestA, vGroundWorld, vGroundNormal, 0.5, false).r,
+      groundTri(tMudA, vGroundWorld, vGroundNormal, 0.5, false).r,
+      mudAmt
+    );
+    gGroundRough = mix(roughF, roughM, mudAmt);
+  }
   albedo *= mix(1.0, 0.84, sward);
   float macroFar = 1.0 - smoothstep(28.0, 90.0, length(vGroundWorld - cameraPosition));
   float macroA = macroNoise(vGroundWorld.xz * 0.045);
   float macroB = macroNoise(vGroundWorld.xz * 0.13 + 4.2);
   albedo *= 1.0 + ((macroA - 0.5) * 0.22 + (macroB - 0.5) * 0.08) * macroFar;
   diffuseColor.rgb = albedo * mix(0.9, 1.0, ao);
-  gGroundRough = mix(roughF, roughM, mudAmt);
 }`
       );
   };
-  mat.customProgramCacheKey = () => `golden-ground-v2-${previousKey()}`;
+  mat.customProgramCacheKey = () => `golden-ground-v3-${previousKey()}`;
 
   const mesh = new THREE.Mesh(geo, mat);
   mesh.receiveShadow = true;
@@ -255,28 +267,45 @@ if (uGroundReady > 0.5) {
     uniforms.tGrassN.value = maps.grassN;
     uniforms.tSoilC.value = maps.soilC;
     uniforms.uGroundReady.value = maps.ready;
+    uniforms.uGroundNormal.value = maps.normal;
+    uniforms.uGroundDetail.value = maps.detail;
     uniforms.uGrassReady.value = maps.grassReady;
     uniforms.uSoilReady.value = maps.soilReady;
   };
 
-  void whenKtx2().then(() => Promise.all([
-    load('forrest_ground_01', 'diff'),
-    load('forrest_ground_01', 'rough'),
-    load('forrest_ground_01', 'ao'),
-    load('forrest_ground_01', 'nor_gl'),
-    load('brown_mud_leaves_01', 'diff'),
-    load('brown_mud_leaves_01', 'rough'),
-    load('brown_mud_leaves_01', 'ao'),
-    load('brown_mud_leaves_01', 'nor_gl'),
-  ])).then(([forestC, forestR, forestA, forestN, mudC, mudR, mudA, mudN]) => {
-    maps.forestC = forestC;
-    maps.forestR = forestR;
-    maps.forestA = forestA;
-    maps.forestN = forestN;
-    maps.mudC = mudC;
-    maps.mudR = mudR;
-    maps.mudA = mudA;
-    maps.mudN = mudN;
+  const plan = tierAssets();
+  const fullGround = plan.ground === 'full';
+  const groundJobs = fullGround
+    ? [
+        load('forrest_ground_01', 'diff'),
+        load('forrest_ground_01', 'rough'),
+        load('forrest_ground_01', 'ao'),
+        load('forrest_ground_01', 'nor_gl'),
+        load('brown_mud_leaves_01', 'diff'),
+        load('brown_mud_leaves_01', 'rough'),
+        load('brown_mud_leaves_01', 'ao'),
+        load('brown_mud_leaves_01', 'nor_gl'),
+      ]
+    : [load('forrest_ground_01', 'diff'), load('brown_mud_leaves_01', 'diff')];
+
+  void whenKtx2().then(() => Promise.all(groundJobs)).then((loaded) => {
+    if (fullGround) {
+      const [forestC, forestR, forestA, forestN, mudC, mudR, mudA, mudN] = loaded;
+      maps.forestC = forestC;
+      maps.forestR = forestR;
+      maps.forestA = forestA;
+      maps.forestN = forestN;
+      maps.mudC = mudC;
+      maps.mudR = mudR;
+      maps.mudA = mudA;
+      maps.mudN = mudN;
+      maps.normal = 1;
+      maps.detail = 1;
+    } else {
+      const [forestC, mudC] = loaded;
+      maps.forestC = forestC;
+      maps.mudC = mudC;
+    }
     maps.ready = 1;
     paint();
   }).catch(() => undefined);
@@ -291,20 +320,22 @@ if (uGroundReady > 0.5) {
       textures.push(texture);
       return texture;
     });
-  void Promise.all([
-    loadJpg('textures/grass004/diff.jpg'),
-    loadJpg('textures/grass004/nor_gl.jpg'),
-  ]).then(([grassC, grassN]) => {
-    maps.grassC = grassC;
-    maps.grassN = grassN;
+  const grassJobs = fullGround
+    ? [loadJpg('textures/grass004/diff.jpg'), loadJpg('textures/grass004/nor_gl.jpg')]
+    : [loadJpg('textures/grass004/diff.jpg')];
+  void Promise.all(grassJobs).then((loaded) => {
+    maps.grassC = loaded[0];
+    if (loaded[1]) maps.grassN = loaded[1];
     maps.grassReady = 1;
     paint();
   }).catch(() => undefined);
-  void loadJpg('textures/ground037/diff.jpg').then((soilC) => {
-    maps.soilC = soilC;
-    maps.soilReady = 1;
-    paint();
-  }).catch(() => undefined);
+  if (fullGround) {
+    void loadJpg('textures/ground037/diff.jpg').then((soilC) => {
+      maps.soilC = soilC;
+      maps.soilReady = 1;
+      paint();
+    }).catch(() => undefined);
+  }
 
   return mesh;
 }

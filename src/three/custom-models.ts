@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { CUSTOM_FILES } from 'virtual:aura-custom-models';
 import { ktx2Loader, loadModel, whenKtx2 } from './loaders';
 import { qualityProfile, type QualityTier } from './quality';
+import { phoneAssetDiet } from './tier-assets';
 
 export const CUSTOM_NAMES = ['aura-unit', 'hot-tub', 'gazebo', 'a-frame'] as const;
 export type CustomName = (typeof CUSTOM_NAMES)[number];
@@ -88,7 +89,12 @@ const known = new Map(CUSTOM_FILES.map((entry) => [entry.file, entry.bytes]));
  * `quality` follows the current tier and falls back the other way.
  */
 export async function resolveCustom(name: CustomName, prefer: 'quality' | 'full' = 'quality'): Promise<ResolvedCustom | null> {
-  const order = prefer === 'full' ? (['', '.lod1', '.lod2'] as Level[]) : BY_TIER[qualityProfile().tier];
+  const order: Level[] =
+    prefer === 'full'
+      ? ['', '.lod1', '.lod2']
+      : phoneAssetDiet()
+        ? ['.lod2', '.lod1', '']
+        : BY_TIER[qualityProfile().tier];
   for (const level of order) {
     const file = `${name}${level}.glb`;
     if (!known.has(file)) continue;
