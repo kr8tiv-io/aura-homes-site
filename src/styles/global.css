@@ -709,6 +709,9 @@ body.film-bar .site-nav.topbar.is-clear button:focus-visible {
 html[data-heading-glow="css"] .heading-heat {
   position: relative;
   isolation: isolate;
+  /* The halo is wider than the line. Clip it so it cannot widen the page, and leave room for the fade to paint. */
+  overflow-x: clip;
+  overflow-clip-margin: 20rem;
 }
 html[data-heading-glow="css"] .heading-heat::before,
 html[data-heading-glow="css"] a:focus-within .heading-heat::before {
