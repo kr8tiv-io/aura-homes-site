@@ -10,12 +10,13 @@ const { reveal = false } = Astro.props;
   <p class="story-kicker" data-tracer="rule">The story</p>
   {
     reveal ? (
-      <h2 data-glow data-reveal-heading>
-        One room.<br />Several lives.
+      <h2 data-glow data-reveal-heading aria-label="One room. Several lives.">
+        One room. <br />Several lives.
       </h2>
     ) : (
-      <h2 data-glow>
+      <h2 data-glow aria-label="One room. Several lives.">
         <span class="line-mask"><span class="line">One room.</span></span>
+        {' '}
         <span class="line-mask"><span class="line">Several lives.</span></span>
       </h2>
     )
