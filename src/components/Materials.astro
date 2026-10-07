@@ -173,8 +173,18 @@ const details = [
     margin-left: 0.15em;
   }
   .materials-lede sup a {
+    position: relative;
     color: #866243;
     text-decoration: none;
+  }
+  .materials-lede sup a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
   }
   .materials-board {
     display: grid;
@@ -398,6 +408,11 @@ const details = [
     color: #866243;
   }
   .materials-source a {
+    position: relative;
+    display: inline-block;
+    min-height: 44px;
+    margin-block: -0.55rem;
+    padding-block: 0.55rem;
     color: inherit;
   }
 
