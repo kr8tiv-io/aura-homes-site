@@ -440,7 +440,7 @@ Prompt 65 (2026-10-07, `1b50021`, `6d4b521`, `8604723`) turns capable phones on.
 | A-08 | Fixed. Manifest lists real GLBs only. None exist, so no request is made. Rechecked during 64: still no request. | `2fe1dbf` |
 | A-09 | Shot card hidden. Roof collector still is in place. "Portrait to come" on `/story` is unchanged. | `86e963e`. Portrait: Matt |
 | A-10 | Open. Water pages still disagree. Left for Matt. | Matt |
-| A-11 | Fixed earlier for the phone crops that lost a subject. | `3f888ae` (63) |
+| A-11 | Fixed. Phone crops in `3f888ae`. Story figures also keep the width and height ratio before the poster decodes. | `3f888ae`, `5d4e143` |
 | A-12 | No broken hrefs. Menu map (Glass, Resorts, Thirst Contact) is still Matt's. | Matt |
 | A-13 | Fixed. Default origin is `https://aurahomes.fun`. `SITE` still overrides. | `a3022d3` |
 | A-14 | Fixed. Footnote hit area 45×45. Guide link taller than 44. Split headings keep their lines and read with a space. Thanks clearance is `741afda`. | `58f7a12`, `bd3176c`, `86e963e` |
@@ -449,4 +449,14 @@ Prompt 65 (2026-10-07, `1b50021`, `6d4b521`, `8604723`) turns capable phones on.
 | A-17 | Three named disclaimer lines removed (`1b6d03b`, and the water lines in `86e963e`). FAQ, story lede, and "Second Breath" are unchanged. | Matt for the rest |
 | A-18 | Fixed. Studio stays in source for `astro dev`. Production upload drops `/dev` and empty `_archive`. Unknown paths use the branded 404. | `5f64448`, `a3022d3` |
 
-Copy left for Matt, still true after this pass: story lede and the retired outside line, `/story` "Portrait to come", the water-page conflict (A-10), "The machine is not ready to place", FAQ deposit, refund, and permit lines, "Second Breath", and whether Glass, Resorts, and `/water` belong in the menu. Home journeys lines are announced as "One room. Several lives." The word-by-word reveal still drops the space character inside a line and uses margin, so a copy of those animated words can run together. That splitter sits in `src/pages/index.astro` and was left alone.
+Copy left for Matt, still true after the closing review: story lede and the retired outside line, `/story` "Portrait to come", the water-page conflict (A-10), "The machine is not ready to place", FAQ deposit, refund, and permit lines, "Second Breath", and whether Glass, Resorts, and `/water` belong in the menu. Home journeys lines are announced as "One room. Several lives." The word-by-word reveal still drops the space character inside a line and uses margin, so a copy of those animated words can run together. That splitter sits in `src/pages/index.astro` and was left alone.
+
+## Status after the closing review
+
+Prompt 69 rechecked the built site on 2026-10-07. Full write-up: `qa/review-oct6/REPORT.md`. Harness `qa-out/review/summary.json`: 31 routes × 3 viewports = 93 pages, `hOverflow` 0, `brokenLinks` empty, nav `AURA`, no TODO text. This review did not edit `index.astro`, the cabin film, or `film-scrub.ts`. Three fixes landed on top of the earlier prompts:
+
+- `5d4e143` story figures reserve their ratio before the poster decodes.
+- `cdd04ab` bloom runs only when the stage view asks for it, so the desktop builder paints at `?quality=high`.
+- `2a29b9d` the builder root holds its height, and the small captions clear contrast. Mobile Lighthouse on `/build-your-own/` after that commit: performance 97, accessibility 100, CLS 0.01.
+
+A-04, A-10, A-12, A-15, and the rest of A-17 stay open for Matt. Local Lighthouse is slower than the live BEFORE table on text pages because this preview does not compress and has no CDN. Home is still dominated by `cabin-dusk-hi.mp4`.
