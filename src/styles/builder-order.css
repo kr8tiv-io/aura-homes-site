@@ -57,7 +57,7 @@
   font-weight: 400;
   letter-spacing: 0.06em;
   line-height: 1.45;
-  color: #9c7a55;
+  color: rgba(20, 18, 14, 0.78);
 }
 
 .order-live-note {
@@ -68,7 +68,7 @@
   font-weight: 300;
   font-size: 0.82rem;
   line-height: 1.55;
-  color: #9c7a55;
+  color: rgba(20, 18, 14, 0.78);
 }
 
 .order-live-open {
