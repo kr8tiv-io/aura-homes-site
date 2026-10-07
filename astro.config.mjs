@@ -7,8 +7,8 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { customModelManifest } from './scripts/custom-model-manifest.mjs';
 
-// Override with SITE when a public domain exists. This build is not deployed.
-const site = process.env.SITE ?? 'https://aurahomes.local';
+// SITE still overrides. A plain build uses the live origin.
+const site = process.env.SITE ?? 'https://aurahomes.fun';
 
 // https://astro.build/config
 export default defineConfig({
