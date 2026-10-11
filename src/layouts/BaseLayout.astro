@@ -1,12 +1,11 @@
 ---
 import '../styles/global.css';
 import { ClientRouter } from 'astro:transitions';
-import { Font, getImage } from 'astro:assets';
+import { Font } from 'astro:assets';
 import Ambient from '../components/Ambient.astro';
 import RidgeLoad from '../components/RidgeLoad.astro';
 import AuraMark from '../components/AuraMark.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import cabinPoster from '../../public/film/cabin-poster-hi.webp';
 import { contactEmail, contactPhone, phoneTel } from '../data/site';
 import { organizationJson } from '../lib/organization';
 
@@ -32,10 +31,10 @@ const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const origin = Astro.site ?? Astro.url.origin;
 const pageUrl = new URL(path, origin).href;
 const canonical = pageUrl;
-const og = await getImage({ src: cabinPoster, width: 1200, format: 'webp', quality: 72 });
-const ogImage = new URL(og.src, origin).href;
+// Versioned 1200x630 PNG in /public (source: design/social-card). Bump the filename when the art changes so scrapers refetch.
+const ogImage = new URL('/og-aura-2026-10.png', origin).href;
 const organization = organizationJson(origin);
-const ogAlt = 'An Aura room at dusk, set in a meadow.';
+const ogAlt = 'Aura Homes: a dark glass room with a warm oak interior in a dusk meadow, with the line Return to Aura. One beautiful room at a time.';
 const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
 const filmBar = isHome || path.startsWith('/back-to-nature');
@@ -128,6 +127,9 @@ const foot = innerMenu.flatMap((group) => group.links);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content={ogAlt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
