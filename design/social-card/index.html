@@ -1,0 +1,65 @@
+﻿<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Aura Homes social card</title>
+<style>
+@font-face{font-family:Cinzel;src:url(fonts/Cinzel-Regular.ttf);font-weight:400}
+@font-face{font-family:Cinzel;src:url(fonts/Cinzel-SemiBold.ttf);font-weight:600}
+@font-face{font-family:Inter;src:url(fonts/Inter-Regular.ttf);font-weight:400}
+@font-face{font-family:Inter;src:url(fonts/Inter-Medium.ttf);font-weight:500}
+:root{--obsidian:#0C0D0E;--alabaster:#F4F3EF;--bronze:#9C7A55;--bronze-light:#C4A07A;--slate:#101820}
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden;background:var(--obsidian)}
+body.square,body.square html{height:1200px}
+body.square{width:1200px;height:1200px}
+.card{position:relative;width:1200px;height:630px;color:var(--alabaster);font-family:Inter,sans-serif;overflow:hidden}
+.square .card{height:1200px}
+.photo{position:absolute;inset:0;background:url(hero.webp) no-repeat;background-size:1200px auto;background-position:0 -110px}
+.square .photo{background-size:auto 1200px;background-position:-120px 0}
+.shade{position:absolute;inset:0;background:
+ linear-gradient(180deg,rgba(12,13,14,.55) 0,rgba(12,13,14,0) 26%,rgba(12,13,14,0) 50%,rgba(12,13,14,.82) 86%,rgba(12,13,14,.92) 100%),
+ linear-gradient(90deg,rgba(12,13,14,.55) 0,rgba(12,13,14,0) 55%)}
+.square .shade{background:linear-gradient(180deg,rgba(12,13,14,.55) 0,rgba(12,13,14,0) 22%,rgba(12,13,14,0) 50%,rgba(12,13,14,.9) 82%,rgba(12,13,14,.95) 100%)}
+.brand{position:absolute;left:64px;top:52px;display:flex;align-items:center;gap:18px}
+.brand svg{width:60px;height:auto;color:var(--alabaster)}
+.brand span{font:600 32px Cinzel,serif;letter-spacing:.2em}
+.brand i{font:500 15px Inter;letter-spacing:.3em;color:var(--bronze-light);font-style:normal;text-transform:uppercase;margin-left:6px;padding-left:20px;border-left:1px solid rgba(244,243,239,.4)}
+.copy{position:absolute;left:64px;bottom:56px;right:64px}
+.kick{font:500 17px Inter;letter-spacing:.3em;text-transform:uppercase;color:var(--bronze-light);margin-bottom:16px}
+h1{font:600 100px/1 Cinzel,serif;letter-spacing:.02em;text-shadow:0 2px 24px rgba(0,0,0,.4)}
+.sub{font:400 34px/1.2 Inter;margin-top:18px;color:rgba(244,243,239,.92)}
+.url{position:absolute;right:64px;bottom:62px;font:500 24px Inter;letter-spacing:.08em;color:var(--alabaster);display:flex;align-items:center;gap:12px}
+.url b{width:10px;height:10px;border-radius:50%;background:var(--bronze-light);display:block}
+.square h1{font-size:120px}.square .sub{font-size:44px}.square .brand svg{width:80px}.square .brand span{font-size:42px}
+.square .copy{bottom:110px}.square .url{bottom:48px;left:64px;right:auto}
+.rule{width:72px;height:2px;background:var(--bronze-light);margin:22px 0 0}
+.tag{position:absolute;right:64px;top:62px;font:500 13px Inter;letter-spacing:.3em;text-transform:uppercase;color:rgba(244,243,239,.75)}
+.square .tag{top:68px}
+/* variant B: split panel */
+.b .photo{left:430px;background-size:1500px auto;background-position:-250px -20px}
+.b .shade{background:linear-gradient(90deg,var(--obsidian) 0,var(--obsidian) 430px,rgba(12,13,14,.0) 560px)}
+.b .shade{background:linear-gradient(90deg,var(--obsidian) 0,var(--obsidian) 430px,rgba(12,13,14,0) 620px)}
+.b h1{font-size:70px;line-height:1.05}
+.b .copy{right:auto;width:520px;bottom:auto;top:200px}
+.b .sub{font-size:28px}
+.b .url{right:auto;left:64px;bottom:56px}
+</style></head>
+<body>
+<div class="card" id="card">
+  <div class="photo"></div><div class="shade"></div>
+  <div class="brand">
+    <svg viewBox="0 0 200 188" fill="none"><ellipse cx="100" cy="15" rx="19" ry="5.2" transform="rotate(-6 100 15)" stroke="#c4a07a" stroke-width="3"/><path fill="currentColor" d="M6 172.81 41.915 140.885 60.831 159.801 100 54.046 139.169 159.801 158.085 140.885 194 172.81V167.19L157.915 135.115 140.831 152.199 100 41.954 59.169 152.199 42.085 135.115 6 167.19Z"/></svg>
+    <span>AURA</span><i>Homes</i>
+  </div>
+  <div class="copy">
+    <h1>Return to Aura.</h1>
+    <div class="sub">One beautiful room at a time.</div>
+  </div>
+  <div class="tag">Concept render</div>
+  <div class="url"><b></b>aurahomes.fun</div>
+</div>
+<script>
+const q=new URLSearchParams(location.search);
+if(q.get('v')==='b')document.getElementById('card').classList.add('b');
+if(q.get('sq'))document.body.classList.add('square');
+</script>
+</body></html>
+
