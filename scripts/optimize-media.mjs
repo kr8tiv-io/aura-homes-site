@@ -1,7 +1,7 @@
 /**
  * Upscale widescreen stills and short films, then write AVIF and WebP.
  *
- * Splash stay put: public/film/cabin-dusk-hi.mp4, its poster, and every
+ * Splash stay put: the cabin-dusk-1920/2560 hero films (and the older cabin-dusk-hi.mp4), their posters, and every
  * scroll film or poster the landing page still points at. This script never
  * overwrites those paths.
  *
@@ -29,6 +29,11 @@ const SOFT_SCALE = 1.75;
 /** Landing-page bytes. Read, never write. */
 const SPLASH = new Set([
   'public/film/cabin-dusk-hi.mp4',
+  'public/film/cabin-dusk-1920.mp4',
+  'public/film/cabin-dusk-1920.webm',
+  'public/film/cabin-dusk-2560.mp4',
+  'public/film/cabin-dusk-2560.webm',
+  'public/film/cabin-dusk-1920-poster.webp',
   'public/film/cabin-poster-hi.webp',
   'public/film/story-meadow-side.webp',
   'public/film/story-room.webp',
