@@ -13,14 +13,32 @@ import Journeys from '../components/Journeys.astro';
         <video
           id="cabin-film"
           class="splash-film"
-          src="/film/cabin-dusk-hi.mp4"
-          poster="/film/cabin-poster-hi.webp"
+          poster="/film/cabin-dusk-1920-poster.webp"
           muted
           playsinline
-          preload="auto"
+          preload="metadata"
           disablepictureinpicture
           aria-label="Scroll-driven film of the dusk cabin"
         ></video>
+        <script is:inline>
+          // Pick the hero size before anything loads. <source media> is not reliable on video.
+          (() => {
+            const v = document.getElementById('cabin-film');
+            if (!v || v.querySelector('source')) return;
+            const wide = window.innerWidth * (window.devicePixelRatio || 1) > 1920;
+            const base = wide ? '/film/cabin-dusk-2560' : '/film/cabin-dusk-1920';
+            if (wide) v.poster = '/film/cabin-poster-hi.webp';
+            const add = (src, type) => {
+              const s = document.createElement('source');
+              s.src = src;
+              s.type = type;
+              v.appendChild(s);
+            };
+            add(base + '.webm', wide ? 'video/webm; codecs="av01.0.12M.10"' : 'video/webm; codecs="av01.0.08M.10"');
+            add(base + '.mp4', 'video/mp4');
+            v.load();
+          })();
+        </script>
         <div class="splash-shade" aria-hidden="true"></div>
         <h1 class="splash-word">AURA</h1>
         <div class="splash-foot">
