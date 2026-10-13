@@ -33,6 +33,8 @@ const SPLASH = new Set([
   'public/film/cabin-dusk-1920.webm',
   'public/film/cabin-dusk-2560.mp4',
   'public/film/cabin-dusk-2560.webm',
+  'public/film/cabin-dusk-1280.mp4',
+  'public/film/cabin-dusk-1280.webm',
   'public/film/cabin-dusk-1920-poster.webp',
   'public/film/cabin-poster-hi.webp',
   'public/film/story-meadow-side.webp',

@@ -22,21 +22,49 @@ import Journeys from '../components/Journeys.astro';
         ></video>
         <script is:inline>
           // Pick the hero size before anything loads. <source media> is not reliable on video.
+          // Phones get the 1280 H.264 film, and only after the page load, so the 1920/2560
+          // desktop files stay off the first paint. A finger scroll arms it sooner.
           (() => {
             const v = document.getElementById('cabin-film');
             if (!v || v.querySelector('source')) return;
-            const wide = window.innerWidth * (window.devicePixelRatio || 1) > 1920;
-            const base = wide ? '/film/cabin-dusk-2560' : '/film/cabin-dusk-1920';
+            const compact = window.matchMedia('(max-width: 1000px)').matches;
+            const wide = !compact && window.innerWidth * (window.devicePixelRatio || 1) > 1920;
+            const base = compact ? '/film/cabin-dusk-1280' : wide ? '/film/cabin-dusk-2560' : '/film/cabin-dusk-1920';
             if (wide) v.poster = '/film/cabin-poster-hi.webp';
-            const add = (src, type) => {
-              const s = document.createElement('source');
-              s.src = src;
-              s.type = type;
-              v.appendChild(s);
+            const arm = () => {
+              if (v.querySelector('source')) return;
+              const add = (src, type) => {
+                const s = document.createElement('source');
+                s.src = src;
+                s.type = type;
+                v.appendChild(s);
+              };
+              const webmType = wide ? 'video/webm; codecs="av01.0.12M.10"' : 'video/webm; codecs="av01.0.08M.10"';
+              const apple = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+              if (!apple && v.canPlayType(webmType) !== '') add(base + '.webm', webmType);
+              add(base + '.mp4', 'video/mp4');
+              v.preload = 'metadata';
+              v.load();
             };
-            add(base + '.webm', wide ? 'video/webm; codecs="av01.0.12M.10"' : 'video/webm; codecs="av01.0.08M.10"');
-            add(base + '.mp4', 'video/mp4');
-            v.load();
+            if (!compact) {
+              arm();
+              return;
+            }
+            v.preload = 'none';
+            let armed = false;
+            const go = () => {
+              if (armed) return;
+              armed = true;
+              arm();
+            };
+            window.addEventListener('pointerdown', go, { once: true, passive: true });
+            window.addEventListener('wheel', go, { once: true, passive: true });
+            const later = () => {
+              if (window.requestIdleCallback) window.requestIdleCallback(() => go(), { timeout: 1200 });
+              else window.setTimeout(go, 400);
+            };
+            if (document.readyState === 'complete') later();
+            else window.addEventListener('load', later, { once: true });
           })();
         </script>
         <div class="splash-shade" aria-hidden="true"></div>
@@ -334,11 +362,14 @@ import Journeys from '../components/Journeys.astro';
           observer.disconnect();
           resolve();
         };
+        // A phone waits until a passage is close, so the meadow chunks do not
+        // compete with the hero film. Desktop still starts a viewport early.
+        const margin = isPhoneClass() ? '30% 0px 30% 0px' : '100% 0px 100% 0px';
         const observer = new IntersectionObserver(
           (entries) => {
             if (entries.some((entry) => entry.isIntersecting)) done();
           },
-          { root: null, rootMargin: '100% 0px 100% 0px', threshold: 0 },
+          { root: null, rootMargin: margin, threshold: 0 },
         );
         nodes.forEach((node) => observer.observe(node));
       });
@@ -361,16 +392,24 @@ import Journeys from '../components/Journeys.astro';
         const { whenPageSettled } = await import('../three/scene-scheduler');
         await whenPageSettled();
         if (prefersReducedMotion() || qualityProfile().tier === 'off') return;
-        const [meadowMod, washMod, fieldMod] = await Promise.all([
-          import('../scripts/meadow'),
-          import('../scripts/wash'),
-          import('../scripts/field'),
-        ]);
-        if (meadows.length) return;
-        meadows.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => meadowMod.mountMeadow(canvas)));
-        washes.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => washMod.mountWash(canvas)));
-        const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
-        fieldFx = fieldCanvas ? fieldMod.mountField(fieldCanvas) : null;
+        // Phones keep the one shared meadow world. The full-page wash and field
+        // light stay on desktop so a phone is not drawing two extra views.
+        if (phone) {
+          const meadowMod = await import('../scripts/meadow');
+          if (meadows.length) return;
+          meadows.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => meadowMod.mountMeadow(canvas)));
+        } else {
+          const [meadowMod, washMod, fieldMod] = await Promise.all([
+            import('../scripts/meadow'),
+            import('../scripts/wash'),
+            import('../scripts/field'),
+          ]);
+          if (meadows.length) return;
+          meadows.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-meadow]').map((canvas) => meadowMod.mountMeadow(canvas)));
+          washes.push(...gsap.utils.toArray<HTMLCanvasElement>('[data-wash]').map((canvas) => washMod.mountWash(canvas)));
+          const fieldCanvas = document.querySelector<HTMLCanvasElement>('[data-field]');
+          fieldFx = fieldCanvas ? fieldMod.mountField(fieldCanvas) : null;
+        }
         meadows.forEach((meadow, index) => {
           if (passageAt[index] != null) meadow.setProgress(passageAt[index]);
         });
