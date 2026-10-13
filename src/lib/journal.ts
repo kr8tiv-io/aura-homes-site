@@ -48,15 +48,6 @@ export const legacyNotes: JournalCard[] = [
     cover: '/film/layout-forest.webp',
     coverAlt: 'A glass room at the edge of a pine forest, open toward a dusk meadow.',
   },
-  {
-    href: '/journal/build-your-own',
-    title: 'Build your own',
-    excerpt: 'The builder is a tool. Set the room on this site, or build it from the GitHub source.',
-    date: '2026-09-30',
-    tags: ['Builder'],
-    cover: '/film/story-nest.webp',
-    coverAlt: 'A teal velvet hanging daybed under a steel arch, the cabin behind it.',
-  },
 ];
 
 export function formatJournalDate(value: Date | string) {

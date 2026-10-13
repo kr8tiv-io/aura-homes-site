@@ -12,7 +12,7 @@ draft: false
 
 A wood-fired tub does not hurry. The stove takes its time. Steam finds the open panels and leaves again. The Soak is that hour: heat, grass, and a seat that does not need a plan.
 
-The tub is cedar, on a steel chassis, under clear polycarbonate. Two panels can stand open so the meadow stays in the room with you. When the fire is enough, you stop tending it. The swing is there for after, a slow seat in the grass while the water keeps its warmth.
+The tub is cedar, on a steel frame, under clear polycarbonate. Two panels can stand open so the meadow stays in the room with you. When the fire is enough, you stop tending it. The swing is there for after, a slow seat in the grass while the water keeps its warmth.
 
 Nothing about it is a specification sheet. The room is small on purpose. You hear the stove. You see the field go a shade darker. The day, if it had errands, can wait outside the glass.
 
