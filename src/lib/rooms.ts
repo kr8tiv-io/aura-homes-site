@@ -71,7 +71,7 @@ export const roomConcepts: RoomConcept[] = [
     name: 'Hot Take',
     shell: 'room',
     image: '/film/layout-gazebo.webp',
-    alt: 'Wood-fired cedar tub on a steel chassis, inside a clear glass gazebo with two panels open.',
+    alt: 'Wood-fired cedar tub on a steel frame, inside a clear glass gazebo with two panels open.',
     description: 'A wood-fired tub on its own wheels. Tow it out, and light the stove.',
     focus: 'center',
   },

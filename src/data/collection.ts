@@ -36,15 +36,15 @@ export type CollectionShowpiece = {
 export const collectionIntro = {
   kicker: 'The collection',
   title: 'Twelve rooms. Each one named.',
-  lede: 'From a second-life trailer to a tower of glass. Every Aura is finished, furnished and made one at a time, and every model can carry Full Solar from the first order.',
+  lede: 'From a spare room to a tower of glass. Every Aura is drawn and furnished one at a time, and every model can carry Full Solar from the first order.',
 };
 
 export const collectionTiers: CollectionTier[] = [
   {
-    id: 'second-life',
+    id: 'first-rooms',
     index: '01',
-    name: 'Second Life',
-    line: 'Refurbished trailers, made beautiful. Where Aura starts.',
+    name: 'First Rooms',
+    line: 'Beautiful nature rooms that bring you back outside. Where Aura starts.',
     models: [
       {
         slug: 'of-course-i-still-tow-you',
@@ -64,7 +64,7 @@ export const collectionTiers: CollectionTier[] = [
         features: [
           'Wood-fired cedar tub',
           'Clear enclosure, two panels open',
-          'Its own trailer',
+          'Its own steel frame',
           'Firewood rack',
         ],
       },
