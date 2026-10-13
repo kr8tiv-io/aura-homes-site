@@ -64,48 +64,138 @@ export function bindReels(root: ParentNode = document) {
     .then((data: { films?: string[] }) => new Set(data.films || []))
     .catch(() => new Set<string>());
 
+  const compactQuery = '(max-width: 1000px)';
+  const compactNow = () => window.matchMedia(compactQuery).matches;
+  const connOf = () => (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
+  const slowLink = () => {
+    const conn = connOf();
+    if (!conn) return false;
+    if (conn.saveData) return true;
+    return conn.effectiveType === 'slow-2g' || conn.effectiveType === '2g' || conn.effectiveType === '3g';
+  };
+
   const allowFilm = (video: HTMLVideoElement) => {
-    if (video.dataset.still !== 'poster') return true;
+    if (video.dataset.still !== 'poster') {
+      if (compactNow() && (reduce || slowLink())) return false;
+      return true;
+    }
     if (reduce) return false;
     if (!window.matchMedia('(min-width: 801px) and (any-pointer: fine)').matches) return false;
-    const conn = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-    if (!conn) return true;
-    if (conn.saveData) return false;
-    return conn.effectiveType !== 'slow-2g' && conn.effectiveType !== '2g' && conn.effectiveType !== '3g';
+    if (slowLink()) return false;
+    return true;
   };
+
+  // One phone film at a time, so thirteen scroll clips do not open together.
+  let filmGate: Promise<void> = Promise.resolve();
+  const slots: Array<{
+    figure: Element;
+    on: boolean;
+    attach: () => void;
+    release: () => void;
+  }> = [];
+  let electFrame = 0;
+  const elect = () => {
+    if (!compactNow()) return;
+    const mid = window.innerHeight / 2;
+    let best: (typeof slots)[number] | null = null;
+    let bestDist = Infinity;
+    for (const slot of slots) {
+      if (!slot.on) continue;
+      const box = slot.figure.getBoundingClientRect();
+      const dist = Math.abs(box.top + box.height / 2 - mid);
+      if (dist < bestDist) {
+        best = slot;
+        bestDist = dist;
+      }
+    }
+    for (const slot of slots) {
+      if (slot === best) slot.attach();
+      else slot.release();
+    }
+  };
+  const scheduleElect = () => {
+    if (!compactNow() || electFrame) return;
+    electFrame = window.requestAnimationFrame(() => {
+      electFrame = 0;
+      elect();
+    });
+  };
+  window.addEventListener('scroll', scheduleElect, { passive: true });
+  stops.push(() => {
+    window.removeEventListener('scroll', scheduleElect);
+    if (electFrame) window.cancelAnimationFrame(electFrame);
+  });
 
   videos.forEach((video) => {
     const film = video.dataset.film;
     let attached = Boolean(video.getAttribute('src') || video.querySelector('source'));
+    let generation = 0;
     const attach = () => {
       if (attached || !film) return;
       attached = true;
-      ready.then((names) => {
-        const file = film.split('/').pop() || '';
-        const known = names.has(file) || film.startsWith('/media/video/');
-        if (!known || !allowFilm(video)) {
-          attached = false;
-          return;
-        }
-        if (video.getAttribute('src') || video.querySelector('source')) return;
-        const webm = video.dataset.filmWebm;
-        if (webm) {
-          video.preload = 'metadata';
-          const add = (src: string, type: string) => {
-            const source = document.createElement('source');
-            source.src = src;
-            source.type = type;
-            video.appendChild(source);
-          };
-          add(webm, 'video/webm');
-          add(film, 'video/mp4');
+      const mine = ++generation;
+      const job = () =>
+        ready.then((names) => {
+          if (mine !== generation) return;
+          const file = film.split('/').pop() || '';
+          const known = names.has(file) || film.startsWith('/media/video/');
+          if (!known || !allowFilm(video)) {
+            attached = false;
+            return;
+          }
+          if (video.getAttribute('src') || video.querySelector('source')) return;
+          const webm = video.dataset.filmWebm;
+          const compact = compactNow();
+          if (webm && !compact) {
+            video.preload = 'metadata';
+            const add = (src: string, type: string) => {
+              const source = document.createElement('source');
+              source.src = src;
+              source.type = type;
+              video.appendChild(source);
+            };
+            add(webm, 'video/webm');
+            add(film, 'video/mp4');
+            video.load();
+            return;
+          }
+          if (mine !== generation) return;
+          video.preload = compact ? 'metadata' : 'auto';
+          let meta: Promise<void> | undefined;
+          if (compact) {
+            meta = new Promise((resolve) => {
+              const done = () => resolve();
+              video.addEventListener('loadedmetadata', done, { once: true });
+              video.addEventListener('error', done, { once: true });
+              window.setTimeout(done, 4000);
+            });
+          }
+          video.src = film;
           video.load();
-          return;
-        }
-        video.preload = 'auto';
-        video.src = film;
-        video.load();
-      });
+          if (mine !== generation) {
+            video.removeAttribute('src');
+            const poster = video.dataset.poster;
+            if (poster) video.poster = poster;
+            video.load();
+            return;
+          }
+          return meta;
+        });
+      if (compactNow()) filmGate = filmGate.then(job, job);
+      else void job();
+    };
+
+    const release = () => {
+      if (!compactNow()) return;
+      if (!video.getAttribute('src') && !video.querySelector('source')) return;
+      generation += 1;
+      video.pause();
+      video.removeAttribute('src');
+      video.querySelectorAll('source').forEach((node) => node.remove());
+      const poster = video.dataset.poster;
+      if (poster) video.poster = poster;
+      video.load();
+      attached = false;
     };
 
     video.muted = true;
@@ -123,14 +213,23 @@ export function bindReels(root: ParentNode = document) {
       if (src && video.getAttribute('poster') !== src) video.poster = src;
     };
 
+    const compact = compactNow();
+    const slot = { figure, on: false, attach, release };
+    slots.push(slot);
     const near = new IntersectionObserver(
       (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        usePoster();
-        attach();
-        near.disconnect();
+        slot.on = entries.some((entry) => entry.isIntersecting);
+        if (slot.on) usePoster();
+        if (!compact) {
+          if (slot.on) {
+            attach();
+            near.disconnect();
+          }
+          return;
+        }
+        elect();
       },
-      { rootMargin: '40% 0px' },
+      { rootMargin: compact ? '70% 0px' : '40% 0px' },
     );
     near.observe(figure);
     stops.push(() => near.disconnect());

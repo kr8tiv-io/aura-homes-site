@@ -250,9 +250,20 @@ const foot = innerMenu.flatMap((group) => group.links);
         window.__lenis?.resize();
       });
 
-      bindTracers();
+      const compactScreen = () => window.matchMedia('(max-width: 1000px)').matches;
+      const whenIdle = (fn: () => void) => {
+        if (!compactScreen()) {
+          fn();
+          return;
+        }
+        const ric = window.requestIdleCallback;
+        if (ric) ric(() => fn(), { timeout: 800 });
+        else window.setTimeout(fn, 200);
+      };
 
-      bindHeadingGlow();
+      whenIdle(() => bindTracers());
+
+      whenIdle(() => bindHeadingGlow());
 
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       const playedLogos = new WeakSet<Element>();
@@ -505,7 +516,7 @@ const foot = innerMenu.flatMap((group) => group.links);
 
       document.addEventListener('astro:page-load', () => {
         initSmoothScroll();
-        bindTracers();
+        whenIdle(() => bindTracers());
         bindRail();
         bindTopbarScroll();
         bindDaylight();
