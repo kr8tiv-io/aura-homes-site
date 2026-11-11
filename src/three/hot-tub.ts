@@ -216,7 +216,11 @@ export type TubWater = {
 };
 
 /** The tub water from the meadow passage. Callers share one material so the scroll stays in step. */
-export function createTubWaterMaterial(): TubWater {
+/**
+ * `warm` lights the water from within: amber firelight under the surface and a
+ * warm rim, for the meadow passage. Other scenes keep the cool default.
+ */
+export function createTubWaterMaterial(warm = false): TubWater {
   const normal1 = new THREE.TextureLoader().load(asset('textures/water/Water_1_M_Normal.jpg'));
   const normal2 = new THREE.TextureLoader().load(asset('textures/water/Water_2_M_Normal.jpg'));
   const textures: THREE.Texture[] = [];
@@ -243,6 +247,18 @@ export function createTubWaterMaterial(): TubWater {
     side: THREE.DoubleSide,
   });
   material.name = 'water';
+  if (warm) {
+    material.color.set('#d9925a');
+    material.transmission = 0.45;
+    material.attenuationColor.set('#8f3f12');
+    material.attenuationDistance = 0.28;
+    material.emissive.set('#ff7a24');
+    material.emissiveIntensity = 0.7;
+    material.envMapIntensity = 0.35;
+    material.specularIntensity = 0.6;
+    material.customProgramCacheKey = () => 'tub-water-warm';
+  }
+  const rim = warm ? 'vec3(0.42, 0.26, 0.12)' : 'vec3(0.22, 0.28, 0.3)';
   const uniforms = { uWaterTime: { value: 0 } };
   material.onBeforeCompile = (shader) => {
     shader.uniforms.tWater2 = { value: normal2 };
@@ -262,7 +278,7 @@ export function createTubWaterMaterial(): TubWater {
       '#include <output_fragment>',
       `
         float auraFres = pow(1.0 - clamp(dot(normalize(normal), normalize(vViewPosition)), 0.0, 1.0), 4.0);
-        outgoingLight += auraFres * vec3(0.22, 0.28, 0.3);
+        outgoingLight += auraFres * ${rim};
         #include <output_fragment>
       `,
     );
@@ -270,7 +286,12 @@ export function createTubWaterMaterial(): TubWater {
   return { material, uniforms, textures };
 }
 
-export function createHotTub(): HotTub {
+export type HotTubOptions = {
+  /** Amber, firelit water with a glow under the surface. */
+  warmWater?: boolean;
+};
+
+export function createHotTub(options: HotTubOptions = {}): HotTub {
   const object = new THREE.Group();
   object.name = 'HotTub';
   const body = new THREE.Group();
@@ -407,13 +428,21 @@ export function createHotTub(): HotTub {
   addMesh('Step', beveled(0.46, 0.1, 0.28, 0.012), stepMat, 0.05, 0.05, 1.08);
   addMesh('Step', beveled(0.42, 0.1, 0.24, 0.012), stepMat, 0.02, 0.16, 0.9);
 
-  const tubWater = createTubWaterMaterial();
+  const tubWater = createTubWaterMaterial(!!options.warmWater);
   const waterMat = tubWater.material;
   const waterUniforms = tubWater.uniforms;
   texs.push(...tubWater.textures);
   mats.push(waterMat);
   const water = addMesh('Water', new THREE.CircleGeometry(0.8, 48), waterMat, 0, WATER_Y, 0, false);
   water.rotation.x = -Math.PI / 2;
+  // Firelight caught in the water: a low amber lamp just above the surface.
+  const waterGlow = options.warmWater ? new THREE.PointLight('#ff9a48', 1.1, 1.9, 1.6) : null;
+  if (waterGlow) {
+    waterGlow.name = 'WaterGlow';
+    waterGlow.position.set(0, WATER_Y + 0.2, 0);
+    waterGlow.castShadow = false;
+    body.add(waterGlow);
+  }
   water.castShadow = false;
   water.renderOrder = 4;
 
@@ -576,6 +605,8 @@ export function createHotTub(): HotTub {
 
   const count = qualityProfile().steamParticles;
   const steam = createSteam(count, object, body);
+  // Firelit tub: cream-warm steam, a little thinner so it drifts rather than smokes.
+  if (options.warmWater) steam.setTone(0.85, 0.62);
   const stoveWorld = new THREE.Vector3();
 
   const shadowTex = contactMap();
@@ -694,6 +725,7 @@ export function createHotTub(): HotTub {
       slitMat.emissiveIntensity = 1.35 * pulse;
       glowMat.uniforms.uIntensity.value = 0.32 + pulse * 0.1;
       light.intensity = 7.2 * pulse;
+      if (waterGlow) waterGlow.intensity = 1.1 * (0.85 + pulse * 0.15);
       light.color.copy(FIRE).lerp(FIRE_WARM, THREE.MathUtils.clamp((pulse - 0.8) * 1.5, 0, 1));
       flameUniforms.uTime.value = time;
       waterUniforms.uWaterTime.value = time;

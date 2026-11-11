@@ -131,17 +131,18 @@ export const FLYOVER_SPLINE: SplinePoint[] = [
 ];
 
 /**
- * Low over the crest, then a slow arc onto the evening-sun azimuth so the
- * disc and the unit share the settle. ground adds ridge height. Look targets
- * are world space. Far begins on the last grass point.
+ * Low over the crest in front of the glazed end, then a slow arc round to
+ * the unit's +X side with the evening sun behind the camera, so the tub sits
+ * beside or in front of the unit (never behind it) and the end frame stays
+ * clear of glare. ground adds ridge height. Look targets are world space.
  */
 export const GRASS_SPLINE: SplinePoint[] = [
   { p: [-0.4, 2.45, 22.5], t: [1.6, 1.5, 2.6], fov: 38, ground: 1 },
-  { p: [-4.5, 2.3, 18.0], t: [0.3, 1.55, 1.2], fov: 38, ground: 1 },
-  { p: [-8.5, 2.2, 8.0], t: [0.2, 1.5, 0.6], fov: 37, ground: 1 },
-  { p: [-12.4, 2.15, -2.0], t: [0.15, 1.45, 0.4], fov: 36, ground: 1 },
-  { p: [-14.2, 2.05, -8.4], t: [0.2, 1.4, 0.3], fov: 36, ground: 1 },
-  { p: [-13.4, 1.95, -9.6], t: [0.25, 1.4, 0.5], fov: 35, ground: 1 },
+  { p: [3.0, 2.4, 19.0], t: [2.1, 1.5, 2.9], fov: 38, ground: 1 },
+  { p: [6.8, 2.3, 15.4], t: [2.4, 1.45, 2.8], fov: 37, ground: 1 },
+  { p: [9.8, 2.2, 12.2], t: [2.5, 1.4, 2.6], fov: 36, ground: 1 },
+  { p: [11.6, 2.1, 9.6], t: [2.4, 1.4, 2.4], fov: 36, ground: 1 },
+  { p: [12.4, 2.0, 8.0], t: [2.3, 1.35, 2.2], fov: 35, ground: 1 },
 ];
 /**
  * Starts near the unit, then drifts back and rises so the room is a small
