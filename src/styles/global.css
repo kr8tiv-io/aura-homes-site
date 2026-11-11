@@ -3310,3 +3310,11 @@ html.ridge-seen .ridge-load {
     white-space: nowrap;
   }
 }
+
+/* Narrow phones: long single words in the passage headlines ("Touchdown", "everywhere") fit the column. */
+@media (max-width: 400px) {
+  .passage-copy h2 {
+    font-size: clamp(1.7rem, 8.6vw, 2.2rem);
+  }
+}
+
