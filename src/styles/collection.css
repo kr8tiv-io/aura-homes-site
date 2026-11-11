@@ -105,7 +105,8 @@
 
 .stage-bar {
   position: sticky;
-  top: 56px;
+  /* Flush to the top of the screen. When the site header slides back in, the bar sits just under it. */
+  top: env(safe-area-inset-top, 0px);
   z-index: 30;
   display: flex;
   flex-wrap: wrap;
@@ -113,9 +114,17 @@
   justify-content: space-between;
   gap: 0.35rem 1.5rem;
   padding: 0.35rem 8vw;
-  background: rgba(244, 243, 239, 0.92);
-  backdrop-filter: blur(16px);
+  background: #f4f3ef;
   border-bottom: 1px solid rgba(156, 122, 85, 0.25);
+  transition: top 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
+  top: calc(56px + env(safe-area-inset-top, 0px));
+}
+@supports not selector(:has(a)) {
+  .stage-bar {
+    top: calc(56px + env(safe-area-inset-top, 0px));
+  }
 }
 
 .stage-tabs,
@@ -157,6 +166,57 @@
   color: #9c7a55;
 }
 
+@media (max-width: 1023px) {
+  .stage-bar {
+    --bar-x: 8vw;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 0.15rem 0 0.2rem;
+  }
+  .stage-tabs {
+    flex-wrap: nowrap;
+    gap: 0 0.9rem;
+    padding: 0 var(--bar-x);
+  }
+  .stage-tabs a {
+    min-height: 36px;
+    padding: 0;
+    font-size: 0.72rem;
+  }
+  .stage-filters {
+    flex-wrap: nowrap;
+    gap: 0 0.15rem;
+    padding: 0 var(--bar-x);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 1.1rem, #000 calc(100% - 2rem), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0, #000 1.1rem, #000 calc(100% - 2rem), transparent 100%);
+  }
+  .stage-filters::-webkit-scrollbar {
+    display: none;
+  }
+  .stage-filters button {
+    flex: none;
+    min-height: 38px;
+    padding: 0 0.3rem;
+    white-space: nowrap;
+  }
+  .stage-filters button:first-child {
+    padding-left: 0;
+  }
+  .stage-dot {
+    flex: none;
+  }
+}
+@media (max-width: 719px) {
+  .stage-bar {
+    --bar-x: 1.25rem;
+  }
+}
+
 .stage-dot {
   color: #c4a07a;
   user-select: none;
@@ -164,7 +224,8 @@
 
 .catalog-section {
   padding: 8vh 8vw 2vh;
-  scroll-margin-top: 16rem;
+  /* Header (56px) plus the slim stage bar, with a little air. */
+  scroll-margin-top: calc(56px + 6rem + env(safe-area-inset-top, 0px));
 }
 
 @media (min-width: 801px) {
@@ -827,10 +888,6 @@
 }
 
 @media (max-width: 719px) {
-  .stage-bar {
-    padding-left: 1.25rem;
-    padding-right: 1.25rem;
-  }
   .catalog-section,
   .catalog-band,
   .catalog-wait {
