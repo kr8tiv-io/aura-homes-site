@@ -12,7 +12,7 @@ draft: false
 
 One beautiful room at a time. The sentence is the pace.
 
-Begin with the shell, or with The Soak if heat is the reason you walk outside. Live with it through a season. Learn where the morning lands, and which way the wind crosses the deck. A second room can wait until the first one has a habit.
+Begin with the room, or with The Soak if heat is the reason you walk outside. Live with it through a season. Learn where the morning lands, and which way the wind crosses the deck. A second room can wait until the first one has a habit.
 
 A Starry Night is the room kept for the dark: open to the field, small, and content to be a start. The Stargazer lifts a kindred idea into the roof, a bed under glass while the meadow stays beyond the wall. They do not all have to arrive together. A piece of land can hold one finished room and still be complete.
 

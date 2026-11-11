@@ -473,7 +473,7 @@ export const credits: Credit[] = [
     license: 'CC0',
     link: 'https://polyhaven.com/a/metal_plate',
     licenseLink: cc0,
-    usedFor: 'Blackened steel for the unit skid and frame, the bands on the tub, and the helical piles on the slope.',
+    usedFor: 'Blackened steel for the unit base, the bands on the tub, and the helical piles on the slope.',
     category: 'Textures and HDRIs',
     files: ['textures/metal_plate/diff.ktx2', 'textures/metal_plate/nor_gl.ktx2', 'textures/metal_plate/rough.ktx2', 'textures/metal_plate/ao.ktx2'],
   },
