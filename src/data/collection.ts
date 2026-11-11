@@ -35,7 +35,7 @@ export type CollectionShowpiece = {
 
 export const collectionIntro = {
   kicker: 'The collection',
-  title: 'Twelve rooms. Each one named.',
+  title: 'Pick your planet.',
   lede: 'From a spare room to a tower of glass. Every Aura is drawn and furnished one at a time, and every model can carry Full Solar from the first build.',
 };
 
@@ -176,7 +176,7 @@ export const collectionTiers: CollectionTier[] = [
 export const collectionAddons = {
   kicker: 'Coming next',
   title: 'Make it yours.',
-  line: 'Every model takes add-ons. Full Solar comes first, on all twelve.',
+  line: 'Every model takes add-ons. Full Solar comes first, on every one.',
   items: [
     { name: 'Here Comes The Sun', detail: 'Full Solar sized to your sky' },
     { name: 'The Hearth Of Gold', detail: 'Wood stove fireplace' },
