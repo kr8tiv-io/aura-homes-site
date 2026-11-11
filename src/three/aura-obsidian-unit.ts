@@ -209,6 +209,10 @@ export function createObsidianUnit(): ObsidianUnit {
     envMapIntensity: 0.12,
   });
   const skirt = new THREE.MeshStandardMaterial({ color: '#0a0a0a', roughness: 0.9, metalness: 0 });
+  // Hidden base parts sit just under visible surfaces; push them back in depth too.
+  skirt.polygonOffset = true;
+  skirt.polygonOffsetFactor = 2;
+  skirt.polygonOffsetUnits = 2;
   // Warm interior: cedar lined, mostly self-lit so it reads in daylight through tint.
   const boards = cedarMap();
   if (boards) {
@@ -281,8 +285,9 @@ export function createObsidianUnit(): ObsidianUnit {
   }
   // Fascia board and buried skirt so a sloped meadow never shows a gap.
   box('deck-skirt', deckW - 0.04, 0.5, deckL - 0.04, skirt, 0, DECK_TOP - 0.05 - 0.25, deckZ, { cast: false });
-  // Recessed plinth: the shadow gap under the body.
-  box('plinth', W - 0.12, 0.08, L - 0.12, skirt, 0, BODY_Y0 + 0.04, 0, { cast: false });
+  // Recessed plinth: the shadow gap under the body. Its top stops 2 cm under the
+  // interior floor (iy0) so the two planes never share a depth and flicker.
+  box('plinth', W - 0.12, 0.06, L - 0.12, skirt, 0, BODY_Y0 + 0.03, 0, { cast: false });
 
   // Warm Halo wash from under the deck lip onto the grass: the luxe cue from the
   // real units' deck lighting, in Aura bronze rather than violet.

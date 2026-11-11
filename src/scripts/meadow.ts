@@ -89,6 +89,9 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
       hdri: look.hdri,
       hdriPinned: true,
       envIntensity: look.env,
+      // The grass path never comes closer than ~5 m to the unit; a 0.75 m near
+      // plane nearly doubles depth precision on its interior.
+      near: 0.75,
       ao: false,
       shadow: 'soft',
       bloom: { threshold: 0.8, intensity: 0.28 },
