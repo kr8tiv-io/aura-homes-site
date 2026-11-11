@@ -136,12 +136,12 @@ export const FLYOVER_SPLINE: SplinePoint[] = [
  * are world space. Far begins on the last grass point.
  */
 export const GRASS_SPLINE: SplinePoint[] = [
-  { p: [-1.2, 2.5, 27.5], t: [0.4, 1.6, 2.0], fov: 38, ground: 1 },
-  { p: [-4.5, 2.3, 18.0], t: [1.2, 2.2, 4.0], fov: 38, ground: 1 },
-  { p: [-8.5, 2.2, 8.0], t: [2.0, 3.4, 8.0], fov: 37, ground: 1 },
-  { p: [-12.4, 2.15, -2.0], t: [6.8, 5.9, 11.9], fov: 36, ground: 1 },
-  { p: [-14.2, 2.05, -8.4], t: [5.05, 5.39, 5.53], fov: 36, ground: 1 },
-  { p: [-13.4, 1.95, -9.6], t: [5.85, 5.29, 4.33], fov: 35, ground: 1 },
+  { p: [-0.4, 2.45, 22.5], t: [1.6, 1.5, 2.6], fov: 38, ground: 1 },
+  { p: [-4.5, 2.3, 18.0], t: [0.3, 1.55, 1.2], fov: 38, ground: 1 },
+  { p: [-8.5, 2.2, 8.0], t: [0.2, 1.5, 0.6], fov: 37, ground: 1 },
+  { p: [-12.4, 2.15, -2.0], t: [0.15, 1.45, 0.4], fov: 36, ground: 1 },
+  { p: [-14.2, 2.05, -8.4], t: [0.2, 1.4, 0.3], fov: 36, ground: 1 },
+  { p: [-13.4, 1.95, -9.6], t: [0.25, 1.4, 0.5], fov: 35, ground: 1 },
 ];
 /**
  * Starts near the unit, then drifts back and rises so the room is a small
