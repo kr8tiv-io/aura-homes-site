@@ -32,7 +32,7 @@ export const legacyNotes: JournalCard[] = [
   {
     href: '/journal/water-from-the-air',
     title: 'Water from the air, bottled in the room',
-    excerpt: 'Thirst Contact comes later. The generator and the bottling line still need further research.',
+    excerpt: 'Thirst Contact pulls water from the sky and bottles it in the backyard, with a standard atmospheric water generator.',
     date: '2026-09-30',
     tags: ['Water'],
     cover: '/film/water-line.webp',
