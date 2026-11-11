@@ -1,0 +1,68 @@
+---
+import type { CatalogProduct } from '../data/products';
+
+interface Props {
+  product: CatalogProduct;
+  wide?: boolean;
+}
+
+const { product, wide = false } = Astro.props;
+const action = product.href.startsWith('/rooms/') ? 'See the piece' : 'Join the waitlist';
+const sizes = wide
+  ? '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) calc(100vw - 8rem), 62vw'
+  : '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) 46vw, 30vw';
+---
+
+<li class:list={['catalog-card', { 'is-wide': wide }]} data-catalog-card data-group={product.group}>
+  <a class="catalog-card-link" href={product.href}>
+    <span class="catalog-photo">
+      <img
+        class="is-hero"
+        src={product.hero.src}
+        srcset={product.hero.srcset}
+        sizes={sizes}
+        alt={product.hero.alt}
+        width={product.hero.width}
+        height={product.hero.height}
+        loading="lazy"
+        decoding="async"
+      />
+      {product.second && (
+        <img
+          class="is-second"
+          src={product.second.src}
+          srcset={product.second.srcset}
+          sizes={sizes}
+          alt={product.second.alt}
+          width={product.second.width}
+          height={product.second.height}
+          loading="lazy"
+          decoding="async"
+          aria-hidden="true"
+        />
+      )}
+    </span>
+    <p class="catalog-index">
+      <span>N° {product.number}</span>
+      <span aria-hidden="true"> · </span>
+      <span>{product.tier}</span>
+    </p>
+    <h3>{product.name}</h3>
+    <p class="catalog-kicker">{product.kicker}</p>
+    <p class="catalog-lede">{product.lede}</p>
+    <p class="catalog-pairs">
+      <span class="catalog-pairs-label">Pairs well with</span>
+      <span class="catalog-pairs-names">
+        {product.pairs[0]}
+        {product.pairs[1] && (
+          <>
+            <span aria-hidden="true"> · </span>
+            {product.pairs[1]}
+          </>
+        )}
+      </span>
+      <span class="catalog-arrow" aria-hidden="true">→</span>
+    </p>
+    <span class="catalog-sr">{action}</span>
+  </a>
+</li>

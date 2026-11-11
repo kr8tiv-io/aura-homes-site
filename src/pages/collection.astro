@@ -1,0 +1,393 @@
+---
+import AddonMenu from '../components/AddonMenu.astro';
+import CatalogCard from '../components/CatalogCard.astro';
+import Join from '../components/Join.astro';
+import RevealHeading from '../components/RevealHeading.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import {
+  availableGrid,
+  catalogCompare,
+  catalogLimited,
+  catalogSomeday,
+  comingGrid,
+  featureProduct,
+  fullSolarImage,
+  stageSections,
+  catalogFilters,
+} from '../data/products';
+import '../styles/collection.css';
+
+const feature = featureProduct;
+if (!feature) throw new Error('Lie Down, Skywalker is missing from the catalog');
+const stages = [
+  { ...stageSections[0], products: availableGrid },
+  { ...stageSections[1], products: comingGrid },
+];
+const limitedPhotos = catalogLimited.filter((item) => item.image);
+const limitedText = catalogLimited.filter((item) => !item.image);
+---
+
+<BaseLayout
+  title="The Collection | Aura Homes"
+  description="Return to Aura. One beautiful room at a time."
+  descriptor="The Collection"
+>
+  <main id="top" class="catalog" data-collection>
+    <header class="catalog-open">
+      <div class="catalog-open-glow" aria-hidden="true"></div>
+      <div class="catalog-open-copy">
+        <p class="story-kicker">The Collection</p>
+        <h1>Return to Aura.</h1>
+        <p class="story-lede">One beautiful room at a time.</p>
+      </div>
+    </header>
+
+    <div class="stage-bar">
+      <nav class="stage-tabs" aria-label="Stages">
+        <a href="#available-soon" data-stage-link>Available soon</a>
+        <a href="#coming-after" data-stage-link>Coming after</a>
+      </nav>
+      <div class="stage-filters" role="toolbar" aria-label="Filter the collection">
+        {
+          catalogFilters.map((filter, index) => (
+            <>
+              {index > 0 && (
+                <span class="stage-dot" aria-hidden="true">
+                  ·
+                </span>
+              )}
+              <button type="button" data-filter={filter.id} aria-pressed={filter.id === 'all' ? 'true' : 'false'}>
+                {filter.label}
+              </button>
+            </>
+          ))
+        }
+      </div>
+      <p class="catalog-sr" data-filter-status aria-live="polite"></p>
+    </div>
+
+    {
+      stages.map((section, sectionIndex) => (
+        <section class="catalog-section" id={section.id} aria-labelledby={`${section.id}-title`} data-stage>
+          <header class="catalog-section-head" data-rise>
+            <p class="story-kicker">{section.kicker}</p>
+            <RevealHeading as="h2" id={`${section.id}-title`} class="catalog-title">
+              {section.title}
+            </RevealHeading>
+            <p class="catalog-section-lede">{section.lede}</p>
+          </header>
+
+          {sectionIndex === 0 && (
+            <a class="catalog-feature" href={feature.href} data-catalog-card data-group={feature.group}>
+              <span class="catalog-feature-photo">
+                <img
+                  src={feature.hero.src}
+                  srcset={feature.hero.srcset}
+                  sizes="100vw"
+                  alt={feature.hero.alt}
+                  width={feature.hero.width}
+                  height={feature.hero.height}
+                  loading="eager"
+                  fetchpriority="high"
+                  decoding="async"
+                />
+                <span class="catalog-feature-shade" aria-hidden="true"></span>
+              </span>
+              <span class="catalog-feature-copy">
+                <p class="catalog-index">
+                  <span>N° {feature.number}</span>
+                  <span aria-hidden="true"> · </span>
+                  <span>{feature.tier}</span>
+                </p>
+                <h3>{feature.name}</h3>
+                <p class="catalog-kicker">{feature.kicker}</p>
+                <p class="catalog-lede">{feature.lede}</p>
+                <span class="catalog-feature-go">
+                  {feature.href.startsWith('/rooms/') ? 'See the piece' : 'Join the waitlist'}
+                  <span aria-hidden="true">→</span>
+                </span>
+              </span>
+            </a>
+          )}
+
+          <ul class="catalog-grid">
+            {section.products.map((product, index) => (
+              <CatalogCard product={product} wide={(index + 1) % 4 === 0} />
+            ))}
+          </ul>
+          <p class="catalog-empty" data-empty hidden>
+            Nothing in this group yet.
+          </p>
+
+          {sectionIndex === 1 && (
+            <div class="catalog-compare">
+              <h3>Siddhartha's A-Wing and Cloud Nine</h3>
+              <div class="catalog-compare-wrap">
+                <table>
+                  <caption class="catalog-sr">Siddhartha's A-Wing beside Cloud Nine</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">
+                        <span class="catalog-sr">Compared</span>
+                      </th>
+                      <th scope="col">Siddhartha's A-Wing</th>
+                      <th scope="col">Cloud Nine</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {catalogCompare.map((row) => (
+                      <tr>
+                        <th scope="row">{row[0]}</th>
+                        <td>{row[1]}</td>
+                        <td>{row[2]}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+        </section>
+      ))
+    }
+
+    <section class="catalog-band" id="limited" aria-labelledby="limited-title">
+      <header data-rise>
+        <p class="story-kicker">Showpieces</p>
+        <RevealHeading as="h2" id="limited-title" class="catalog-title">Limited editions</RevealHeading>
+        <p class="catalog-section-lede">
+          Built one at a time as showpieces, then offered as limited editions. The wildest ideas we have.
+        </p>
+      </header>
+      <div class="limited-photos">
+        {
+          limitedPhotos.map((item) => (
+            <figure data-rise>
+              {item.image && (
+                <img
+                  src={item.image.src}
+                  srcset={item.image.srcset}
+                  sizes="(max-width: 719px) calc(100vw - 2.5rem), 44vw"
+                  alt={item.image.alt}
+                  width={item.image.width}
+                  height={item.image.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
+              <figcaption>
+                <h3>{item.name}</h3>
+                <p>{item.text}</p>
+              </figcaption>
+            </figure>
+          ))
+        }
+      </div>
+      <div class="limited-rest">
+        {
+          limitedText.map((item) => (
+            <article data-rise>
+              <h3>{item.name}</h3>
+              <p>{item.text}</p>
+            </article>
+          ))
+        }
+      </div>
+      <div class="someday" aria-labelledby="someday-title">
+        <p class="someday-label" id="someday-title">Someday</p>
+        <p class="catalog-section-lede">Small ideas for later.</p>
+        <ul class="someday-list">
+          {
+            catalogSomeday.map((item) => (
+              <li class="someday-item">
+                <h3>{item.name}</h3>
+                <p>{item.text}</p>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+
+    <section class="catalog-band" id="full-solar" aria-labelledby="solar-title">
+      <div class="solar">
+        <img
+          src={fullSolarImage.src}
+          srcset={fullSolarImage.srcset}
+          sizes="(max-width: 719px) calc(100vw - 2.5rem), 54vw"
+          alt={fullSolarImage.alt}
+          width={fullSolarImage.width}
+          height={fullSolarImage.height}
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="solar-copy" data-rise>
+          <p class="story-kicker">On every build, from day one</p>
+          <RevealHeading as="h2" id="solar-title">Full Solar, on every build.</RevealHeading>
+          <p class="catalog-kicker">Here Comes The Sun</p>
+          <p>The first thing most people ask for, offered on every Aura room.</p>
+          <p>
+            Panels, battery storage and an inverter, sized to the room and to your sky. Roof mount or ground mount, a
+            small battery or a big one.
+          </p>
+          <ul class="solar-points">
+            <li>Available on every model</li>
+            <li>Roof or ground mount</li>
+            <li>Battery storage and inverter, sized per build</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="catalog-band" id="add-ons" aria-labelledby="addons-title">
+      <header class="addon-head" data-rise>
+        <div>
+          <p class="story-kicker">The add-on menu</p>
+          <RevealHeading as="h2" id="addons-title">Make it yours</RevealHeading>
+        </div>
+        <p class="addon-note">
+          The fun name, the plain name, and what it is. Every add-on fits any model where it physically can.
+        </p>
+      </header>
+      <AddonMenu />
+    </section>
+
+    <section class="catalog-wait" id="waitlist" aria-label="Waitlist">
+      <Join shell="room" />
+    </section>
+  </main>
+</BaseLayout>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger, holdPageMotion, onPageLoad, prefersReducedMotion, scrollTo } from '../scripts/motion';
+
+  const filters = ['all', 'rooms', 'soaks', 'sleep', 'systems', 'resort'];
+
+  onPageLoad(() => {
+    const page = document.querySelector('[data-collection]');
+    if (!(page instanceof HTMLElement)) return;
+
+    const stops: Array<() => void> = [];
+
+    const groupFromHash = () => {
+      const hash = decodeURIComponent(location.hash.replace(/^#/, ''));
+      return filters.includes(hash) && hash !== 'all' ? hash : 'all';
+    };
+
+    const apply = (group: string) => {
+      const cards = page.querySelectorAll<HTMLElement>('[data-catalog-card]');
+      let shown = 0;
+      cards.forEach((card) => {
+        const match = group === 'all' || card.dataset.group === group;
+        card.hidden = !match;
+        if (match) shown += 1;
+      });
+      page.querySelectorAll<HTMLElement>('[data-stage]').forEach((section) => {
+        const visible = section.querySelectorAll('[data-catalog-card]:not([hidden])').length;
+        const empty = section.querySelector('[data-empty]');
+        if (empty instanceof HTMLElement) empty.hidden = visible !== 0;
+      });
+      page.querySelectorAll<HTMLElement>('.catalog-grid').forEach((grid) => {
+        const items = [...grid.children].filter((item): item is HTMLElement => item instanceof HTMLElement && !item.hidden);
+        items.forEach((item, index) => item.classList.toggle('is-wide', (index + 1) % 4 === 0));
+      });
+      page.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((button) => {
+        button.setAttribute('aria-pressed', button.dataset.filter === group ? 'true' : 'false');
+      });
+      const status = page.querySelector('[data-filter-status]');
+      if (status) {
+        const label = page.querySelector(`[data-filter="${group}"]`)?.textContent?.trim() || 'All';
+        status.textContent = group === 'all' ? `Showing all ${shown}.` : `Showing ${shown} in ${label}.`;
+      }
+    };
+
+    const onStage = (event: Event) => {
+      const link = event.currentTarget;
+      if (!(link instanceof HTMLAnchorElement)) return;
+      event.preventDefault();
+      const href = link.getAttribute('href');
+      if (!href) return;
+      if (location.hash !== href) history.pushState(null, '', href);
+      apply('all');
+      const nav = document.querySelector('.site-nav');
+      const bar = page.querySelector('.stage-bar');
+      const navH = nav instanceof HTMLElement ? nav.offsetHeight : 56;
+      const barH = bar instanceof HTMLElement ? bar.offsetHeight : 56;
+      requestAnimationFrame(() => scrollTo(href, -(navH + barH + 16)));
+    };
+
+    page.querySelectorAll<HTMLAnchorElement>('[data-stage-link]').forEach((link) => {
+      link.addEventListener('click', onStage);
+      stops.push(() => link.removeEventListener('click', onStage));
+    });
+
+    const onFilter = (event: Event) => {
+      const button = event.currentTarget;
+      if (!(button instanceof HTMLButtonElement)) return;
+      const group = button.dataset.filter || 'all';
+      const next = group === 'all' ? `${location.pathname}${location.search}` : `#${group}`;
+      history.pushState(null, '', next);
+      apply(group);
+    };
+
+    page.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((button) => {
+      button.addEventListener('click', onFilter);
+      stops.push(() => button.removeEventListener('click', onFilter));
+    });
+
+    const onHash = () => apply(groupFromHash());
+    window.addEventListener('hashchange', onHash);
+    window.addEventListener('popstate', onHash);
+    stops.push(() => {
+      window.removeEventListener('hashchange', onHash);
+      window.removeEventListener('popstate', onHash);
+    });
+
+    const stageObserver = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (!visible) return;
+        page.querySelectorAll<HTMLAnchorElement>('[data-stage-link]').forEach((link) => {
+          const on = link.getAttribute('href') === `#${visible.target.id}`;
+          if (on) link.setAttribute('aria-current', 'true');
+          else link.removeAttribute('aria-current');
+        });
+      },
+      { rootMargin: '-45% 0px -45% 0px', threshold: [0, 0.15, 0.4] },
+    );
+    page.querySelectorAll('[data-stage]').forEach((section) => stageObserver.observe(section));
+    stops.push(() => stageObserver.disconnect());
+
+    apply(groupFromHash());
+
+    if (!prefersReducedMotion()) {
+      const ctx = gsap.context(() => {
+        gsap.utils.toArray<HTMLElement>('[data-rise]', page).forEach((el) => {
+          gsap.from(el, {
+            y: 24,
+            opacity: 0,
+            duration: 1.7,
+            ease: 'power3.out',
+            scrollTrigger: {
+              trigger: el,
+              start: 'top 92%',
+              once: true,
+            },
+          });
+        });
+      }, page);
+      stops.push(() => {
+        ctx.revert();
+        ScrollTrigger.getAll()
+          .filter((trigger) => page.contains(trigger.trigger as Node))
+          .forEach((trigger) => trigger.kill());
+      });
+      requestAnimationFrame(() => ScrollTrigger.refresh());
+    }
+
+    holdPageMotion(() => stops.forEach((stop) => stop()));
+  });
+</script>
