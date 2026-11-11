@@ -108,7 +108,7 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
         };
       },
       occupyTub(slot) {
-        const next = createHotTub();
+        const next = createHotTub({ warmWater: true });
         grassTub = next;
         // Pull the tub in toward the unit's glazed end so the pair reads together.
         next.object.position.set(TUB_NUDGE[0], 0, TUB_NUDGE[1]);
@@ -119,7 +119,7 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
         };
       },
       onFrame(info) {
-        grassTub?.update({ camera: info.camera, renderer: info.renderer, dusk: 0.55, night: 0, reduced: info.reduced });
+        grassTub?.update({ camera: info.camera, renderer: info.renderer, dusk: 0.6, night: 0, reduced: info.reduced });
       },
     });
     return hand(world, () => {

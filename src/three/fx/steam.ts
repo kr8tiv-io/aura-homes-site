@@ -24,6 +24,8 @@ export type SteamFrame = {
 export type Steam = {
   card: THREE.Mesh;
   update: (frame: SteamFrame) => void;
+  /** Warm the plume toward firelit cream (0..1) and thin it (alpha scale). */
+  setTone: (warmth: number, thin: number) => void;
   dispose: () => void;
 };
 
@@ -142,6 +144,8 @@ uniform sampler2D tCloud;
 uniform sampler2D tDepth;
 uniform float uTime;
 uniform float uMood;
+uniform float uWarmth;
+uniform float uThin;
 uniform float uSoft;
 uniform vec2 uResolution;
 uniform vec3 uStove;
@@ -170,7 +174,7 @@ void main() {
     : smoothstep(0.0, 0.16, vUv.x) * smoothstep(1.0, 0.84, vUv.x);
   float alpha = vAlpha * noise * vertical * side;
   alpha *= vWisp > 0.5 ? 0.72 : 0.9;
-  alpha *= mix(0.42, 1.0, uMood);
+  alpha *= mix(0.42, 1.0, uMood) * uThin;
 
   if (uSoft > 0.5) {
     vec2 duv = gl_FragCoord.xy / uResolution;
@@ -183,7 +187,8 @@ void main() {
 
   float warm = clamp(1.0 - length(vWorld - uStove) / 1.7, 0.0, 1.0);
   warm *= mix(0.35, 1.0, uMood);
-  vec3 col = mix(vec3(0.74, 0.77, 0.79), vec3(1.0, 0.64, 0.4), warm * 0.72);
+  vec3 base = mix(vec3(0.74, 0.77, 0.79), vec3(0.96, 0.86, 0.74), uWarmth);
+  vec3 col = mix(base, vec3(1.0, 0.64, 0.4), warm * 0.72);
   gl_FragColor = vec4(col * alpha, alpha);
 }
 `;
@@ -289,6 +294,8 @@ export function createSteam(count: number, host: THREE.Object3D, occluder: THREE
       tCloud: { value: cloud },
       tDepth: { value: depthTarget.depthTexture },
       uMood: { value: 1 },
+      uWarmth: { value: 0 },
+      uThin: { value: 1 },
       uSoft: { value: 0 },
       uResolution: { value: resolution },
       uStove: { value: new THREE.Vector3() },
@@ -462,6 +469,10 @@ export function createSteam(count: number, host: THREE.Object3D, occluder: THREE
 
   return {
     card,
+    setTone(warmth, thin) {
+      material.uniforms.uWarmth.value = THREE.MathUtils.clamp(warmth, 0, 1);
+      material.uniforms.uThin.value = Math.max(0, thin);
+    },
     update(frame) {
       if (!alive || total === 0) return;
       const time = frame.reduced ? 0 : motionTime(performance.now());
