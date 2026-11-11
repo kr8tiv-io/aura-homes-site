@@ -1864,6 +1864,18 @@ canvas[data-stage-host='on'] {
   color: rgba(20, 18, 14, 0.72);
 }
 
+/* First story beat after the splash: larger Cinzel, same reveal and glow. */
+.story-open.is-intro {
+  padding-bottom: 6vh;
+}
+.story-open.is-intro + .story-open {
+  padding-top: 8vh;
+}
+.story-open.is-intro h2 {
+  max-width: 12em;
+  font-size: clamp(3.15rem, 7.6vw, 6.8rem);
+}
+
 .story-still {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(15rem, 0.62fr);
