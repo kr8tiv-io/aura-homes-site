@@ -1861,8 +1861,8 @@ canvas[data-stage-host='on'] {
   color: rgba(20, 18, 14, 0.72);
 }
 
-/* Ceremonial intro: centered type on Obsidian, a soft Halo/Bronze bloom,
-   and a gentle lerped cursor light. Text is live HTML. No black text-shadows. */
+/* Ceremonial intro: centered Obsidian type on Alabaster, with one faint
+   Halo/Bronze radial behind the headline. Text is live HTML. No black text-shadows. */
 .story-open.is-intro {
   position: relative;
   overflow: hidden;
@@ -1873,36 +1873,24 @@ canvas[data-stage-host='on'] {
   min-height: 100vh;
   padding: 22vh 8vw 16vh;
   text-align: center;
-  background: #0c0d0e;
-  color: #f4f3ef;
+  background: #f4f3ef;
+  color: #0c0d0e;
 }
-.story-open.is-intro + .story-open {
-  padding-top: 8vh;
+.story-open.is-intro + .story-still {
+  padding-top: 6vh;
 }
 .story-open.is-intro .intro-glow {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  overflow: hidden;
-}
-.story-open.is-intro .intro-glow-bloom {
-  position: absolute;
-  inset: -18%;
-  background:
-    radial-gradient(ellipse 58% 48% at 50% 48%, rgba(196, 160, 122, 0.22), transparent 64%),
-    radial-gradient(ellipse 38% 34% at 46% 54%, rgba(156, 122, 85, 0.16), transparent 60%);
-  animation: intro-glow-breathe 9s ease-in-out infinite;
-}
-.story-open.is-intro .intro-glow-follow {
-  position: absolute;
-  inset: 0;
   background: radial-gradient(
-    circle at calc(var(--intro-mx, 0.5) * 100%) calc(var(--intro-my, 0.5) * 100%),
-    rgba(196, 160, 122, 0.18),
-    rgba(156, 122, 85, 0.07) 30%,
-    transparent 58%
+    ellipse 46% 36% at calc(var(--intro-mx, 0.5) * 100%) calc(var(--intro-my, 0.46) * 100%),
+    rgba(196, 160, 122, 0.12),
+    rgba(156, 122, 85, 0.05) 42%,
+    transparent 70%
   );
+  animation: intro-glow-breathe 11s ease-in-out infinite;
 }
 .story-open.is-intro .intro-copy {
   position: relative;
@@ -1911,7 +1899,6 @@ canvas[data-stage-host='on'] {
   display: flex;
   flex-direction: column;
   align-items: center;
-  transform: translate3d(var(--intro-lift-x, 0px), var(--intro-lift-y, 0px), 0);
 }
 .story-open.is-intro .story-kicker,
 .story-open.is-intro h2,
@@ -1937,23 +1924,22 @@ canvas[data-stage-host='on'] {
 }
 .story-open.is-intro h2 {
   max-width: none;
-  color: #f4f3ef;
+  color: #0c0d0e;
   font-size: clamp(3rem, 6.6vw, 6.1rem);
 }
 .story-open.is-intro .story-lede {
   max-width: 26rem;
   margin: 2.6rem 0 0;
-  color: rgba(244, 243, 239, 0.72);
+  color: rgba(20, 18, 14, 0.68);
 }
 
 @keyframes intro-glow-breathe {
-  0%, 100% { transform: scale(1); opacity: 0.88; }
-  50% { transform: scale(1.07); opacity: 1; }
+  0%, 100% { opacity: 0.72; }
+  50% { opacity: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .story-open.is-intro .intro-glow-bloom { animation: none; }
-  .story-open.is-intro .intro-copy { transform: none; }
+  .story-open.is-intro .intro-glow { animation: none; opacity: 0.85; }
 }
 
 @media (max-width: 800px) {
