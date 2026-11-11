@@ -1715,7 +1715,6 @@ html.lenis body {
   text-align: right;
   pointer-events: none;
   padding: 1.75rem 1.15rem 0.55rem 2.1rem;
-  background: linear-gradient(180deg, rgba(8, 12, 16, 0) 0%, rgba(8, 12, 16, 0.22) 36%, rgba(8, 12, 16, 0.58) 100%);
 }
 .splash-kicker {
   margin: 0 0 0.7rem;
@@ -1723,7 +1722,6 @@ html.lenis body {
   letter-spacing: 0.26em;
   text-transform: uppercase;
   color: #c4a07a;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.55), 0 6px 22px rgba(0, 0, 0, 0.5);
 }
 .splash-body {
   margin: 0 0 0 auto;
@@ -1732,7 +1730,6 @@ html.lenis body {
   font-size: clamp(1.28rem, 1.7vw, 1.5rem);
   line-height: 1.4;
   color: #f4f3ef;
-  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.65), 0 8px 24px rgba(0, 0, 0, 0.55);
 }
 .splash-rail {
   display: flex;
@@ -2292,7 +2289,6 @@ canvas[data-stage-host='on'] {
     width: auto;
     text-align: left;
     padding: 1.5rem 1rem 0.45rem;
-    background: linear-gradient(180deg, rgba(8, 12, 16, 0) 0%, rgba(8, 12, 16, 0.28) 40%, rgba(8, 12, 16, 0.62) 100%);
   }
   .splash-kicker {
     font-size: 0.95rem;
