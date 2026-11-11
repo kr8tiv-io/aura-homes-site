@@ -12,7 +12,7 @@ const youtube = httpsUrl(youtubeUrl);
 
 <BaseLayout
   title="Story | Aura Homes"
-  description="Return to Aura. One beautiful room at a time."
+  description="Aura builds beautiful rooms that get people back outside."
   descriptor="Story"
 >
   <main id="top" class="story-essay">
@@ -30,7 +30,7 @@ const youtube = httpsUrl(youtubeUrl);
         <p class="story-kicker">Why we exist</p>
         <RevealHeading as="h1" id="why-title">Back to where we came from.</RevealHeading>
         <p class="story-lede">
-          Aura exists to bring people back to where we came from. Back to our roots, more time outside, closer to nature.
+          Aura builds beautiful rooms that get people back outside.
         </p>
       </div>
     </LivingHero>
@@ -38,10 +38,7 @@ const youtube = httpsUrl(youtubeUrl);
     <section class="story-chapter story-follow">
       <div class="story-prose" data-rise>
         <p>
-          An extension of your home, one you're proud of. Beautiful, and slick. Clean steel lines, smooth glass, and the land still doing most of the talking.
-        </p>
-        <p>
-          The aim reaches past the room. Less scarcity in an ordinary day. Better ways to live, to grow food, and to find water, with less reliance on the grid. The farm wall and the water come later. The <a href="/master-plan">master plan</a> keeps them there, so this page does not pretend they are ready.
+          Glass, steel and warm wood, placed on your land so nature does most of the talking. Each one is a real extension of your home: a bedroom under the stars, an office in the trees, a hot tub with a view.
         </p>
       </div>
     </section>
@@ -60,13 +57,12 @@ const youtube = httpsUrl(youtubeUrl);
     <section class="story-chapter" id="started" aria-labelledby="started-title">
       <div data-rise>
         <p class="story-kicker" data-tracer="rule">Why it started</p>
-        <RevealHeading as="h2" id="started-title">Seen beside other people's hands.</RevealHeading>
+        <RevealHeading as="h2" id="started-title">Where the idea came from.</RevealHeading>
       </div>
       <div class="story-prose" data-rise>
         <p>
-          The founder has been working on this for years. It started while travelling through Central America, seeing people build beautiful things in synergy with nature. Walls, shade, water, and a roof, each one listening to the place it stood in.
+          Matt spent years travelling through Central America, watching people build beautiful things that work with nature instead of against it. Shade, water, walls and roofs, all made for the place they stand in. He brought that home to Alberta.
         </p>
-        <p>The shop is in Alberta. The lesson came from somewhere warmer, and it survived the trip.</p>
       </div>
     </section>
 
@@ -83,12 +79,13 @@ const youtube = httpsUrl(youtubeUrl);
     <section class="story-chapter" id="chapter" aria-labelledby="chapter-title">
       <div data-rise>
         <p class="story-kicker" data-tracer="rule">Chapter one</p>
-        <RevealHeading as="h2" id="chapter-title">A small shop, and the work.</RevealHeading>
+        <RevealHeading as="h2" id="chapter-title">Where we are now.</RevealHeading>
       </div>
       <div class="story-prose" data-rise>
         <p>
-          Alberta. A small shop. Aura is at the concept stage, and ordering has not opened yet. A YouTube channel will document every step, the tidy ones and the ones with dust on them.
+          Aura is a small shop in Alberta at the concept stage. Ordering isn&rsquo;t open yet, but the <a href="/pre-order">waitlist</a> is. We&rsquo;re building in public, and a YouTube channel will show every step, the clean ones and the messy ones.
         </p>
+        {youtube && <p class="story-yt"><a href={youtube}>Follow the build on YouTube</a></p>}
       </div>
       <blockquote class="story-quote" data-rise>
         <p>Nobody believes in you until it's too late, so we're just going to build it.</p>
@@ -107,12 +104,13 @@ const youtube = httpsUrl(youtubeUrl);
 
     <section class="story-chapter" id="gift" aria-labelledby="gift-title">
       <div data-rise>
-        <p class="story-kicker">Nature as a gift</p>
-        <RevealHeading as="h2" id="gift-title">The part that was already here.</RevealHeading>
+        <p class="story-kicker">What comes next</p>
+        <RevealHeading as="h2" id="gift-title">Where it&rsquo;s going.</RevealHeading>
       </div>
       <div class="story-prose" data-rise>
-        <p>Morning coffee outside. Kids off their screens. A stretch of time surrounded by the beauty already around us.</p>
-        <p>Nothing here asks for a creed. Sit long enough, and the day gives itself back.</p>
+        <p>
+          Rooms come first. Revenue from the rooms funds what comes next: grow rooms that produce food, Thirst Contact units that pull drinking water from the air, eco resorts and full eco homes. Every step means less reliance on the grid and more time outside.
+        </p>
       </div>
     </section>
 
@@ -126,20 +124,13 @@ const youtube = httpsUrl(youtubeUrl);
       </WindowFrame>
     </figure>
 
-    <section class="story-founder" id="founder" aria-labelledby="founder-title">
-      <figure class="story-portrait" data-rise>
-        <div class="story-portrait-frame" aria-hidden="true"></div>
-        <figcaption>Portrait to come</figcaption>
-      </figure>
+    <section class="story-chapter" id="matters" aria-labelledby="matters-title">
       <div data-rise>
-        <p class="story-kicker">Founder</p>
-        <RevealHeading as="h2" id="founder-title">The mission holds the page.</RevealHeading>
-        <div class="story-prose">
-          <p>
-            The story is the mission, not the person. Years of looking, then a shop, then the decision to build it in public. A portrait can wait.
-          </p>
-        </div>
-        {youtube && <p class="story-yt"><a href={youtube}>Follow the build on YouTube</a></p>}
+        <p class="story-kicker">Nature as a gift</p>
+        <RevealHeading as="h2" id="matters-title">Why it matters.</RevealHeading>
+      </div>
+      <div class="story-prose" data-rise>
+        <p>Morning coffee outside. Kids off their screens. More of your day spent in the beauty that&rsquo;s already around you. That&rsquo;s the whole point.</p>
       </div>
     </section>
   </main>
