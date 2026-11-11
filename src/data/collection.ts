@@ -284,7 +284,7 @@ export const collectionStandalone = {
       image: '/media/specialty/hot-tub-time-machine.jpg',
       alt: 'A wood-fired cedar hot tub on a steel and timber base inside a clear polycarbonate enclosure, steam rising and the stove glowing in a wildflower meadow at dusk, stars coming out.',
       film: '/media/video/hot-tub-time-machine.mp4',
-      line: 'A wood-fired cedar tub on its own steel and timber base. Light the stove, and the evening forgets what time it is.',
+      line: 'A wood-fired cedar tub on its own steel and timber base. Light the stove and lose track of time.',
       tagline: 'Set the dial to dusk.',
       story: [
         'Wood smoke, a sky filling up with stars, and hot water that holds its warmth for hours. A round cedar tub with its own small stove, on a steel and timber base that sets down level wherever the view is best.',

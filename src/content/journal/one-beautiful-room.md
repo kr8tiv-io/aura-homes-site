@@ -1,21 +1,20 @@
 ---
-title: "One beautiful room at a time"
+title: "Start with one room. Add more when you're hooked."
 date: 2026-10-02
 cover: /film/layout-sky.webp
 coverAlt: "An oak bedroom with a skylight open to the stars, and a meadow beyond the glass."
-excerpt: "A first room, then another, when the land asks. A sequence with no hurry in it."
+excerpt: "You do not need a master plan for your backyard. One great room is a complete project."
 tags:
   - Rooms
-  - Pace
 draft: false
 ---
 
-One beautiful room at a time. The sentence is the pace.
+"One beautiful room at a time" is our motto, and also our advice.
 
-Begin with the room, or with The Soak if heat is the reason you walk outside. Live with it through a season. Learn where the morning lands, and which way the wind crosses the deck. A second room can wait until the first one has a habit.
+Start with one. Maybe it is The Soak, because a hot tub makes a strong argument. Maybe it is A Starry Night, our original room, with a long side that opens onto the field. Live with it for a season. Learn where the sun lands in the morning and which way the wind blows across the deck.
 
-A Starry Night is the room kept for the dark: open to the field, small, and content to be a start. The Stargazer lifts a kindred idea into the roof, a bed under glass while the meadow stays beyond the wall. They do not all have to arrive together. A piece of land can hold one finished room and still be complete.
+Loving it? Add a second. The Stargazer puts your bed under a glass roof, so you fall asleep counting stars. A Hitchhiker's Guide to the Guest Room gives visitors their own place, and gives you your couch back.
 
-There is no schedule hiding in this. Rooms follow rooms the way a path follows a gate, when you want the next hour to have its own walls. The names are a set of rooms, not a queue. Take the one that matches the light you keep missing.
+There is no rush and no package deal. One finished room is a complete project, and plenty of people will stop at one. That is great too.
 
-When you want to look, the rooms are on [their page](/rooms). Return to Aura when you want the feeling. Build the room when you want the floor.
+Browse them all on [the rooms page](/rooms), then join the waitlist for the one you cannot stop thinking about.

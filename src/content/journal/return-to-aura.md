@@ -1,21 +1,20 @@
 ---
-title: "Return to Aura"
+title: "Return to Aura: the case for going outside"
 date: 2026-10-05
 cover: /film/story-room.webp
 coverAlt: "An open room of oak and linen, facing a green field at dusk."
-excerpt: "The door is already there. You come back to the grass, and the room keeps the hour."
+excerpt: "Why we build rooms that get you out of the house without leaving home."
 tags:
   - Outside
-  - Return
 draft: false
 ---
 
-The threshold is a small thing. One panel of smoked glass, standing open. The steel under the room is only a line. Beyond it, the meadow is doing what it was doing before you arrived.
+Here is the problem with going outside: it is out there, and the couch is in here. Aura fixes that by putting a beautiful room out there too.
 
-Return to Aura. Not as an instruction. As the feeling of leaving the house you already know and stepping into a room that was made for the outside. The air changes before the thought does. Grass at the ankle. A quieter kind of light.
+An Aura room sits on land you already have. Warm oak inside, smoked glass outside, and a door that slides open onto the grass. Walk thirty steps from your back door and you are somewhere else entirely.
 
-The room does not ask you to abandon your land. It sits on it. You can take the first cup there, or the last of the day, and the house stays where it was. One beautiful room at a time, beginning with the one you can actually reach.
+You do not give anything up. The house stays where it is, fridge and laundry included. The room is where you take your first coffee, your last glass of wine, and every phone call you would rather take with a view.
 
-Inside, oak and linen hold the weather back just enough. Outside, the field keeps its own hours. The pleasure is the short walk between them.
+That is all "Return to Aura" means. Not a riddle. Just a nudge to spend more of your day outside, in a room nice enough that you actually want to.
 
-The longer telling lives on the [story](/story). This note is only the doorway.
+Want the long version? It is on the [story](/story) page.
