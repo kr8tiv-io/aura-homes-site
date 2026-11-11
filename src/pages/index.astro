@@ -86,30 +86,24 @@ import Journeys from '../components/Journeys.astro';
     <div class="splash-spacer" data-splash-spacer aria-hidden="true"></div>
 
     <section id="intro" class="story-open is-intro">
-      <p class="story-kicker">Aura</p>
-      <h2 data-glow>
-        <span class="line-mask"><span class="line">Not a house.</span></span>
-        <span class="line-mask"><span class="line">Not a shed.</span></span>
-        <span class="line-mask"><span class="line">Something better.</span></span>
-      </h2>
-      <p class="story-lede">
-        Aura builds finished rooms that turn your land into a destination.
-      </p>
+      <div class="intro-glow" aria-hidden="true">
+        <div class="intro-glow-bloom"></div>
+        <div class="intro-glow-follow"></div>
+      </div>
+      <div class="intro-copy">
+        <p class="story-kicker">Aura</p>
+        <h2 data-glow>
+          <span class="line-mask"><span class="line">Not a house.</span></span>
+          <span class="line-mask"><span class="line">Not a shed.</span></span>
+          <span class="line-mask"><span class="line">Something better.</span></span>
+        </h2>
+        <p class="story-lede">
+          Aura builds finished rooms that turn your land into a destination.
+        </p>
+      </div>
     </section>
 
-    <section id="shell" class="story-open">
-      <p class="story-kicker">On your land</p>
-      <h2 data-glow>
-        <span class="line-mask"><span class="line">Stay close.</span></span>
-        <span class="line-mask"><span class="line">Or stay</span></span>
-        <span class="line-mask"><span class="line">a while.</span></span>
-      </h2>
-      <p class="story-lede">
-        A finished room beside the house, or a little stay all its own.
-      </p>
-    </section>
-
-    <section class="story-still">
+    <section class="story-still" id="shell">
       <figure class="story-figure">
         <video data-poster="/film/story-meadow-side.webp" data-film="/film/scroll/meadow-side.mp4" muted playsinline preload="none" disablepictureinpicture width="1280" height="922" data-shot="drift" data-play="drift" aria-label="The black glass cabin from down in the grass along its long side, cedar tub and hanging daybed farther back"></video>
       </figure>
@@ -304,14 +298,38 @@ import Journeys from '../components/Journeys.astro';
     <div class="passage-spacer" data-passage-spacer aria-hidden="true"></div>
 
     <section class="ways" id="ways">
-      <p class="story-kicker">What we finish</p>
-      <ol>
-        <li><span>01</span> A house extension</li>
-        <li><span>02</span> A small stay</li>
-        <li><span>03</span> An office, clear of the woods</li>
-        <li><span>04</span> A wood-fired tub, on the steel frame</li>
+      <header class="roadmap-head">
+        <p class="story-kicker">The roadmap, roughly.</p>
+      </header>
+      <div class="roadmap-track" aria-hidden="true">
+        <div class="roadmap-line"><div class="roadmap-line-fill"></div></div>
+      </div>
+      <ol class="roadmap-stages">
+        <li class="roadmap-stage">
+          <p class="roadmap-when">Now</p>
+          <figure class="roadmap-still">
+            <img src="/film/story-meadow-side.webp" alt="" width="1280" height="922" decoding="async" />
+          </figure>
+          <h2>Rooms that land.</h2>
+          <p>Guest rooms, offices and stargazing suites, finished and furnished. Also Hot Tub Time Machine, Cool Runnings and The Soak, which travels.</p>
+        </li>
+        <li class="roadmap-stage">
+          <p class="roadmap-when">Next</p>
+          <figure class="roadmap-still">
+            <img src="/film/farm-wall.webp" alt="" width="1600" height="1200" decoding="async" />
+          </figure>
+          <h2>Rooms that grow.</h2>
+          <p>Leaf Skywalker, an aeroponic grow room for salad that's never seen a grocery store, plus Aura H2O for water that tastes like it came from somewhere better.</p>
+        </li>
+        <li class="roadmap-stage">
+          <p class="roadmap-when">Someday</p>
+          <figure class="roadmap-still">
+            <img src="/film/resort-tower.webp" alt="" width="1600" height="1200" decoding="async" />
+          </figure>
+          <h2>Rooms that shouldn't exist.</h2>
+          <p>Floating rooms, houseboats, a hangar for a tiny plane and full Aura resorts. Limited editions, wildly unnecessary, absolutely happening.</p>
+        </li>
       </ol>
-      <p class="story-lede">A bedroom under a skylight, when the night is the point.</p>
     </section>
 
     <Journeys />
@@ -330,11 +348,14 @@ import Journeys from '../components/Journeys.astro';
     import { isPhoneClass, onQuality, qualityProfile, showStill } from '../three/quality';
     import { bindShots } from '../scripts/shots';
     import { bindReels } from '../scripts/reel';
+    import { bindIntroGlow } from '../scripts/intro-glow';
 
     onPageLoad(() => {
     void (async () => {
     const reduce = prefersReducedMotion();
     const mm = gsap.matchMedia();
+    const intro = document.getElementById('intro');
+    const stopIntroGlow = intro ? bindIntroGlow(intro) : () => {};
 
     const film = document.getElementById('cabin-film') as HTMLVideoElement | null;
     const scrub = film ? bindFilmScrub(film) : null;
@@ -525,6 +546,20 @@ import Journeys from '../components/Journeys.astro';
         scrollTrigger: { trigger: '.ways ol', start: 'top 80%' },
       });
 
+      const ways = document.getElementById('ways');
+      const fill = ways?.querySelector<HTMLElement>('.roadmap-line-fill');
+      if (ways && fill && !reduce) {
+        gsap.fromTo(
+          fill,
+          { scaleX: 0 },
+          {
+            scaleX: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: ways, start: 'top 75%', end: 'bottom 55%', scrub: 0.65 },
+          },
+        );
+      }
+
       // Phones keep the whole still in frame. Desktop keeps the reveal crop.
       // The cabin film scrub above is unchanged.
       if (!window.matchMedia('(max-width: 800px)').matches) {
@@ -712,6 +747,7 @@ import Journeys from '../components/Journeys.astro';
 
     if (import.meta.hot) {
       import.meta.hot.dispose(() => {
+        stopIntroGlow();
         stopQuality();
         ctx.revert();
         mm.revert();
