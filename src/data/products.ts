@@ -116,6 +116,7 @@ const groupBySlug: Record<string, CatalogGroup> = {
   'behind-door-number-one': 'rooms',
   'a-starry-night': 'rooms',
   'the-soak': 'soaks',
+  'tub-ward-bound': 'soaks',
   'the-stargazer': 'rooms',
   'office-space-odyssey': 'rooms',
   'auroras-looking-glass': 'rooms',
@@ -149,6 +150,12 @@ const altByFile: Record<string, string> = {
     'A dark glass room at dusk, the long side open onto a linen sofa, a deck, and a green meadow.',
   'story-meadow-side.jpg':
     'A black glass room in tall grass at dusk, a cedar tub steaming on the deck, and a hanging seat under a steel arch.',
+  'cabin-poster-hi.jpg':
+    'A black glass room at dusk with its glass side open onto warm oak, a wood-fired cedar tub steaming on a dark deck, and a teal daybed swinging from chains under a steel arch, river stones glowing softly along the deck.',
+  'the-soak-unit.jpg':
+    'A black glass bedroom on wheels in a sunny meadow, its glass side slid open onto a plush double bed in warm oak, a wood-fired cedar tub steaming on the cedar deck at the back.',
+  'tubward-bound-meadow.jpg':
+    'A black glass bedroom on wheels in a meadow at golden hour, the bed glowing through open glass, a cedar tub steaming on its own dark deck in the grass beside it.',
   'story-nest.jpg':
     'A round teal hanging daybed on chains under a steel arch, beside a black glass room in a meadow at dusk.',
   'layout-sky.jpg':
@@ -312,11 +319,11 @@ if (new Set(heroFiles).size !== heroFiles.length) {
   throw new Error('Two collection cards share a photograph');
 }
 
-if (catalogProducts.length !== 22) {
-  throw new Error(`The collection lists ${catalogProducts.length} products. The catalog has 22.`);
+if (catalogProducts.length !== 23) {
+  throw new Error(`The collection lists ${catalogProducts.length} products. The catalog has 23.`);
 }
-if (catalogProducts.filter((product) => product.stage === 'Available soon').length !== 15) {
-  throw new Error('Available soon should list 15 products');
+if (catalogProducts.filter((product) => product.stage === 'Available soon').length !== 16) {
+  throw new Error('Available soon should list 16 products');
 }
 if (comingGrid.length !== 7) throw new Error('Coming after should list 7 products');
 if (catalogAddons.length !== 10) throw new Error('The add-on menu should have 10 categories');
