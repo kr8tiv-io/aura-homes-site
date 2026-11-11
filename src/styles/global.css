@@ -2019,7 +2019,8 @@ canvas[data-stage-host='on'] {
   margin: 1rem 0 0;
   font-weight: 300;
   line-height: 1.55;
-  color: rgba(244, 243, 239, 0.78);
+  font-size: 1.12rem;
+  color: #ffffff;
 }
 .passage-loader {
   position: absolute;
