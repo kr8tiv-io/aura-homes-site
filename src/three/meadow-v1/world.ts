@@ -55,6 +55,8 @@ export type MeadowWorldOptions = {
   tone?: StageTone;
   hdri?: string;
   envIntensity?: number;
+  /** Camera near plane. A larger near keeps depth precision on close geometry. Default 0.4. */
+  near?: number;
   ao?: boolean;
   /** Homepage grass only. The builder keeps the day fly-over. */
   grade?: 'golden';
@@ -942,7 +944,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   const vista = options.vista === true;
   const heightAt = options.heightAt ?? sampleTerrainHeight;
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(38, 1, 0.4, golden || vista ? 1100 : 260);
+  const camera = new THREE.PerspectiveCamera(38, 1, options.near ?? 0.4, golden || vista ? 1100 : 260);
   camera.position.set(-4.5, 5.4, 17.5);
   const vistaFog = options.ground === 'snow' ? '#d5e3ee' : options.ground === 'rock' ? '#c9d3da' : '#d2c2ae';
   const fog = new THREE.Fog(golden ? '#e4c9a4' : vista ? vistaFog : '#e3ede7', golden || vista ? 48 : 36, golden || vista ? 220 : 120);
