@@ -85,18 +85,20 @@ import Journeys from '../components/Journeys.astro';
     </section>
     <div class="splash-spacer" data-splash-spacer aria-hidden="true"></div>
 
-    <section id="intro" class="story-open is-intro">
-      <div class="intro-glow" aria-hidden="true"></div>
-      <div class="intro-copy">
-        <p class="story-kicker">Aura</p>
-        <h2 data-glow>
-          <span class="line-mask"><span class="line">Not a house.</span></span>
-          <span class="line-mask"><span class="line">Not a shed.</span></span>
-          <span class="line-mask"><span class="line">Something better.</span></span>
-        </h2>
-        <p class="story-lede">
-          Aura builds finished rooms that turn your land into a destination.
-        </p>
+    <section id="intro" class="story-open is-intro" data-assemble>
+      <div class="intro-stage" data-intro-stage>
+        <div class="intro-glow" aria-hidden="true"></div>
+        <div class="intro-copy">
+          <p class="story-kicker">Aura</p>
+          <h2 data-glow data-assemble-head aria-label="Not a house. Not a shed. Something better.">
+            <span class="line-mask is-struck"><span class="line" data-assemble-line>Not a house.</span><span class="intro-strike" data-strike aria-hidden="true"></span></span>
+            <span class="line-mask is-struck"><span class="line" data-assemble-line>Not a shed.</span><span class="intro-strike" data-strike aria-hidden="true"></span></span>
+            <span class="line-mask is-better"><span class="intro-bloom" data-bloom aria-hidden="true"></span><span class="line" data-assemble-line>Something better.</span><span class="intro-sheen" data-sheen aria-hidden="true">Something better.</span></span>
+          </h2>
+          <p class="story-lede">
+            Aura builds finished rooms that turn your land into a destination.
+          </p>
+        </div>
       </div>
     </section>
 
@@ -346,13 +348,15 @@ import Journeys from '../components/Journeys.astro';
     import { bindShots } from '../scripts/shots';
     import { bindReels } from '../scripts/reel';
     import { bindIntroGlow } from '../scripts/intro-glow';
+    import { bindHeadlineAssemble } from '../scripts/headline-assemble';
 
     onPageLoad(() => {
     void (async () => {
     const reduce = prefersReducedMotion();
     const mm = gsap.matchMedia();
     const intro = document.getElementById('intro');
-    const stopIntroGlow = intro ? bindIntroGlow(intro) : () => {};
+    const introStage = intro?.querySelector<HTMLElement>('[data-intro-stage]') ?? intro;
+    const stopIntroGlow = introStage ? bindIntroGlow(introStage) : () => {};
 
     const film = document.getElementById('cabin-film') as HTMLVideoElement | null;
     const scrub = film ? bindFilmScrub(film) : null;
@@ -508,7 +512,12 @@ import Journeys from '../components/Journeys.astro';
         });
       };
 
+      // The intro headline has its own scroll-scrubbed assembly.
+      const stopHeadline = intro ? bindHeadlineAssemble(intro) : () => {};
+      holdPageMotion(stopHeadline);
+
       gsap.utils.toArray<HTMLElement>('.line').forEach((el) => {
+        if (el.closest('[data-assemble]')) return;
         splitWords(el);
         if (el.closest('[data-passage]')) return;
         const words = el.querySelectorAll('.word');
@@ -523,7 +532,7 @@ import Journeys from '../components/Journeys.astro';
       });
 
       gsap.utils.toArray<HTMLElement>('.story-kicker, .story-lede, .story-still > div > p:not(.story-kicker)').forEach((el) => {
-        if (el.closest('[data-passage]')) return;
+        if (el.closest('[data-passage]') || el.closest('[data-assemble]')) return;
         gsap.from(el, {
           y: 32,
           opacity: 0,

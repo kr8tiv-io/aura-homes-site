@@ -1865,6 +1865,17 @@ canvas[data-stage-host='on'] {
    Halo/Bronze radial behind the headline. Text is live HTML. No black text-shadows. */
 .story-open.is-intro {
   position: relative;
+  overflow: clip;
+  padding: 0;
+  text-align: center;
+  background: #f4f3ef;
+  color: #0c0d0e;
+}
+/* The stage holds the glow and copy. With motion on, the section is taller and
+   the stage sticks, so the scrubbed headline never shifts the layout. */
+.story-open.is-intro .intro-stage {
+  position: sticky;
+  top: 0;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -1872,9 +1883,63 @@ canvas[data-stage-host='on'] {
   justify-content: center;
   min-height: 100vh;
   padding: 22vh 8vw 16vh;
-  text-align: center;
-  background: #f4f3ef;
-  color: #0c0d0e;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .story-open.is-intro {
+    height: 250vh;
+  }
+  .story-open.is-intro .intro-stage {
+    height: 100vh;
+  }
+}
+.story-open.is-intro h2 .line-mask {
+  position: relative;
+  width: fit-content;
+  margin-inline: auto;
+  overflow: visible;
+  perspective: 900px;
+  transform-style: preserve-3d;
+}
+.story-open.is-intro .hl-word {
+  white-space: nowrap;
+}
+.story-open.is-intro .hl-char {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.story-open.is-intro .intro-strike {
+  position: absolute;
+  left: -5%;
+  top: 52%;
+  width: 110%;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(156, 122, 85, 0), #9c7a55 12%, #c4a07a 50%, #9c7a55 88%, rgba(156, 122, 85, 0));
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+.story-open.is-intro .is-better {
+  isolation: isolate;
+}
+.story-open.is-intro .intro-bloom {
+  position: absolute;
+  inset: -45% -12%;
+  z-index: -1;
+  background: radial-gradient(ellipse 50% 48% at 50% 55%, rgba(196, 160, 122, 0.26), rgba(196, 160, 122, 0.08) 55%, transparent 75%);
+  opacity: 0;
+  pointer-events: none;
+}
+.story-open.is-intro .intro-sheen {
+  --sheen-x: -40%;
+  position: absolute;
+  inset: 0;
+  display: block;
+  color: #c4a07a;
+  text-shadow: 0 0 22px rgba(196, 160, 122, 0.55);
+  -webkit-mask-image: linear-gradient(100deg, transparent calc(var(--sheen-x) - 22%), #000 var(--sheen-x), transparent calc(var(--sheen-x) + 22%));
+  mask-image: linear-gradient(100deg, transparent calc(var(--sheen-x) - 22%), #000 var(--sheen-x), transparent calc(var(--sheen-x) + 22%));
+  opacity: 0;
+  pointer-events: none;
 }
 .story-open.is-intro + .story-still {
   padding-top: 6vh;
@@ -1943,9 +2008,17 @@ canvas[data-stage-host='on'] {
 }
 
 @media (max-width: 800px) {
-  .story-open.is-intro {
+  .story-open.is-intro .intro-stage {
     min-height: 100svh;
     padding: 16vh 1.5rem 10vh;
+  }
+}
+@media (max-width: 800px) and (prefers-reduced-motion: no-preference) {
+  .story-open.is-intro {
+    height: 220svh;
+  }
+  .story-open.is-intro .intro-stage {
+    height: 100svh;
   }
 }
 
