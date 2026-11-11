@@ -2003,7 +2003,7 @@ canvas[data-stage-host='on'] {
   z-index: 2;
   left: 8vw;
   bottom: 12vh;
-  max-width: 18rem;
+  max-width: min(30rem, 84vw);
   color: #f4f3ef;
   pointer-events: none;
 }
