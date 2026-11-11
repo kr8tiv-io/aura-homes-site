@@ -224,16 +224,16 @@
    "stage": "Available soon",
    "tier": "Signature",
    "kicker": "The hot tub room",
-   "lede": "A wood-fired cedar tub, a black-glass room to dry off in, and a daybed for the part after. Bring your towel.",
+   "lede": "A wood-fired cedar tub on its own deck, a black-glass room to dry off in, and a swinging daybed for the part after. Bring your towel.",
    "body": [
-    "The tub steams on its own deck pad in the tall grass. The room behind it is for changing, lounging and warming up, and the hanging daybed under its steel arch is for doing absolutely nothing at all."
+    "The tub steams on a dark deck in the tall grass. The room glows behind it, edged in river stones with soft light underneath, and the swinging daybed is for doing absolutely nothing at all."
    ],
    "features": [
-    "Wood-fired cedar hot tub on its own deck pad",
+    "Wood-fired cedar hot tub on its own deck",
     "Black-glass room for changing and lounging",
-    "Hanging daybed under a steel arch",
+    "Velvet daybed swinging under a steel arch",
+    "River-stone border with soft under-lighting",
     "Heated towel rail by the door",
-    "Low deck and path lighting",
     "Covered firewood store"
    ],
    "addons": [
@@ -243,11 +243,42 @@
     "Two Suns Deck Heaters"
    ],
    "images": {
-    "hero": "story-meadow-side.jpg",
+    "hero": "cabin-poster-hi.jpg",
     "second": "story-nest.jpg"
    },
-   "layout": "grid-r",
+   "layout": "plate-duo",
    "no": 8
+  },
+  {
+   "slug": "tub-ward-bound",
+   "name": "Tub-ward Bound",
+   "stage": "Available soon",
+   "tier": "Second Life",
+   "kicker": "The Soak, on wheels",
+   "lede": "A bedroom on wheels with a wood-fired cedar tub riding along on its own deck. Soak, dry off, and be asleep three steps later.",
+   "body": [
+    "Obsidian glass outside, warm oak and a plush double bed inside, behind a glass side that slides wide open. The cedar tub sits on the back deck, or out in the tall grass if you prefer."
+   ],
+   "features": [
+    "Wood-fired cedar hot tub on its own cedar deck",
+    "Plush double bed in warm oak",
+    "Glass side that slides wide open",
+    "Refurbished trailer, wheels and levelling jacks",
+    "Heated towel rail by the door",
+    "Covered firewood store"
+   ],
+   "addons": [
+    "The Hoth Plunge",
+    "Carbonite Chiller",
+    "Two Suns Deck Heaters",
+    "Here Comes The Sun"
+   ],
+   "images": {
+    "hero": "the-soak-unit.jpg",
+    "second": "tubward-bound-meadow.jpg"
+   },
+   "layout": "plate-duo-r",
+   "no": 9
   },
   {
    "slug": "the-stargazer",
@@ -278,7 +309,7 @@
     "hero": "layout-sky.jpg"
    },
    "layout": "split-left",
-   "no": 9
+   "no": 10
   },
   {
    "slug": "office-space-odyssey",
@@ -308,7 +339,7 @@
     "hero": "layout-corner.jpg"
    },
    "layout": "split-left",
-   "no": 10
+   "no": 11
   },
   {
    "slug": "auroras-looking-glass",
@@ -338,7 +369,7 @@
     "hero": "layout-night.jpg"
    },
    "layout": "split-right",
-   "no": 11
+   "no": 12
   },
   {
    "slug": "hot-tub-time-machine",
@@ -367,7 +398,7 @@
     "hero": "hot-tub-time-machine.jpg"
    },
    "layout": "band",
-   "no": 12
+   "no": 13
   },
   {
    "slug": "cool-runnings",
@@ -395,7 +426,7 @@
     "hero": "aura-cold-plunge-bathtub.jpg"
    },
    "layout": "split-left",
-   "no": 13
+   "no": 14
   },
   {
    "slug": "fire-and-ice",
@@ -422,7 +453,7 @@
     "hero": "fire-and-ice.jpg"
    },
    "layout": "plate",
-   "no": 14
+   "no": 15
   },
   {
    "slug": "thirst-contact",
@@ -450,7 +481,7 @@
     "second": "water-line.jpg"
    },
    "layout": "grid",
-   "no": 15
+   "no": 16
   },
   {
    "slug": "leaf-skywalker",
@@ -481,7 +512,7 @@
     "second": "farm-room.jpg"
    },
    "layout": "grid-r",
-   "no": 16
+   "no": 17
   },
   {
    "slug": "jungle-book-canopy-of-stars",
@@ -509,7 +540,7 @@
     "hero": "canopy-of-stars.jpg"
    },
    "layout": "split-right",
-   "no": 17
+   "no": 18
   },
   {
    "slug": "the-forest-edge",
@@ -539,7 +570,7 @@
     "hero": "forest-edge-wide.jpg"
    },
    "layout": "band",
-   "no": 18
+   "no": 19
   },
   {
    "slug": "siddharthas-a-wing",
@@ -570,7 +601,7 @@
     "second": "a-wing-hot-tub.jpg"
    },
    "layout": "grid",
-   "no": 19
+   "no": 20
   },
   {
    "slug": "cloud-nine",
@@ -599,7 +630,7 @@
     "hero": "resort-deck.jpg"
    },
    "layout": "compare",
-   "no": 20
+   "no": 21
   },
   {
    "slug": "pandoras-glass-stairway-to-heaven",
@@ -629,7 +660,7 @@
     "hero": "resort-tower.jpg"
    },
    "layout": "tower",
-   "no": 21
+   "no": 22
   },
   {
    "slug": "waste-of-space",
@@ -664,7 +695,7 @@
    },
    "quote": "The best seat in the house sits on top of its least glamorous job.",
    "layout": "waste",
-   "no": 22
+   "no": 23
   }
  ],
  "compare": [
