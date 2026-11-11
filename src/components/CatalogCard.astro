@@ -4,16 +4,21 @@ import type { CatalogProduct } from '../data/products';
 interface Props {
   product: CatalogProduct;
   wide?: boolean;
+  /** Wide in the 2-column tablet grid. */
+  wide2?: boolean;
+  /** Wide in the 3-column desktop grid. */
+  wide3?: boolean;
 }
 
-const { product, wide = false } = Astro.props;
+const { product, wide2 = false, wide3 = false } = Astro.props;
+const wide = wide2 || wide3;
 const action = product.href.startsWith('/rooms/') ? 'See the piece' : 'Join the waitlist';
 const sizes = wide
   ? '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) calc(100vw - 8rem), 62vw'
   : '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) 46vw, 30vw';
 ---
 
-<li class:list={['catalog-card', { 'is-wide': wide }]} data-catalog-card data-group={product.group}>
+<li class:list={['catalog-card', { 'is-wide-2': wide2, 'is-wide-3': wide3 }]} data-catalog-card data-group={product.group}>
   <a class="catalog-card-link" href={product.href}>
     <span class="catalog-photo">
       <img

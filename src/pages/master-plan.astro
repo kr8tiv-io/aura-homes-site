@@ -695,6 +695,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .plan-copy :global(h2) {
       font-size: clamp(2.15rem, 9vw, 3.1rem);
     }
+    /* Keep the Stay copy below the moon now that its text runs longer. */
+    .plan-panel-stay .plan-copy {
+      padding-top: 20rem;
+    }
     .plan-close {
       margin: 8vh 1.5rem 16vh;
     }

@@ -786,7 +786,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 4.5rem 3.25rem;
   }
-  .catalog-grid > .catalog-card.is-wide {
+  .catalog-grid > .catalog-card.is-wide-2 {
     grid-column: span 2;
   }
   .catalog-feature-photo {
@@ -817,6 +817,12 @@
   .catalog-grid {
     grid-template-columns: 1fr 1fr 1fr;
     gap: 5rem 3.5rem;
+  }
+  .catalog-grid > .catalog-card.is-wide-2 {
+    grid-column: auto;
+  }
+  .catalog-grid > .catalog-card.is-wide-3 {
+    grid-column: span 2;
   }
 }
 

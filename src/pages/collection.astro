@@ -112,7 +112,7 @@ const limitedText = catalogLimited.filter((item) => !item.image);
 
           <ul class="catalog-grid">
             {section.products.map((product, index) => (
-              <CatalogCard product={product} wide={(index + 1) % 4 === 0} />
+              <CatalogCard product={product} wide2={index % 3 === 2} wide3={index % 5 === 3} />
             ))}
           </ul>
           <p class="catalog-empty" data-empty hidden>
@@ -290,7 +290,11 @@ const limitedText = catalogLimited.filter((item) => !item.image);
       });
       page.querySelectorAll<HTMLElement>('.catalog-grid').forEach((grid) => {
         const items = [...grid.children].filter((item): item is HTMLElement => item instanceof HTMLElement && !item.hidden);
-        items.forEach((item, index) => item.classList.toggle('is-wide', (index + 1) % 4 === 0));
+        items.forEach((item, index) => {
+          // Wide cards sit where they fill a row: every third card on two columns, the fourth of every five on three.
+          item.classList.toggle('is-wide-2', index % 3 === 2);
+          item.classList.toggle('is-wide-3', index % 5 === 3);
+        });
       });
       page.querySelectorAll<HTMLButtonElement>('[data-filter]').forEach((button) => {
         button.setAttribute('aria-pressed', button.dataset.filter === group ? 'true' : 'false');
