@@ -6,8 +6,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const steps = [
   { n: '01', title: 'Tell us your idea.', detail: '' },
-  { n: '02', title: 'We design and quote.', detail: '' },
-  { n: '03', title: 'We build.', detail: '40% deposit on custom builds.' },
+  { n: '02', title: 'We design it with you.', detail: '' },
+  { n: '03', title: 'We build.', detail: '' },
   { n: '04', title: 'We deliver.', detail: '' },
 ];
 ---
@@ -22,7 +22,7 @@ const steps = [
       <p class="story-kicker" data-tracer="rule">Customs</p>
       <RevealHeading as="h1">Second Breath Customs.</RevealHeading>
       <p class="story-lede">Tell us the room you want, and we will draw it with you.</p>
-      <p class="customs-note">One-off builds, from a small shop. Elegant, and quoted case by case.</p>
+      <p class="customs-note">One-off builds, from a small shop. Elegant, and drawn case by case.</p>
     </section>
 
     <figure class="customs-still" data-customs-rise>
@@ -54,7 +54,7 @@ const steps = [
     </section>
 
     <div class="customs-close" data-customs-rise>
-      <a class="customs-quote is-slide" href="/pre-order?type=custom" data-tracer="outline"><span class="slide-face"><span class="slide-line">Get a quote</span><span class="slide-line" aria-hidden="true">Get a quote</span></span></a>
+      <a class="customs-quote is-slide" href="/pre-order?type=custom" data-tracer="outline"><span class="slide-face"><span class="slide-line">Join the waitlist</span><span class="slide-line" aria-hidden="true">Join the waitlist</span></span></a>
       <p>Rent-to-own and financing are on our roadmap.</p>
     </div>
 
@@ -110,7 +110,7 @@ const steps = [
     font-family: var(--font-cinzel);
     font-weight: 400;
     font-size: clamp(1.7rem, 2.4vw, 2.15rem);
-    letter-spacing: -0.03em;
+    letter-spacing: 0.035em;
   }
   .customs-path ol {
     margin: 0;
@@ -139,7 +139,7 @@ const steps = [
     font-family: var(--font-cinzel);
     font-weight: 400;
     font-size: clamp(1.25rem, 1.8vw, 1.6rem);
-    letter-spacing: -0.02em;
+    letter-spacing: 0.035em;
     line-height: 1.25;
   }
   .customs-path p.customs-deposit {

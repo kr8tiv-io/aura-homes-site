@@ -589,9 +589,9 @@ export default function OrderForm() {
               <div className="order-actions">
                 <a className="is-slide order-quote" href={quoteHref}>
                   <span className="slide-face">
-                    <span className="slide-line">Get a quote</span>
+                    <span className="slide-line">Join the waitlist</span>
                     <span className="slide-line" aria-hidden="true">
-                      Get a quote
+                      Join the waitlist
                     </span>
                   </span>
                 </a>

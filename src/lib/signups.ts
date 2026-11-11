@@ -140,7 +140,7 @@ export async function acceptJoin(input: {
   const name = clean(input.name, 80);
   const note = clean(input.note, 500);
   const shell = (SHELLS as readonly string[]).includes(input.shell) ? (input.shell as Shell) : '';
-  if (!kind) return { ok: false, status: 400, message: 'Choose the list, or a pre-order.' };
+  if (!kind) return { ok: false, status: 400, message: 'Choose the list, or the waitlist.' };
   if (!name) return { ok: false, status: 400, message: 'Add your name, so we know who to write.' };
   if (!EMAIL.test(email)) return { ok: false, status: 400, message: 'Add an email we can write to.' };
   if (kind === 'preorder' && !shell) return { ok: false, status: 400, message: 'Choose a room, or say you are not sure yet.' };

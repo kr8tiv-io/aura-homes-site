@@ -36,7 +36,7 @@ export type CollectionShowpiece = {
 export const collectionIntro = {
   kicker: 'The collection',
   title: 'Twelve rooms. Each one named.',
-  lede: 'From a spare room to a tower of glass. Every Aura is drawn and furnished one at a time, and every model can carry Full Solar from the first order.',
+  lede: 'From a spare room to a tower of glass. Every Aura is drawn and furnished one at a time, and every model can carry Full Solar from the first build.',
 };
 
 export const collectionTiers: CollectionTier[] = [
@@ -246,7 +246,7 @@ export const collectionShowpieces = {
 export const collectionClose = {
   title: 'Return to Aura.',
   line: 'One beautiful room at a time.',
-  cta: 'Get a quote',
+  cta: 'Join the waitlist',
   href: '/pre-order',
 };
 

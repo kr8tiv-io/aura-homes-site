@@ -5,18 +5,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const faqs = [
   {
     q: 'Do you have prices?',
-    a: 'Not yet. Every unit is quoted individually. Join the pre-order list.',
-    html: 'Not yet. Every unit is quoted individually. Join the <a href="/pre-order">pre-order list</a>.',
+    a: 'Not yet. Aura is at the concept stage and ordering has not opened yet. Join the waitlist.',
+    html: 'Not yet. Aura is at the concept stage and ordering has not opened yet. Join the <a href="/pre-order">waitlist</a>.',
   },
   {
-    q: 'How do pre-orders work?',
-    a: "Inquiry first. For custom builds, a 40% deposit starts the build. If we can't deliver, you get your money back.",
-    html: 'Inquiry first. For <a href="/customs">custom builds</a>, a 40% deposit starts the build. If we can\'t deliver, you get your money back.',
+    q: 'How does the waitlist work?',
+    a: 'Leave your name and the room you want, including custom builds. There are no payments and no orders. We write when builds open.',
+    html: 'Leave your name and the room you want, including <a href="/customs">custom builds</a>. There are no payments and no orders. We write when builds open.',
   },
   {
     q: 'Can I start from a room I already have?',
-    a: "Yes. Tell us about the room, and we'll quote it as a custom.",
-    html: 'Yes. Tell us about the room, and we\'ll quote it as a <a href="/pre-order?type=custom">custom</a>.',
+    a: "Yes. Tell us about the room, and we'll draw it with you as a custom.",
+    html: 'Yes. Tell us about the room, and we\'ll draw it with you as a <a href="/pre-order?type=custom">custom</a>.',
   },
   {
     q: 'Do I need a permit?',
@@ -35,8 +35,8 @@ const faqs = [
   },
   {
     q: 'Where do you ship?',
-    a: 'Anywhere in Canada. Delivery for now. Setup and hookup come later.',
-    html: 'Anywhere in Canada. Delivery for now. Setup and hookup come later.',
+    a: 'Anywhere in Canada, once builds open. Delivery first. Setup and hookup come later.',
+    html: 'Anywhere in Canada, once builds open. Delivery first. Setup and hookup come later.',
   },
   {
     q: 'Off-grid?',
@@ -50,8 +50,8 @@ const faqs = [
   },
   {
     q: 'Warranty?',
-    a: 'It depends on the unit. The details come with your quote.',
-    html: 'It depends on the unit. The details come with your quote.',
+    a: 'It depends on the unit. The details come when ordering opens.',
+    html: 'It depends on the unit. The details come when ordering opens.',
   },
 ];
 
@@ -78,7 +78,7 @@ const schema = {
 
 <BaseLayout
   title="FAQ | Aura Homes"
-  description="Honest answers on quotes, pre-orders, shipping, and the room."
+  description="Honest answers on the waitlist, shipping, and the room."
   descriptor="FAQ"
 >
   <main id="top">
@@ -148,7 +148,7 @@ const schema = {
     font-family: var(--font-cinzel);
     font-weight: 400;
     font-size: clamp(1.2rem, 2vw, 1.45rem);
-    letter-spacing: -0.03em;
+    letter-spacing: 0.035em;
     line-height: 1.25;
     transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1);
   }

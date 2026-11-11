@@ -231,12 +231,14 @@ body.film-bar .site-nav.topbar.is-clear .aura-ring {
   white-space: nowrap;
 }
 .nav-name {
-  font-size: 0.92rem;
-  letter-spacing: 0.22em;
+  font-size: 1.02rem;
+  letter-spacing: 0.5em;
+  margin-right: -0.5em;
 }
 .foot-name {
-  font-size: 0.78rem;
-  letter-spacing: 0.28em;
+  font-size: 0.95rem;
+  letter-spacing: 0.5em;
+  margin-right: -0.5em;
 }
 .site-foot {
   position: relative;
@@ -263,7 +265,7 @@ body.film-bar .site-nav.topbar.is-clear .aura-ring {
   font-weight: 400;
   font-size: clamp(1.35rem, 2.2vw, 1.9rem);
   line-height: 1.28;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.035em;
 }
 .foot-quiet {
   margin: 0.45rem 0 0;
@@ -363,7 +365,7 @@ body.film-bar .site-nav.topbar.is-clear .aura-ring {
   font-family: var(--font-cinzel);
   font-weight: 400;
   font-size: 1.45rem;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.035em;
 }
 .faq-list {
   margin: 0;
@@ -387,7 +389,7 @@ body.film-bar .site-nav.topbar.is-clear .aura-ring {
 @media (max-width: 800px) {
   .aura-logo { width: 1.85rem; }
   .nav-brand { gap: 0.45rem; min-width: 0; }
-  .nav-name { font-size: 0.62rem; letter-spacing: 0.12em; }
+  .nav-name { font-size: 0.74rem; letter-spacing: 0.5em; }
   .nav-tools { margin-left: auto; flex: 0 0 auto; }
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -981,7 +983,7 @@ body.menu-open .site-nav { z-index: 80; }
   width: fit-content;
   font-family: var(--font-cinzel);
   font-size: clamp(1.8rem, 2.35vw, 2.45rem);
-  letter-spacing: -0.02em;
+  letter-spacing: 0.035em;
   line-height: 1.12;
 }
 .nav-groups a:hover { color: #f4f3ef; }
@@ -1102,8 +1104,8 @@ body[data-living-nav] .site-nav.topbar .aura-ring {
 .site-nav.topbar .nav-brand { gap: 0.7rem; min-height: 44px; }
 .site-nav.topbar .aura-logo { width: 1.55rem; }
 .site-nav.topbar .nav-name {
-  font-size: 0.78rem;
-  letter-spacing: 0.2em;
+  font-size: 0.9rem;
+  letter-spacing: 0.5em;
 }
 .site-nav.topbar .nav-words {
   gap: clamp(0.2rem, 0.9vw, 1rem);
@@ -1192,7 +1194,8 @@ body[data-living-nav] .site-nav.topbar .aura-ring {
 }
 @media (max-width: 420px) {
   .site-nav.topbar { gap: 0.35rem; }
-  .site-nav.topbar .nav-name { letter-spacing: 0.14em; }
+  .site-nav.topbar .nav-name { font-size: 0.8rem; letter-spacing: 0.5em; }
+  .site-nav.topbar .nav-quote-lead { display: none; }
   .site-nav.topbar .nav-quote {
     padding: 0 0.55rem;
     letter-spacing: 0.08em;
@@ -1698,10 +1701,11 @@ html.lenis body {
   margin: 0;
   text-align: center;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(4.25rem, 13vw, 9rem);
   line-height: 0.82;
-  letter-spacing: -0.045em;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
   color: #f4f3ef;
   text-shadow: 0 10px 40px rgba(0, 0, 0, 0.28);
   pointer-events: none;
@@ -1831,19 +1835,21 @@ canvas[data-stage-host='on'] {
 }
 .story-kicker {
   margin: 0 0 1.5rem;
+  font-family: var(--font-inter);
+  font-weight: 500;
   font-size: 0.68rem;
-  letter-spacing: 0.32em;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
-  color: #866243;
+  color: #9c7a55;
 }
 .story-open h2 {
   margin: 0;
   max-width: 14em;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(2.7rem, 6.4vw, 5.6rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  line-height: 1.08;
+  letter-spacing: 0.035em;
 }
 .line-mask {
   display: block;
@@ -2058,9 +2064,9 @@ canvas[data-stage-host='on'] {
 .story-still h3 {
   margin: 0 0 0.85rem;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(2rem, 3.4vw, 3.1rem);
-  letter-spacing: -0.03em;
+  letter-spacing: 0.035em;
 }
 .story-still p {
   margin: 0;
@@ -2080,9 +2086,9 @@ canvas[data-stage-host='on'] {
   margin: 0;
   max-width: 14em;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(2rem, 3.4vw, 3.1rem);
-  letter-spacing: -0.03em;
+  letter-spacing: 0.035em;
 }
 .angle-grid {
   display: grid;
@@ -2138,10 +2144,10 @@ canvas[data-stage-host='on'] {
   right: 4vw;
   margin: 0;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(4.5rem, 18vw, 14rem);
   line-height: 0.8;
-  letter-spacing: -0.055em;
+  letter-spacing: 0.06em;
   color: #f4f3ef;
   opacity: 0.08;
   pointer-events: none;
@@ -2159,10 +2165,10 @@ canvas[data-stage-host='on'] {
 .passage-copy h2 {
   margin: 0.4rem 0 0;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(2.2rem, 4vw, 3.6rem);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  line-height: 1.08;
+  letter-spacing: 0.035em;
 }
 .passage-copy p {
   margin: 1rem 0 0;
@@ -2225,7 +2231,8 @@ canvas[data-stage-host='on'] {
   font-family: var(--font-cinzel);
   font-weight: 400;
   font-size: 0.78rem;
-  letter-spacing: 0.42em;
+  letter-spacing: 0.5em;
+  padding-left: 0.5em;
   color: #f4f3ef;
 }
 .passage-loader-line {
@@ -2314,9 +2321,9 @@ canvas[data-stage-host='on'] {
 #ways .roadmap-stage h2 {
   margin: 0 0 0.7rem;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(1.7rem, 2.6vw, 2.4rem);
-  letter-spacing: -0.03em;
+  letter-spacing: 0.035em;
   line-height: 1.1;
   color: #14120e;
 }
@@ -2356,10 +2363,10 @@ canvas[data-stage-host='on'] {
   margin: 0;
   max-width: 12ch;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(2.8rem, 6vw, 5rem);
-  line-height: 1.02;
-  letter-spacing: -0.03em;
+  line-height: 1.08;
+  letter-spacing: 0.035em;
 }
 .enquire .story-kicker {
   color: #c4a07a;
@@ -2379,8 +2386,8 @@ canvas[data-stage-host='on'] {
   font-family: var(--font-cinzel);
   font-weight: 400;
   font-size: clamp(1.7rem, 2.6vw, 2.2rem);
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  letter-spacing: 0.035em;
+  line-height: 1.08;
 }
 .join-card p {
   margin: 0 0 0.9rem;
@@ -2631,10 +2638,10 @@ canvas[data-stage-host='on'] {
   margin: 0 0 2.5rem;
   max-width: 14em;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(2.4rem, 5vw, 4.4rem);
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  letter-spacing: 0.035em;
+  line-height: 1.08;
 }
 .journeys ol {
   list-style: none;
@@ -2672,7 +2679,7 @@ canvas[data-stage-host='on'] {
   font-family: var(--font-cinzel);
   font-weight: 400;
   font-size: 1.7rem;
-  letter-spacing: -0.03em;
+  letter-spacing: 0.035em;
 }
 .journeys a p {
   margin: 0;
@@ -2790,9 +2797,9 @@ canvas[data-stage-host='on'] {
 }
 .article h1, .article h2, .enquire h2 {
   font-family: var(--font-cinzel);
-  font-weight: 300;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  font-weight: 400;
+  letter-spacing: 0.035em;
+  line-height: 1.08;
 }
 .article h1 { margin: 0 0 0.6rem; font-size: clamp(2.4rem, 5vw, 4.2rem); }
 .article h2 { margin: 2.2rem 0 0.6rem; font-size: 1.7rem; }
@@ -2814,10 +2821,10 @@ canvas[data-stage-host='on'] {
   margin: 0;
   max-width: 12em;
   font-family: var(--font-cinzel);
-  font-weight: 300;
+  font-weight: 400;
   font-size: clamp(3rem, 7vw, 6.4rem);
-  letter-spacing: -0.04em;
-  line-height: 0.95;
+  letter-spacing: 0.035em;
+  line-height: 1.08;
 }
 
 @media (max-width: 800px) {
@@ -3290,5 +3297,16 @@ html.ridge-seen .ridge-load {
   }
   .ridge-load {
     animation: ridge-leave 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+}
+
+/* Catalog tracking is wider, so the intro lines get a phone size that keeps
+   each phrase on one line (the strike reads through a single line). */
+@media (max-width: 800px) {
+  .story-open.is-intro h2 {
+    font-size: clamp(2.1rem, 10.4vw, 3rem);
+  }
+  .story-open.is-intro h2 .is-struck .line {
+    white-space: nowrap;
   }
 }
