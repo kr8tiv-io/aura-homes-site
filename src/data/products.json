@@ -1,0 +1,1264 @@
+{
+ "products": [
+  {
+   "slug": "lie-down-skywalker",
+   "name": "Lie Down, Skywalker",
+   "stage": "Available soon",
+   "tier": "Signature",
+   "kicker": "The glass sleep pod",
+   "tagline": "A bed, the sky, and nothing in between.",
+   "lede": "A glass room with one job: put your bed under the stars. You fall asleep counting them and wake up already outside.",
+   "body": [
+    "Four walls of glass and a ceiling of glass, on slim black steel with clean square corners. Inside, a plush bed, a brass reading lamp and a small heater with an ember glow that keeps the room warm while the snow comes down outside.",
+    "Set it at the bottom of the garden or out where the trees begin. It is the easiest way we know to spend more of your life outdoors, even the part you sleep through. Pull up the duvet, look up, and let the show start at dusk."
+   ],
+   "features": [
+    "Flat glass walls and a full glass roof",
+    "Slim black steel, square corners",
+    "Plush bed with a luxury mattress and linen bedding",
+    "Small ember-glow heater, warm through an Alberta winter",
+    "Total Eclipse Mode blackout shade for lie-ins",
+    "In Space No One Can Hear You Snore acoustic seals",
+    "Sunrise wake-up lighting"
+   ],
+   "addons": [
+    "Gravity Well Duvet",
+    "42 Pillows",
+    "Planetarium Mode",
+    "Deep Field Telescope",
+    "Warp Core Floors"
+   ],
+   "images": {
+    "hero": "skywalker-meadow.jpg",
+    "interior": "skywalker-interior.jpg",
+    "land": "sleep-pod-square-standalone.jpg",
+    "wheels": "sleep-pod-square-trailer.jpg"
+   },
+   "layout": "sleep-pod",
+   "no": 1
+  },
+  {
+   "slug": "of-course-i-still-tow-you",
+   "name": "Of Course I Still Tow You",
+   "stage": "Available soon",
+   "tier": "Second Life",
+   "kicker": "The easy one everyone asks for",
+   "lede": "Our easiest room to love. A tall mirror-glass front, a balcony that folds down to meet the grass, and a hitch that keeps your options open.",
+   "body": [
+    "Built on a refurbished second-life trailer and finished like it was always meant to be beautiful. Park it at the forest edge this summer and somewhere new the next."
+   ],
+   "features": [
+    "Refurbished second-life trailer, ready to tow",
+    "Floor-to-ceiling mirror-glass front",
+    "Fold-down glass balcony with glass rail",
+    "Wood entry door and cedar step",
+    "Built-in linen bench",
+    "Warm cove lighting"
+   ],
+   "addons": [
+    "Warp Core Floors",
+    "Hang Solo",
+    "Second Breakfast Station",
+    "Subspace Relay",
+    "Blast Doors"
+   ],
+   "images": {
+    "hero": "layout-forest.jpg"
+   },
+   "layout": "split-left",
+   "no": 2
+  },
+  {
+   "slug": "the-goldfish-protocol",
+   "name": "The Goldfish Protocol",
+   "stage": "Available soon",
+   "tier": "Essentials",
+   "kicker": "Fishbowl, but for grownups",
+   "lede": "Our simplest room, and the easiest to say yes to. Clear walls, sliding windows, and the whole meadow pressed up against the glass.",
+   "body": [
+    "Bright polycarbonate walls on slim white posts, wide sliding windows on every side and a cedar deck at the door. It lets the daylight do the decorating, so the inside stays calm, pale and uncluttered.",
+    "One room, set up your way: a quiet office, a living room or a bedroom. Start with one, add another when you are ready. Memory of a goldfish not required; you will remember this view."
+   ],
+   "features": [
+    "Clear, light polycarbonate walls",
+    "Wide sliding windows on every side",
+    "Cedar deck at the door",
+    "Set up as an office, a living room or a bedroom",
+    "Our most affordable room"
+   ],
+   "addons": [
+    "Here Comes The Sun",
+    "Warp Core Floors",
+    "42 Pillows"
+   ],
+   "images": {
+    "hero": "goldfish-hero.jpg",
+    "office": "goldfish-office.jpg",
+    "living": "goldfish-living.jpg",
+    "bedroom": "goldfish-bedroom.jpg"
+   },
+   "layout": "quad",
+   "no": 3
+  },
+  {
+   "slug": "hot-take",
+   "name": "Hot Take",
+   "stage": "Available soon",
+   "tier": "Second Life",
+   "kicker": "The hot tub that travels",
+   "lede": "A hot tub with a passport. Tow it somewhere beautiful, light the stove, and let the steam make its argument.",
+   "body": [
+    "A wood-fired cedar tub inside a clear glass room, two panels open to the meadow, firewood stacked within reach. Levelling jacks find flat ground wherever the view is."
+   ],
+   "features": [
+    "Wood-fired cedar hot tub",
+    "Clear glass enclosure, two opening panels",
+    "Refurbished tandem trailer, wheels and all",
+    "Built-in firewood rack",
+    "Weatherproof tub cover",
+    "Levelling jacks for uneven ground"
+   ],
+   "addons": [
+    "Fog Of War, Cleared",
+    "Captain's Log Pile",
+    "The Warm Towel Directive",
+    "Rain On Arrakis"
+   ],
+   "images": {
+    "hero": "layout-gazebo.jpg"
+   },
+   "layout": "plate",
+   "no": 4
+  },
+  {
+   "slug": "hitchhikers-guide-to-the-guest-room",
+   "name": "A Hitchhiker's Guide to the Guest Room",
+   "stage": "Available soon",
+   "tier": "Second Life",
+   "kicker": "The guest room",
+   "lede": "Everything a guest needs to know, starting with Don't Panic. There is always a towel.",
+   "body": [
+    "A long linen sofa that folds out to a double, a low oak table, and a long glass side that opens to the meadow and lets the wind in. Your guests will ask to stay another night. Let them."
+   ],
+   "features": [
+    "Long linen sofa, folds out to a double",
+    "Low oak table",
+    "Long glass side that opens to the meadow",
+    "Towel hooks, with two towels, always",
+    "Guest cubbies and reading lights",
+    "On a refurbished trailer, or set down for good"
+   ],
+   "addons": [
+    "Second Breakfast Station",
+    "The Rain Room",
+    "The Wardrobe To Narnia",
+    "42 Pillows"
+   ],
+   "images": {
+    "hero": "layout-lounge-wind.jpg"
+   },
+   "layout": "split-right",
+   "no": 5
+  },
+  {
+   "slug": "behind-door-number-one",
+   "name": "Behind Door Number One",
+   "stage": "Available soon",
+   "tier": "Second Life",
+   "kicker": "Mysterious. Then cozy.",
+   "lede": "Outside, a long wall of smoked glass. Open one door, or all of them, and the whole side folds into the evening.",
+   "body": [
+    "Inside: warm oak, a walnut desk and a linen sofa, lit low and gold. Neighbours see a mirror. You see the sunset. The room's whole personality is a plot twist."
+   ],
+   "features": [
+    "Full-length run of folding glass doors",
+    "Smoked glass for privacy by day",
+    "Warm oak walls and floor",
+    "Walnut desk and linen sofa",
+    "Long, simple, easy to place"
+   ],
+   "addons": [
+    "Blast Doors",
+    "Second Breakfast Station",
+    "The Encyclopedia Galactica Corner",
+    "Awesome Mix Vol. 1"
+   ],
+   "images": {
+    "hero": "layout-door.jpg"
+   },
+   "layout": "plate",
+   "no": 6
+  },
+  {
+   "slug": "a-starry-night",
+   "name": "A Starry Night",
+   "stage": "Available soon",
+   "tier": "Signature",
+   "kicker": "The original room",
+   "lede": "The first Aura room, and still the one people point at. The long side opens and the evening walks in.",
+   "body": [
+    "Honey oak walls and ceiling, a built-in linen sofa, and a deck with a lit edge and a river-stone border. It is the all-rounder: for long evenings, slow mornings and everything in between."
+   ],
+   "features": [
+    "Opening long-side glass bay",
+    "Honey oak walls and ceiling",
+    "Built-in linen sofa",
+    "Deck with a lit edge and river-stone border",
+    "Dimmable cove lighting"
+   ],
+   "addons": [
+    "The Hearth Of Gold",
+    "The Encyclopedia Galactica Corner",
+    "Awesome Mix Vol. 1",
+    "Skylight Walker"
+   ],
+   "images": {
+    "hero": "story-room.jpg"
+   },
+   "layout": "band",
+   "no": 7
+  },
+  {
+   "slug": "the-soak",
+   "name": "The Soak",
+   "stage": "Available soon",
+   "tier": "Signature",
+   "kicker": "The hot tub room",
+   "lede": "A wood-fired cedar tub, a black-glass room to dry off in, and a daybed for the part after. Bring your towel.",
+   "body": [
+    "The tub steams on its own deck pad in the tall grass. The room behind it is for changing, lounging and warming up, and the hanging daybed under its steel arch is for doing absolutely nothing at all."
+   ],
+   "features": [
+    "Wood-fired cedar hot tub on its own deck pad",
+    "Black-glass room for changing and lounging",
+    "Hanging daybed under a steel arch",
+    "Heated towel rail by the door",
+    "Low deck and path lighting",
+    "Covered firewood store"
+   ],
+   "addons": [
+    "The Hoth Plunge",
+    "The Arrakis Sauna",
+    "Carbonite Chiller",
+    "Two Suns Deck Heaters"
+   ],
+   "images": {
+    "hero": "story-meadow-side.jpg",
+    "second": "story-nest.jpg"
+   },
+   "layout": "grid-r",
+   "no": 8
+  },
+  {
+   "slug": "the-stargazer",
+   "name": "The Stargazer",
+   "stage": "Available soon",
+   "tier": "Signature",
+   "kicker": "Sleep, and nothing else",
+   "lede": "A bedroom with one job and a ceiling with no limit.",
+   "body": [
+    "A plush king bed on a low oak platform, warm oak all around, and a glass roof that turns the whole night sky into the ceiling. The meadow waits at the end wall for the morning.",
+    "For lie-ins, the blackout shade closes over the glass and the room goes dark and perfectly quiet."
+   ],
+   "features": [
+    "Plush king bed on a low oak platform",
+    "Glass skylight roof over the bed",
+    "Total Eclipse Mode blackout shade",
+    "Seriously quiet acoustic insulation",
+    "Whisper-quiet heating and cooling",
+    "Sunrise wake-up lighting"
+   ],
+   "addons": [
+    "Gravity Well Duvet",
+    "42 Pillows",
+    "Warp Core Floors",
+    "Planetarium Mode"
+   ],
+   "images": {
+    "hero": "layout-sky.jpg"
+   },
+   "layout": "split-left",
+   "no": 9
+  },
+  {
+   "slug": "office-space-odyssey",
+   "name": "Office Space Odyssey",
+   "stage": "Available soon",
+   "tier": "Signature",
+   "kicker": "Deep focus mode: on",
+   "lede": "Somewhere between a writer's cabin and a starship bridge. Two walls of glass, one long walnut desk, and a commute measured in footsteps.",
+   "body": [
+    "Glowing oak walls, a linen chair and glass on two sides facing the horizon. The corner panel swings open onto the grass, which is either the best feature or the most dangerous one.",
+    "Out here the wifi is strong, the distractions are weak, and the ideas show up early. Most people come back in. Eventually."
+   ],
+   "features": [
+    "Two walls of floor-to-ceiling glass",
+    "Corner glass door that opens to the meadow",
+    "Long walnut desk with brass lamp",
+    "Linen task chair",
+    "Warm cove lighting for late finishes"
+   ],
+   "addons": [
+    "Subspace Relay",
+    "The Encyclopedia Galactica Corner",
+    "Here Comes The Sun",
+    "Warp Core Floors"
+   ],
+   "images": {
+    "hero": "layout-corner.jpg"
+   },
+   "layout": "split-left",
+   "no": 10
+  },
+  {
+   "slug": "auroras-looking-glass",
+   "name": "Aurora's Looking Glass",
+   "stage": "Available soon",
+   "tier": "Signature",
+   "kicker": "The private view room",
+   "lede": "You see the whole meadow. The meadow sees its own reflection. Nothing to see here.",
+   "body": [
+    "One-way mirror glass on the outside, a clear view from within. A low linen bed, a wide skylight for the Milky Way, and a full glass end wall that turns the night into the main event."
+   ],
+   "features": [
+    "One-way mirror glass, clear view inside",
+    "Floor-to-ceiling glass end wall",
+    "Wide skylight",
+    "Low linen bed that doubles as a daybed",
+    "Oak ledge shelf for books and lamps",
+    "Warm cove lighting"
+   ],
+   "addons": [
+    "Cloaking Device",
+    "The Hearth Of Gold",
+    "Deep Field Telescope",
+    "Inner Peace, Outer Space"
+   ],
+   "images": {
+    "hero": "layout-night.jpg"
+   },
+   "layout": "split-right",
+   "no": 11
+  },
+  {
+   "slug": "hot-tub-time-machine",
+   "name": "Hot Tub Time Machine",
+   "stage": "Available soon",
+   "tier": "Made in-house",
+   "kicker": "The standalone wood-fired hot tub",
+   "lede": "Step in at dusk. Step out whenever you like. Time behaves differently at forty degrees.",
+   "body": [
+    "A round cedar tub with its own chimney stove, set inside a clear enclosure with a roof, so the snow becomes scenery. We build it ourselves, in our own shop, and it sets down level wherever you want to lose track of time."
+   ],
+   "features": [
+    "Round wood-fired cedar tub",
+    "Chimney stove with a glowing window",
+    "Clear enclosure with a roof",
+    "Steel and timber base that sets down level",
+    "Made in-house by Aura"
+   ],
+   "addons": [
+    "Cool Runnings",
+    "Captain's Log Pile",
+    "The Warm Towel Directive",
+    "Two Suns Deck Heaters"
+   ],
+   "images": {
+    "hero": "hot-tub-time-machine.jpg"
+   },
+   "layout": "band",
+   "no": 12
+  },
+  {
+   "slug": "cool-runnings",
+   "name": "Cool Runnings",
+   "stage": "Available soon",
+   "tier": "Made in-house",
+   "kicker": "The cedar cold plunge",
+   "lede": "Feel the rhythm, feel the rhyme. Get on in, it's plunge time.",
+   "body": [
+    "A long oval cedar bathtub for one, with a sloped backrest and smooth oiled rims. Fill it cold, step in brave, and come out feeling like you could win gold. Made in-house, on a low timber base for the frosted grass, the deck or the dock."
+   ],
+   "features": [
+    "Single-person cedar bathtub, long and oval",
+    "Sloped backrest",
+    "Smooth oiled cedar, rounded rims",
+    "Low timber base",
+    "Made in-house by Aura"
+   ],
+   "addons": [
+    "Hot Tub Time Machine",
+    "Rain On Arrakis",
+    "The Warm Towel Directive"
+   ],
+   "images": {
+    "hero": "aura-cold-plunge-bathtub.jpg"
+   },
+   "layout": "split-left",
+   "no": 13
+  },
+  {
+   "slug": "fire-and-ice",
+   "name": "Fire and Ice",
+   "stage": "Available soon",
+   "tier": "The bundle",
+   "kicker": "Hot Tub Time Machine + Cool Runnings",
+   "lede": "Heat, then the brave part, then heat again. The matched pair, side by side on one deck.",
+   "body": [
+    "Our wood-fired hot tub and our cedar cold plunge, built together and finished to match. The oldest ritual in the north, made beautiful."
+   ],
+   "features": [
+    "Hot Tub Time Machine",
+    "Cool Runnings",
+    "Finished as a matched pair",
+    "Made in-house by Aura"
+   ],
+   "addons": [
+    "The Arrakis Sauna",
+    "Rain On Arrakis",
+    "Captain's Log Pile"
+   ],
+   "images": {
+    "hero": "fire-and-ice.jpg"
+   },
+   "layout": "plate",
+   "no": 14
+  },
+  {
+   "slug": "thirst-contact",
+   "name": "Thirst Contact",
+   "stage": "Available soon",
+   "tier": "Built into the room",
+   "kicker": "Water from the sky",
+   "lede": "Water from the sky, bottled in the backyard.",
+   "body": [
+    "An atmospheric water generator, built right into the room. It draws moisture from the air, filters it and turns it into clean drinking water, so the freshest glass you will ever pour comes from the sky above your own roof. First contact has never tasted better."
+   ],
+   "features": [
+    "Atmospheric water generator, built in",
+    "Draws and filters water from the air",
+    "Fill-and-bottle station inside the room",
+    "Fits any Aura room"
+   ],
+   "addons": [
+    "Rain Catcher Of Kamino",
+    "Fremen Water Discipline",
+    "Here Comes The Sun"
+   ],
+   "images": {
+    "hero": "water-roof.jpg",
+    "second": "water-line.jpg"
+   },
+   "layout": "grid",
+   "no": 15
+  },
+  {
+   "slug": "leaf-skywalker",
+   "name": "Leaf Skywalker",
+   "stage": "Coming after",
+   "tier": "Signature",
+   "kicker": "The aeroponic grow room",
+   "lede": "Grow long and prosper. One long wall is a garden, and the roots live on mist.",
+   "body": [
+    "A full-length aeroponic grow wall, its roots fed by a fine nutrient mist instead of soil. Timed grow light keeps the greens bright all winter, and the potting bench is right there when it is time to harvest dinner."
+   ],
+   "features": [
+    "Full-length aeroponic grow wall",
+    "Nutrient mist and water loop",
+    "Timed grow lighting",
+    "Cedar deck platform",
+    "Potting bench with sink",
+    "Ventilation and climate control"
+   ],
+   "addons": [
+    "Thirst Contact",
+    "Rain Catcher Of Kamino",
+    "Power Converters From Tosche Station",
+    "Circle Of Life"
+   ],
+   "images": {
+    "hero": "farm-wall.jpg",
+    "second": "farm-room.jpg"
+   },
+   "layout": "grid-r",
+   "no": 16
+  },
+  {
+   "slug": "jungle-book-canopy-of-stars",
+   "name": "Jungle Book: Canopy Of Stars",
+   "stage": "Coming after",
+   "tier": "Signature",
+   "kicker": "Our second home",
+   "lede": "A small glass room in the rainforest, warm inside while the mist rolls through the trees. Costa Rica, by way of a very calm spaceship.",
+   "body": [
+    "Smoked glass, honey oak and a linen sofa, set on a low deck among the ferns and palms. The canopy hums all night and the stars show up between the leaves.",
+    "It is the same Aura room, taken somewhere warmer and much greener. Bring a good book. The jungle will supply the soundtrack."
+   ],
+   "features": [
+    "Smoked glass and honey oak",
+    "Low deck among the ferns",
+    "Linen sofa and warm cove lighting",
+    "Built for warm, wet climates"
+   ],
+   "addons": [
+    "Rain On Arrakis",
+    "Hang Solo",
+    "Awesome Mix Vol. 1"
+   ],
+   "images": {
+    "hero": "canopy-of-stars.jpg"
+   },
+   "layout": "split-right",
+   "no": 17
+  },
+  {
+   "slug": "the-forest-edge",
+   "name": "The Forest Edge",
+   "stage": "Coming after",
+   "tier": "Adventure",
+   "kicker": "For land the road forgot",
+   "lede": "The long way round. A full-length glass side on all-terrain wheels, with the tub and the daybed already unpacked.",
+   "body": [
+    "Long, dark and built for rough ground. Big tyres take it past where the gravel ends, and a heavy roof rack stands ready for Full Solar, so the farther you go, the quieter it gets."
+   ],
+   "features": [
+    "All-terrain tandem axle, big tyres",
+    "Full-length glass long side",
+    "Low metal roof, dark ribbed end walls",
+    "Cedar tub on a deck pad",
+    "Hanging daybed under a steel arch",
+    "Heavy roof rack, ready for Full Solar"
+   ],
+   "addons": [
+    "The Airlock",
+    "The Kayak Run",
+    "Speeder Bike Rack",
+    "Rain Catcher Of Kamino"
+   ],
+   "images": {
+    "hero": "forest-edge-wide.jpg"
+   },
+   "layout": "band",
+   "no": 18
+  },
+  {
+   "slug": "siddharthas-a-wing",
+   "name": "Siddhartha's A-Wing",
+   "stage": "Coming after",
+   "tier": "Resort",
+   "kicker": "The resort lodge, fully stocked",
+   "lede": "Enlightenment, with a very steep roof. It comes with everything, including the net.",
+   "body": [
+    "A black lodge with a full-height glass gable, a wide railed deck in the wildflowers and the mountains behind. A full kitchen, a rain shower, a sleeping loft, a wood stove and a hot tub on the deck. Nothing to add but yourself."
+   ],
+   "features": [
+    "Steep-roofed lodge, full-height glass gable",
+    "Wide railed deck",
+    "Deck netting and an interior loft net",
+    "Full kitchen, rain shower, sleeping loft",
+    "Wood stove and in-floor heating",
+    "Hot tub on the deck"
+   ],
+   "addons": [
+    "The Arrakis Sauna",
+    "The Hoth Plunge",
+    "The Kayak Run",
+    "Captain's Log Pile"
+   ],
+   "images": {
+    "hero": "a-wing-golden-hour.jpg",
+    "second": "a-wing-hot-tub.jpg"
+   },
+   "layout": "grid",
+   "no": 19
+  },
+  {
+   "slug": "cloud-nine",
+   "name": "Cloud Nine",
+   "stage": "Coming after",
+   "tier": "Resort",
+   "kicker": "The A-Wing, on steroids",
+   "lede": "Siddhartha found enlightenment. Cloud Nine found a gym, a TV station and three more nets to lie in.",
+   "body": [
+    "Everything in Siddhartha's A-Wing, then more of all of it. A bigger deck with nooks beneath it, a walkout top-floor balcony with its own net, and walnut, stone and smart glass wherever you look."
+   ],
+   "features": [
+    "Everything in Siddhartha's A-Wing",
+    "Under-deck nooks for reading and napping",
+    "Nets on the deck, loft, balcony and below",
+    "Walkout top-floor balcony",
+    "Home gym and a TV station",
+    "Walnut, stone, smart glass, best linens"
+   ],
+   "addons": [
+    "Bacta Tank",
+    "Player One Station",
+    "The Batpole"
+   ],
+   "images": {
+    "hero": "resort-deck.jpg"
+   },
+   "layout": "compare",
+   "no": 20
+  },
+  {
+   "slug": "pandoras-glass-stairway-to-heaven",
+   "name": "Pandora's Glass Stairway to Heaven",
+   "stage": "Coming after",
+   "tier": "Resort",
+   "kicker": "The curved-glass tower",
+   "lede": "Open the box and climb. Every level is glass, and the top one is all sky.",
+   "body": [
+    "A round tower of curved glass, several decks high, every level glowing in the snow. An outside stair links lounge, bedroom and view levels, and the railed roof deck is where the evening ends."
+   ],
+   "features": [
+    "Multi-level curved-glass tower",
+    "Outside stair between decks",
+    "Roof deck with rail and netting",
+    "Full kitchen and bathroom on the main level",
+    "In-floor heating and a wood stove",
+    "Fully furnished, every level"
+   ],
+   "addons": [
+    "Deep Field Telescope",
+    "Cloaking Device",
+    "Planetarium Mode",
+    "Death Star Disco Ball"
+   ],
+   "images": {
+    "hero": "resort-tower.jpg"
+   },
+   "layout": "tower",
+   "no": 21
+  },
+  {
+   "slug": "waste-of-space",
+   "name": "Waste of Space",
+   "stage": "Coming after",
+   "tier": "System module",
+   "kicker": "The wastewater module, with a view",
+   "lede": "Every beautiful room has something quietly going on behind the scenes. Ours comes with a rooftop deck.",
+   "body": [
+    "Waste of Space looks after the black water and the grey water for your whole Aura setup. It runs long, because good plumbing takes room, so we dressed every metre of it in charred cedar and warm wood. Lay it on the ground beside your rooms and your solar, connect it, and never think about it again.",
+    "Then we gave the whole roof away. A stair climbs to a railed deck that runs end to end: a cedar hot tub, a hammock, a small gym corner and a telescope for the clear nights. Up there it is you, the stars, and the quiet satisfaction of lounging on top of your own system. Rise above it all. Literally."
+   ],
+   "features": [
+    "Manages black water and grey water",
+    "A long module, with room for all the plumbing",
+    "Lays out on the ground and connects to the Aura system",
+    "Plugs in beside Full Solar and the other modules",
+    "Charred cedar and warm wood cladding",
+    "Stair to a railed deck across the whole roof",
+    "Rooftop cedar hot tub, hammock and small gym corner",
+    "A telescope corner for the clear nights"
+   ],
+   "addons": [
+    "Here Comes The Sun",
+    "Fremen Water Discipline",
+    "Deep Field Telescope",
+    "Mostly Harmless Hammock"
+   ],
+   "images": {
+    "hero": "waste-of-space-long-1.jpg",
+    "second": "waste-of-space-long-2.jpg"
+   },
+   "quote": "The best seat in the house sits on top of its least glamorous job.",
+   "layout": "waste",
+   "no": 22
+  }
+ ],
+ "compare": [
+  [
+   "Deck",
+   "Wide railed deck",
+   "Bigger deck, nooks beneath"
+  ],
+  [
+   "Netting",
+   "Deck and loft",
+   "Deck, loft, balcony, under-deck"
+  ],
+  [
+   "Top floor",
+   "Sleeping loft",
+   "Walkout balcony with its own net"
+  ],
+  [
+   "Gym and TV",
+   "None",
+   "Home gym and a TV station"
+  ],
+  [
+   "Kitchen",
+   "Full kitchen",
+   "Premium appliances"
+  ],
+  [
+   "Heat",
+   "Wood stove, in-floor",
+   "Plus deck heaters"
+  ],
+  [
+   "Finishes",
+   "Warm and well made",
+   "Walnut, stone, smart glass"
+  ],
+  [
+   "In one line",
+   "Fully stocked",
+   "Fully stocked, then some"
+  ]
+ ],
+ "limited": [
+  {
+   "name": "Of Course I Still Fly You",
+   "text": "A small amphibious plane on its own trailer, wings folded, parked beside a sleep-in Aura room. Land on the lake, fold the wings, and sleep a few steps from the water.",
+   "image": "fly-you.jpg"
+  },
+  {
+   "name": "Of Course I Still Float You",
+   "text": "An Aura room on pontoons, moored at the dock, the glass front facing the water.",
+   "image": "float-you.jpg"
+  },
+  {
+   "name": "Twenty Thousand Leagues Under The Deck",
+   "text": "A full Aura houseboat with its own engine: bedroom, galley, glass all round and a roof deck for the evening."
+  },
+  {
+   "name": "The Life Of Pontoon",
+   "text": "Pull it to the launch, float it off the trailer, and anchor wherever the view is best."
+  },
+  {
+   "name": "The Quad Squad",
+   "text": "A garage bay at the back for a quad, an all-glass front for living. The back wall drops into a ramp and out it rolls."
+  }
+ ],
+ "someday": [
+  [
+   "Ewok Village Edition",
+   "On stilts among the trees, with a rope bridge to a second room."
+  ],
+  [
+   "The Bifrost",
+   "Two rooms joined by a short glass bridge."
+  ],
+  [
+   "The Convertible",
+   "A roof that slides back for open-sky nights."
+  ],
+  [
+   "Palomar Pocket",
+   "A small observatory dome on the roof."
+  ],
+  [
+   "Hoth Crawler",
+   "On tracks, for snowfields and frozen lakes."
+  ],
+  [
+   "Mars Base One",
+   "Available on Mars, as soon as Mars is."
+  ]
+ ],
+ "addons": [
+  {
+   "category": "Heat",
+   "items": [
+    {
+     "name": "The Hearth Of Gold",
+     "plain": "Wood stove fireplace",
+     "text": "A glass-front wood stove with a proper flue and a hearth worth sitting at."
+    },
+    {
+     "name": "Mount Doom, Domesticated",
+     "plain": "Wood furnace",
+     "text": "Heats the whole room through ducts. One log, one evening."
+    },
+    {
+     "name": "Warp Core Floors",
+     "plain": "In-floor heating",
+     "text": "Radiant heat underfoot, so bare feet are welcome in January."
+    },
+    {
+     "name": "The Tatooine-Hoth Switch",
+     "plain": "Heat pump",
+     "text": "A quiet mini-split for desert summers and ice-planet winters."
+    },
+    {
+     "name": "Two Suns Deck Heaters",
+     "plain": "Infrared deck heaters",
+     "text": "Keeps the deck in use well into the shoulder seasons."
+    },
+    {
+     "name": "Prometheus Pit",
+     "plain": "Outdoor fire pit",
+     "text": "A steel fire pit with a spark screen and a ring of seats."
+    },
+    {
+     "name": "The Warm Towel Directive",
+     "plain": "Heated towel rail",
+     "text": "The most important thing a hitchhiker can own, now warm."
+    },
+    {
+     "name": "Warmer Than A Tauntaun",
+     "plain": "Heated bench seating",
+     "text": "A built-in bench with a gently heated seat."
+    }
+   ]
+  },
+  {
+   "category": "Sleep and Comfort",
+   "items": [
+    {
+     "name": "Sleeper Service",
+     "plain": "Plush king bed",
+     "text": "A luxury mattress on a low oak platform, built in."
+    },
+    {
+     "name": "Total Eclipse Mode",
+     "plain": "Blackout skylight shade",
+     "text": "A motorised blackout shade for skylights and glass roofs."
+    },
+    {
+     "name": "In Space No One Can Hear You Snore",
+     "plain": "Acoustic insulation",
+     "text": "Dense insulation and seals for a seriously quiet room."
+    },
+    {
+     "name": "Gravity Well Duvet",
+     "plain": "Weighted duvet and linens",
+     "text": "A weighted duvet, linen sheets and a second set for the wash."
+    },
+    {
+     "name": "42 Pillows",
+     "plain": "Pillow menu",
+     "text": "Firm, soft, cooling, long. Close enough to the answer."
+    },
+    {
+     "name": "Dawn Of The Planet Of The Naps",
+     "plain": "Sunrise wake-up lighting",
+     "text": "Lights that brighten slowly at the hour you choose."
+    },
+    {
+     "name": "The Wardrobe To Narnia",
+     "plain": "Built-in wardrobe",
+     "text": "Floor-to-ceiling oak storage. Snow and lions not included."
+    },
+    {
+     "name": "Cryosleep Pod, Warm Edition",
+     "plain": "Daybed nook",
+     "text": "A cushioned nook for naps, reading or a small guest."
+    },
+    {
+     "name": "Blackout Of The Jedi",
+     "plain": "Blackout curtains",
+     "text": "Heavy linen on a ceiling track, for full dark on demand."
+    }
+   ]
+  },
+  {
+   "category": "Netting and Lounging",
+   "items": [
+    {
+     "name": "The Ewok Treehouse Net",
+     "plain": "Interior hanging net",
+     "text": "A loft net strung inside the room, for reading in mid-air."
+    },
+    {
+     "name": "Into The Spider-Verse",
+     "plain": "Deck cargo net",
+     "text": "A tensioned net out over the deck edge, above the grass or snow."
+    },
+    {
+     "name": "Zero-G Balcony",
+     "plain": "Balcony net",
+     "text": "A safety-rated net across a balcony or roof deck."
+    },
+    {
+     "name": "Hang Solo",
+     "plain": "Hanging daybed",
+     "text": "The velvet daybed on chains, under its own steel arch."
+    },
+    {
+     "name": "The Escape Pod",
+     "plain": "Hanging egg chair",
+     "text": "A woven egg chair on a ceiling mount. Droids optional."
+    },
+    {
+     "name": "Mostly Harmless Hammock",
+     "plain": "Hammock",
+     "text": "A two-person hammock on a freestanding stand."
+    },
+    {
+     "name": "The Hobbit Hole",
+     "plain": "Under-deck nook",
+     "text": "A sheltered, cushioned den built under the deck."
+    },
+    {
+     "name": "The Lazy Jedi",
+     "plain": "Floor cushions",
+     "text": "Big cushions in linen and wool. Do or do not get up."
+    },
+    {
+     "name": "Mission: Higher Ground",
+     "plain": "Roof deck, any room",
+     "text": "Railings, a deck across the roof and a stair up, with an optional cedar tub. Available on any Aura room."
+    }
+   ]
+  },
+  {
+   "category": "Kitchen and Grill",
+   "items": [
+    {
+     "name": "The Restaurant At The End Of The Universe",
+     "plain": "Full kitchen",
+     "text": "Sink, induction hob, oven, fridge and storage, in oak."
+    },
+    {
+     "name": "Second Breakfast Station",
+     "plain": "Kitchenette",
+     "text": "A compact counter, a sink, a two-ring hob and a small fridge."
+    },
+    {
+     "name": "Mustafar Grill Station",
+     "plain": "Outdoor grill station",
+     "text": "A built-in grill with prep counter and storage on the deck."
+    },
+    {
+     "name": "A Pizza Hope",
+     "plain": "Wood-fired pizza oven",
+     "text": "Hits pizza temperature fast, right on the deck."
+    },
+    {
+     "name": "The Bean Must Flow",
+     "plain": "Coffee bar",
+     "text": "Espresso machine, grinder and a cup shelf in one corner."
+    },
+    {
+     "name": "Carbonite Chiller",
+     "plain": "Drinks fridge",
+     "text": "Under-counter cold for drinks, wine and cold towels."
+    },
+    {
+     "name": "Smoke On The Water",
+     "plain": "Smoker",
+     "text": "A pellet or wood smoker for low and slow on the deck."
+    },
+    {
+     "name": "The Cantina Counter",
+     "plain": "Breakfast bar",
+     "text": "A counter along the glass with stools, for eating with a view."
+    },
+    {
+     "name": "Prep For Hyperspace",
+     "plain": "Outdoor sink and prep",
+     "text": "A stainless sink and counter beside the grill."
+    }
+   ]
+  },
+  {
+   "category": "Entertainment",
+   "items": [
+    {
+     "name": "The Holodeck Nook",
+     "plain": "TV nook",
+     "text": "A built-in TV wall, hidden cables and a soft seat facing it."
+    },
+    {
+     "name": "Industrial Light And Movie Night",
+     "plain": "Projector and screen",
+     "text": "A projector and pull-down screen for films on the deck."
+    },
+    {
+     "name": "The Cantina Band",
+     "plain": "Sound system",
+     "text": "Indoor and outdoor speakers, tuned for the room."
+    },
+    {
+     "name": "The Encyclopedia Galactica Corner",
+     "plain": "Library and games",
+     "text": "Shelves for books and games, a lamp and a table to play on."
+    },
+    {
+     "name": "Player One Station",
+     "plain": "Games console",
+     "text": "A console, a good screen and two comfortable chairs."
+    },
+    {
+     "name": "Awesome Mix Vol. 1",
+     "plain": "Record player corner",
+     "text": "A turntable, speakers and a shelf for records."
+    },
+    {
+     "name": "Holochess Table",
+     "plain": "Card and chess table",
+     "text": "A small table with a built-in board and two chairs."
+    },
+    {
+     "name": "Insert Coin To Continue",
+     "plain": "Arcade cabinet",
+     "text": "A full-size cabinet loaded with classics."
+    }
+   ]
+  },
+  {
+   "category": "Outdoors and Adventure",
+   "items": [
+    {
+     "name": "So Long, And Thanks For All The Fish",
+     "plain": "Fishing rod rack",
+     "text": "Rods, nets and tackle, ready by the door."
+    },
+    {
+     "name": "The Kayak Run",
+     "plain": "Kayak or board rack",
+     "text": "An outside rack for two kayaks or paddleboards."
+    },
+    {
+     "name": "Speeder Bike Rack",
+     "plain": "Bike rack",
+     "text": "A lockable rack for up to four bikes."
+    },
+    {
+     "name": "Bag Of Holding",
+     "plain": "Gear locker",
+     "text": "A weatherproof locker for tents, packs and stoves."
+    },
+    {
+     "name": "Echo Base Ski Rack",
+     "plain": "Ski rack and boot dryer",
+     "text": "Racks for skis and boards, plus a heated boot dryer."
+    },
+    {
+     "name": "Rain On Arrakis",
+     "plain": "Outdoor shower",
+     "text": "Hot and cold, on a cedar pad under the open sky."
+    },
+    {
+     "name": "The Airlock",
+     "plain": "Mud room",
+     "text": "A bench, hooks and a drain for wet boots."
+    },
+    {
+     "name": "Captain's Log Pile",
+     "plain": "Covered firewood rack",
+     "text": "Keeps a whole season of wood dry."
+    },
+    {
+     "name": "Who's A Good Wookiee",
+     "plain": "Dog wash and pet door",
+     "text": "Warm-water dog wash and a weather-sealed pet door."
+    },
+    {
+     "name": "Endor Wildlife Cam",
+     "plain": "Wildlife camera",
+     "text": "Sends you the deer, the fox and the occasional bear."
+    }
+   ]
+  },
+  {
+   "category": "Wellness",
+   "items": [
+    {
+     "name": "The Arrakis Sauna",
+     "plain": "Barrel sauna",
+     "text": "A cedar barrel sauna with a wood or electric stove."
+    },
+    {
+     "name": "The Hoth Plunge",
+     "plain": "Cold plunge",
+     "text": "A chilled plunge for the brave part after the sauna."
+    },
+    {
+     "name": "Dagobah Gym",
+     "plain": "Home gym",
+     "text": "Rack, weights, bench and a mat. Train you will."
+    },
+    {
+     "name": "Om Sweet Om",
+     "plain": "Yoga deck",
+     "text": "A level platform out on the grass, with a mat store."
+    },
+    {
+     "name": "The Rain Room",
+     "plain": "Bathroom with rain shower",
+     "text": "A full bathroom with a ceiling rain shower."
+    },
+    {
+     "name": "Bacta Tank",
+     "plain": "Massage and recovery",
+     "text": "A massage table or recovery chair in a quiet corner."
+    },
+    {
+     "name": "Inner Peace, Outer Space",
+     "plain": "Meditation corner",
+     "text": "A floor cushion, low light and a view to sit with."
+    },
+    {
+     "name": "Red Five, Standing By",
+     "plain": "Red-light panel",
+     "text": "A wall-mounted red-light panel for recovery mornings."
+    }
+   ]
+  },
+  {
+   "category": "Off-grid",
+   "items": [
+    {
+     "name": "Here Comes The Sun",
+     "plain": "Full Solar",
+     "text": "Panels, battery storage and an inverter, sized to the room and to your sky. Quoted on every build."
+    },
+    {
+     "name": "Thirst Contact",
+     "plain": "Atmospheric water generator",
+     "text": "Water from the sky, bottled in the backyard."
+    },
+    {
+     "name": "Circle Of Life",
+     "plain": "Composting toilet",
+     "text": "Clean, quiet and waterless."
+    },
+    {
+     "name": "Rain Catcher Of Kamino",
+     "plain": "Rainwater catchment",
+     "text": "Gutters, a filter and a tank for collected rain."
+    },
+    {
+     "name": "Fremen Water Discipline",
+     "plain": "Greywater system",
+     "text": "Sink and shower water, reused in the garden."
+    },
+    {
+     "name": "Power Converters From Tosche Station",
+     "plain": "Battery wall",
+     "text": "Extra storage for long cloudy weeks."
+    },
+    {
+     "name": "The Backup Hyperdrive",
+     "plain": "Backup generator",
+     "text": "For when the sun takes a day off."
+    },
+    {
+     "name": "Subspace Relay",
+     "plain": "Satellite internet",
+     "text": "A dish and Wi-Fi, for working from nowhere."
+    }
+   ]
+  },
+  {
+   "category": "Glass and Views",
+   "items": [
+    {
+     "name": "Two-Way Ticket, One-Way Mirror",
+     "plain": "Mirror glass",
+     "text": "You see out, nobody sees in."
+    },
+    {
+     "name": "Sunglasses At Night",
+     "plain": "Tinted glass",
+     "text": "Smoked glass for privacy and glare control."
+    },
+    {
+     "name": "Cloaking Device",
+     "plain": "Smart glass",
+     "text": "Clear to frosted at a tap."
+    },
+    {
+     "name": "Skylight Walker",
+     "plain": "Skylight",
+     "text": "A roof skylight, sized for the bed or the sofa."
+    },
+    {
+     "name": "Ramp Down, Chewie",
+     "plain": "Fold-down glass balcony",
+     "text": "A glass wall that folds down into a balcony with a rail."
+    },
+    {
+     "name": "IMAX Corner",
+     "plain": "Panoramic corner glass",
+     "text": "Two glass walls meeting with no post in the view."
+    },
+    {
+     "name": "Blast Doors",
+     "plain": "Motorised blinds",
+     "text": "Blinds or shades on every glass wall."
+    },
+    {
+     "name": "Fog Of War, Cleared",
+     "plain": "Heated anti-fog glass",
+     "text": "Stays clear in steam and frost."
+    },
+    {
+     "name": "Deep Field Telescope",
+     "plain": "Telescope with mount",
+     "text": "A proper telescope on a fixed deck mount."
+    },
+    {
+     "name": "Lightspeed Floor",
+     "plain": "Lit glass floor panel",
+     "text": "A glass floor panel, lit from beneath."
+    }
+   ]
+  },
+  {
+   "category": "Just For Fun",
+   "items": [
+    {
+     "name": "Death Star Disco Ball",
+     "plain": "Disco ball",
+     "text": "A mirror ball and a small light kit. That's no moon."
+    },
+    {
+     "name": "This Is The Way",
+     "plain": "Custom neon sign",
+     "text": "Your words, in neon."
+    },
+    {
+     "name": "The Droid You're Looking For",
+     "plain": "Robot vacuum",
+     "text": "Already named, already beeping."
+    },
+    {
+     "name": "Planetarium Mode",
+     "plain": "Star projector",
+     "text": "A ceiling of stars for cloudy nights."
+    },
+    {
+     "name": "The Goonies Passage",
+     "plain": "Hidden bookshelf door",
+     "text": "Swings open to a nook or the bathroom."
+    },
+    {
+     "name": "Don't Panic Towel Set",
+     "plain": "Embroidered towels",
+     "text": "Big soft towels, in large friendly letters."
+    },
+    {
+     "name": "The Batpole",
+     "plain": "Fire pole from the loft",
+     "text": "A brass pole to the floor. The stairs are still there."
+    },
+    {
+     "name": "Imperial March Doorbell",
+     "plain": "Themed doorbell",
+     "text": "A selection of grand entrances."
+    },
+    {
+     "name": "Choose Your Saber",
+     "plain": "Colour-changing cove lights",
+     "text": "Blue, green, or something stranger."
+    },
+    {
+     "name": "Putt-Putt To Mordor",
+     "plain": "Mini putting green",
+     "text": "A small green beside the deck."
+    },
+    {
+     "name": "The Puppy Escape Pod",
+     "plain": "Pet hammock bed",
+     "text": "A raised hammock bed for the dog, by the glass."
+    }
+   ]
+  }
+ ]
+}

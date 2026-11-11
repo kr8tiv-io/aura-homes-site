@@ -2,8 +2,17 @@
 import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { collectionStandalone } from '../data/collection';
+import { catalogProducts, waitlistSlugAlias } from '../data/products';
 import { formAction } from '../data/site';
 import { roomConcepts } from '../lib/rooms';
+
+const listedModels = new Set([
+  ...roomConcepts.map((room) => room.slug),
+  ...collectionStandalone.items.map((product) => product.slug),
+]);
+const extraModels = catalogProducts.filter(
+  (product) => !listedModels.has(product.slug) && !waitlistSlugAlias[product.slug],
+);
 
 const action = formAction();
 
@@ -80,6 +89,13 @@ const offgrid = [
                   <option value={product.slug}>{product.name}</option>
                 ))}
               </optgroup>
+              {extraModels.length > 0 && (
+                <optgroup label="The collection">
+                  {extraModels.map((product) => (
+                    <option value={product.slug}>{product.name}</option>
+                  ))}
+                </optgroup>
+              )}
               <option value="custom">Custom room</option>
               <option value="unsure" selected>Not sure yet</option>
             </select>
@@ -243,6 +259,7 @@ const offgrid = [
   import { showSentMark } from '../scripts/forms';
   import { heldLine, honeypotFilled, readField, scrollClearOfHeader, submitNote } from '../scripts/submit-note';
   import { formEndpoint } from '../data/site';
+  import { waitlistSlugAlias } from '../data/products';
 
   onPageLoad(() => {
   const form = document.getElementById('quote-form');
@@ -338,8 +355,9 @@ const offgrid = [
 
   if (model instanceof HTMLSelectElement) {
     const requested = params.get('model');
-    const known = requested ? [...model.options].some((option) => option.value === requested) : false;
-    if (requested && known) model.value = requested;
+    const mapped = requested && waitlistSlugAlias[requested] ? waitlistSlugAlias[requested] : requested;
+    const known = mapped ? [...model.options].some((option) => option.value === mapped) : false;
+    if (mapped && known) model.value = mapped;
     else if (params.get('type') === 'custom' || requested === 'custom') model.value = 'custom';
     syncAsk();
     model.addEventListener('change', syncAsk);

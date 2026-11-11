@@ -1,0 +1,25 @@
+---
+import { catalogAddons } from '../data/products';
+---
+
+<div class="addon-grid">
+  {
+    catalogAddons.map((category) => (
+      <details class="addon-cat" id={category.id}>
+        <summary>
+          <span class="addon-cat-name">{category.category}</span>
+          <span class="addon-chevron" aria-hidden="true"></span>
+        </summary>
+        <ul>
+          {category.items.map((item) => (
+            <li id={item.id}>
+              <p class="addon-fun">{item.name}</p>
+              <p class="addon-plain">{item.plain}</p>
+              <p class="addon-text">{item.text}</p>
+            </li>
+          ))}
+        </ul>
+      </details>
+    ))
+  }
+</div>
