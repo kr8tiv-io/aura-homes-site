@@ -4,6 +4,13 @@ import { onQuality, qualityProfile, showStill } from '../three/quality';
 import type { StageTone } from '../three/stage';
 import { FAR_SPLINE, GRASS_SPLINE, mountMeadowWorld } from '../three/meadow-v1/world';
 import { createAuraUnit, glassOrbit, type AuraUnit, type GlazeFinish } from '../three/aura-unit';
+import { createObsidianUnit } from '../three/aura-obsidian-unit';
+
+const UNIT_YAW = 0.32;
+/** A touch larger than the 2.4 x 6 m slot so the opening frame isn't tiny. */
+const UNIT_SCALE = 1.12;
+/** Local offset from the meadow tub slot, toward the unit (metres). */
+const TUB_NUDGE: [number, number] = [-1.3, -0.5];
 import { createHotTub, createTubPlace, steamOrbit, type HotTub, type TubPlace } from '../three/hot-tub';
 import { createSlopePlace, slopeHeight, slopeOrbit } from '../three/slope-place';
 import { createSnowfall, type Snowfall } from '../three/fx/snow';
@@ -70,6 +77,8 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
   };
 
   if (key === 'grass') {
+    let obsidian: ReturnType<typeof createObsidianUnit> | null = null;
+    let grassTub: HotTub | null = null;
     const world = mountMeadowWorld(canvas, {
       spline: GRASS_SPLINE,
       timeOfDay: 'day',
@@ -85,8 +94,38 @@ function mountMeadowNow(canvas: HTMLCanvasElement, readProgress: () => number) {
       bloom: { threshold: 0.8, intensity: 0.28 },
       godrays: true,
       flare: true,
+      occupyUnit(slot) {
+        obsidian?.dispose();
+        const next = createObsidianUnit();
+        // A slight yaw so the opening frame reads three-quarter: glazed end plus the long mirror side.
+        next.object.rotation.y = UNIT_YAW;
+        next.object.scale.setScalar(UNIT_SCALE);
+        obsidian = next;
+        slot.add(next.object);
+        return () => {
+          next.dispose();
+          if (obsidian === next) obsidian = null;
+        };
+      },
+      occupyTub(slot) {
+        const next = createHotTub();
+        grassTub = next;
+        // Pull the tub in toward the unit's glazed end so the pair reads together.
+        next.object.position.set(TUB_NUDGE[0], 0, TUB_NUDGE[1]);
+        slot.add(next.object);
+        return () => {
+          next.dispose();
+          if (grassTub === next) grassTub = null;
+        };
+      },
+      onFrame(info) {
+        grassTub?.update({ camera: info.camera, renderer: info.renderer, dusk: 0.55, night: 0, reduced: info.reduced });
+      },
     });
-    return hand(world);
+    return hand(world, () => {
+      obsidian?.dispose();
+      obsidian = null;
+    });
   }
 
   if (key === 'far') {
