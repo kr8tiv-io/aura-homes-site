@@ -32,16 +32,16 @@ const offgrid = [
 ---
 
 <BaseLayout
-  title="Pre-order | Aura Homes"
+  title="Waitlist | Aura Homes"
   description="Return to Aura. One beautiful room at a time."
-  descriptor="Pre-order"
+  descriptor="Waitlist"
 >
   <main id="top" class="quote-page">
     <section class="page-lead">
-      <p class="story-kicker" data-tracer="rule">Pre-order</p>
-      <RevealHeading as="h1">Get a quote.</RevealHeading>
+      <p class="story-kicker" data-tracer="rule">Waitlist</p>
+      <RevealHeading as="h1">Join the waitlist.</RevealHeading>
       <p class="story-lede">
-        We're building our first units now. Join the pre-order list and we'll reach out personally. Nothing is charged until we know we can deliver, and if we ever can't, you get your money back.
+        Aura is at the concept stage and ordering has not opened yet. Join the waitlist, tell us about the room you have in mind, and we will write when builds open. There are no payments and no orders.
       </p>
       <p class="quote-ask" data-quote-ask hidden></p>
     </section>
@@ -141,13 +141,13 @@ const offgrid = [
             <span class="field-glow" aria-hidden="true"></span>
           </div>
         </div>
-        <button type="submit" class="is-slide"><span class="slide-face"><span class="slide-line">Get a quote</span><span class="slide-line" aria-hidden="true">Get a quote</span></span></button>
+        <button type="submit" class="is-slide"><span class="slide-face"><span class="slide-line">Join the waitlist</span><span class="slide-line" aria-hidden="true">Join the waitlist</span></span></button>
         <p class="join-status" data-quote-status role="status"><span data-status-line></span></p>
       </form>
 
       <div class="join-card quote-thanks" id="quote-thanks" hidden>
-        <RevealHeading as="h2" tabindex="-1">We have your note.</RevealHeading>
-        <p data-sent-host><span>We will reach out personally. Nothing was charged.</span></p>
+        <RevealHeading as="h2" tabindex="-1">You are on the waitlist.</RevealHeading>
+        <p data-sent-host><span>We will write when builds open. Nothing was charged, and no order was placed.</span></p>
       </div>
       <div class="join-card quote-thanks" id="quote-draft" hidden>
         <RevealHeading as="h2" tabindex="-1">Your draft is ready.</RevealHeading>
@@ -205,10 +205,10 @@ const offgrid = [
     max-width: 12em;
     scroll-margin-top: 5.75rem;
     font-family: var(--font-cinzel);
-    font-weight: 300;
+    font-weight: 400;
     font-size: clamp(2.2rem, 4vw, 3.4rem);
-    letter-spacing: -0.03em;
-    line-height: 1.05;
+    letter-spacing: 0.035em;
+    line-height: 1.08;
   }
   :global(.quote-thanks h2:focus) {
     outline: 1px solid #c4a07a;
@@ -383,7 +383,7 @@ const offgrid = [
       if (formEndpoint.trim().startsWith('https://')) statusLine.textContent = 'Sending.';
       const result = await submitNote({
         form,
-        subject: 'Aura quote',
+        subject: 'Aura waitlist',
         fields: [
           ['Name', readField(form, 'name')],
           ['Email', readField(form, 'email')],

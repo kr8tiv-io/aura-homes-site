@@ -19,10 +19,10 @@ const shells = [
 
 <div class="join">
   <form class="join-card join-form" id="preorder" action={action} method="post" data-tracer="edge">
-    <p class="story-kicker" data-tracer="rule">Pre-order</p>
+    <p class="story-kicker" data-tracer="rule">Waitlist</p>
     <h3>Hold your place.</h3>
     <p class="join-model" data-model-line hidden></p>
-    <p data-join-intro>Tell us which room you want. You are among the first we write when that build opens. This page takes no payment. It holds your name.</p>
+    <p data-join-intro>Aura is at the concept stage and ordering has not opened yet. Tell us which room you want, and you are among the first we write when builds open. No payments, no orders.</p>
     <input class="join-hp" type="text" name="company" tabindex="-1" autocomplete="off" aria-hidden="true" />
     <input type="hidden" name="kind" value="preorder" />
     <div class="field">
@@ -53,7 +53,7 @@ const shells = [
       <input type="checkbox" name="list" value="yes" />
       <span>Also put me first in line for the latest YouTube films, product releases, announcements, and the offers and perks kept for this list.</span>
     </label>
-    <button type="submit" class="is-slide" data-tracer="outline"><span class="slide-face"><span class="slide-line">Hold my place</span><span class="slide-line" aria-hidden="true">Hold my place</span></span></button>
+    <button type="submit" class="is-slide" data-tracer="outline"><span class="slide-face"><span class="slide-line">Join the waitlist</span><span class="slide-line" aria-hidden="true">Join the waitlist</span></span></button>
     <p class="join-status" data-join-status data-sent-host role="status"><span data-status-line></span></p>
     <p class="join-fine">Aura writes to the address you give. You can leave the list whenever a note arrives. We do not sell it.</p>
   </form>
@@ -108,7 +108,7 @@ const shells = [
     }
     const lede = document.querySelector('[data-preorder-lede]');
     if (lede) {
-      lede.textContent = `You asked about ${concept.name}. Tell us the land, and we will write when that build opens. This page takes no payment. It holds your name.`;
+      lede.textContent = `You asked about ${concept.name}. Tell us the land, and we will write when builds open. No payments, no orders.`;
     }
   } else if (params.get('type') === 'custom') {
     const note = document.getElementById('preorder-note');
@@ -122,17 +122,17 @@ const shells = [
     }
     const lede = document.querySelector('[data-preorder-lede]');
     if (lede) {
-      lede.textContent = 'You asked about a custom build. Tell us the idea, and we will write with a quote. This page takes no payment. It holds your name.';
+      lede.textContent = 'You asked about a custom build. Tell us the idea, and we will write when builds open. No payments, no orders.';
     }
     const intro = document.querySelector('[data-join-intro]');
     if (intro) {
-      intro.textContent = 'Tell us the idea. This page takes no payment. It holds your name.';
+      intro.textContent = 'Tell us the idea. No payments, no orders.';
     }
   }
 
   const joinSuccess = (form: HTMLFormElement) => (
     readField(form, 'kind') === 'preorder'
-      ? 'Your place is held. No payment was taken.'
+      ? 'You are on the waitlist. No payment was taken, and no order was placed.'
       : 'You are first in line for the films, the releases, and the offers.'
   );
 
@@ -165,7 +165,7 @@ const shells = [
       if (!(status instanceof HTMLElement) || !(line instanceof HTMLElement) || !(button instanceof HTMLButtonElement)) return;
       if (honeypotFilled(form)) return;
       const fields = joinFields(form);
-      const subject = readField(form, 'kind') === 'preorder' ? 'Aura pre-order' : 'Aura list';
+      const subject = readField(form, 'kind') === 'preorder' ? 'Aura waitlist' : 'Aura list';
       button.disabled = true;
       clearSentMark(status);
       if (formEndpoint.trim().startsWith('https://')) line.textContent = 'Sending.';

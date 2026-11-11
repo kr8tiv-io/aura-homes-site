@@ -23,7 +23,7 @@ export const legacyNotes: JournalCard[] = [
     href: '/journal/aura-farms',
     title: 'Aura Farms, grown on the wall',
     excerpt:
-      'Vertical aeroponics in the same room: what it is, who can buy it, and what a later label would ask of it.',
+      'Vertical aeroponics in the same room: what it is, who it is for, and what a later label would ask of it.',
     date: '2026-09-30',
     tags: ['Farm'],
     cover: '/film/farm-wall.webp',

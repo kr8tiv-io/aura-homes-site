@@ -14,8 +14,8 @@
   margin: 0;
   font-family: var(--font-cinzel);
   font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 0.98;
+  letter-spacing: 0.035em;
+  line-height: 1.08;
 }
 .b-kicker {
   margin: 0 0 0.8rem;

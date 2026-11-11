@@ -44,7 +44,7 @@
   font-family: var(--font-cinzel), serif;
   font-weight: 400;
   font-size: 1.2rem;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.035em;
   line-height: 1.2;
   color: #14120e;
 }
@@ -150,8 +150,8 @@
   font-family: var(--font-cinzel), serif;
   font-weight: 400;
   font-size: clamp(1.8rem, 3vw, 2.6rem);
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  letter-spacing: 0.035em;
+  line-height: 1.08;
 }
 
 .order-group {
@@ -222,7 +222,7 @@
   font-family: var(--font-cinzel), serif;
   font-weight: 400;
   font-size: 1.15rem;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.035em;
   line-height: 1.25;
 }
 
@@ -286,7 +286,7 @@
   font-family: var(--font-cinzel), serif;
   font-size: 1.25rem;
   font-weight: 400;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.035em;
 }
 
 .order-actions {
