@@ -11,6 +11,24 @@ import WindowFrame from '../components/WindowFrame.astro';
 import { collectionStandalone } from '../data/collection';
 import { roomConcepts } from '../lib/rooms';
 
+/** Tub-ward Bound sits beside The Soak on this page. It is a catalog product, so it stays out of roomConcepts. */
+const tubWardBound = {
+  slug: 'tub-ward-bound',
+  name: 'Tub-ward Bound',
+  image: '/media/specialty/tub-ward-bound.jpg',
+  alt: 'A black glass bedroom on wheels in a sunny meadow, its glass side slid open onto a plush double bed in warm oak, a wood-fired cedar tub steaming on the cedar deck at the back.',
+  description: 'The Soak on wheels. A bedroom with a cedar tub riding on its own deck.',
+  focus: 'center',
+  shot: undefined as string | undefined,
+  frame: '16 / 9',
+};
+const soakIndex = roomConcepts.findIndex((room) => room.slug === 'the-soak');
+const roomCards: Array<(typeof roomConcepts)[number] & { frame?: string }> = [
+  ...roomConcepts.slice(0, soakIndex + 1),
+  { ...tubWardBound, shell: 'room' },
+  ...roomConcepts.slice(soakIndex + 1),
+];
+
 const uses = [
   ['01', 'Home extension'],
   ['02', 'Backyard or acreage office'],
@@ -53,13 +71,13 @@ const uses = [
     </ul>
 
     <ul class="room-grid" data-window-grid>
-      {roomConcepts.map((room) => (
+      {roomCards.map((room) => (
         <li>
           <article class="room-card" data-rise data-room-card data-cursor="drag">
             <div class="room-tilt" data-room-tilt>
               <div class="room-face">
                 {room.image ? (
-                  <figure data-window>
+                  <figure data-window style={room.frame ? `aspect-ratio:${room.frame}` : undefined}>
                     <WindowFrame>
                       <Still
                         src={room.image}
@@ -198,6 +216,9 @@ const uses = [
   .room-grid.is-standalone {
     padding-top: 1.6rem;
   }
+  .room-grid > li {
+    min-width: 0;
+  }
   .room-card {
     color: #14120e;
     perspective: 1100px;
@@ -252,6 +273,7 @@ const uses = [
     font-size: clamp(1.7rem, 2.4vw, 2.15rem);
     letter-spacing: 0.035em;
     line-height: 1.1;
+    overflow-wrap: break-word;
   }
   .room-card p {
     max-width: 22rem;
@@ -312,7 +334,8 @@ const uses = [
   @media (max-width: 1000px) {
     .room-card {
       content-visibility: auto;
-      contain-intrinsic-size: auto 500px;
+      /* Height only. A two-axis value here gave every card a 500px minimum width on phones. */
+      contain-intrinsic-block-size: auto 500px;
     }
   }
   @media (max-width: 800px) {
@@ -335,7 +358,7 @@ const uses = [
       margin-left: 1.5rem;
     }
     .room-grid {
-      grid-template-columns: 1fr;
+      grid-template-columns: minmax(0, 1fr);
       padding: 6vh 1.5rem 2vh;
     }
     .room-grid.is-standalone {

@@ -12,6 +12,9 @@ interface Props {
 
 const { product, wide2 = false, wide3 = false } = Astro.props;
 const wide = wide2 || wide3;
+/** Photos where the whole unit has to show. The frame follows the photo instead of cropping it. */
+const fullFrame = new Set(['tub-ward-bound']);
+const frameStyle = fullFrame.has(product.slug) ? `aspect-ratio:${product.hero.width} / ${product.hero.height}` : undefined;
 const action = product.href.startsWith('/rooms/') ? 'See the piece' : 'Join the waitlist';
 const sizes = wide
   ? '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) calc(100vw - 8rem), 62vw'
@@ -20,7 +23,7 @@ const sizes = wide
 
 <li class:list={['catalog-card', { 'is-wide-2': wide2, 'is-wide-3': wide3 }]} data-catalog-card data-group={product.group}>
   <a class="catalog-card-link" href={product.href}>
-    <span class="catalog-photo">
+    <span class="catalog-photo" style={frameStyle}>
       <img
         class="is-hero"
         src={product.hero.src}

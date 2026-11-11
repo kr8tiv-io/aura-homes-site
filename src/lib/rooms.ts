@@ -118,7 +118,7 @@ export const roomConcepts: RoomConcept[] = [
     image: '/film/resort-tower.webp',
     alt: 'A round glass tower in the snow, with curved glass levels, an outside stair, and a lit roof deck, mountains behind the pines.',
     description: 'Glass on every level, and a roof of sky.',
-    focus: 'center',
+    focus: 'center 18%',
   },
 ];
 

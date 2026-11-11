@@ -345,10 +345,8 @@ export const collectionStandalone = {
     {
       slug: 'fire-and-ice',
       name: 'Fire and Ice',
-      image: '/media/specialty/hot-tub-time-machine.jpg',
-      alt: 'A wood-fired cedar hot tub on a steel and timber base inside a clear polycarbonate enclosure, steam rising and the stove glowing in a wildflower meadow at dusk, stars coming out.',
-      imageRight: '/media/specialty/cool-runnings.jpg',
-      altRight: 'A long oval cedar cold-plunge bathtub with a sloped back on a low timber base, ice water and a wooden stool with a towel, in a frosted forest clearing at dawn.',
+      image: '/media/specialty/fire-and-ice.jpg',
+      alt: 'A wood-fired round cedar tub and a long oval cedar plunge side by side on a deck in a frosty meadow at dusk.',
       line: 'Hot Tub Time Machine and Cool Runnings, as a pair. Fire first, then ice, then fire again.',
       tagline: 'Fire first, then ice, then fire again.',
       story: [
