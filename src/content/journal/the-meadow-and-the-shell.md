@@ -1,21 +1,20 @@
 ---
-title: "The meadow and the room"
+title: "Why we put a glass room in a field"
 date: 2026-10-03
 cover: /film/layout-forest.webp
 coverAlt: "A glass room at the edge of a pine forest, open toward a dusk meadow."
-excerpt: "A low room on land you already have. Steel, polycarbonate, and the morning that arrives through it."
+excerpt: "Glass, steel and warm oak on land you already have. Here is what a Tuesday morning in one looks like."
 tags:
-  - Room
-  - Meadow
+  - Rooms
 draft: false
 ---
 
-This is the room before it becomes a particular life. A long, low glass room with clean steel lines. Polycarbonate in place of heavy glass: clear, mirror, or tint, smooth rather than ribbed. It rests in the meadow instead of arguing with it.
+Start with the basics. An Aura room is long and low, with a slim steel base and walls of polycarbonate instead of heavy glass. You pick the finish: clear, mirror or tinted. It is smooth, not ribbed, so it looks like glass and breaks far less than glass does.
 
-Morning is the honest test. Light comes in low, across the grass, and the mirror band gives some of it back to the field. You make coffee. The room is already near the temperature of the day, close enough that the door wants to be open.
+Now the fun part: mornings. The sun comes in low across the grass. You make coffee, slide the door open, and the meadow is right there. Picked the mirror finish? The field sees its own reflection and you keep your privacy.
 
-This is for land you already have. A corner past the house. An edge where the mowing stops. The room does not replace the house. It gives that edge a floor, a roof, and a place to sit when the weather is worth meeting.
+It goes on land you already have. That corner past the garden. The spot where you stop mowing. It does not replace your house. It turns an empty patch into the best seat on the property.
 
-Steel keeps the line thin. The polycarbonate keeps the walls light. What you live with is the meadow, close up, and the quiet of a room that does not pretend to be larger than it is.
+Polycarbonate keeps it light and tough. Steel keeps the lines thin. And what you actually live with is the view.
 
-The room, told without hurry, is on the [story](/story).
+More on why we build these is on the [story](/story) page.

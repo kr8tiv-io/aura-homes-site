@@ -11,9 +11,9 @@ export type JournalCard = {
 export const legacyNotes: JournalCard[] = [
   {
     href: '/journal/one-shell',
-    title: 'One room, several lives',
+    title: 'One room, a lot of side hustles',
     excerpt:
-      'The room, the glass, the resort, the farm wall, and the water line are one object with different work inside it.',
+      'Guest room, office, glass deck, resort, grow room, water maker. One Aura room, a lot of different jobs.',
     date: '2026-09-30',
     tags: ['Room'],
     cover: '/film/story-room.webp',
@@ -21,9 +21,9 @@ export const legacyNotes: JournalCard[] = [
   },
   {
     href: '/journal/aura-farms',
-    title: 'Aura Farms, grown on the wall',
+    title: 'Aura Farms: salad that grows up the wall',
     excerpt:
-      'Vertical aeroponics in the same room: what it is, who it is for, and what a later label would ask of it.',
+      'How an aeroponic garden wall works, who it is for, and what it can grow.',
     date: '2026-09-30',
     tags: ['Farm'],
     cover: '/film/farm-wall.webp',
@@ -31,8 +31,8 @@ export const legacyNotes: JournalCard[] = [
   },
   {
     href: '/journal/water-from-the-air',
-    title: 'Water from the air, bottled in the room',
-    excerpt: 'Thirst Contact pulls water from the sky and bottles it in the backyard, with a standard atmospheric water generator.',
+    title: 'Thirst Contact: water from the sky, bottled in your backyard',
+    excerpt: 'A standard atmospheric water generator on the roof, a little bottling line inside, and fresh water from thin air.',
     date: '2026-09-30',
     tags: ['Water'],
     cover: '/film/water-line.webp',
@@ -40,11 +40,11 @@ export const legacyNotes: JournalCard[] = [
   },
   {
     href: '/journal/free-food-and-water',
-    title: 'A label, later',
+    title: 'The Aura Network: the big idea for later',
     excerpt:
-      'Thirst Contact and the farm wall, and a network that is not live. The room you can ask for stays a room.',
+      'Free food and free water networks, with owners paid to keep them running. A future expansion, not open yet.',
     date: '2026-09-30',
-    tags: ['Hope'],
+    tags: ['Later'],
     cover: '/film/layout-forest.webp',
     coverAlt: 'A glass room at the edge of a pine forest, open toward a dusk meadow.',
   },

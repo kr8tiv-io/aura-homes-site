@@ -18,7 +18,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'room',
     image: '/film/story-meadow-side.webp',
     alt: 'A black glass room in tall grass at dusk, a cedar tub steaming, and a hanging seat under an arch.',
-    description: 'A wood-fired tub and swing, standard. Then a slow seat in the grass.',
+    description: 'A wood-fired cedar tub and a hanging swing come standard. Soak, swing, repeat.',
     focus: 'center',
   },
   {
@@ -27,7 +27,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'room',
     image: '/film/story-room.webp',
     alt: 'A dark glass room at dusk, the door open onto a linen seat and a green meadow.',
-    description: 'The first room, open to the field. A small start, kept for the dark.',
+    description: 'Our original room. The long side opens up and the whole meadow becomes your living room.',
     focus: 'center',
   },
   {
@@ -36,7 +36,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'room',
     image: '/film/layout-lounge-wind.webp',
     alt: 'A long linen sofa in a wood room, facing tall grass and a blue evening.',
-    description: 'A guest room just past the house. Company, or a quiet hour.',
+    description: 'A guest room out back. Your guests get privacy, and you get your couch back.',
     focus: 'center',
   },
   {
@@ -45,7 +45,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'room',
     image: '/film/layout-sky.webp',
     alt: 'A bed under a glass roof of stars, with a dusk meadow beyond the glass.',
-    description: 'A roof of glass, kept for the stars. Then the sky takes the watch.',
+    description: 'A bed under a glass roof. Fall asleep counting stars, wake up with the sunrise.',
     focus: 'center 28%',
   },
   {
@@ -54,7 +54,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'room',
     image: '/film/resort-deck.webp',
     alt: 'A lit deck in the snow with a cargo net for lounging, mountains behind it.',
-    description: 'A net on the deck, for doing little. The afternoon loosens with you.',
+    description: 'A deck with a giant net to lie in. Your only job is doing nothing.',
     focus: 'center 62%',
   },
   {
@@ -63,7 +63,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'room',
     image: '/film/layout-night.webp',
     alt: 'A low bed in a wood room under a skylight of stars, facing a night meadow.',
-    description: 'A bedroom aimed at the view. The glass gives the night back.',
+    description: 'A bedroom pointed at the view, with mirror glass so nobody sees in.',
     focus: 'center',
   },
   {
@@ -81,7 +81,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'farm',
     image: '/film/farm-wall.webp',
     alt: 'A glass room in tall grass at dusk, its long side filled with a wall of plants.',
-    description: 'A whole room turned toward growing. Leaves inside, meadow outside.',
+    description: 'A room with one wall that grows food. Salad, meet your new home.',
     focus: 'center',
   },
   {
@@ -90,7 +90,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'room',
     image: '/film/layout-forest.webp',
     alt: 'Reflective glass room at the forest edge, with a door, a fold-down glass balcony, and a cedar deck.',
-    description: 'A glass front and a fold-down balcony. The hitch stays on.',
+    description: 'Mirror-glass front, a fold-down balcony, and the hitch stays on in case you move.',
     focus: 'center',
   },
   {
@@ -108,7 +108,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'resort',
     image: '/media/specialty/aframe-golden-hour-meadow.jpg',
     alt: 'A black gabled glass cabin on a lit glass deck in a wildflower meadow at golden hour, with a sauna, a steaming tub, forest, and golden peaks.',
-    description: 'A steep glass roof over a full stay. The net is already hung.',
+    description: 'A tall glass lodge with everything inside, including a net to lie in.',
     focus: 'center',
   },
   {
@@ -117,7 +117,7 @@ export const roomConcepts: RoomConcept[] = [
     shell: 'resort',
     image: '/film/resort-tower.webp',
     alt: 'A round glass tower in the snow, with curved glass levels, an outside stair, and a lit roof deck, mountains behind the pines.',
-    description: 'Glass on every level, and a roof of sky.',
+    description: 'A round glass tower. Every floor has a view, and the roof deck has the best one.',
     focus: 'center 18%',
   },
 ];
