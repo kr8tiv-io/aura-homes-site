@@ -63,7 +63,7 @@ export const collectionTiers: CollectionTier[] = [
           'A hot tub with a passport. Tow it somewhere beautiful, light the stove, and let the steam make its argument.',
         features: [
           'Wood-fired cedar tub',
-          'Clear enclosure, two panels open',
+          'Clear enclosure with a lockable glass door',
           'Its own wheels, ready to tow',
           'Firewood rack',
         ],
@@ -282,7 +282,7 @@ export const collectionStandalone = {
       slug: 'hot-tub-time-machine',
       name: 'Hot Tub Time Machine',
       image: '/media/specialty/hot-tub-time-machine.jpg',
-      alt: 'A wood-fired cedar hot tub on a steel and timber base inside a clear polycarbonate enclosure, steam rising and the stove glowing in a wildflower meadow at dusk, stars coming out.',
+      alt: 'A round wood-fired cedar tub with a glowing stove and a tall chimney, inside a clear polycarbonate enclosure in wildflowers at dusk.',
       film: '/media/video/hot-tub-time-machine.mp4',
       line: 'A wood-fired cedar tub on its own steel and timber base. Light the stove and lose track of time.',
       tagline: 'Set the dial to dusk.',
@@ -346,7 +346,7 @@ export const collectionStandalone = {
       slug: 'fire-and-ice',
       name: 'Fire and Ice',
       image: '/media/specialty/fire-and-ice.jpg',
-      alt: 'A wood-fired round cedar tub and a long oval cedar plunge side by side on a deck in a frosty meadow at dusk.',
+      alt: 'A wood-fired round cedar tub and a long oval cedar plunge side by side inside a clear enclosure on a deck in a frosty meadow at dusk.',
       line: 'Hot Tub Time Machine and Cool Runnings, as a pair. Fire first, then ice, then fire again.',
       tagline: 'Fire first, then ice, then fire again.',
       story: [

@@ -131,21 +131,22 @@ const groupBySlug: Record<string, CatalogGroup> = {
   'cloud-nine': 'resort',
   'pandoras-glass-stairway-to-heaven': 'resort',
   'waste-of-space': 'systems',
+  'space-cowboy': 'rooms',
 };
 
 const altByFile: Record<string, string> = {
   'skywalker-meadow.jpg':
-    'A glass sleep room with a bed and a small glowing heater, in a wildflower meadow under the Milky Way at dusk, pines standing around it.',
+    'A glass sleep room with a bed, a reading lamp, and a small glowing heater, in a wildflower meadow under the Milky Way, pines standing around it.',
   'layout-forest.jpg':
-    'A mirror-glass room on its wheels at the edge of a meadow, the door open to a wood interior, with a fold-down balcony and a cedar deck at dusk.',
+    'A long mirror-glass room on tandem wheels at the edge of a meadow at dusk, a wood entry door, a fold-down glass balcony with a linen bench, and pines behind.',
   'goldfish-hero.jpg':
-    'A simple white room with clear walls and wide sliding glass, one pale chair inside, on a cedar deck in a meadow of birch trees.',
+    'A simple white room with a glass door and wide windows, one pale chair inside, on a cedar deck in a meadow of birch trees.',
   'layout-gazebo.jpg':
-    'A steaming cedar hot tub inside a clear glass enclosure on its own wheels, firewood stacked beside it, in a meadow at dusk.',
+    'A steaming cedar hot tub on a tandem trailer in a meadow at dusk, inside a clear glass enclosure with a lockable glass door, firewood stacked beside it.',
   'layout-lounge-wind.jpg':
     'A long linen sofa in a wood room, glass walls open toward a blue evening meadow.',
   'layout-door.jpg':
-    'A long dark room at dusk with folding glass doors, one of them open onto warm oak, a linen sofa, and a desk.',
+    'A long dark room at dusk with a solid entry door and folding glass doors, one of them open onto warm oak, a linen sofa, and a desk.',
   'story-room.jpg':
     'A dark glass room at dusk, the long side open onto a linen sofa, a deck, and a green meadow.',
   'story-meadow-side.jpg':
@@ -153,29 +154,29 @@ const altByFile: Record<string, string> = {
   'cabin-poster-hi.jpg':
     'A black glass room at dusk with its glass side open onto warm oak, a wood-fired cedar tub steaming on a dark deck, and a teal daybed swinging from chains under a steel arch, river stones glowing softly along the deck.',
   'the-soak-unit.jpg':
-    'A black glass bedroom on wheels in a sunny meadow, its glass side slid open onto a plush double bed in warm oak, a wood-fired cedar tub steaming on the cedar deck at the back.',
+    'A black bedroom on tandem wheels in a sunny meadow, its glass side open onto a plush bed, a wood-fired cedar tub steaming on the cedar deck at the back.',
   'tubward-bound-meadow.jpg':
     'A black glass bedroom on wheels in a meadow at golden hour, the bed glowing through open glass, a cedar tub steaming on its own dark deck in the grass beside it.',
   'story-nest.jpg':
     'A round teal hanging daybed on chains under a steel arch, beside a black glass room in a meadow at dusk.',
   'layout-sky.jpg':
-    'A bed on a low platform under a glass roof, warm wood all around, with a meadow and hills beyond the glass.',
+    'A plush bed on a low oak platform under a glass roof of stars, warm wood all around, with a dusk meadow beyond the end window.',
   'layout-corner.jpg':
     'A walnut desk, a brass lamp, and a linen chair in a wood room, with a glass door open onto a dusk meadow.',
   'layout-night.jpg':
-    'A low bed in a wood room under a skylight of stars, facing a night meadow through a glass end wall.',
+    'A low linen bed in a wood room under a skylight of the Milky Way, facing a night meadow through a glass end wall, with an oak shelf along the side.',
   'hot-tub-time-machine.jpg':
-    'A round wood-fired cedar tub with a glowing stove, inside a clear glass enclosure in wildflowers at dusk.',
+    'A round wood-fired cedar tub with a glowing stove and a tall chimney, inside a clear glass enclosure in wildflowers at dusk.',
   'aura-cold-plunge-bathtub.jpg':
     'A long oval cedar cold-plunge tub on a low timber base in a frosted clearing, with a stool and folded towels, pines behind it.',
   'fire-and-ice.jpg':
-    'A wood-fired round cedar tub and a long oval cedar plunge side by side on a deck in a frosty meadow at dusk.',
+    'A wood-fired round cedar tub and a long oval cedar plunge side by side inside a clear enclosure on a deck in a frosty meadow at dusk.',
   'water-roof.jpg':
-    'A black glass room in a meadow at dusk, with a metal vent and a curved intake on the roof, forested hills behind.',
+    'A walk-in water and grow room in a meadow at dusk, oak lining and a stainless bottling bench with glass bottles inside, a grow rack of greens, and the water machine on the roof, forested hills behind.',
   'water-line.jpg':
     'Glass bottles filling from a tube on a steel bench inside a wood room, with a dusk meadow through the window.',
   'farm-wall.jpg':
-    'A dark glass room in a dusk meadow, its long side filled with a lit wall of plants.',
+    'A glass grow room on a wood deck in a dusk meadow, its long side filled with a lit wall of plants, forest and mountains behind.',
   'farm-room.jpg':
     'A wood room with a floor-to-ceiling wall of leafy greens in vertical channels, and a wildflower meadow beyond the glass.',
   'canopy-of-stars.jpg':
@@ -191,9 +192,11 @@ const altByFile: Record<string, string> = {
   'resort-tower.jpg':
     'A round tower of curved glass in the snow, several lit levels, an outside stair, and mountains behind the pines.',
   'waste-of-space-long-1.jpg':
-    'A long dark wood room on a deck at dusk, with a stair to a railed roof that holds a cedar tub, a hammock, chairs, and a telescope.',
+    'A long dark room in a meadow at dusk, with a stair to a railed roof that holds a steaming cedar tub, a hammock, chairs, and a telescope.',
   'waste-of-space-long-2.jpg':
-    'A long wood room at night, its stair rising to a roof deck with a steaming cedar tub, a hammock, lounge chairs, and a telescope.',
+    'A long dark room at night, its stair rising to a roof deck with a steaming cedar tub, a hammock, lounge chairs, a small gym corner, and a telescope.',
+  'space-cowboy.jpg':
+    'A long black bumper-pull trailer in a meadow at dusk, tinted glass along the side, a stair, a railed roof deck, and a steaming cedar tub on the rear deck.',
   'fly-you.jpg':
     'A small white amphibious plane with its wings folded, parked on its trailer beside a glass sleep room, a lake and mountains behind.',
   'float-you.jpg':
@@ -319,13 +322,13 @@ if (new Set(heroFiles).size !== heroFiles.length) {
   throw new Error('Two collection cards share a photograph');
 }
 
-if (catalogProducts.length !== 23) {
-  throw new Error(`The collection lists ${catalogProducts.length} products. The catalog has 23.`);
+if (catalogProducts.length !== 24) {
+  throw new Error(`The collection lists ${catalogProducts.length} products. The catalog has 24.`);
 }
 if (catalogProducts.filter((product) => product.stage === 'Available soon').length !== 16) {
   throw new Error('Available soon should list 16 products');
 }
-if (comingGrid.length !== 7) throw new Error('Coming after should list 7 products');
+if (comingGrid.length !== 8) throw new Error('Coming after should list 8 products');
 if (catalogAddons.length !== 10) throw new Error('The add-on menu should have 10 categories');
 
 const higherGround = catalogAddons

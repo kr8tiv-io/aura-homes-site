@@ -22,3 +22,8 @@ public/models/pine_sapling_medium.lod1.glb
 public/models/pine_sapling_medium.lod2.glb
 _archive/models/pine_sapling_medium.glb
 _archive/models/pine_sapling_medium.lod1.glb
+
+# local production export, not for commit
+site-export/
+
+local-masters/

@@ -108,11 +108,11 @@
    "kicker": "The hot tub that travels",
    "lede": "A hot tub with a passport. Tow it somewhere beautiful, light the stove, and let the steam make its argument.",
    "body": [
-    "A wood-fired cedar tub inside a clear glass room, two panels open to the meadow, firewood stacked within reach. Levelling jacks find flat ground wherever the view is."
+    "A wood-fired cedar tub inside a clear glass room with a lockable glass door, firewood stacked within reach. Levelling jacks find flat ground wherever the view is."
    ],
    "features": [
     "Wood-fired cedar hot tub",
-    "Clear glass enclosure, two opening panels",
+    "Clear glass enclosure with a lockable glass door",
     "Refurbished tandem trailer, wheels and all",
     "Built-in firewood rack",
     "Weatherproof tub cover",
@@ -459,17 +459,18 @@
    "slug": "thirst-contact",
    "name": "Thirst Contact",
    "stage": "Available soon",
-   "tier": "Built into the room",
+   "tier": "The water room",
    "kicker": "Water from the sky",
    "lede": "Water from the sky, bottled in the backyard.",
    "body": [
-    "An atmospheric water generator, built right into the room. It draws moisture from the air, filters it and turns it into clean drinking water, so the freshest glass you will ever pour comes from the sky above your own roof. First contact has never tasted better."
+    "A walk-in water and grow room, about 12 by 8 ft, with two glass sides, two insulated sides, and a cold-climate heat pump. Inside: an oak lining, a stainless bottling bench, and a grow rack. The water machine sits on the roof and draws moisture from the air, then filters it."
    ],
    "features": [
-    "Atmospheric water generator, built in",
-    "Draws and filters water from the air",
-    "Fill-and-bottle station inside the room",
-    "Fits any Aura room"
+    "Walk-in water and grow room, about 12 by 8 ft",
+    "Two glass sides and two insulated sides",
+    "Atmospheric water generator on the roof",
+    "Bottling bench and grow rack inside",
+    "Cold-climate heat pump"
    ],
    "addons": [
     "Rain Catcher Of Kamino",
@@ -696,6 +697,37 @@
    "quote": "The best seat in the house sits on top of its least glamorous job.",
    "layout": "waste",
    "no": 23
+  },
+  {
+   "slug": "space-cowboy",
+   "name": "Space Cowboy",
+   "stage": "Coming after",
+   "tier": "Adventure",
+   "kicker": "The long towable",
+   "lede": "A black bumper-pull trailer with an 18 ft bedroom and kitchenette, tinted glass on both long sides, a roof deck, and a cedar tub on the rear deck.",
+   "body": [
+    "A new black bumper-pull trailer, 24 ft by 8.5 ft, built like the long living-quarters trailers people already know, only prettier. Inside is an 18 ft bedroom and kitchenette. Both long sides are tinted glass. A stair climbs to a railed roof deck, and a wood-fired cedar tub sits on the rear deck.",
+    "Park it, level it, and the hitch is still there when you want to move."
+   ],
+   "features": [
+    "New black bumper-pull trailer, ready to tow",
+    "18 ft bedroom and kitchenette",
+    "Tinted glass on both long sides",
+    "Stair to a railed roof deck",
+    "Wood-fired cedar tub on the rear deck",
+    "Levelling jacks"
+   ],
+   "addons": [
+    "Second Breakfast Station",
+    "Here Comes The Sun",
+    "Two Suns Deck Heaters",
+    "Mustafar Grill Station"
+   ],
+   "images": {
+    "hero": "space-cowboy.jpg"
+   },
+   "layout": "split-left",
+   "no": 24
   }
  ],
  "compare": [

@@ -39,6 +39,11 @@ import hotTubTimeMachine from '../assets/media/hot-tub-time-machine.webp';
 import coolRunnings from '../assets/media/cool-runnings.webp';
 import fireAndIce from '../assets/media/fire-and-ice.webp';
 import tubWardBound from '../assets/media/tub-ward-bound.webp';
+import skyCollection from '../../public/film/collection/layout-sky-1280.webp';
+import nightCollection from '../../public/film/collection/layout-night-1280.webp';
+import gazeboCollection from '../../public/film/collection/layout-gazebo-1280.webp';
+import forestCollection from '../../public/film/collection/layout-forest-1280.webp';
+import farmWallCollection from '../../public/film/collection/farm-wall-1280.webp';
 
 const stills: Record<string, ImageMetadata> = {
   '/film/story-meadow-side.webp': meadowSide,
@@ -80,6 +85,11 @@ const stills: Record<string, ImageMetadata> = {
   '/media/specialty/cool-runnings.jpg': coolRunnings,
   '/media/specialty/fire-and-ice.jpg': fireAndIce,
   '/media/specialty/tub-ward-bound.jpg': tubWardBound,
+  '/film/collection/layout-sky-1280.webp': skyCollection,
+  '/film/collection/layout-night-1280.webp': nightCollection,
+  '/film/collection/layout-gazebo-1280.webp': gazeboCollection,
+  '/film/collection/layout-forest-1280.webp': forestCollection,
+  '/film/collection/farm-wall-1280.webp': farmWallCollection,
 };
 
 export function still(src: string): ImageMetadata {
