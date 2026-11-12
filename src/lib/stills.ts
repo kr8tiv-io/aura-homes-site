@@ -13,6 +13,12 @@ import resortDeck from '../assets/media/resort-deck.webp';
 import resortTower from '../assets/media/resort-tower.webp';
 import farmWall from '../assets/media/farm-wall.webp';
 import farmRoom from '../assets/media/farm-room.webp';
+import farmsExteriorSolar from '../assets/media/farms-exterior-solar.webp';
+import farmsConsumables from '../assets/media/farms-consumables.webp';
+import farmsMicroCity from '../assets/media/farms-micro-city.webp';
+import farmsDinnerTable from '../assets/media/farms-dinner-table.webp';
+import farmsRootsMist from '../assets/media/farms-roots-mist.webp';
+import farmsWinter from '../assets/media/farms-winter.webp';
 import waterLine from '../assets/media/water-line.webp';
 import h2oExteriorAlberta from '../assets/media/h2o-exterior-alberta.webp';
 import h2oExteriorWinter from '../assets/media/h2o-exterior-winter.webp';
@@ -48,6 +54,12 @@ const stills: Record<string, ImageMetadata> = {
   '/film/resort-tower.webp': resortTower,
   '/film/farm-wall.webp': farmWall,
   '/film/farm-room.webp': farmRoom,
+  '/film/farms-exterior-solar.webp': farmsExteriorSolar,
+  '/film/farms-consumables.webp': farmsConsumables,
+  '/film/farms-micro-city.webp': farmsMicroCity,
+  '/film/farms-dinner-table.webp': farmsDinnerTable,
+  '/film/farms-roots-mist.webp': farmsRootsMist,
+  '/film/farms-winter.webp': farmsWinter,
   '/film/water-line.webp': waterLine,
   '/film/h2o-exterior-alberta.webp': h2oExteriorAlberta,
   '/film/h2o-exterior-winter.webp': h2oExteriorWinter,
