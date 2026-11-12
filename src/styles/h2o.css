@@ -253,10 +253,15 @@
     padding-bottom: 0;
   }
 
+  /* Keep the bottle off the winter unit on phones. */
   .h2o-hero-bottle {
-    left: 0.65rem;
-    bottom: 0.65rem;
-    width: min(38%, 9.5rem);
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: min(58%, 12.5rem);
+    margin: 0.85rem 0 0;
+    box-shadow: 0 8px 22px rgba(20, 18, 14, 0.10);
   }
 
   .h2o-intro {
@@ -299,5 +304,14 @@
 
   .h2o-close .later-actions {
     justify-content: flex-start;
+  }
+
+  /* Keep body copy clear of the fixed ambient button at the lower left. Photos stay on the page gutter. */
+  .h2o-intro,
+  .h2o-block,
+  .h2o-hero-cta,
+  .h2o-close,
+  .h2o-note {
+    padding-left: 2.75rem;
   }
 }

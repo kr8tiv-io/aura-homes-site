@@ -1,0 +1,349 @@
+/* Aura Farms only. Layout A hero, then Layout B editorial. Scoped to .farms-page. */
+
+.farms-page {
+  overflow-x: clip;
+  color: #14120e;
+  background: transparent;
+}
+
+.farms-page h1 {
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 11vw, 3.35rem);
+  letter-spacing: 0.035em;
+  line-height: 1.05;
+  color: #14120e;
+}
+
+.farms-page h2 {
+  margin: 0 0 0.75rem;
+  max-width: 100%;
+  min-width: 0;
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  font-size: clamp(1.65rem, 2.3vw, 2.15rem);
+  letter-spacing: 0.035em;
+  line-height: 1.15;
+  color: #14120e;
+}
+
+.farms-hero {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  grid-template-areas:
+    "kicker cluster"
+    "title cluster"
+    "intro cluster"
+    "cta cluster";
+  column-gap: clamp(1.5rem, 3.2vw, 3.5rem);
+  align-items: start;
+  padding: 16vh 6vw 7vh;
+}
+
+.farms-hero > * {
+  min-width: 0;
+}
+
+.farms-kicker {
+  grid-area: kicker;
+  margin-bottom: 0.85rem;
+}
+
+.farms-title {
+  grid-area: title;
+}
+
+.farms-intro {
+  grid-area: intro;
+  margin: 1.35rem 0 0;
+  max-width: 34rem;
+  font-weight: 300;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: rgba(20, 18, 14, 0.72);
+}
+
+.farms-hero-cta {
+  grid-area: cta;
+  margin-top: 1.7rem;
+}
+
+.farms-hero-cluster {
+  grid-area: cluster;
+  position: relative;
+  /* 16:9 still, so the hang is shorter than the H2O bottle. The card still sits on the lower-left of the solar frame. */
+  padding-bottom: clamp(2.5rem, 8%, 3.5rem);
+}
+
+.farms-frame {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #e4e0d8;
+}
+
+.farms-frame picture.still-frame {
+  position: absolute;
+  inset: 0;
+}
+
+.farms-hero-inset {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
+  width: min(46%, 15.5rem);
+  box-shadow: 0 12px 32px rgba(20, 18, 14, 0.14);
+}
+
+.farms-editorial {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(16rem, 0.82fr);
+  gap: clamp(1.75rem, 4vw, 4.5rem);
+  align-items: start;
+  padding: 2vh 6vw 3vh;
+}
+
+.farms-editorial-copy p,
+.farms-aims li {
+  margin: 0;
+  max-width: 38rem;
+  font-weight: 300;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: rgba(20, 18, 14, 0.72);
+}
+
+.farms-block p + p,
+.farms-block .farms-adds {
+  margin-top: 0.95rem;
+}
+
+.farms-adds {
+  color: #14120e;
+  font-weight: 400;
+}
+
+.farms-block + .farms-block {
+  margin-top: 2.15rem;
+}
+
+.farms-editorial-copy a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: #9c7a55;
+  text-underline-offset: 0.18em;
+}
+
+.farms-aims {
+  margin: 0.95rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.farms-aims li {
+  position: relative;
+  margin: 0 0 0.95rem;
+  padding-left: 0.95rem;
+}
+
+.farms-aims li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 0.4rem;
+  height: 1px;
+  background: #9c7a55;
+}
+
+.farms-aims strong {
+  font-weight: 500;
+  color: #14120e;
+}
+
+.farms-signoff {
+  margin-top: 1.25rem;
+  color: #14120e;
+}
+
+.farms-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.55rem, 1vw, 0.9rem);
+  padding: 3.5rem 6vw 1rem;
+}
+
+.farms-close {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.25rem 6vw 12vh;
+  text-align: center;
+}
+
+.farms-close .later-actions {
+  justify-content: center;
+  margin-top: 0;
+}
+
+.farms-note {
+  margin: 1.35rem 0 0;
+  max-width: 28rem;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: rgba(20, 18, 14, 0.62);
+}
+
+@supports (font-size: 1cqi) {
+  .farms-page h1 {
+    font-size: clamp(2.45rem, 12cqi, 3.35rem);
+  }
+}
+
+@media (min-width: 860px) {
+  .farms-page h1 {
+    font-size: clamp(2.35rem, 4vw, 4.5rem);
+  }
+
+  @supports (font-size: 1cqi) {
+    /* Title column is narrower than the H2O product name, so the size stays inside that column and breaks as two lines. */
+    .farms-page h1 {
+      font-size: clamp(2.35rem, 5.5cqi, 4.75rem);
+    }
+  }
+
+  .farms-hero-inset {
+    left: -1.25rem;
+  }
+
+  .farms-editorial-photo {
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .farms-strip .farms-frame {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 859px) {
+  .farms-page {
+    display: flex;
+    flex-direction: column;
+    padding: 14vh 1.25rem max(8vh, 6.5rem);
+  }
+
+  .farms-page h1 {
+    font-size: clamp(2.05rem, 10vw, 3.1rem);
+    line-height: 1.08;
+  }
+
+  .farms-page h2 {
+    font-size: clamp(1.45rem, 7.4vw, 2rem);
+    line-height: 1.2;
+  }
+
+  .farms-hero {
+    display: block;
+    padding: 0;
+  }
+
+  .farms-kicker {
+    margin-bottom: 0.75rem;
+  }
+
+  .farms-hero-cluster {
+    width: 100%;
+    margin-top: 1.2rem;
+    padding-bottom: 0;
+  }
+
+  /* Consumables sits under the solar photo. No overlay on the unit. */
+  .farms-hero-inset {
+    position: relative;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    margin: 0.75rem 0 0;
+    box-shadow: none;
+  }
+
+  .farms-intro {
+    margin-top: 1.2rem;
+  }
+
+  .farms-hero-cta {
+    margin-top: 1.35rem;
+  }
+
+  .farms-editorial,
+  .farms-editorial-copy,
+  .farms-strip {
+    display: contents;
+  }
+
+  .farms-real { order: 1; }
+  .farms-dinner { order: 2; }
+  .farms-start { order: 3; }
+  .farms-roots { order: 4; }
+  .farms-headed { order: 5; }
+  .farms-editorial-photo { order: 6; }
+  .farms-long { order: 7; }
+  .farms-winter { order: 8; }
+  .farms-close { order: 9; }
+
+  .farms-block,
+  .farms-dinner,
+  .farms-roots,
+  .farms-editorial-photo,
+  .farms-winter,
+  .farms-close,
+  .farms-hero {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .farms-page .farms-block {
+    width: 100%;
+    margin-top: 1.85rem;
+  }
+
+  .farms-dinner,
+  .farms-roots,
+  .farms-editorial-photo,
+  .farms-winter {
+    position: relative;
+    top: auto;
+    width: 100%;
+    margin-top: 1.15rem;
+  }
+
+  .farms-close {
+    align-items: flex-start;
+    padding: 2rem 0 0;
+    text-align: left;
+  }
+
+  .farms-close .later-actions {
+    justify-content: flex-start;
+  }
+
+  /* Keep body copy clear of the fixed ambient button at the lower left. Photos stay on the page gutter. */
+  .farms-intro,
+  .farms-block,
+  .farms-hero-cta,
+  .farms-close,
+  .farms-note {
+    padding-left: 2.75rem;
+  }
+}

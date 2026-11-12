@@ -1,85 +1,131 @@
 ---
+import '../styles/farms.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Join from '../components/Join.astro';
-import Journeys from '../components/Journeys.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import Still from '../components/Still.astro';
 ---
 
 <BaseLayout
-  title="A wall that grows | Aura Homes"
-  description="Return to Aura. One beautiful room at a time."
+  title="Aura Farms. A wall that grows | Aura Homes"
+  description="Aura Farms. A wall that grows. Same Aura room, same clean lines, but one long wall is a vertical aeroponic garden. A future expansion of the Aura network. Get on the waitlist."
   descriptor="Aura Farms"
 >
-  <main id="top">
-    <canvas class="page-field" data-wash="room" aria-hidden="true"></canvas>
-    <canvas class="field-light" data-field="room" aria-hidden="true"></canvas>
-
-    <section class="page-lead">
-      <p class="story-kicker">Aura Farms</p>
-      <RevealHeading as="h1" glow>
-        A wall <br />that grows.
-      </RevealHeading>
-      <p class="story-lede">
-        Same Aura room, same clean lines, but one long wall is a vertical aeroponic garden: greens, herbs and fruit, fed by a closed loop of water and nutrients. Grow in it yourself, or have Aura build it and set it up.
+  <main id="top" class="farms-page">
+    <section class="farms-hero" aria-labelledby="farms-title">
+      <p class="story-kicker farms-kicker">Aura Farms</p>
+      <RevealHeading as="h1" id="farms-title" class="farms-title">A wall that grows.</RevealHeading>
+      <div class="farms-hero-cluster">
+        <figure class="farms-frame farms-hero-main">
+          <Still
+            src="/film/farms-exterior-solar.webp"
+            alt="Black glass farm room in a dusk meadow, one long wall a lit vertical garden, slim solar array on the roof, pines and mountains behind."
+            loading="eager"
+            fetchpriority="high"
+            sizes="(max-width: 859px) 92vw, 56vw"
+          />
+        </figure>
+        <figure class="farms-frame farms-hero-inset">
+          <Still
+            src="/film/farms-consumables.webp"
+            alt="Oak table with blank seed packets, a grow-medium block and an amber bottle, a vertical garden wall and a meadow at sunset behind."
+            loading="eager"
+            sizes="(max-width: 859px) 92vw, 280px"
+          />
+        </figure>
+      </div>
+      <p class="farms-intro">
+        Same Aura room, same clean lines, but one long wall is a vertical aeroponic garden: greens, herbs and fruit, fed by a closed loop of water and nutrients. Grow in it yourself, or have Aura build it and set it up. Dinner, ten steps away. No grocery run required, and no sad basil giving up on the windowsill.
+      </p>
+      <p class="later-actions farms-hero-cta">
+        <a href="/pre-order">Get on the waitlist</a>
       </p>
     </section>
 
-    <section class="story-still">
-      <figure class="story-figure">
-        <video data-poster="/media/video/farm-wall-poster.webp" data-film="/media/video/farm-wall.mp4" data-film-webm="/media/video/farm-wall.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1280" data-shot="drift" data-play="drift" aria-label="Black glass room in a dusk meadow, one wall a vertical aeroponic garden"></video>
+    <section class="farms-editorial">
+      <figure class="farms-frame farms-editorial-photo">
+        <Still
+          src="/film/farms-micro-city.webp"
+          alt="Three long black glass Aura rooms in a dusk meadow: a bedroom, a farm room with a lit grow wall, and a water room, pines and mountains behind."
+          sizes="(max-width: 859px) 92vw, 54vw"
+        />
       </figure>
-      <div>
-        <p class="story-kicker">The wall</p>
-        <h3><span class="line-mask"><span class="line">A garden on the wall.</span></span></h3>
-        <p>One long side stays glass. The other is plants in vertical channels, with grow lights so they keep going after sunset.</p>
+      <div class="farms-editorial-copy">
+        <div class="farms-block farms-real">
+          <h2>Is this real?</h2>
+          <p>
+            Very real. Aeroponics grows plants with their roots hanging in the air, misted with water and nutrients instead of planted in soil. Commercial farms already run this. We're putting that system into a room you'd actually want to stand in.
+          </p>
+          <p>
+            A garden on the wall. One long side stays glass. The other is plants in vertical channels, with grow lights so they keep going after sunset. Honey oak, warm light and the meadow outside the glass. The garden is built into the wall, so the harvest is right there in the room.
+          </p>
+        </div>
+        <div class="farms-block farms-start">
+          <h2>Where we start.</h2>
+          <p>
+            We're starting with the best commercially available aeroponic systems and building them into Aura rooms properly: insulated, lit, and good-looking enough that you'll give the tour before you pick the basil. It's a small vertical grow room for anyone who wants to grow their own food when the rooms are available. Set it up yourself, or we'll set it up for you. We'll also have the seeds, grow medium, nutrients and the rest of the consumables you need to keep it running. There's a full solar option too.
+          </p>
+          <p class="farms-adds">What the farm adds:</p>
+          <ul class="farms-aims">
+            <li>Vertical aeroponic channels</li>
+            <li>A closed water and nutrient loop</li>
+            <li>Light for the plants</li>
+            <li>The meadow still in view</li>
+          </ul>
+        </div>
+        <div class="farms-block farms-headed">
+          <h2>Where we're headed.</h2>
+          <p>
+            We'll work with the companies already building this technology, keep upgrading as it improves, and run our own R&D so the rooms get simpler to run and better at growing through an Alberta winter. The bigger picture is that Aura rooms connect. A place to sleep, a wall that grows food, and an <a href="/h2o">Aura H2O</a> unit for water can sit together as a little off-grid micro city.
+          </p>
+        </div>
+        <div class="farms-block farms-long">
+          <h2>The long game.</h2>
+          <p>None of this is running yet, but it's where we're aiming:</p>
+          <ul class="farms-aims">
+            <li>
+              <strong>Your own harvest.</strong> Grow for the house, the kitchen or a small stay, and keep everything you pick.
+            </li>
+            <li>
+              <strong>The kit to keep it growing.</strong> Seeds, medium, nutrients and the rest, ready when you need a refill.
+            </li>
+            <li>
+              <strong>A free food network.</strong> Growers get paid to grow food in sponsor-branded packaging that goes to people who need it. Aura handles the advertisers, the distribution and the logistics. You just grow. Yes, getting paid to grow salad on your wall. We're as excited as you are.
+            </li>
+          </ul>
+          <p class="farms-signoff">Rooms first, then the food, and the rest connects from there.</p>
+        </div>
       </div>
     </section>
 
-    <section class="story-still is-flip">
-      <figure class="story-figure">
-        <video data-poster="/media/video/farm-room-poster.webp" data-film="/media/video/farm-room.mp4" data-film-webm="/media/video/farm-room.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1280" data-shot="tilt" data-play="push" aria-label="Honey oak room with a floor-to-ceiling aeroponic wall and meadow beyond the glass"></video>
+    <section class="farms-strip" aria-label="More of Aura Farms">
+      <figure class="farms-frame farms-dinner">
+        <Still
+          src="/film/farms-dinner-table.webp"
+          alt="Honey oak dining table set for a meal, a hand clipping greens from the vertical garden wall, a meadow at sunset in the glass."
+          sizes="(max-width: 859px) 92vw, 32vw"
+        />
       </figure>
-      <div>
-        <p class="story-kicker">Inside</p>
-        <h3><span class="line-mask"><span class="line">Dinner, ten steps away.</span></span></h3>
-        <p>Honey oak, warm light and the meadow outside the glass. The garden is built into the wall, so the harvest is right there in the room.</p>
-      </div>
+      <figure class="farms-frame farms-roots">
+        <Still
+          src="/film/farms-roots-mist.webp"
+          alt="Close view of plant roots hanging in vertical channels, misted with water and nutrients, warm honey-oak light."
+          sizes="(max-width: 859px) 92vw, 32vw"
+        />
+      </figure>
+      <figure class="farms-frame farms-winter">
+        <Still
+          src="/film/farms-winter.webp"
+          alt="The farm room in Alberta snow at blue hour, grow wall glowing behind the glass, pines and mountains behind."
+          sizes="(max-width: 859px) 92vw, 32vw"
+        />
+      </figure>
     </section>
 
-    <section class="ways">
-      <p class="story-kicker">What the farm adds</p>
-      <ol>
-        <li><span>01</span> Vertical aeroponic channels</li>
-        <li><span>02</span> A closed water and nutrient loop</li>
-        <li><span>03</span> Light for the plants</li>
-        <li><span>04</span> The meadow still in view</li>
-      </ol>
-      <p class="story-lede">Run it as your own little farm, or have Aura build it and set it up where the food is needed.</p>
-    </section>
-
-    <section class="story-open">
-      <p class="story-kicker">Yours, or placed</p>
-      <RevealHeading as="h2" glow>
-        Grow your own. <br />Or let us set it up.
-      </RevealHeading>
-      <p class="story-lede">
-        Two ways to use it. Grow in it yourself and keep the whole harvest. Or have Aura build the room and set it up for you. Either way, it starts with the waitlist.
+    <section class="farms-close">
+      <p class="later-actions">
+        <a href="/pre-order">Get on the waitlist</a>
       </p>
-      <p class="story-lede"><a href="/journal/aura-farms">Read the farm note</a>, and <a href="/journal/free-food-and-water">the network</a>.</p>
-    </section>
-
-    <Journeys reveal />
-
-    <section id="enquire" class="enquire">
-      <p class="story-kicker">Enquire</p>
-      <RevealHeading as="h2" glow>Want a garden wall?</RevealHeading>
-      <p class="story-lede enquire-note">Tell us if you want to grow for yourself or have Aura set it up, and you are on the waitlist.</p>
-      <Join shell="farm" />
+      <p class="farms-note">This is a future expansion of the Aura network.</p>
     </section>
   </main>
-  <script>
-    import { bindJourneyMotion } from '../scripts/journey';
-    import { onPageLoad } from '../scripts/motion';
-    onPageLoad(() => bindJourneyMotion());
-  </script>
 </BaseLayout>
