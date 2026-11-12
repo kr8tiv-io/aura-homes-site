@@ -347,8 +347,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .plan-giant {
     position: absolute;
     z-index: 1;
-    right: -0.04em;
-    bottom: -0.08em;
+    /* Leave a gap for the tucked ambient control in the lower-right. */
+    right: 2.6rem;
+    bottom: 2.6rem;
     margin: 0;
     font-family: var(--font-cinzel);
     font-weight: 400;
@@ -661,7 +662,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     }
     .plan-giant {
       top: 11.25rem;
-      right: -0.08em;
+      right: 2.6rem;
       bottom: auto;
       font-size: clamp(4.2rem, 28vw, 6.6rem);
     }
@@ -691,7 +692,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       height: auto;
       min-height: 100svh;
       justify-content: flex-end;
-      padding: 7.4rem 1.5rem 2.6rem;
+      padding: 7.4rem 2.6rem 3.4rem 1.5rem;
     }
     .plan-copy :global(h2) {
       font-size: clamp(2.15rem, 9vw, 3.1rem);
