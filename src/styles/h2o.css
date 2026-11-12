@@ -1,0 +1,303 @@
+/* Aura H2O only. Layout A hero, then Layout B editorial. Scoped to .h2o-page. */
+
+.h2o-page {
+  overflow-x: clip;
+  color: #14120e;
+  background: transparent;
+}
+
+.h2o-page h1 {
+  margin: 0;
+  max-width: 100%;
+  min-width: 0;
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  font-size: clamp(2.5rem, 11vw, 3.35rem);
+  letter-spacing: 0.035em;
+  line-height: 1.05;
+  color: #14120e;
+}
+
+.h2o-page h2 {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-cinzel);
+  font-weight: 400;
+  font-size: clamp(1.65rem, 2.3vw, 2.15rem);
+  letter-spacing: 0.035em;
+  line-height: 1.15;
+  color: #14120e;
+}
+
+.h2o-hero {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 0.86fr) minmax(0, 1.14fr);
+  grid-template-areas:
+    "kicker cluster"
+    "title cluster"
+    "sub cluster"
+    "intro cluster"
+    "cta cluster";
+  column-gap: clamp(1.5rem, 3.2vw, 3.5rem);
+  align-items: start;
+  padding: 16vh 6vw 7vh;
+}
+
+.h2o-hero > * {
+  min-width: 0;
+}
+
+.h2o-kicker {
+  grid-area: kicker;
+  margin-bottom: 0.85rem;
+}
+
+.h2o-title {
+  grid-area: title;
+}
+
+.h2o-subhead {
+  grid-area: sub;
+  margin: 0.9rem 0 0;
+  max-width: 22em;
+  font-family: var(--font-inter), sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.15rem, 1.5vw, 1.4rem);
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  color: #14120e;
+}
+
+.h2o-intro {
+  grid-area: intro;
+  margin: 1.35rem 0 0;
+  max-width: 34rem;
+  font-weight: 300;
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: rgba(20, 18, 14, 0.72);
+}
+
+.h2o-hero-cta {
+  grid-area: cta;
+  margin-top: 1.7rem;
+}
+
+.h2o-hero-cluster {
+  grid-area: cluster;
+  position: relative;
+  /* The bottle hangs below the winter frame and stays inside this box. */
+  padding-bottom: clamp(4.75rem, 14%, 7.25rem);
+}
+
+.h2o-frame {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #e4e0d8;
+}
+
+.h2o-frame picture.still-frame {
+  position: absolute;
+  inset: 0;
+}
+
+.h2o-frame.is-bottle {
+  aspect-ratio: 4 / 5;
+}
+
+
+.h2o-hero-bottle {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  bottom: 0;
+  width: min(38%, 14.5rem);
+  box-shadow: 0 12px 32px rgba(20, 18, 14, 0.14);
+}
+
+.h2o-editorial {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(16rem, 0.82fr);
+  gap: clamp(1.75rem, 4vw, 4.5rem);
+  align-items: start;
+  padding: 2vh 6vw 3vh;
+}
+
+.h2o-editorial-copy p,
+.h2o-aims li {
+  margin: 0;
+  max-width: 38rem;
+  font-weight: 300;
+  font-size: 1.02rem;
+  line-height: 1.65;
+  color: rgba(20, 18, 14, 0.72);
+}
+
+.h2o-block + .h2o-block {
+  margin-top: 2.15rem;
+}
+
+.h2o-aims {
+  margin: 0.95rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.h2o-aims li {
+  position: relative;
+  margin: 0 0 0.95rem;
+  padding-left: 0.95rem;
+}
+
+.h2o-aims li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 0.4rem;
+  height: 1px;
+  background: #9c7a55;
+}
+
+.h2o-aims strong {
+  font-weight: 500;
+  color: #14120e;
+}
+
+.h2o-signoff {
+  margin-top: 1.25rem;
+  color: #14120e;
+}
+
+.h2o-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.55rem, 1vw, 0.9rem);
+  padding: 3.5rem 6vw 1rem;
+}
+
+.h2o-close {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2.25rem 6vw 12vh;
+  text-align: center;
+}
+
+.h2o-close .later-actions {
+  justify-content: center;
+  margin-top: 0;
+}
+
+.h2o-note {
+  margin: 1.35rem 0 0;
+  max-width: 28rem;
+  font-weight: 300;
+  font-style: italic;
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: rgba(20, 18, 14, 0.62);
+}
+
+@supports (font-size: 1cqi) {
+  .h2o-page h1 {
+    font-size: clamp(2.45rem, 12cqi, 3.35rem);
+  }
+}
+
+@media (min-width: 860px) {
+  .h2o-page h1 {
+    font-size: clamp(2.35rem, 4vw, 4.5rem);
+  }
+
+  @supports (font-size: 1cqi) {
+    .h2o-page h1 {
+      font-size: clamp(2.35rem, 6.4cqi, 5.2rem);
+    }
+  }
+
+  .h2o-hero-bottle {
+    left: -1.25rem;
+  }
+
+  .h2o-editorial-photo {
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .h2o-strip .h2o-frame {
+    aspect-ratio: 16 / 9;
+  }
+}
+
+@media (max-width: 859px) {
+  .h2o-hero {
+    display: block;
+    padding: 14vh 1.25rem 3.25rem;
+  }
+
+  .h2o-kicker {
+    margin-bottom: 0.75rem;
+  }
+
+  .h2o-subhead {
+    margin-top: 0.75rem;
+  }
+
+  .h2o-hero-cluster {
+    width: 100%;
+    margin-top: 1.2rem;
+    padding-bottom: 0;
+  }
+
+  .h2o-hero-bottle {
+    left: 0.65rem;
+    bottom: 0.65rem;
+    width: min(38%, 9.5rem);
+  }
+
+  .h2o-intro {
+    margin-top: 1.2rem;
+  }
+
+  .h2o-hero-cta {
+    margin-top: 1.35rem;
+  }
+
+  .h2o-editorial {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    padding: 1.5rem 1.25rem 0.5rem;
+  }
+
+  .h2o-editorial-copy {
+    order: 1;
+    width: 100%;
+  }
+
+  .h2o-editorial-photo {
+    order: 2;
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .h2o-strip {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    padding: 1.75rem 1.25rem 0.5rem;
+  }
+
+  .h2o-close {
+    align-items: flex-start;
+    padding: 2rem 1.25rem 8vh;
+    text-align: left;
+  }
+
+  .h2o-close .later-actions {
+    justify-content: flex-start;
+  }
+}

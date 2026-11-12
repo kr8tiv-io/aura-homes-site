@@ -14,6 +14,11 @@ import resortTower from '../assets/media/resort-tower.webp';
 import farmWall from '../assets/media/farm-wall.webp';
 import farmRoom from '../assets/media/farm-room.webp';
 import waterLine from '../assets/media/water-line.webp';
+import h2oExteriorAlberta from '../assets/media/h2o-exterior-alberta.webp';
+import h2oExteriorWinter from '../assets/media/h2o-exterior-winter.webp';
+import h2oBottleFill from '../assets/media/h2o-bottle-fill.webp';
+import h2oBackyardBottling from '../assets/media/h2o-backyard-bottling.webp';
+import h2oSponsorBottle from '../assets/media/h2o-sponsor-bottle.webp';
 import costaCanopy from '../assets/media/costa-canopy.webp';
 import aframeGolden from '../assets/media/aframe-golden-hour-meadow.webp';
 import aframeAerial from '../assets/media/aframe-aerial-blue-hour-snow.webp';
@@ -44,6 +49,11 @@ const stills: Record<string, ImageMetadata> = {
   '/film/farm-wall.webp': farmWall,
   '/film/farm-room.webp': farmRoom,
   '/film/water-line.webp': waterLine,
+  '/film/h2o-exterior-alberta.webp': h2oExteriorAlberta,
+  '/film/h2o-exterior-winter.webp': h2oExteriorWinter,
+  '/film/h2o-bottle-fill.webp': h2oBottleFill,
+  '/film/h2o-backyard-bottling.webp': h2oBackyardBottling,
+  '/film/h2o-sponsor-bottle.webp': h2oSponsorBottle,
   '/film/costa-canopy.webp': costaCanopy,
   '/media/specialty/aframe-golden-hour-meadow.jpg': aframeGolden,
   '/media/specialty/aframe-aerial-blue-hour-snow.jpg': aframeAerial,
