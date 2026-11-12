@@ -1,33 +1,122 @@
 ---
+import '../styles/h2o.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import Still from '../components/Still.astro';
 ---
 
 <BaseLayout
-  title="Aura H2O"
-  description="Aura H2O pulls water from the sky and bottles it in the backyard, with a standard atmospheric water generator. Premium cans and glass, ethical sponsors only, from Chapter 3 of the master plan."
+  title="Aura H2O. Water from thin air | Aura Homes"
+  description="Aura H2O. Water from thin air. Literally. Atmospheric water generators, built into Aura rooms. A future expansion of the Aura network. The waitlist is open."
   descriptor="Aura H2O"
 >
-  <main id="top">
-    <section class="page-lead">
-      <p class="story-kicker">From the sky</p>
-      <RevealHeading as="h1">Aura H2O</RevealHeading>
-      <p class="story-lede">
-        Aura H2O pulls water from the sky and bottles it in the backyard. A standard atmospheric water generator is built into an Aura room, and the water goes into premium cans and glass bottles. Sponsors, when they arrive, will be ethical ones only.
+  <main id="top" class="h2o-page">
+    <section class="h2o-hero" aria-labelledby="h2o-title">
+      <p class="story-kicker h2o-kicker">From the sky</p>
+      <RevealHeading as="h1" id="h2o-title" class="h2o-title">Aura H2O</RevealHeading>
+      <p class="h2o-subhead">Water from thin air. Literally.</p>
+      <div class="h2o-hero-cluster">
+        <figure class="h2o-frame h2o-hero-winter">
+          <Still
+            src="/film/h2o-exterior-winter.webp"
+            alt="Black glass room in a snowy field at blue dusk, door open onto a wood bench and a tap, snow on the roof, pines and mountains behind."
+            loading="eager"
+            fetchpriority="high"
+            sizes="(max-width: 859px) 92vw, 56vw"
+          />
+        </figure>
+        <figure class="h2o-frame is-bottle h2o-hero-bottle">
+          <Still
+            src="/film/h2o-sponsor-bottle.webp"
+            alt="Clear glass bottle of water with condensation, and a white label with a mountain mark plus bronze and charcoal bars."
+            position="center 42%"
+            sizes="(max-width: 859px) 38vw, 240px"
+          />
+        </figure>
+      </div>
+      <p class="h2o-intro">
+        There's water in the air around you right now, even on a dry day. An atmospheric water generator pulls it out. It cools the air until moisture condenses, filters it, and turns it into clean drinking water. No well, no water line, no truck, no awkward chat with the water delivery guy.
       </p>
-      <p class="story-lede">It is at the concept stage, like every Aura room. The waitlist is open, and no order is placed from this page.</p>
-      <p class="later-actions">
-        <a href="/master-plan">Read the master plan</a>
-        <a href="/pre-order">Join the waitlist</a>
+      <p class="later-actions h2o-hero-cta">
+        <a href="/pre-order">Get on the waitlist</a>
       </p>
     </section>
-    <section class="later-hero">
-      <img
-        src="/media/video/water-line-poster.webp"
-        alt="A quiet line inside an oak room, where water from the air will be held in glass."
-        width="1920"
-        height="1280"
-      />
+
+    <section class="h2o-editorial">
+      <figure class="h2o-frame h2o-editorial-photo">
+        <Still
+          src="/film/h2o-exterior-alberta.webp"
+          alt="Black glass room in tall grass at dusk, mountains behind, door open onto a wood bench and a tap."
+          sizes="(max-width: 859px) 92vw, 54vw"
+        />
+      </figure>
+      <div class="h2o-editorial-copy">
+        <div class="h2o-block">
+          <h2>Is this real?</h2>
+          <p>
+            Very real, and it works well. Militaries already run proper atmospheric water systems in the field, winter included. Plenty of people already use these at home and off grid. Today's commercial units work best when it's warm and a bit humid. Newer technology can pull water out of the air in Arctic conditions, and that's exactly where our research and development is headed. We're in Alberta. We need water in January too.
+          </p>
+        </div>
+        <div class="h2o-block">
+          <h2>Where we start.</h2>
+          <p>
+            We're starting with the best commercially available units and building them into Aura rooms properly: insulated, powered, and good-looking enough that you'll give the tour before the coffee. It's an off-grid water source for cabins, acreages, glamping sites and anyone who'd rather their water didn't depend on a pipe from somewhere else.
+          </p>
+        </div>
+        <div class="h2o-block">
+          <h2>Where we're headed.</h2>
+          <p>
+            We'll work with the companies building the best of this technology, keep upgrading as it improves, and run our own R&D so our units handle any weather Alberta throws at them. That includes the weather that makes you question your life choices.
+          </p>
+        </div>
+        <div class="h2o-block">
+          <h2>The long game.</h2>
+          <p>None of this is running yet, but it's where we're aiming:</p>
+          <ul class="h2o-aims">
+            <li>
+              <strong>Backyard bottling.</strong> A little bottling plant that pulls water out of the air and bottles it right where it's made.
+            </li>
+            <li>
+              <strong>A free water network.</strong> Clean water given away free, with sponsor labels on the bottles paying for it. People get paid to bottle the branded water. Yes, getting paid to make water out of air. We're as excited as you are.
+            </li>
+            <li>
+              <strong>Water where it's needed most.</strong> As the technology grows, we want it to bring water to people who don't have a reliable source.
+            </li>
+          </ul>
+          <p class="h2o-signoff">Rooms first, then the water, and the rest grows from there.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="h2o-strip" aria-label="More of Aura H2O">
+      <figure class="h2o-frame">
+        <Still
+          src="/film/h2o-bottle-fill.webp"
+          alt="A tube filling a clear glass bottle on a steel bench inside a wood room, with a field at sunset through the window."
+          sizes="(max-width: 859px) 92vw, 32vw"
+        />
+      </figure>
+      <figure class="h2o-frame">
+        <Still
+          src="/film/h2o-backyard-bottling.webp"
+          alt="Black glass room in a field at sunset, door open onto a bench of glass bottles under warm light."
+          sizes="(max-width: 859px) 92vw, 32vw"
+        />
+      </figure>
+      <figure class="h2o-frame">
+        <Still
+          src="/film/water-line.webp"
+          alt="Oak room with plastic water jugs on a steel bench, a fill tube overhead, and a meadow at dusk through the window."
+          sizes="(max-width: 859px) 92vw, 32vw"
+        />
+      </figure>
+    </section>
+
+    <section class="h2o-close">
+      <p class="later-actions">
+        <a href="/pre-order">Get on the waitlist</a>
+      </p>
+      <p class="h2o-note">This is a future expansion of the Aura network.</p>
     </section>
   </main>
 </BaseLayout>
