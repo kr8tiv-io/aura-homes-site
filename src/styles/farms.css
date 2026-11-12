@@ -338,12 +338,4 @@
     justify-content: flex-start;
   }
 
-  /* Keep body copy clear of the fixed ambient button at the lower left. Photos stay on the page gutter. */
-  .farms-intro,
-  .farms-block,
-  .farms-hero-cta,
-  .farms-close,
-  .farms-note {
-    padding-left: 2.75rem;
-  }
 }
