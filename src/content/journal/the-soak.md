@@ -2,15 +2,15 @@
 title: "The Soak: a hot tub that came with a room"
 date: 2026-10-04
 cover: /film/story-meadow-side.webp
-coverAlt: "A black glass room in tall grass at dusk, a cedar tub steaming, and a hanging seat under an arch."
-excerpt: "A wood-fired cedar tub, a black-glass room to warm up in, and a swinging daybed. Here is how an evening in it goes."
+coverAlt: "A black polycarbonate room in tall grass at dusk, a cedar tub steaming, and a hanging seat under an arch."
+excerpt: "A wood-fired cedar tub, a black polycarbonate room to warm up in, and a swinging daybed. Here is how an evening in it goes."
 tags:
   - Rooms
   - Soaks
 draft: false
 ---
 
-The Soak is the room from our splash video: a black-glass room, a wood-fired cedar tub on its own deck, and a velvet daybed swinging under a steel arch. River stones line the deck, with soft lights glowing underneath.
+The Soak is the room from our splash video: a black polycarbonate room, a wood-fired cedar tub on its own deck, and a velvet daybed swinging under a steel arch. River stones line the deck, with soft lights glowing underneath.
 
 Here is how an evening goes. Light the stove. Pour a drink while the water heats. Climb in as the sun drops and watch the field turn gold, then blue. When you are properly cooked, step into the room and dry off by the heated towel rail.
 

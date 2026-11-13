@@ -36,7 +36,7 @@ export type CollectionShowpiece = {
 export const collectionIntro = {
   kicker: 'The collection',
   title: 'Pick your planet.',
-  lede: 'From a spare room to a tower of glass. Every Aura is drawn and furnished one at a time, and every model can carry Full Solar from the first build.',
+  lede: 'From a spare room to a tower of polycarbonate. Every Aura is drawn and furnished one at a time, and every model can carry Full Solar from the first build.',
 };
 
 export const collectionTiers: CollectionTier[] = [
@@ -49,11 +49,11 @@ export const collectionTiers: CollectionTier[] = [
       {
         slug: 'of-course-i-still-tow-you',
         story:
-          'Our easiest room to love. A big glass front, a fold-down balcony, and a hitch that keeps your options open.',
+          'Our easiest room to love. A big polycarbonate front, a fold-down balcony, and a hitch that keeps your options open.',
         features: [
           'Ready to tow',
-          'Mirror-glass front',
-          'Fold-down glass balcony',
+          'Mirror polycarbonate front',
+          'Fold-down polycarbonate balcony',
           'Linen bench',
         ],
       },
@@ -63,7 +63,7 @@ export const collectionTiers: CollectionTier[] = [
           'A hot tub with a passport. Tow it somewhere beautiful, light the stove, and let the steam make its argument.',
         features: [
           'Wood-fired cedar tub',
-          'Clear enclosure with a lockable glass door',
+          'Clear enclosure with a lockable polycarbonate door',
           'Its own wheels, ready to tow',
           'Firewood rack',
         ],
@@ -74,7 +74,7 @@ export const collectionTiers: CollectionTier[] = [
         features: [
           'Fold-out linen sofa',
           'Low oak table',
-          'Glass side open to the meadow',
+          'Polycarbonate side open to the meadow',
           'Two towels, always',
         ],
       },
@@ -90,22 +90,22 @@ export const collectionTiers: CollectionTier[] = [
         slug: 'chapter-one',
         story:
           'The first Aura room, and still the one people point at. The long side opens and the evening walks in.',
-        features: ['Opening glass bay', 'Honey oak', 'Linen sofa', 'Lit deck edge'],
+        features: ['Opening polycarbonate bay', 'Honey oak', 'Linen sofa', 'Lit deck edge'],
       },
       {
         slug: 'the-soak',
-        story: 'A wood-fired cedar tub, a black-glass room to warm up in, and a daybed for the part after.',
-        features: ['Cedar tub', 'Black-glass room', 'Hanging daybed', 'Heated towel rail'],
+        story: 'A wood-fired cedar tub, a black polycarbonate room to warm up in, and a daybed for the part after.',
+        features: ['Cedar tub', 'Black polycarbonate room', 'Hanging daybed', 'Heated towel rail'],
       },
       {
         slug: 'the-stargazer',
         story: 'A bedroom with one job, and a ceiling full of stars.',
-        features: ['Plush king bed', 'Glass skylight roof', 'Blackout shade', 'Acoustic insulation'],
+        features: ['Plush king bed', 'Polycarbonate skylight roof', 'Blackout shade', 'Acoustic insulation'],
       },
       {
         slug: 'nothing-to-see-here',
         story: 'You see the whole meadow. The meadow sees its own reflection.',
-        features: ['One-way mirror glass', 'Glass end wall', 'Wide skylight', 'Linen daybed'],
+        features: ['One-way mirror polycarbonate', 'Polycarbonate end wall', 'Wide skylight', 'Linen daybed'],
       },
       {
         slug: 'root-access',
@@ -123,10 +123,10 @@ export const collectionTiers: CollectionTier[] = [
       {
         slug: 'the-forest-edge',
         story:
-          'The long way round. A full-length glass side on all-terrain wheels, with the tub and the daybed already unpacked.',
+          'The long way round. A full-length polycarbonate side on all-terrain wheels, with the tub and the daybed already unpacked.',
         features: [
           'All-terrain axle',
-          'Full-length glass side',
+          'Full-length polycarbonate side',
           'Cedar tub',
           'Roof rack for Full Solar',
         ],
@@ -143,7 +143,7 @@ export const collectionTiers: CollectionTier[] = [
         slug: 'siddharthas-a-wing',
         story: 'Enlightenment, with a very steep roof. It comes with everything, including the net.',
         features: [
-          'Tall glass gable',
+          'Tall polycarbonate gable',
           'Railed deck and nets',
           'Full kitchen and sleeping loft',
           'Wood stove, in-floor heat, hot tub',
@@ -161,9 +161,9 @@ export const collectionTiers: CollectionTier[] = [
       },
       {
         slug: 'pandoras-glass-stairway',
-        story: 'Open the box and climb. Every level is glass, and the top one is all sky.',
+        story: 'Open the box and climb. Every level is polycarbonate, and the top one is all sky.',
         features: [
-          'Curved-glass levels',
+          'Curved polycarbonate levels',
           'Outside stair',
           'Roof deck with net',
           'In-floor heat and wood stove',
@@ -223,11 +223,11 @@ export const collectionShowpieces = {
     },
     {
       name: 'The Quad Squad',
-      line: 'A garage bay and an all-glass living end.',
+      line: 'A garage bay and an all-polycarbonate living end.',
     },
     {
       name: 'The Bifrost',
-      line: 'Two rooms joined by a glass bridge.',
+      line: 'Two rooms joined by a polycarbonate bridge.',
     },
     {
       name: 'Ewok Village Edition',

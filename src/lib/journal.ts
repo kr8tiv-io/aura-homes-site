@@ -13,7 +13,7 @@ export const legacyNotes: JournalCard[] = [
     href: '/journal/one-shell',
     title: 'One room, a lot of side hustles',
     excerpt:
-      'Guest room, office, glass deck, resort, grow room, water maker. One Aura room, a lot of different jobs.',
+      'Guest room, office, polycarbonate deck, resort, grow room, water maker. One Aura room, a lot of different jobs.',
     date: '2026-09-30',
     tags: ['Room'],
     cover: '/film/story-room.webp',
@@ -27,7 +27,7 @@ export const legacyNotes: JournalCard[] = [
     date: '2026-09-30',
     tags: ['Farm'],
     cover: '/film/farm-wall.webp',
-    coverAlt: 'A black glass room in a dusk meadow, one wall a vertical aeroponic garden.',
+    coverAlt: 'A black polycarbonate room in a dusk meadow, one wall a vertical aeroponic garden.',
   },
   {
     href: '/journal/water-from-the-air',
@@ -46,7 +46,7 @@ export const legacyNotes: JournalCard[] = [
     date: '2026-09-30',
     tags: ['Later'],
     cover: '/film/layout-forest.webp',
-    coverAlt: 'A glass room at the edge of a pine forest, open toward a dusk meadow.',
+    coverAlt: 'A polycarbonate room at the edge of a pine forest, open toward a dusk meadow.',
   },
 ];
 

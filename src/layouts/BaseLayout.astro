@@ -34,7 +34,7 @@ const canonical = pageUrl;
 // Versioned 1200x630 PNG in /public (source: design/social-card). Bump the filename when the art changes so scrapers refetch.
 const ogImage = new URL('/og-aura-2026-10.png', origin).href;
 const organization = organizationJson(origin);
-const ogAlt = 'Aura Homes: a dark glass room with a warm oak interior in a dusk meadow, with the line Return to Aura. One beautiful room at a time.';
+const ogAlt = 'Aura Homes: a dark polycarbonate room with a warm oak interior in a dusk meadow, with the line Return to Aura. One beautiful room at a time.';
 const isHome = path === '/';
 const isBuilder = path.startsWith('/builder') || path.startsWith('/build-your-own');
 const filmBar = isHome || path.startsWith('/back-to-nature');

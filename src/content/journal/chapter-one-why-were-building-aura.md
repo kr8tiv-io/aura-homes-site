@@ -2,7 +2,7 @@
 title: "Chapter one: why we're building Aura"
 date: 2026-10-02
 cover: /film/story-meadow-side.webp
-coverAlt: "A low glass room in tall grass, with pines and a pale mountain behind it."
+coverAlt: "A low polycarbonate room in tall grass, with pines and a pale mountain behind it."
 excerpt: "A first note on the shop, the room, and the decision to build it where people can watch."
 tags:
   - Build

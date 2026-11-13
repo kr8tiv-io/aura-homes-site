@@ -136,37 +136,37 @@ const groupBySlug: Record<string, CatalogGroup> = {
 
 const altByFile: Record<string, string> = {
   'skywalker-meadow.jpg':
-    'A glass sleep room with a bed, a reading lamp, and a small glowing heater, in a wildflower meadow under the Milky Way, pines standing around it.',
+    'A polycarbonate sleep room with a bed, a reading lamp, and a small glowing heater, in a wildflower meadow under the Milky Way, pines standing around it.',
   'layout-forest.jpg':
-    'A long mirror-glass room on tandem wheels at the edge of a meadow at dusk, a wood entry door, a fold-down glass balcony with a linen bench, and pines behind.',
+    'A long mirror polycarbonate room on tandem wheels at the edge of a meadow at dusk, a wood entry door, a fold-down polycarbonate balcony with a linen bench, and pines behind.',
   'goldfish-hero.jpg':
-    'A simple white room with a glass door and wide windows, one pale chair inside, on a cedar deck in a meadow of birch trees.',
+    'A simple white room with a polycarbonate door and wide windows, one pale chair inside, on a cedar deck in a meadow of birch trees.',
   'layout-gazebo.jpg':
-    'A steaming cedar hot tub on a tandem trailer in a meadow at dusk, inside a clear glass enclosure with a lockable glass door, firewood stacked beside it.',
+    'A steaming cedar hot tub on a tandem trailer in a meadow at dusk, inside a clear polycarbonate enclosure with a lockable polycarbonate door, firewood stacked beside it.',
   'layout-lounge-wind.jpg':
-    'A long linen sofa in a wood room, glass walls open toward a blue evening meadow.',
+    'A long linen sofa in a wood room, polycarbonate walls open toward a blue evening meadow.',
   'layout-door.jpg':
-    'A long dark room at dusk with a solid entry door and folding glass doors, one of them open onto warm oak, a linen sofa, and a desk.',
+    'A long dark room at dusk with a solid entry door and folding polycarbonate doors, one of them open onto warm oak, a linen sofa, and a desk.',
   'story-room.jpg':
-    'A dark glass room at dusk, the long side open onto a linen sofa, a deck, and a green meadow.',
+    'A dark polycarbonate room at dusk, the long side open onto a linen sofa, a deck, and a green meadow.',
   'story-meadow-side.jpg':
-    'A black glass room in tall grass at dusk, a cedar tub steaming on the deck, and a hanging seat under a steel arch.',
+    'A black polycarbonate room in tall grass at dusk, a cedar tub steaming on the deck, and a hanging seat under a steel arch.',
   'cabin-poster-hi.jpg':
-    'A black glass room at dusk with its glass side open onto warm oak, a wood-fired cedar tub steaming on a dark deck, and a teal daybed swinging from chains under a steel arch, river stones glowing softly along the deck.',
+    'A black polycarbonate room at dusk with its polycarbonate side open onto warm oak, a wood-fired cedar tub steaming on a dark deck, and a teal daybed swinging from chains under a steel arch, river stones glowing softly along the deck.',
   'the-soak-unit.jpg':
-    'A black bedroom on tandem wheels in a sunny meadow, its glass side open onto a plush bed, a wood-fired cedar tub steaming on the cedar deck at the back.',
+    'A black bedroom on tandem wheels in a sunny meadow, its polycarbonate side open onto a plush bed, a wood-fired cedar tub steaming on the cedar deck at the back.',
   'tubward-bound-meadow.jpg':
-    'A black glass bedroom on wheels in a meadow at golden hour, the bed glowing through open glass, a cedar tub steaming on its own dark deck in the grass beside it.',
+    'A black polycarbonate bedroom on wheels in a meadow at golden hour, the bed glowing through open polycarbonate, a cedar tub steaming on its own dark deck in the grass beside it.',
   'story-nest.jpg':
-    'A round teal hanging daybed on chains under a steel arch, beside a black glass room in a meadow at dusk.',
+    'A round teal hanging daybed on chains under a steel arch, beside a black polycarbonate room in a meadow at dusk.',
   'layout-sky.jpg':
-    'A plush bed on a low oak platform under a glass roof of stars, warm wood all around, with a dusk meadow beyond the end window.',
+    'A plush bed on a low oak platform under a polycarbonate roof of stars, warm wood all around, with a dusk meadow beyond the end window.',
   'layout-corner.jpg':
-    'A walnut desk, a brass lamp, and a linen chair in a wood room, with a glass door open onto a dusk meadow.',
+    'A walnut desk, a brass lamp, and a linen chair in a wood room, with a polycarbonate door open onto a dusk meadow.',
   'layout-night.jpg':
-    'A low linen bed in a wood room under a skylight of the Milky Way, facing a night meadow through a glass end wall, with an oak shelf along the side.',
+    'A low linen bed in a wood room under a skylight of the Milky Way, facing a night meadow through a polycarbonate end wall, with an oak shelf along the side.',
   'hot-tub-time-machine.jpg':
-    'A round wood-fired cedar tub with a glowing stove and a tall chimney, inside a clear glass enclosure in wildflowers at dusk.',
+    'A round wood-fired cedar tub with a glowing stove and a tall chimney, inside a clear polycarbonate enclosure in wildflowers at dusk.',
   'aura-cold-plunge-bathtub.jpg':
     'A long oval cedar cold-plunge tub on a low timber base in a frosted clearing, with a stool and folded towels, pines behind it.',
   'fire-and-ice.jpg':
@@ -176,33 +176,33 @@ const altByFile: Record<string, string> = {
   'water-line.jpg':
     'Glass bottles filling from a tube on a steel bench inside a wood room, with a dusk meadow through the window.',
   'farm-wall.jpg':
-    'A glass grow room on a wood deck in a dusk meadow, its long side filled with a lit wall of plants, forest and mountains behind.',
+    'A polycarbonate grow room on a wood deck in a dusk meadow, its long side filled with a lit wall of plants, forest and mountains behind.',
   'farm-room.jpg':
-    'A wood room with a floor-to-ceiling wall of leafy greens in vertical channels, and a wildflower meadow beyond the glass.',
+    'A wood room with a floor-to-ceiling wall of leafy greens in vertical channels, and a wildflower meadow beyond the polycarbonate.',
   'canopy-of-stars.jpg':
-    'A smoked-glass room with warm wood inside and a glass rail, set among ferns in a misty rainforest at dusk.',
+    'A smoked polycarbonate room with warm wood inside and a polycarbonate rail, set among ferns in a misty rainforest at dusk.',
   'forest-edge-wide.jpg':
-    'A long dark room on large wheels in a meadow, a full-length band of mirror glass, a steaming cedar tub, and a hanging daybed under a steel arch.',
+    'A long dark room on large wheels in a meadow, a full-length band of mirror polycarbonate, a steaming cedar tub, and a hanging daybed under a steel arch.',
   'a-wing-golden-hour.jpg':
-    'A steep black glass lodge with a full-height gable, a wide railed deck, a steaming tub, and a small wood sauna, in a wildflower meadow at golden hour with mountains behind.',
+    'A steep black polycarbonate lodge with a full-height gable, a wide railed deck, a steaming tub, and a small wood sauna, in a wildflower meadow at golden hour with mountains behind.',
   'a-wing-hot-tub.jpg':
-    'A steaming cedar tub on a lit deck in front of a steep glass gable, snow falling at dusk.',
+    'A steaming cedar tub on a lit deck in front of a steep polycarbonate gable, snow falling at dusk.',
   'resort-deck.jpg':
-    'A steep glass lodge on a lit deck at night, stairs coming up from the snow, mountains behind the pines.',
+    'A steep polycarbonate lodge on a lit deck at night, stairs coming up from the snow, mountains behind the pines.',
   'resort-tower.jpg':
-    'A round tower of curved glass in the snow, several lit levels, an outside stair, and mountains behind the pines.',
+    'A round tower of curved polycarbonate in the snow, several lit levels, an outside stair, and mountains behind the pines.',
   'waste-of-space-long-1.jpg':
     'A long dark room in a meadow at dusk, with a stair to a railed roof that holds a steaming cedar tub, a hammock, chairs, and a telescope.',
   'waste-of-space-long-2.jpg':
     'A long dark room at night, its stair rising to a roof deck with a steaming cedar tub, a hammock, lounge chairs, a small gym corner, and a telescope.',
   'space-cowboy.jpg':
-    'A long black bumper-pull trailer in a meadow at dusk, tinted glass along the side, a stair, a railed roof deck, and a steaming cedar tub on the rear deck.',
+    'A long black bumper-pull trailer in a meadow at dusk, tinted polycarbonate along the side, a stair, a railed roof deck, and a steaming cedar tub on the rear deck.',
   'fly-you.jpg':
-    'A small white amphibious plane with its wings folded, parked on its trailer beside a glass sleep room, a lake and mountains behind.',
+    'A small white amphibious plane with its wings folded, parked on its trailer beside a polycarbonate sleep room, a lake and mountains behind.',
   'float-you.jpg':
-    'A dark glass room on pontoons at a wooden dock, warm wood and a linen sofa inside, on a calm lake at dusk.',
+    'A dark polycarbonate room on pontoons at a wooden dock, warm wood and a linen sofa inside, on a calm lake at dusk.',
   'full-solar.jpg':
-    'A dark glass room in a golden meadow with solar panels on the roof and a second panel on a cedar pad, aspen trees and mountains behind.',
+    'A dark polycarbonate room in a golden meadow with solar panels on the roof and a second panel on a cedar pad, aspen trees and mountains behind.',
 };
 
 export const catalogFilters = [
@@ -220,14 +220,14 @@ export const stageSections = [
     stage: 'Available soon',
     kicker: 'Available soon',
     title: 'The first builds',
-    lede: 'The rooms we build first: simple, warm and beautiful, with the sleep pod, the soaks and our own wood-fired tub leading the way.',
+    lede: 'The rooms we build first: simple, warm and beautiful, with the sleep rooms, the soaks and our own wood-fired tub leading the way.',
   },
   {
     id: 'coming-after',
     stage: 'Coming after',
     kicker: 'Coming after',
     title: 'The wilder editions',
-    lede: 'More glass, more terrain, more water. The bigger dreams, built as the first rooms make room for them.',
+    lede: 'More polycarbonate, more terrain, more water. The bigger dreams, built as the first rooms make room for them.',
   },
 ] as const;
 

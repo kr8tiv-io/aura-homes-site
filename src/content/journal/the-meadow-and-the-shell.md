@@ -1,9 +1,9 @@
 ---
-title: "Why we put a glass room in a field"
+title: "Why we put a nature room in a field"
 date: 2026-10-03
 cover: /film/layout-forest.webp
-coverAlt: "A glass room at the edge of a pine forest, open toward a dusk meadow."
-excerpt: "Glass, steel and warm oak on land you already have. Here is what a Tuesday morning in one looks like."
+coverAlt: "A polycarbonate room at the edge of a pine forest, open toward a dusk meadow."
+excerpt: "Polycarbonate, steel and warm oak on land you already have. Here is what a Tuesday morning in one looks like."
 tags:
   - Rooms
 draft: false

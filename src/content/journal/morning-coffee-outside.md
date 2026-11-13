@@ -2,7 +2,7 @@
 title: "Morning coffee outside"
 date: 2026-10-02
 cover: /film/layout-sky.webp
-coverAlt: "A bed under a skylight, with the meadow and a dark treeline beyond the glass."
+coverAlt: "A bed under a skylight, with the meadow and a dark treeline beyond the polycarbonate."
 excerpt: "The first cup, taken on the deck, while the grass is still holding the night."
 tags:
   - Morning

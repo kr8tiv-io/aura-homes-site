@@ -41,7 +41,7 @@ const STEP_COPY: Record<Step, { title: string; note: string }> = {
     note: 'Snug, room, or long. The plan stays itself.',
   },
   glass: {
-    title: 'Glass',
+    title: 'Polycarbonate',
     note: 'Clear, tinted, or mirror. The same polycarbonate, three moods.',
   },
   finish: {
@@ -61,7 +61,7 @@ const STEP_COPY: Record<Step, { title: string; note: string }> = {
 const GLAZE: { id: OrderGlaze; label: string; note: string }[] = [
   { id: 'clear', label: 'Clear', note: 'The meadow comes through.' },
   { id: 'tinted', label: 'Tinted', note: 'A softer sky.' },
-  { id: 'mirror', label: 'Mirror', note: 'The glass holds the view.' },
+  { id: 'mirror', label: 'Mirror', note: 'The pane holds the view.' },
 ];
 
 function initialState(): EditorState {
@@ -515,7 +515,7 @@ export default function OrderForm() {
           ) : null}
 
           {step === 'glass' ? (
-            <div className="order-choices" role="radiogroup" aria-label="Glass">
+            <div className="order-choices" role="radiogroup" aria-label="Polycarbonate">
               {GLAZE.map((item) => (
                 <button
                   key={item.id}
@@ -523,7 +523,7 @@ export default function OrderForm() {
                   className="order-choice"
                   role="radio"
                   aria-checked={item.id === selection.glaze}
-                  onClick={() => apply({ ...selection, glaze: item.id, label: 'Choose the glass' })}
+                  onClick={() => apply({ ...selection, glaze: item.id, label: 'Choose the finish' })}
                 >
                   <i aria-hidden="true" />
                   <strong>{item.label}</strong>
@@ -575,7 +575,7 @@ export default function OrderForm() {
                       <dd>{sizeLabel}</dd>
                     </div>
                     <div>
-                      <dt>Glass</dt>
+                      <dt>Polycarbonate</dt>
                       <dd>{glazeLabel}</dd>
                     </div>
                   </>
