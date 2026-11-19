@@ -112,6 +112,9 @@ const foot = innerMenu.flatMap((group) => group.links);
     <link rel="canonical" href={canonical} />
     <Font cssVariable="--font-cinzel" preload />
     <Font cssVariable="--font-inter" preload />
+    <Font cssVariable="--font-display" preload={isHome ? false : [{ style: 'normal' }]} />
+    <Font cssVariable="--font-spec" />
+    <slot name="head" />
     {!isHome && (
       <script is:inline>
         try {

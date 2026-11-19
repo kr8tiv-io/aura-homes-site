@@ -961,6 +961,7 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
   let built = emptyBuilt();
   let curves = makeCurves(spline);
   const rig = { smooth: 0, mx: 0, my: 0, started: -1, dusk: 0, night: 0, shotBlend: 0, progress: 0 };
+  let placed = false;
   const pointer = { x: 0, y: 0 };
   const sun = new THREE.DirectionalLight('#fff3dd', 2.6);
   const hemi = new THREE.HemisphereLight('#eef7ff', '#94ad8e', 0.5);
@@ -1792,6 +1793,15 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       }
       rig.dusk = reduced ? duskTarget : THREE.MathUtils.damp(rig.dusk, Math.max(duskTarget, nightTarget), 5, step);
       rig.night = reduced ? nightTarget : THREE.MathUtils.damp(rig.night, nightTarget, 2.2, step);
+      // A passage that mounts after the pin has already moved must open on
+      // that scroll position, not ease up from the start of the spline.
+      if (!placed) {
+        placed = true;
+        rig.smooth = target;
+        rig.progress = target;
+        rig.dusk = Math.max(duskTarget, nightTarget);
+        rig.night = nightTarget;
+      }
 
       if (options.reducedShot && reduced) {
         camera.position.set(REDUCED_SHOT.p[0], REDUCED_SHOT.p[1], REDUCED_SHOT.p[2]);
@@ -2000,14 +2010,11 @@ export function mountMeadowWorld(view: HTMLElement, options: MeadowWorldOptions 
       });
     },
     suspend() {
-      suspended = true;
-      disposeBuilt(built, scene);
-      built = emptyBuilt();
+      // The stage stops drawing while this view is dormant. The world stays
+      // built so a scroll back does not flash the poster or fetch the files again.
     },
     resume() {
       if (dead) return;
-      suspended = false;
-      rebuild();
     },
   });
 

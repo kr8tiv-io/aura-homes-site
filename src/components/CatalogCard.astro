@@ -1,5 +1,6 @@
 ---
 import type { CatalogProduct } from '../data/products';
+import CatalogPhoto from './CatalogPhoto.astro';
 
 interface Props {
   product: CatalogProduct;
@@ -17,37 +18,16 @@ const fullFrame = new Set(['tub-ward-bound']);
 const frameStyle = fullFrame.has(product.slug) ? `aspect-ratio:${product.hero.width} / ${product.hero.height}` : undefined;
 const action = product.href.startsWith('/rooms/') ? 'See the piece' : 'Join the waitlist';
 const sizes = wide
-  ? '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) calc(100vw - 8rem), 62vw'
+  ? '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) 84vw, 62vw'
   : '(max-width: 719px) calc(100vw - 2.5rem), (max-width: 1199px) 46vw, 30vw';
 ---
 
 <li class:list={['catalog-card', { 'is-wide-2': wide2, 'is-wide-3': wide3 }]} data-catalog-card data-group={product.group}>
   <a class="catalog-card-link" href={product.href}>
     <span class="catalog-photo" style={frameStyle}>
-      <img
-        class="is-hero"
-        src={product.hero.src}
-        srcset={product.hero.srcset}
-        sizes={sizes}
-        alt={product.hero.alt}
-        width={product.hero.width}
-        height={product.hero.height}
-        loading="lazy"
-        decoding="async"
-      />
+      <CatalogPhoto file={product.hero.file} class="is-hero" sizes={sizes} alt={product.hero.alt} />
       {product.second && (
-        <img
-          class="is-second"
-          src={product.second.src}
-          srcset={product.second.srcset}
-          sizes={sizes}
-          alt={product.second.alt}
-          width={product.second.width}
-          height={product.second.height}
-          loading="lazy"
-          decoding="async"
-          aria-hidden="true"
-        />
+        <CatalogPhoto file={product.second.file} class="is-second" sizes={sizes} alt={product.second.alt} ariaHidden />
       )}
     </span>
     <p class="catalog-index">

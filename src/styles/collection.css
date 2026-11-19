@@ -89,11 +89,11 @@
 
 .catalog-open h1 {
   margin: 0;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(3rem, 6.6vw, 6.1rem);
   line-height: 1.08;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--tracking-display);
   color: #0c0d0e;
 }
 
@@ -156,7 +156,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 }
 
 .stage-tabs a {
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   letter-spacing: 0.12em;
 }
@@ -217,6 +217,51 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
   }
 }
 
+/* Phones: every filter on the page, in rows, with no sideways swipe.
+   The dot lives on the following chip and hangs in the gap. A dot that
+   would start a wrapped row sits outside the box and is clipped. */
+@media (max-width: 600px) {
+  .stage-tabs {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+  .stage-filters {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 0.95rem;
+    row-gap: 0;
+    margin: 0 var(--bar-x);
+    padding: 0.1rem 0 0.15rem;
+    overflow: hidden;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .stage-filters button {
+    position: relative;
+    padding: 0 0.1rem;
+  }
+  .stage-filters button:first-child {
+    padding-left: 0.1rem;
+  }
+  .stage-filters button:not(:first-child)::before {
+    content: "·";
+    position: absolute;
+    right: calc(100% + 0.28rem);
+    top: 50%;
+    width: 0.45rem;
+    transform: translateY(-50%);
+    color: #c4a07a;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-align: center;
+    pointer-events: none;
+  }
+  .stage-dot {
+    display: none;
+  }
+}
+
 .stage-dot {
   color: #c4a07a;
   user-select: none;
@@ -245,7 +290,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 
 .catalog-title {
   margin: 0;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(2rem, 5vw, 4.2rem);
   line-height: 1.08;
@@ -275,6 +320,10 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: #0c0d0e;
+}
+
+.catalog-feature-photo picture {
+  height: 100%;
 }
 
 .catalog-feature-photo img {
@@ -314,11 +363,11 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 .catalog-feature h3 {
   margin: 0.35rem 0 0.7rem;
   max-width: 12em;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(2.2rem, 4.4vw, 4.4rem);
   line-height: 1.08;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--tracking-display);
   color: #f4f3ef;
 }
 
@@ -373,6 +422,12 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
   background: #e7e2d8;
 }
 
+.catalog-photo picture {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+
 .catalog-photo img {
   position: absolute;
   inset: 0;
@@ -409,11 +464,11 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 .limited-copy h3,
 .someday-item h3 {
   margin: 0;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(1.45rem, 2vw, 1.9rem);
   line-height: 1.08;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--tracking-display);
   text-wrap: balance;
 }
 
@@ -459,7 +514,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 }
 
 .catalog-pairs-names {
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: 0.92rem;
   letter-spacing: 0.04em;
@@ -489,7 +544,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 
 .catalog-compare h3 {
   margin: 0 0 1.25rem;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(1.4rem, 2vw, 1.8rem);
   letter-spacing: 0.04em;
@@ -532,7 +587,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 }
 
 .catalog-compare td:first-child {
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   letter-spacing: 0.04em;
   width: 22%;
@@ -557,6 +612,12 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
   margin: 0;
 }
 
+.limited-photos picture,
+.solar picture {
+  display: block;
+  width: 100%;
+}
+
 .limited-photos img {
   display: block;
   width: 100%;
@@ -571,7 +632,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 .limited-photos h3,
 .limited-rest h3 {
   margin: 0 0 0.4rem;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(1.2rem, 1.6vw, 1.45rem);
   letter-spacing: 0.04em;
@@ -647,11 +708,11 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 .solar-copy h2 {
   margin: 0.2rem 0 1rem;
   max-width: 14em;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(2.2rem, 4vw, 3.6rem);
   line-height: 1.08;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--tracking-display);
 }
 
 .solar-points {
@@ -680,7 +741,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 
 .addon-head h2 {
   margin: 0.35rem 0 0;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(2.2rem, 4vw, 3.4rem);
   letter-spacing: 0.06em;
@@ -724,7 +785,7 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 }
 
 .addon-cat-name {
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: 0.95rem;
   letter-spacing: 0.16em;
@@ -764,10 +825,10 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 
 .addon-fun {
   margin: 0;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: 1.15rem;
-  letter-spacing: 0.035em;
+  letter-spacing: var(--tracking-display);
   line-height: 1.2;
 }
 

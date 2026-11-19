@@ -26,7 +26,7 @@ const {
 } = Astro.props;
 
 const posterUrl = film.endsWith('.mp4')
-  ? film.replace(/\.mp4$/, '-poster.webp')
+  ? film.replace(/\.mp4$/, '-poster.avif')
   : await posterSrc(poster);
 const webm = film.endsWith('.mp4') ? film.replace(/\.mp4$/, '.webm') : '';
 const hasStill = Astro.slots.has('still');
@@ -141,11 +141,11 @@ const hasStill = Astro.slots.has('still');
   .living-hero-copy :global(h2) {
     margin: 0;
     max-width: 9em;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(2.7rem, 5.4vw, 5.2rem);
     line-height: 1.08;
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
     color: #f4f3ef;
     text-shadow: 0 8px 40px rgba(0, 0, 0, 0.35);
   }

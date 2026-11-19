@@ -1,6 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
-import { still } from '../lib/stills';
+import { still, stillWidths, STILL_QUALITY } from '../lib/stills';
 
 interface Props {
   src: string;
@@ -28,8 +28,7 @@ const {
 } = Astro.props;
 
 const image = still(src);
-const ladder = [480, 640, 960, 1280, 1920, 2560].filter((width) => width <= image.width);
-const widths = ladder.length ? ladder : [image.width];
+const widths = stillWidths(image);
 const imgStyle = [
   position ? `--still-pos:${position}` : '',
   phonePosition ? `--still-pos-phone:${phonePosition}` : '',
@@ -49,7 +48,7 @@ if (rise) pictureAttributes['data-rise'] = '';
   alt={alt}
   widths={widths}
   sizes={sizes}
-  quality={70}
+  quality={STILL_QUALITY}
   loading={loading}
   decoding="async"
   fetchpriority={fetchpriority}

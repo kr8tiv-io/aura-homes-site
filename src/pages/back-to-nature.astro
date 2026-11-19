@@ -2,6 +2,7 @@
 import DepthImage from '../components/DepthImage.astro';
 import LivingHero from '../components/LivingHero.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -10,6 +11,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Return to Aura. One beautiful room at a time."
   descriptor="Back to nature"
 >
+  <ImagePreload slot="head" src="/film/story-room.webp" />
   <main id="top" class="wild">
     <LivingHero
       labelledby="wild-morning"
@@ -100,11 +102,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   :global(.wild-end h2) {
     margin: 0;
     max-width: 11em;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(2.4rem, 5vw, 4.4rem);
     line-height: 1.08;
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
   }
   .wild-links {
     display: flex;
@@ -116,10 +118,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     display: inline-flex;
     align-items: center;
     min-height: 44px;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(1.35rem, 2.4vw, 1.9rem);
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
     color: #14120e;
     text-decoration: none;
   }

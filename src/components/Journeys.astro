@@ -1,9 +1,18 @@
 ---
+import Responsive from './Responsive.astro';
+import { filmMeta } from '../lib/responsive';
+
 interface Props {
   reveal?: boolean;
 }
 
 const { reveal = false } = Astro.props;
+const meadow = filmMeta('/film/story-meadow-side.webp');
+const sky = filmMeta('/film/layout-sky.webp');
+const tower = filmMeta('/film/resort-tower.webp');
+const farm = filmMeta('/film/farm-wall.webp');
+const water = filmMeta('/film/water-line.webp');
+const phone = '(max-width: 800px) calc(100vw - 3rem)';
 ---
 
 <section class="journeys is-folio" id="journeys">
@@ -24,7 +33,9 @@ const { reveal = false } = Astro.props;
   <ol>
     <li>
       <a href="/#shell" data-tracer="edge">
-        <figure class="journey-still" aria-hidden="true"><img src="/film/story-meadow-side.webp" alt="" width="1280" height="922" decoding="async" /></figure>
+        <figure class="journey-still" aria-hidden="true">
+          <Responsive image={meadow.image} original={meadow.original} alt="" sizes={`${phone}, 50vw`} />
+        </figure>
         <span>01</span>
         <strong>The room</strong>
         <p>A guest room, an office or a getaway, on land you already have.</p>
@@ -32,7 +43,9 @@ const { reveal = false } = Astro.props;
     </li>
     <li>
       <a href="/glass" data-tracer="edge">
-        <figure class="journey-still" aria-hidden="true"><img src="/film/layout-sky.webp" alt="" width="1600" height="1200" decoding="async" /></figure>
+        <figure class="journey-still" aria-hidden="true">
+          <Responsive image={sky.image} original={sky.original} alt="" sizes={`${phone}, 36vw`} />
+        </figure>
         <span>02</span>
         <strong>The glass</strong>
         <p>Glass decks on screw piles, lit from underneath, with balconies.</p>
@@ -40,7 +53,9 @@ const { reveal = false } = Astro.props;
     </li>
     <li>
       <a href="/resorts" data-tracer="edge">
-        <figure class="journey-still" aria-hidden="true"><img src="/film/resort-tower.webp" alt="" width="1600" height="1200" decoding="async" style="object-position:center 18%" /></figure>
+        <figure class="journey-still" aria-hidden="true">
+          <Responsive image={tower.image} original={tower.original} alt="" sizes={`${phone}, 36vw`} style="object-position:center 18%" />
+        </figure>
         <span>03</span>
         <strong>The resorts</strong>
         <p>Small custom eco resorts, in Canada and Costa Rica.</p>
@@ -48,7 +63,9 @@ const { reveal = false } = Astro.props;
     </li>
     <li>
       <a href="/farms" data-tracer="edge">
-        <figure class="journey-still" aria-hidden="true"><img src="/film/farm-wall.webp" alt="" width="1600" height="1200" decoding="async" /></figure>
+        <figure class="journey-still" aria-hidden="true">
+          <Responsive image={farm.image} original={farm.original} alt="" sizes={`${phone}, 43vw`} />
+        </figure>
         <span>04</span>
         <strong>Aura Farms</strong>
         <p>A room with a wall that grows food. Grow it yourself, or have Aura set it up.</p>
@@ -56,7 +73,9 @@ const { reveal = false } = Astro.props;
     </li>
     <li>
       <a href="/h2o" data-tracer="edge">
-        <figure class="journey-still" aria-hidden="true"><img src="/film/water-line.webp" alt="" width="1600" height="1200" decoding="async" /></figure>
+        <figure class="journey-still" aria-hidden="true">
+          <Responsive image={water.image} original={water.original} alt="" sizes={`${phone}, 43vw`} />
+        </figure>
         <span>05</span>
         <strong>Thirst Contact</strong>
         <p>Water from the sky, bottled in the backyard. Read Aura H2O.</p>

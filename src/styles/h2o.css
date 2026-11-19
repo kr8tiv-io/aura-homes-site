@@ -10,20 +10,20 @@
   margin: 0;
   max-width: 100%;
   min-width: 0;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(2.5rem, 11vw, 3.35rem);
-  letter-spacing: 0.035em;
+  letter-spacing: var(--tracking-display);
   line-height: 1.05;
   color: #14120e;
 }
 
 .h2o-page h2 {
   margin: 0 0 0.75rem;
-  font-family: var(--font-cinzel);
+  font-family: var(--font-display);
   font-weight: 400;
   font-size: clamp(1.65rem, 2.3vw, 2.15rem);
-  letter-spacing: 0.035em;
+  letter-spacing: var(--tracking-display);
   line-height: 1.15;
   color: #14120e;
 }

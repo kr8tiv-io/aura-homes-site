@@ -1,8 +1,11 @@
 ---
 import '../styles/farms.css';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import Still from '../components/Still.astro';
+
+const heroSizes = '(max-width: 859px) 92vw, 56vw';
 ---
 
 <BaseLayout
@@ -10,6 +13,7 @@ import Still from '../components/Still.astro';
   description="Aura Farms. A wall that grows. Same Aura room, same clean lines, but one long wall is a vertical aeroponic garden. A future expansion of the Aura network. Get on the waitlist."
   descriptor="Aura Farms"
 >
+  <ImagePreload slot="head" src="/film/farms-exterior-solar.webp" sizes={heroSizes} />
   <main id="top" class="farms-page">
     <section class="farms-hero" aria-labelledby="farms-title">
       <p class="story-kicker farms-kicker">Aura Farms</p>
@@ -21,7 +25,7 @@ import Still from '../components/Still.astro';
             alt="Black glass farm room in a dusk meadow, one long wall a lit vertical garden, slim solar array on the roof, pines and mountains behind."
             loading="eager"
             fetchpriority="high"
-            sizes="(max-width: 859px) 92vw, 56vw"
+            sizes={heroSizes}
           />
         </figure>
         <figure class="farms-frame farms-hero-inset">

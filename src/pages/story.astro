@@ -4,6 +4,7 @@ import HeroMist from '../components/HeroMist.astro';
 import LivingHero from '../components/LivingHero.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import WindowFrame from '../components/WindowFrame.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { httpsUrl, youtubeUrl } from '../data/site';
 
@@ -15,6 +16,7 @@ const youtube = httpsUrl(youtubeUrl);
   description="Aura builds beautiful rooms that get people back outside."
   descriptor="Story"
 >
+  <ImagePreload slot="head" src="/film/story-meadow-side.webp" />
   <main id="top" class="story-essay">
     <LivingHero
       id="why"
@@ -155,11 +157,11 @@ const youtube = httpsUrl(youtubeUrl);
   :global(.story-founder h2) {
     margin: 0;
     max-width: 12em;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(2.6rem, 6vw, 5.2rem);
     line-height: 1.08;
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
   }
   .story-prose {
     max-width: 36rem;
@@ -186,11 +188,11 @@ const youtube = httpsUrl(youtubeUrl);
   }
   .story-quote p {
     margin: 0;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(1.7rem, 3.2vw, 2.55rem);
     line-height: 1.22;
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
   }
   .story-bleed {
     margin: 0;
@@ -234,7 +236,7 @@ const youtube = httpsUrl(youtubeUrl);
   }
   .story-yt {
     margin: 2.4rem 0 0;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: 1.15rem;
     letter-spacing: 0.04em;

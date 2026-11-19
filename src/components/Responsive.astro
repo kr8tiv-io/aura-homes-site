@@ -1,0 +1,57 @@
+---
+import type { ImageMetadata } from 'astro';
+import { pictureSet, type PictureExtra } from '../lib/responsive';
+
+interface Props {
+  image: ImageMetadata;
+  original: string;
+  extra?: PictureExtra;
+  alt: string;
+  sizes: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+  style?: string;
+  ariaHidden?: boolean;
+}
+
+const {
+  image,
+  original,
+  extra,
+  alt,
+  sizes,
+  loading = 'lazy',
+  fetchpriority,
+  class: className,
+  style,
+  ariaHidden = false,
+} = Astro.props;
+
+const pic = await pictureSet(image, original, extra);
+---
+
+<picture class="responsive-frame">
+  <source type="image/avif" srcset={pic.avif} sizes={sizes} />
+  <img
+    class={className}
+    style={style}
+    src={pic.src}
+    srcset={pic.webp}
+    sizes={sizes}
+    alt={alt}
+    width={pic.width}
+    height={pic.height}
+    loading={loading}
+    decoding="async"
+    fetchpriority={fetchpriority}
+    aria-hidden={ariaHidden ? 'true' : undefined}
+  />
+</picture>
+
+<style>
+  .responsive-frame {
+    display: block;
+    width: 100%;
+  }
+</style>

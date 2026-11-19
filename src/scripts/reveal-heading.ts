@@ -176,16 +176,16 @@ function mount(heading: HTMLElement) {
     return;
   }
 
-  const display = isDisplay(heading, target);
+  const phone = window.matchMedia('(max-width: 800px)').matches;
+  const display = !phone && isDisplay(heading, target);
   const track = tracking(target);
   const job = ensureJob(heading);
   heading.dataset.revealBound = 'yes';
 
   const split = SplitText.create(target, {
-    type: 'lines,words',
+    type: 'lines',
     mask: 'lines',
     linesClass: 'reveal-line',
-    wordsClass: 'reveal-word',
     aria: target.closest('button') ? 'none' : 'auto',
     autoSplit: true,
     deepSlice: true,

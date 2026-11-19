@@ -105,3 +105,25 @@ export async function posterSrc(src: string): Promise<string> {
   const result = await getImage({ src: image, format: 'webp', width, quality: 68 });
   return result.src;
 }
+
+/** Same quality the Still picture uses. Preloads must call getImage with these options. */
+export const STILL_QUALITY = 70;
+const STILL_LADDER = [480, 640, 828, 960, 1280, 1600, 1920, 2560];
+
+export function stillWidths(image: ImageMetadata): number[] {
+  const widths = STILL_LADDER.filter((width) => width <= image.width);
+  if (!widths.includes(image.width)) widths.push(image.width);
+  widths.sort((a, b) => a - b);
+  return widths.length ? widths : [image.width];
+}
+
+export async function stillAvifSrcSet(src: string, sizes = '100vw'): Promise<{ srcset: string; sizes: string }> {
+  const image = still(src);
+  const result = await getImage({
+    src: image,
+    format: 'avif',
+    widths: stillWidths(image),
+    quality: STILL_QUALITY,
+  });
+  return { srcset: result.srcSet.attribute, sizes };
+}

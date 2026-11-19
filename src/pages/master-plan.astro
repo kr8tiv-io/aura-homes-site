@@ -1,6 +1,7 @@
 ---
 import RevealHeading from '../components/RevealHeading.astro';
 import Still from '../components/Still.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -9,6 +10,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Return to Aura. One beautiful room at a time."
   descriptor="Master plan"
 >
+  <ImagePreload slot="head" src="/film/story-meadow-side.webp" />
   <main id="top" class="plan">
     <section class="page-lead">
       <div data-rise>
@@ -351,7 +353,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     right: 2.6rem;
     bottom: 2.6rem;
     margin: 0;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(6.5rem, 18vw, 15.5rem);
     line-height: 0.78;
@@ -400,11 +402,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .plan-copy :global(h2) {
     margin: 0.7rem 0 0;
     max-width: 11em;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(2.05rem, 3.6vw, 3.45rem);
     line-height: 1.08;
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
     color: #f4f3ef;
   }
   .plan-keep {
@@ -580,11 +582,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
   .night-lines span {
     display: block;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(1.12rem, 1.6vw, 1.38rem);
     line-height: 1.28;
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
     color: #f4f3ef;
     opacity: 0;
     will-change: transform, opacity;
@@ -633,11 +635,11 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   .plan-close {
     margin: 12vh 8vw 18vh;
     max-width: 12em;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(2.1rem, 4.6vw, 3.8rem);
     line-height: 1.12;
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
   }
 
   @media (max-width: 800px), (prefers-reduced-motion: reduce) {

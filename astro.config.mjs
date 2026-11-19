@@ -45,14 +45,24 @@ export default defineConfig({
   ],
   fonts: [
     {
-      provider: fontProviders.google(),
+      // Wordmark only. The file is a latin subset of AURA, weight axis kept.
+      provider: fontProviders.local(),
       name: 'Cinzel',
       cssVariable: '--font-cinzel',
       weights: ['400 900'],
       styles: ['normal'],
-      subsets: ['latin'],
       fallbacks: ['serif'],
       display: 'swap',
+      options: {
+        variants: [
+          {
+            weight: '400 900',
+            style: 'normal',
+            display: 'swap',
+            src: ['./src/assets/fonts/cinzel-wordmark.woff2'],
+          },
+        ],
+      },
     },
     {
       provider: fontProviders.google(),
@@ -62,6 +72,43 @@ export default defineConfig({
       styles: ['normal'],
       subsets: ['latin'],
       fallbacks: ['sans-serif'],
+      display: 'swap',
+    },
+    {
+      // Latin subset, opsz + wght. SOFT is already 0 in the outlines.
+      // The rvrn lookup is dropped so WONK stays off (no alternate glyphs).
+      provider: fontProviders.local(),
+      name: 'Fraunces',
+      cssVariable: '--font-display',
+      weights: ['100 900'],
+      styles: ['normal', 'italic'],
+      fallbacks: ['serif'],
+      display: 'swap',
+      options: {
+        variants: [
+          {
+            weight: '100 900',
+            style: 'normal',
+            display: 'swap',
+            src: ['./src/assets/fonts/fraunces-latin-opsz-wght-normal.woff2'],
+          },
+          {
+            weight: '100 900',
+            style: 'italic',
+            display: 'swap',
+            src: ['./src/assets/fonts/fraunces-latin-opsz-wght-italic.woff2'],
+          },
+        ],
+      },
+    },
+    {
+      provider: fontProviders.google(),
+      name: 'IBM Plex Mono',
+      cssVariable: '--font-spec',
+      weights: ['400', '500'],
+      styles: ['normal'],
+      subsets: ['latin'],
+      fallbacks: ['monospace'],
       display: 'swap',
     },
   ],

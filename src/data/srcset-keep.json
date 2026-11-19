@@ -1,0 +1,444 @@
+{
+  "/film/collection/skywalker-meadow-1280.webp": {
+    "avif": [
+      480,
+      640,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      960,
+      1280
+    ]
+  },
+  "/film/collection/layout-forest-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      960,
+      1280
+    ]
+  },
+  "/film/collection/goldfish-hero-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      960,
+      1280
+    ]
+  },
+  "/film/collection/layout-gazebo-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      960,
+      1280
+    ]
+  },
+  "/film/collection/layout-lounge-wind-1280.webp": {
+    "avif": [
+      1280
+    ],
+    "webp": [
+      480,
+      1280
+    ]
+  },
+  "/film/collection/layout-door-1280.webp": {
+    "avif": [
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/story-room-1280.webp": {
+    "avif": [
+      1280
+    ],
+    "webp": [
+      480,
+      1280
+    ]
+  },
+  "/film/collection/cabin-poster-hi-1280.webp": {
+    "avif": [
+      480,
+      1280,
+      1920
+    ],
+    "webp": [
+      480,
+      640,
+      1280,
+      1920
+    ]
+  },
+  "/film/collection/story-nest-1280.webp": {
+    "avif": [
+      1280
+    ],
+    "webp": [
+      480,
+      1280
+    ]
+  },
+  "/film/collection/the-soak-unit-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      960,
+      1280
+    ]
+  },
+  "/film/collection/tubward-bound-meadow-1280.webp": {
+    "avif": [
+      480,
+      640,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/layout-sky-1280.webp": {
+    "avif": [
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/layout-corner-1280.webp": {
+    "avif": [
+      1280
+    ],
+    "webp": [
+      480,
+      1280
+    ]
+  },
+  "/film/collection/layout-night-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/hot-tub-time-machine-1280.webp": {
+    "avif": [
+      480,
+      1280,
+      1920
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280,
+      1920
+    ]
+  },
+  "/film/collection/aura-cold-plunge-bathtub-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      1280
+    ]
+  },
+  "/film/collection/fire-and-ice-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/water-roof-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/water-line-1280.webp": {
+    "avif": [
+      480,
+      1248
+    ],
+    "webp": [
+      480,
+      640,
+      1248
+    ]
+  },
+  "/film/collection/farm-wall-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/farm-room-1280.webp": {
+    "avif": [
+      480,
+      1248
+    ],
+    "webp": [
+      480,
+      640,
+      1248
+    ]
+  },
+  "/film/collection/canopy-of-stars-1280.webp": {
+    "avif": [
+      480,
+      1200
+    ],
+    "webp": [
+      480,
+      640,
+      1200
+    ]
+  },
+  "/film/collection/forest-edge-wide-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      1280
+    ]
+  },
+  "/film/collection/a-wing-golden-hour-1280.webp": {
+    "avif": [
+      480,
+      640,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/a-wing-hot-tub-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      1280
+    ]
+  },
+  "/film/collection/resort-deck-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/resort-tower-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      1280
+    ]
+  },
+  "/film/collection/waste-of-space-long-1-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/waste-of-space-long-2-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      960,
+      1280
+    ]
+  },
+  "/film/collection/space-cowboy-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/collection/fly-you-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      1280
+    ]
+  },
+  "/film/collection/float-you-1280.webp": {
+    "avif": [
+      480,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      1280
+    ]
+  },
+  "/film/collection/full-solar-1280.webp": {
+    "avif": [
+      480,
+      640,
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1280
+    ]
+  },
+  "/film/story-meadow-side.webp": {
+    "avif": [
+      1280
+    ],
+    "webp": [
+      480,
+      640,
+      1280
+    ]
+  },
+  "/film/layout-sky.webp": {
+    "avif": [
+      480,
+      1800
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1800
+    ]
+  },
+  "/film/resort-tower.webp": {
+    "avif": [
+      480,
+      1600
+    ],
+    "webp": [
+      480,
+      640,
+      828,
+      1600
+    ]
+  },
+  "/film/farm-wall.webp": {
+    "avif": [
+      480,
+      1248
+    ],
+    "webp": [
+      480,
+      640,
+      1248
+    ]
+  },
+  "/film/water-line.webp": {
+    "avif": [
+      480,
+      1248
+    ],
+    "webp": [
+      480,
+      640,
+      1248
+    ]
+  }
+}

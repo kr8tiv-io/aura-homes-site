@@ -2,6 +2,7 @@
 import Materials from '../components/Materials.astro';
 import Still from '../components/Still.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const steps = [
@@ -17,6 +18,7 @@ const steps = [
   description="Return to Aura. One beautiful room at a time."
   descriptor="Customs"
 >
+  <ImagePreload slot="head" src="/film/layout-forest.webp" sizes="(max-width: 800px) calc(100vw - 3rem), 84vw" />
   <main id="top" class="customs-page">
     <section class="page-lead">
       <p class="story-kicker" data-tracer="rule">Customs</p>
@@ -30,6 +32,8 @@ const steps = [
         src="/film/layout-forest.webp"
         alt="A glass room at the forest edge, one panel open, a fold-down balcony over the meadow."
         natural
+        loading="eager"
+        fetchpriority="high"
         sizes="(max-width: 800px) calc(100vw - 3rem), 84vw"
       />
     </figure>
@@ -107,10 +111,10 @@ const steps = [
   }
   :global(.customs-path h2) {
     margin: 0 0 1.25rem;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(1.7rem, 2.4vw, 2.15rem);
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
   }
   .customs-path ol {
     margin: 0;
@@ -136,10 +140,10 @@ const steps = [
   }
   .customs-path p {
     margin: 0;
-    font-family: var(--font-cinzel);
+    font-family: var(--font-display);
     font-weight: 400;
     font-size: clamp(1.25rem, 1.8vw, 1.6rem);
-    letter-spacing: 0.035em;
+    letter-spacing: var(--tracking-display);
     line-height: 1.25;
   }
   .customs-path p.customs-deposit {

@@ -23,7 +23,7 @@ import AngleSet from '../components/AngleSet.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/media/video/deck-poster.webp" data-film="/media/video/deck.mp4" data-film-webm="/media/video/deck.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1290" data-shot="tilt" data-play="push" aria-label="Gabled glass cabin in snow with a wide deck, cargo net, and glass floor lit from beneath"></video>
+        <video poster="/media/video/deck-poster.avif" data-poster="/media/video/deck-poster.avif" data-film="/media/video/deck.mp4" data-film-webm="/media/video/deck.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1290" data-shot="tilt" data-play="push" aria-label="Gabled glass cabin in snow with a wide deck, cargo net, and glass floor lit from beneath"></video>
       </figure>
       <div>
         <p class="story-kicker">The floor</p>
@@ -36,7 +36,7 @@ import AngleSet from '../components/AngleSet.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video data-poster="/media/video/tower-poster.webp" data-film="/media/video/tower.mp4" data-film-webm="/media/video/tower.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="2160" data-shot="lift" data-play="rise" aria-label="Round glass tower in snow, with mesh balconies and a lit floor"></video>
+        <video data-poster="/media/video/tower-poster.avif" data-film="/media/video/tower.mp4" data-film-webm="/media/video/tower.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="2160" data-shot="lift" data-play="rise" aria-label="Round glass tower in snow, with mesh balconies and a lit floor"></video>
       </figure>
       <div>
         <p class="story-kicker">The balcony</p>
@@ -75,7 +75,8 @@ import AngleSet from '../components/AngleSet.astro';
     />
 
     <section class="passage" data-passage aria-label="Helical piles">
-      <canvas data-meadow data-scene="slope" data-poster="/media/video/deck-poster.webp"></canvas>
+      <img class="passage-poster" src="/media/video/deck-poster.avif" alt="" width="1920" height="1290" decoding="async" />
+      <canvas data-meadow data-scene="slope" data-poster="/media/video/deck-poster.avif"></canvas>
       <p class="passage-ghost" aria-hidden="true">Pile</p>
       <div class="passage-copy">
         <p class="story-kicker">The ground</p>

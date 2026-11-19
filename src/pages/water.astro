@@ -1,8 +1,15 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import Responsive from '../components/Responsive.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import { collectionMeta, pictureSet } from '../lib/responsive';
+
+const roofSizes = '(max-width: 800px) calc(100vw - 3rem), 54vw';
+const roof = collectionMeta('water-roof.jpg');
+const roofPic = await pictureSet(roof.image, roof.original, roof.extra);
 ---
 
 <BaseLayout
@@ -10,6 +17,7 @@ import RevealHeading from '../components/RevealHeading.astro';
   description="Return to Aura. One beautiful room at a time."
   descriptor="Thirst Contact"
 >
+  <ImagePreload slot="head" imagesrcset={roofPic.avif} sizes={roofSizes} />
   <main id="top">
     <canvas class="page-field" data-wash="glass" aria-hidden="true"></canvas>
     <canvas class="field-light" data-field="glass" aria-hidden="true"></canvas>
@@ -27,12 +35,14 @@ import RevealHeading from '../components/RevealHeading.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <img
-          src="/film/collection/water-roof-1280.webp"
+        <Responsive
+          image={roof.image}
+          original={roof.original}
+          extra={roof.extra}
           alt="A walk-in water and grow room in a meadow at dusk, oak lining and a stainless bottling bench with glass bottles inside, a grow rack of greens, and the water machine on the roof, forested hills behind."
-          width="1280"
-          height="720"
-          decoding="async"
+          sizes={roofSizes}
+          loading="eager"
+          fetchpriority="high"
         />
       </figure>
       <div>
@@ -44,7 +54,7 @@ import RevealHeading from '../components/RevealHeading.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video data-poster="/media/video/water-line-poster.webp" data-film="/media/video/water-line.mp4" data-film-webm="/media/video/water-line.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1280" data-shot="drift" data-play="glide" aria-label="Small bottling line and plain plastic jugs inside the oak room"></video>
+        <video data-poster="/media/video/water-line-poster.avif" data-film="/media/video/water-line.mp4" data-film-webm="/media/video/water-line.webm" data-still="poster" muted loop playsinline preload="none" disablepictureinpicture width="1920" height="1280" data-shot="drift" data-play="glide" aria-label="Small bottling line and plain plastic jugs inside the oak room"></video>
       </figure>
       <div>
         <p class="story-kicker">The line</p>
