@@ -5,6 +5,7 @@
 */
 import { getGPUTier } from '@pmndrs/detect-gpu';
 import { prefersReducedMotion } from '../scripts/motion';
+import { posterBlob, posterRequestUrl } from '../scripts/posters';
 
 export type QualityTier = 'off' | 'low' | 'medium' | 'high' | 'ultra';
 
@@ -353,7 +354,31 @@ export function showStill(canvas: HTMLElement) {
   const poster = canvas.dataset.poster;
   passage.classList.remove('is-stage');
   passage.classList.add('is-still');
-  passage.style.backgroundImage = poster ? `url("${poster}")` : '';
+  // This passage already has the poster as an image element, sharing the
+  // video's download. A background URL would fetch the file again.
+  if (passage.querySelector('img.passage-poster')) {
+    passage.style.backgroundImage = '';
+    return;
+  }
+  if (!poster) {
+    passage.style.backgroundImage = '';
+    return;
+  }
+  // Reduced motion keeps the poster URL on the passage, as it does today.
+  if (prefersReducedMotion()) {
+    passage.style.backgroundImage = `url("${posterRequestUrl(poster)}")`;
+    return;
+  }
+  passage.dataset.stillPoster = poster;
+  void posterBlob(poster)
+    .then((blob) => {
+      if (!passage.isConnected || !passage.classList.contains('is-still')) return;
+      if (passage.dataset.stillPoster !== poster) return;
+      passage.style.backgroundImage = `url("${blob}")`;
+    })
+    .catch(() => {
+      if (passage.dataset.stillPoster === poster) passage.style.backgroundImage = `url("${poster}")`;
+    });
 }
 
 export function hideStill(canvas: HTMLElement) {

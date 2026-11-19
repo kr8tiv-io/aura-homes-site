@@ -2,9 +2,19 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Join from '../components/Join.astro';
 import Journeys from '../components/Journeys.astro';
+import Responsive from '../components/Responsive.astro';
+import { filmMeta } from '../lib/responsive';
+
+const meadow = filmMeta('/film/story-meadow-side.webp');
+const farm = filmMeta('/film/farm-wall.webp');
+const tower = filmMeta('/film/resort-tower.webp');
+const roadSizes = '(max-width: 800px) calc(100vw - 3rem), 28vw';
 ---
 
 <BaseLayout title="Aura Homes">
+  <link slot="head" rel="preload" as="image" type="image/avif" href="/film/cabin-dusk-1280-poster.avif" media="(max-width: 420px)" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" type="image/avif" href="/film/cabin-dusk-1920-poster.avif" media="(min-width: 431px) and (max-resolution: 1.5dppx)" fetchpriority="high" />
+  <link slot="head" rel="preload" as="image" type="image/avif" href="/film/cabin-poster-hi.avif" media="(min-width: 431px) and (min-resolution: 1.51dppx)" fetchpriority="high" />
   <main id="top">
     <canvas class="page-field" data-wash="room" aria-hidden="true"></canvas>
     <canvas class="field-light" data-field="room" aria-hidden="true"></canvas>
@@ -13,7 +23,6 @@ import Journeys from '../components/Journeys.astro';
         <video
           id="cabin-film"
           class="splash-film"
-          poster="/film/cabin-dusk-1920-poster.webp"
           muted
           playsinline
           preload="metadata"
@@ -30,7 +39,17 @@ import Journeys from '../components/Journeys.astro';
             const compact = window.matchMedia('(max-width: 1000px)').matches;
             const wide = !compact && window.innerWidth * (window.devicePixelRatio || 1) > 1920;
             const base = compact ? '/film/cabin-dusk-1280' : wide ? '/film/cabin-dusk-2560' : '/film/cabin-dusk-1920';
-            if (wide) v.poster = '/film/cabin-poster-hi.webp';
+            const compactPoster = window.matchMedia('(max-width: 420px)').matches;
+            const hiPoster = window.matchMedia('(min-width: 431px) and (min-resolution: 1.51dppx)').matches;
+            let poster = compactPoster
+              ? '/film/cabin-dusk-1280-poster.avif'
+              : hiPoster
+                ? '/film/cabin-poster-hi.avif'
+                : '/film/cabin-dusk-1920-poster.avif';
+            try {
+              if (sessionStorage.getItem('aura-avif') === '0') poster = poster.replace(/\.avif$/, '.webp');
+            } catch (error) {}
+            v.poster = poster;
             const arm = () => {
               if (v.querySelector('source')) return;
               const add = (src, type) => {
@@ -104,7 +123,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still" id="shell">
       <figure class="story-figure">
-        <video data-poster="/film/story-meadow-side.webp" data-film="/film/scroll/meadow-side.mp4" muted playsinline preload="none" disablepictureinpicture width="1280" height="922" data-shot="drift" data-play="drift" aria-label="The black glass cabin from down in the grass along its long side, cedar tub and hanging daybed farther back"></video>
+        <video data-poster="/film/story-meadow-side.avif" data-film="/film/scroll/meadow-side.mp4" muted playsinline preload="none" disablepictureinpicture width="1280" height="922" data-shot="drift" data-play="drift" aria-label="The black glass cabin from down in the grass along its long side, cedar tub and hanging daybed farther back"></video>
       </figure>
       <div>
         <p class="story-kicker">01</p>
@@ -115,7 +134,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video data-poster="/film/story-room.webp" data-film="/film/scroll/room.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1152" data-shot="tilt" data-play="push" aria-label="Open bay of the cabin, honey oak walls and a linen sofa at dusk"></video>
+        <video data-poster="/film/story-room.avif" data-film="/film/scroll/room.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1152" data-shot="tilt" data-play="push" aria-label="Open bay of the cabin, honey oak walls and a linen sofa at dusk"></video>
       </figure>
       <div>
         <p class="story-kicker">02</p>
@@ -126,7 +145,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/film/story-nest.webp" data-film="/film/scroll/nest.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1152" data-shot="wipe" data-play="return" aria-label="Teal velvet hanging daybed under a steel arch, the cabin behind it"></video>
+        <video data-poster="/film/story-nest.avif" data-film="/film/scroll/nest.mp4" muted playsinline preload="none" disablepictureinpicture width="1600" height="1152" data-shot="wipe" data-play="return" aria-label="Teal velvet hanging daybed under a steel arch, the cabin behind it"></video>
       </figure>
       <div>
         <p class="story-kicker">03</p>
@@ -136,7 +155,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section class="passage" data-passage aria-label="Touchdown pending">
-      <canvas data-meadow data-scene="grass" data-poster="/film/story-meadow-side.webp"></canvas>
+      <canvas data-meadow data-scene="grass" data-poster="/film/story-meadow-side.avif"></canvas>
       <div class="passage-copy">
         <p class="story-kicker">Ground control</p>
         <h2><span class="line-mask"><span class="line">Touchdown pending.</span></span></h2>
@@ -158,7 +177,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/film/layout-shell.webp" data-film="/film/scroll/shell.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="drift" data-play="glide" aria-label="Long dark room with a band of mirror glass, resting in a meadow"></video>
+        <video data-poster="/film/layout-shell.avif" data-film="/film/scroll/shell.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="drift" data-play="glide" aria-label="Long dark room with a band of mirror glass, resting in a meadow"></video>
       </figure>
       <div>
         <p class="story-kicker">On the move</p>
@@ -169,7 +188,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video data-poster="/film/layout-forest.webp" data-film="/film/scroll/forest.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="tilt" data-play="drift" aria-label="Reflective glass room at the forest edge, with a door, a fold-down glass balcony, and a cedar deck"></video>
+        <video data-poster="/film/layout-forest.avif" data-film="/film/scroll/forest.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="tilt" data-play="drift" aria-label="Reflective glass room at the forest edge, with a door, a fold-down glass balcony, and a cedar deck"></video>
       </figure>
       <div>
         <p class="story-kicker">The trees</p>
@@ -180,7 +199,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/film/layout-door.webp" data-film="/film/scroll/door.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="wipe" data-play="wipe" aria-label="Smoked glass wall of the room, one panel open, resting low in the grass"></video>
+        <video data-poster="/film/layout-door.avif" data-film="/film/scroll/door.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="wipe" data-play="wipe" aria-label="Smoked glass wall of the room, one panel open, resting low in the grass"></video>
       </figure>
       <div>
         <p class="story-kicker">The wall</p>
@@ -191,7 +210,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video data-poster="/film/layout-office.webp" data-film="/film/scroll/office.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="push" aria-label="Walnut office with an open laptop, looking across a meadow to distant woods"></video>
+        <video data-poster="/film/layout-office.avif" data-film="/film/scroll/office.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="push" aria-label="Walnut office with an open laptop, looking across a meadow to distant woods"></video>
       </figure>
       <div>
         <p class="story-kicker">The office</p>
@@ -202,7 +221,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/film/layout-corner.webp" data-film="/film/scroll/corner.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="tilt" data-play="lift" aria-label="Office corner with a laptop and two walls of clear glass, one panel open to the meadow"></video>
+        <video data-poster="/film/layout-corner.avif" data-film="/film/scroll/corner.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="tilt" data-play="lift" aria-label="Office corner with a laptop and two walls of clear glass, one panel open to the meadow"></video>
       </figure>
       <div>
         <p class="story-kicker">The desk</p>
@@ -212,7 +231,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section class="passage" data-passage aria-label="Fishbowl, but for grownups">
-      <canvas data-meadow data-scene="glass" data-poster="/film/story-room.webp"></canvas>
+      <canvas data-meadow data-scene="glass" data-poster="/film/story-room.avif"></canvas>
       <div class="passage-copy">
         <p class="story-kicker">The glass</p>
         <h2><span class="line-mask"><span class="line">Fishbowl, but for grownups.</span></span></h2>
@@ -223,7 +242,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/film/layout-sky.webp" data-film="/film/scroll/sky.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="rise" aria-label="Oak bedroom with a skylight open to the stars and a meadow beyond the glass"></video>
+        <video data-poster="/film/layout-sky.avif" data-film="/film/scroll/sky.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="rise" aria-label="Oak bedroom with a skylight open to the stars and a meadow beyond the glass"></video>
       </figure>
       <div>
         <p class="story-kicker">The night</p>
@@ -234,7 +253,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/film/layout-lounge-wind.webp" data-film="/film/scroll/lounge-wind.mp4" muted playsinline preload="none" disablepictureinpicture width="1280" height="922" data-shot="drift" data-play="glide" aria-label="Linen sofa running toward a low oak table, the long glass open to a meadow in the wind"></video>
+        <video data-poster="/film/layout-lounge-wind.avif" data-film="/film/scroll/lounge-wind.mp4" muted playsinline preload="none" disablepictureinpicture width="1280" height="922" data-shot="drift" data-play="glide" aria-label="Linen sofa running toward a low oak table, the long glass open to a meadow in the wind"></video>
       </figure>
       <div>
         <p class="story-kicker">Lounge</p>
@@ -245,7 +264,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video data-poster="/film/layout-night.webp" data-film="/film/scroll/night.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="drift" data-play="hold" aria-label="Linen bed under a wide skylight showing the Milky Way, meadow beyond the glass"></video>
+        <video data-poster="/film/layout-night.avif" data-film="/film/scroll/night.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="drift" data-play="hold" aria-label="Linen bed under a wide skylight showing the Milky Way, meadow beyond the glass"></video>
       </figure>
       <div>
         <p class="story-kicker">The room</p>
@@ -256,7 +275,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still">
       <figure class="story-figure">
-        <video data-poster="/film/layout-roof.webp" data-film="/film/scroll/roof.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="lift" aria-label="Long dark room with a roof rail and a wood-fired cedar tub in the meadow"></video>
+        <video data-poster="/film/layout-roof.avif" data-film="/film/scroll/roof.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="lift" data-play="lift" aria-label="Long dark room with a roof rail and a wood-fired cedar tub in the meadow"></video>
       </figure>
       <div>
         <p class="story-kicker">Roof add-on</p>
@@ -266,7 +285,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section class="passage" data-passage aria-label="Hot Take">
-      <canvas data-meadow data-scene="steam" data-poster="/film/layout-gazebo.webp"></canvas>
+      <canvas data-meadow data-scene="steam" data-poster="/film/layout-gazebo.avif"></canvas>
       <div class="passage-copy">
         <p class="story-kicker">The tub</p>
         <h2 data-glow><span class="line-mask"><span class="line">Hot Take.</span></span></h2>
@@ -277,7 +296,7 @@ import Journeys from '../components/Journeys.astro';
 
     <section class="story-still is-flip">
       <figure class="story-figure">
-        <video data-poster="/film/layout-gazebo.webp" data-film="/film/scroll/gazebo.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="skid" data-play="steam" aria-label="Hot Take: a wood-fired cedar tub on its own wheels, inside a clear glass gazebo with two panels open"></video>
+        <video data-poster="/film/layout-gazebo.avif" data-film="/film/scroll/gazebo.mp4" muted playsinline preload="none" disablepictureinpicture width="1800" height="1296" data-shot="skid" data-play="steam" aria-label="Hot Take: a wood-fired cedar tub on its own wheels, inside a clear glass gazebo with two panels open"></video>
       </figure>
       <div>
         <p class="story-kicker">Hot Take</p>
@@ -287,7 +306,7 @@ import Journeys from '../components/Journeys.astro';
     </section>
 
     <section id="passage" class="passage" data-passage aria-label="Dusk meadow">
-      <canvas data-meadow data-scene="far" data-poster="/film/story-meadow-side.webp"></canvas>
+      <canvas data-meadow data-scene="far" data-poster="/film/story-meadow-side.avif"></canvas>
       <div class="passage-copy">
         <p class="story-kicker">Later</p>
         <h2 data-glow><span class="line-mask"><span class="line">Next stop: everywhere.</span></span></h2>
@@ -307,7 +326,7 @@ import Journeys from '../components/Journeys.astro';
         <li class="roadmap-stage">
           <p class="roadmap-when">Now</p>
           <figure class="roadmap-still">
-            <img src="/film/story-meadow-side.webp" alt="" width="1280" height="922" decoding="async" />
+            <Responsive image={meadow.image} original={meadow.original} alt="" sizes={roadSizes} />
           </figure>
           <h2>Rooms that land.</h2>
           <p>Guest rooms, offices and stargazing suites, finished and furnished. Also Hot Take, the tub that travels, plus Hot Tub Time Machine, Cool Runnings and The Soak.</p>
@@ -315,7 +334,7 @@ import Journeys from '../components/Journeys.astro';
         <li class="roadmap-stage">
           <p class="roadmap-when">Next</p>
           <figure class="roadmap-still">
-            <img src="/film/farm-wall.webp" alt="" width="1600" height="1200" decoding="async" />
+            <Responsive image={farm.image} original={farm.original} alt="" sizes={roadSizes} />
           </figure>
           <h2>Rooms that grow.</h2>
           <p>Leaf Skywalker, an aeroponic grow room for salad that's never seen a grocery store, plus Aura H2O for water that tastes like it came from somewhere better.</p>
@@ -323,7 +342,7 @@ import Journeys from '../components/Journeys.astro';
         <li class="roadmap-stage">
           <p class="roadmap-when">Someday</p>
           <figure class="roadmap-still">
-            <img src="/film/resort-tower.webp" alt="" width="1600" height="1200" decoding="async" />
+            <Responsive image={tower.image} original={tower.original} alt="" sizes={roadSizes} />
           </figure>
           <h2>Rooms that shouldn't exist.</h2>
           <p>Floating rooms, houseboats, a hangar for a tiny plane and full Aura resorts. Limited editions, wildly unnecessary, absolutely happening.</p>
@@ -392,9 +411,9 @@ import Journeys from '../components/Journeys.astro';
           observer.disconnect();
           resolve();
         };
-        // A phone waits until a passage is close, so the meadow chunks do not
-        // compete with the hero film. Desktop still starts a viewport early.
-        const margin = isPhoneClass() ? '30% 0px 30% 0px' : '100% 0px 100% 0px';
+        // About two viewport heights, so the meadow chunks are in flight before
+        // the passage is on screen. Asset bytes still wait for nearby photos.
+        const margin = '200% 0px 200% 0px';
         const observer = new IntersectionObserver(
           (entries) => {
             if (entries.some((entry) => entry.isIntersecting)) done();

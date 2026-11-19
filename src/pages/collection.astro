@@ -1,9 +1,12 @@
 ---
 import AddonMenu from '../components/AddonMenu.astro';
 import CatalogCard from '../components/CatalogCard.astro';
+import CatalogPhoto from '../components/CatalogPhoto.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import Join from '../components/Join.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { collectionMeta, pictureSet } from '../lib/responsive';
 import {
   availableGrid,
   catalogCompare,
@@ -25,6 +28,9 @@ const stages = [
 ];
 const limitedPhotos = catalogLimited.filter((item) => item.image);
 const limitedText = catalogLimited.filter((item) => !item.image);
+const featureSizes = '(max-width: 719px) calc(100vw - 2.5rem), 84vw';
+const featureMeta = collectionMeta(feature.hero.file);
+const featurePic = await pictureSet(featureMeta.image, featureMeta.original, featureMeta.extra);
 ---
 
 <BaseLayout
@@ -32,6 +38,7 @@ const limitedText = catalogLimited.filter((item) => !item.image);
   description="Return to Aura. One beautiful room at a time."
   descriptor="The Collection"
 >
+  <ImagePreload slot="head" imagesrcset={featurePic.avif} sizes={featureSizes} />
   <main id="top" class="catalog" data-collection>
     <header class="catalog-open">
       <div class="catalog-open-glow" aria-hidden="true"></div>
@@ -80,16 +87,12 @@ const limitedText = catalogLimited.filter((item) => !item.image);
           {sectionIndex === 0 && (
             <a class="catalog-feature" href={feature.href} data-catalog-card data-group={feature.group}>
               <span class="catalog-feature-photo">
-                <img
-                  src={feature.hero.src}
-                  srcset={feature.hero.srcset}
-                  sizes="100vw"
+                <CatalogPhoto
+                  file={feature.hero.file}
+                  sizes={featureSizes}
                   alt={feature.hero.alt}
-                  width={feature.hero.width}
-                  height={feature.hero.height}
                   loading="eager"
                   fetchpriority="high"
-                  decoding="async"
                 />
                 <span class="catalog-feature-shade" aria-hidden="true"></span>
               </span>
@@ -164,15 +167,10 @@ const limitedText = catalogLimited.filter((item) => !item.image);
           limitedPhotos.map((item) => (
             <figure data-rise>
               {item.image && (
-                <img
-                  src={item.image.src}
-                  srcset={item.image.srcset}
+                <CatalogPhoto
+                  file={item.image.file}
                   sizes="(max-width: 719px) calc(100vw - 2.5rem), 44vw"
                   alt={item.image.alt}
-                  width={item.image.width}
-                  height={item.image.height}
-                  loading="lazy"
-                  decoding="async"
                 />
               )}
               <figcaption>
@@ -211,15 +209,10 @@ const limitedText = catalogLimited.filter((item) => !item.image);
 
     <section class="catalog-band" id="full-solar" aria-labelledby="solar-title">
       <div class="solar">
-        <img
-          src={fullSolarImage.src}
-          srcset={fullSolarImage.srcset}
+        <CatalogPhoto
+          file={fullSolarImage.file}
           sizes="(max-width: 719px) calc(100vw - 2.5rem), 54vw"
           alt={fullSolarImage.alt}
-          width={fullSolarImage.width}
-          height={fullSolarImage.height}
-          loading="lazy"
-          decoding="async"
         />
         <div class="solar-copy" data-rise>
           <p class="story-kicker">On every build, from day one</p>

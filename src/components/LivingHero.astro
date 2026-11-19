@@ -26,7 +26,7 @@ const {
 } = Astro.props;
 
 const posterUrl = film.endsWith('.mp4')
-  ? film.replace(/\.mp4$/, '-poster.webp')
+  ? film.replace(/\.mp4$/, '-poster.avif')
   : await posterSrc(poster);
 const webm = film.endsWith('.mp4') ? film.replace(/\.mp4$/, '.webm') : '';
 const hasStill = Astro.slots.has('still');

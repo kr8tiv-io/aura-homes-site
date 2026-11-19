@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Join from '../../components/Join.astro';
 import RevealHeading from '../../components/RevealHeading.astro';
 import Still from '../../components/Still.astro';
+import ImagePreload from '../../components/ImagePreload.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { formatJournalDate, legacyNotes, type JournalCard } from '../../lib/journal';
 
@@ -22,6 +23,8 @@ const notes: JournalCard[] = [
   })),
   ...legacyNotes,
 ];
+const lead = notes[0];
+const cardSizes = '(max-width: 800px) calc(100vw - 3rem), 42vw';
 ---
 
 <BaseLayout
@@ -29,6 +32,7 @@ const notes: JournalCard[] = [
   description="Notes from the Aura shop: what we are building, and what comes next."
   descriptor="Journal"
 >
+  {lead && <ImagePreload slot="head" src={lead.cover} sizes={cardSizes} />}
   <main class="journal-index" id="top">
     <section class="page-lead">
       <p class="story-kicker" data-tracer="rule">Journal</p>
@@ -37,11 +41,17 @@ const notes: JournalCard[] = [
     </section>
     <ul class="journal-grid">
       {
-        notes.map((note) => (
+        notes.map((note, index) => (
           <li>
             <a class="journal-card" href={note.href} data-rise>
               <figure data-tracer="edge">
-                <Still src={note.cover} alt={note.coverAlt} sizes="(max-width: 800px) calc(100vw - 3rem), 42vw" />
+                <Still
+                  src={note.cover}
+                  alt={note.coverAlt}
+                  sizes={cardSizes}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={index === 0 ? 'high' : undefined}
+                />
               </figure>
               <p class="journal-card-meta">
                 <time datetime={note.date}>{formatJournalDate(note.date)}</time>

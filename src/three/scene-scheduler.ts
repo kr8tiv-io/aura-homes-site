@@ -13,27 +13,34 @@
     that map. Change the rows, not the scheduler.
 
   passageBudget(), from the live quality profile:
-  - off: nothing mounts. The poster stays.
-  - low and medium: one live meadow world. Mounting the next disposes the
-    previous one.
-  - high and ultra: several worlds stay mounted so a wide screen does not
-    pop. Rendering still pauses while that passage is offscreen, and the
-    shared stage pauses while the document is hidden.
+  - off, and reduced motion: nothing mounts. The poster stays.
+  - every other tier mounts a passage when it is near the viewport, and
+    leaves it mounted. Scrolling back must not tear the world down.
+    Rendering still pauses while that passage is offscreen.
 
   A world is created only after window load plus an idle callback, and only
-  when its passage is within about one viewport.
+  when its passage is within about two viewport heights on a phone, or
+  about three and a half on a desktop. Once nearby photos have finished,
+  idle time may prefetch the next passage only when that passage is already
+  inside the same lead. A passage still far below the fold stays on its
+  poster and does not fetch.
 */
 import mark from '../assets/logo/aura-mark.svg?raw';
 import { prefersReducedMotion } from '../scripts/motion';
 import { openLoadSession } from './asset-progress';
-import { hideStill, onQuality, qualityProfile, showStill, type QualityTier } from './quality';
+import { visualsPending } from './loaders';
+import { hideStill, isPhoneClass, onQuality, qualityProfile, showStill, type QualityTier } from './quality';
 
 export { tierAssets, type TierAssetPlan } from './tier-assets';
 
 export type PassageBudget = {
   /** False on the off tier and while motion is reduced. The poster stays. */
   mount: boolean;
-  /** Live meadow worlds kept at once. 1 on low and medium. */
+  /**
+   * Retained for callers. Mounted worlds are not discarded to honour this
+   * number: tearing one down to show the next re-fetched shared files and
+   * flashed the poster on the way back.
+   */
   maxLive: number;
 };
 
@@ -68,6 +75,7 @@ let settled: Promise<void> | null = null;
 let reconciling = false;
 let again = false;
 let hooked = false;
+let prefetchQueued = false;
 
 export function passageBudget(tier: QualityTier = qualityProfile().tier): PassageBudget {
   if (tier === 'off' || prefersReducedMotion()) return { mount: false, maxLive: 0 };
@@ -152,15 +160,69 @@ function closeness(slot: Slot): number {
   return Math.abs(mid - window.innerHeight / 2);
 }
 
+function leadViewports(): number {
+  // Two viewport heights on a phone. Desktop scrolls farther between frames.
+  return isPhoneClass() ? 2 : 3.5;
+}
+
+function leadMargin(): string {
+  const pct = Math.round(leadViewports() * 100);
+  return `${pct}% 0px ${pct}% 0px`;
+}
+
+/**
+ * Same window as the IntersectionObserver rootMargin. A passage is near when
+ * any part of it overlaps the viewport expanded by leadViewports().
+ */
+function passageIsNear(passage: HTMLElement): boolean {
+  const rect = passage.getBoundingClientRect();
+  if (rect.height < 8) return false;
+  const vh = window.innerHeight || 1;
+  const lead = vh * leadViewports();
+  return rect.bottom > -lead && rect.top < vh + lead;
+}
+
+/**
+ * The next passage below the fold, after the photos around the scroll
+ * position have finished. It must already sit inside the lead. A passage
+ * that is still far below the fold is left alone. The observer mounts it
+ * once it comes near.
+ */
+function schedulePrefetch() {
+  if (prefetchQueued || typeof window === 'undefined') return;
+  prefetchQueued = true;
+  const run = () => {
+    prefetchQueued = false;
+    void whenPageSettled().then(() => {
+      if (prefersReducedMotion() || qualityProfile().tier === 'off') return;
+      if (visualsPending()) {
+        window.setTimeout(schedulePrefetch, 500);
+        return;
+      }
+      const vh = window.innerHeight || 1;
+      const ordered = [...slots].sort(
+        (a, b) => a.passage.getBoundingClientRect().top - b.passage.getBoundingClientRect().top,
+      );
+      let picked = false;
+      for (const slot of ordered) {
+        const top = slot.passage.getBoundingClientRect().top;
+        if (slot.wanted || slot.live || slot.loading || top <= vh * 0.85) continue;
+        if (picked) break;
+        if (!passageIsNear(slot.passage)) break;
+        picked = true;
+        activate(slot);
+      }
+    });
+  };
+  const ric = window.requestIdleCallback;
+  if (typeof ric === 'function') ric(() => run(), { timeout: 1800 });
+  else window.setTimeout(run, 700);
+}
+
 function activate(slot: Slot) {
   if (slot.live || slot.loading) return;
   const budget = passageBudget();
   if (!budget.mount) return;
-  if (budget.maxLive <= 1) {
-    for (const other of slots) {
-      if (other !== slot && (other.live || other.loading)) release(other);
-    }
-  }
   const generation = ++slot.generation;
   slot.loading = true;
   showStill(slot.canvas);
@@ -219,35 +281,24 @@ async function reconcile() {
       return;
     }
     const wanted = slots.filter((slot) => slot.wanted);
-    if (budget.maxLive <= 1) {
-      const keep = wanted.length
-        ? wanted.reduce((best, slot) => (closeness(slot) < closeness(best) ? slot : best))
-        : null;
-      if (!keep) return;
-      if (!keep.live && !keep.loading) activate(keep);
-      else {
-        for (const slot of slots) {
-          if (slot !== keep && (slot.live || slot.loading)) release(slot);
-        }
-      }
-      return;
-    }
-    const room = slots.filter((slot) => slot.live || slot.loading).length;
-    let left = Math.max(0, budget.maxLive - room);
     const nearest = [...wanted].sort((a, b) => closeness(a) - closeness(b));
     for (const slot of nearest) {
       if (slot.live || slot.loading) continue;
-      if (left <= 0) break;
       activate(slot);
-      left -= 1;
     }
   } finally {
     reconciling = false;
     if (again) {
       again = false;
       void reconcile();
+    } else if (budgetMounting()) {
+      schedulePrefetch();
     }
   }
+}
+
+function budgetMounting(): boolean {
+  return passageBudget().mount;
 }
 
 function ensureHooks() {
@@ -263,6 +314,7 @@ function ensureHooks() {
   document.addEventListener('aura-stage-failed', () => {
     for (const slot of slots) release(slot);
   });
+  window.addEventListener('scroll', () => schedulePrefetch(), { passive: true });
   observer = new IntersectionObserver(
     (records) => {
       for (const record of records) {
@@ -272,7 +324,7 @@ function ensureHooks() {
       }
       void reconcile();
     },
-    { root: null, rootMargin: '100% 0px 100% 0px', threshold: 0 },
+    { root: null, rootMargin: leadMargin(), threshold: 0 },
   );
 }
 

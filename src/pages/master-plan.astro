@@ -1,6 +1,7 @@
 ---
 import RevealHeading from '../components/RevealHeading.astro';
 import Still from '../components/Still.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -9,6 +10,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Return to Aura. One beautiful room at a time."
   descriptor="Master plan"
 >
+  <ImagePreload slot="head" src="/film/story-meadow-side.webp" />
   <main id="top" class="plan">
     <section class="page-lead">
       <div data-rise>

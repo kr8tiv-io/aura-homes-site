@@ -1,0 +1,19 @@
+---
+import Responsive from './Responsive.astro';
+import { collectionMeta } from '../lib/responsive';
+
+interface Props {
+  file: string;
+  alt: string;
+  sizes: string;
+  class?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  ariaHidden?: boolean;
+}
+
+const { file, ...rest } = Astro.props;
+const meta = collectionMeta(file);
+---
+
+<Responsive image={meta.image} original={meta.original} extra={meta.extra} {...rest} />

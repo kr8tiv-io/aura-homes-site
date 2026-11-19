@@ -1,5 +1,6 @@
 import { gsap, ScrollTrigger } from './motion';
 import { bindFilmScrub } from './film-scrub';
+import { avifBlocked, posterBlob, readyPoster } from './posters';
 
 type Mode = 'drift' | 'glide' | 'push' | 'lift' | 'rise' | 'wipe' | 'return' | 'hold' | 'steam';
 
@@ -53,6 +54,14 @@ const MODES: Record<
   hold: { scale: 1.03, endScale: 1.01, xPercent: 0, yPercent: 0, rotate: 0, clip: null, scrub: 0.65, map: (p) => Math.min(1, p / 0.5) },
   steam: { scale: 1.12, endScale: 1.02, xPercent: 0, yPercent: 0, rotate: 0, clip: 'inset(18% 5% 0% 5%)', scrub: 0.5, map: (p) => p },
 };
+
+function restorePoster(video: HTMLVideoElement) {
+  const src = video.dataset.poster;
+  if (!src) return;
+  const have = readyPoster(src);
+  video.poster = have ?? src;
+  if (have) video.dataset.posterReady = 'yes';
+}
 
 /** Scroll position drives each still's film, with a different play shape per shot. */
 export function bindReels(root: ParentNode = document) {
@@ -174,8 +183,7 @@ export function bindReels(root: ParentNode = document) {
           video.load();
           if (mine !== generation) {
             video.removeAttribute('src');
-            const poster = video.dataset.poster;
-            if (poster) video.poster = poster;
+            restorePoster(video);
             video.load();
             return;
           }
@@ -192,8 +200,7 @@ export function bindReels(root: ParentNode = document) {
       video.pause();
       video.removeAttribute('src');
       video.querySelectorAll('source').forEach((node) => node.remove());
-      const poster = video.dataset.poster;
-      if (poster) video.poster = poster;
+      restorePoster(video);
       video.load();
       attached = false;
     };
@@ -210,8 +217,47 @@ export function bindReels(root: ParentNode = document) {
 
     const usePoster = () => {
       const src = video.dataset.poster;
-      if (src && video.getAttribute('poster') !== src) video.poster = src;
+      if (!src) return;
+      if (reduce) {
+        if (video.getAttribute('poster') !== src) video.poster = src;
+        return;
+      }
+      // The HTML poster is already this file. Leave that parser-started image
+      // in place. Replacing it with a blob would throw away the early load.
+      // A cached "no AVIF" visit still swaps, because that file will not decode.
+      if (video.getAttribute('poster') === src && !(src.endsWith('.avif') && avifBlocked())) return;
+      const have = readyPoster(src);
+      if (have) {
+        if (video.getAttribute('poster') !== have) video.poster = have;
+        video.dataset.posterReady = 'yes';
+        return;
+      }
+      void posterBlob(src)
+        .then((blob) => {
+          if (video.dataset.poster !== src) return;
+          video.poster = blob;
+          video.dataset.posterReady = 'yes';
+        })
+        .catch(() => {
+          if (video.getAttribute('poster') !== src) video.poster = src;
+        });
     };
+
+    // Poster frames load about 2.5 viewports ahead. Film attach stays on the
+    // nearer observer below, including one-at-a-time on compact screens.
+    if (!reduce) {
+      const box = figure.getBoundingClientRect();
+      const vh = window.innerHeight || 1;
+      if (box.top < vh * 3.5 && box.bottom > -vh * 2.5) usePoster();
+      const posterLead = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) usePoster();
+        },
+        { rootMargin: '250% 0px 250% 0px' },
+      );
+      posterLead.observe(figure);
+      stops.push(() => posterLead.disconnect());
+    }
 
     const compact = compactNow();
     const slot = { figure, on: false, attach, release };

@@ -217,6 +217,51 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
   }
 }
 
+/* Phones: every filter on the page, in rows, with no sideways swipe.
+   The dot lives on the following chip and hangs in the gap. A dot that
+   would start a wrapped row sits outside the box and is clipped. */
+@media (max-width: 600px) {
+  .stage-tabs {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+  .stage-filters {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 0.95rem;
+    row-gap: 0;
+    margin: 0 var(--bar-x);
+    padding: 0.1rem 0 0.15rem;
+    overflow: hidden;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .stage-filters button {
+    position: relative;
+    padding: 0 0.1rem;
+  }
+  .stage-filters button:first-child {
+    padding-left: 0.1rem;
+  }
+  .stage-filters button:not(:first-child)::before {
+    content: "·";
+    position: absolute;
+    right: calc(100% + 0.28rem);
+    top: 50%;
+    width: 0.45rem;
+    transform: translateY(-50%);
+    color: #c4a07a;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-align: center;
+    pointer-events: none;
+  }
+  .stage-dot {
+    display: none;
+  }
+}
+
 .stage-dot {
   color: #c4a07a;
   user-select: none;
@@ -275,6 +320,10 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
   aspect-ratio: 16 / 10;
   overflow: hidden;
   background: #0c0d0e;
+}
+
+.catalog-feature-photo picture {
+  height: 100%;
 }
 
 .catalog-feature-photo img {
@@ -371,6 +420,12 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background: #e7e2d8;
+}
+
+.catalog-photo picture {
+  position: absolute;
+  inset: 0;
+  height: 100%;
 }
 
 .catalog-photo img {
@@ -555,6 +610,12 @@ body:has(.site-nav.topbar:not(.is-away)) .stage-bar {
 
 .limited-photos figure {
   margin: 0;
+}
+
+.limited-photos picture,
+.solar picture {
+  display: block;
+  width: 100%;
 }
 
 .limited-photos img {

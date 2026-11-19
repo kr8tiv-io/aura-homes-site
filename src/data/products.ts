@@ -15,6 +15,8 @@ export type CatalogGroup = 'rooms' | 'soaks' | 'sleep' | 'systems' | 'resort';
 export type CatalogFilter = CatalogGroup | 'all';
 
 export type CatalogImage = {
+  /** Source filename in the printed catalog, for example skywalker-meadow.jpg. */
+  file: string;
   src: string;
   srcset: string;
   width: number;
@@ -259,7 +261,7 @@ function picture(file: string): CatalogImage {
   const small = `${base}-1280.webp`;
   const parts = [`${small} ${dim.w1280}w`];
   if (dim.w1920 && dim.h1920) parts.push(`${base}-1920.webp ${dim.w1920}w`);
-  return { src: small, srcset: parts.join(', '), width: dim.w1280, height: dim.h1280, alt };
+  return { file, src: small, srcset: parts.join(', '), width: dim.w1280, height: dim.h1280, alt };
 }
 
 function toProduct(raw: RawProduct): CatalogProduct {

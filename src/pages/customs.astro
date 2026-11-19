@@ -2,6 +2,7 @@
 import Materials from '../components/Materials.astro';
 import Still from '../components/Still.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
 const steps = [
@@ -17,6 +18,7 @@ const steps = [
   description="Return to Aura. One beautiful room at a time."
   descriptor="Customs"
 >
+  <ImagePreload slot="head" src="/film/layout-forest.webp" sizes="(max-width: 800px) calc(100vw - 3rem), 84vw" />
   <main id="top" class="customs-page">
     <section class="page-lead">
       <p class="story-kicker" data-tracer="rule">Customs</p>
@@ -30,6 +32,8 @@ const steps = [
         src="/film/layout-forest.webp"
         alt="A glass room at the forest edge, one panel open, a fold-down balcony over the meadow."
         natural
+        loading="eager"
+        fetchpriority="high"
         sizes="(max-width: 800px) calc(100vw - 3rem), 84vw"
       />
     </figure>

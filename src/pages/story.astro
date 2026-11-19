@@ -4,6 +4,7 @@ import HeroMist from '../components/HeroMist.astro';
 import LivingHero from '../components/LivingHero.astro';
 import RevealHeading from '../components/RevealHeading.astro';
 import WindowFrame from '../components/WindowFrame.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { httpsUrl, youtubeUrl } from '../data/site';
 
@@ -15,6 +16,7 @@ const youtube = httpsUrl(youtubeUrl);
   description="Aura builds beautiful rooms that get people back outside."
   descriptor="Story"
 >
+  <ImagePreload slot="head" src="/film/story-meadow-side.webp" />
   <main id="top" class="story-essay">
     <LivingHero
       id="why"

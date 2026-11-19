@@ -2,6 +2,7 @@
 import DepthImage from '../components/DepthImage.astro';
 import LivingHero from '../components/LivingHero.astro';
 import RevealHeading from '../components/RevealHeading.astro';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -10,6 +11,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   description="Return to Aura. One beautiful room at a time."
   descriptor="Back to nature"
 >
+  <ImagePreload slot="head" src="/film/story-room.webp" />
   <main id="top" class="wild">
     <LivingHero
       labelledby="wild-morning"

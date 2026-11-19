@@ -1,4 +1,5 @@
 ---
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Collection from '../components/Collection.astro';
 import LivingHero from '../components/LivingHero.astro';
@@ -42,6 +43,7 @@ const uses = [
   description="Return to Aura. One beautiful room at a time."
   descriptor="Rooms"
 >
+  <ImagePreload slot="head" src="/film/story-room.webp" />
   <main id="top" class="room-collection">
     <LivingHero
       labelledby="rooms-title"
@@ -343,15 +345,73 @@ const uses = [
       padding: 4vh 1.5rem 0;
     }
     .room-uses {
+      --use-pad: 1.5rem;
+      --use-peek: 2.85rem;
       display: flex;
-      gap: 2.2rem;
+      gap: 0.85rem;
       overflow-x: auto;
+      overscroll-behavior-x: contain;
       scroll-snap-type: x mandatory;
-      padding: 2.2rem 1.5rem;
+      scroll-padding-inline: var(--use-pad);
+      padding: 2.2rem var(--use-pad);
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 0.7rem), transparent 100%);
+      mask-image: linear-gradient(to right, #000 0, #000 calc(100% - 0.7rem), transparent 100%);
+    }
+    .room-uses::-webkit-scrollbar {
+      display: none;
     }
     .room-uses li {
-      flex: 0 0 68%;
+      container-type: scroll-state;
+      /* One full title, then a gap, then the next number before the edge fade. */
+      flex: 0 0 calc(100vw - var(--use-pad) - var(--use-peek) - 0.85rem);
+      min-width: 0;
       scroll-snap-align: start;
+      position: relative;
+    }
+    .room-uses strong {
+      max-width: 100%;
+      overflow-wrap: normal;
+      word-break: normal;
+    }
+    /* Later titles stay out of the peek so a word is never cut on the edge.
+       The number of the next card is what shows. Scroll-snap brings a title
+       back when its card is the one on screen. */
+    .room-uses li:not(:first-child) strong {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: -1px;
+      padding: 0;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      opacity: 0;
+    }
+    @container scroll-state(snapped: inline) {
+      .room-uses li:not(:first-child) strong {
+        position: static;
+        width: auto;
+        height: auto;
+        margin: 0 0 0;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+        opacity: 1;
+      }
+    }
+    /* Without scroll-state, every title stays in the card so a swipe still reads. */
+    @supports not (container-type: scroll-state) {
+      .room-uses li:not(:first-child) strong {
+        position: static;
+        width: auto;
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+        opacity: 1;
+      }
     }
     .standalone-label {
       margin-right: 1.5rem;
@@ -368,6 +428,16 @@ const uses = [
   @media (prefers-reduced-motion: reduce) {
     .room-uses {
       scroll-snap-type: none;
+    }
+    .room-uses li:not(:first-child) strong {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+      opacity: 1;
     }
   }
 </style>

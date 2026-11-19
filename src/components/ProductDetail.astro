@@ -1,4 +1,5 @@
 ---
+import ImagePreload from './ImagePreload.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import LivingHero from './LivingHero.astro';
 import RevealHeading from './RevealHeading.astro';
@@ -14,6 +15,7 @@ const description = `${product.name}. ${product.line} Made in-house by Aura Home
 ---
 
 <BaseLayout title={`${product.name} | Aura Homes`} description={description} descriptor="Standalone">
+  <ImagePreload slot="head" src={product.image} />
   <main id="top" class="product-page">
     <LivingHero
       labelledby="product-title"

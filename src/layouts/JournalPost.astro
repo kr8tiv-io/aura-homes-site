@@ -4,6 +4,7 @@ import RevealHeading from '../components/RevealHeading.astro';
 import Still from '../components/Still.astro';
 import YouTube from '../components/YouTube.astro';
 import { formatJournalDate } from '../lib/journal';
+import ImagePreload from '../components/ImagePreload.astro';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -33,6 +34,7 @@ const json = {
 ---
 
 <BaseLayout title={`${title} | Aura Homes`} description={description} descriptor="Journal">
+  <ImagePreload slot="head" src={cover} sizes="(max-width: 800px) calc(100vw - 3rem), min(84vw, 72rem)" />
   <main class="journal-post" id="top">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(json)} />
     <header class="journal-head">

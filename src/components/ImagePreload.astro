@@ -1,0 +1,23 @@
+---
+import { stillAvifSrcSet } from '../lib/stills';
+
+interface Props {
+  src?: string;
+  sizes?: string;
+  imagesrcset?: string;
+}
+
+const { src, sizes = '100vw', imagesrcset } = Astro.props;
+const set = imagesrcset
+  ? { srcset: imagesrcset, sizes }
+  : await stillAvifSrcSet(src ?? '', sizes);
+---
+
+<link
+  rel="preload"
+  as="image"
+  type="image/avif"
+  imagesrcset={set.srcset}
+  imagesizes={set.sizes}
+  fetchpriority="high"
+/>
